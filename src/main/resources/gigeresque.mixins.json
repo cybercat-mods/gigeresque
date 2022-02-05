@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "com.bvanseg.gigeresque.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "LivingEntityMixin",
+    "MemoryModuleTypeInvoker",
+    "MobEntityMixin",
+    "SensorTypeInvoker",
+    "SpawnGroupMixin"
+  ],
+  "client": [
+    "GeoEntityRendererMixin",
+    "InGameOverlayRendererMixin",
+    "LivingEntityRendererMixin",
+    "SheepWoolFeatureRendererMixin",
+    "SlimeOverlayFeatureRendererMixin",
+    "VillagerClothingFeatureRendererMixin"
+  ],
+  "server": []
+}

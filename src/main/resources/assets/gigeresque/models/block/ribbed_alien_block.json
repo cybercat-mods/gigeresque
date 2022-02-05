@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "gigeresque:block/ribbed_alien_pillar"
+  }
+}

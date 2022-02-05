@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "gigeresque:block/rough_alien_block",
+    "top": "gigeresque:block/rough_alien_block",
+    "side": "gigeresque:block/rough_alien_block"
+  }
+}

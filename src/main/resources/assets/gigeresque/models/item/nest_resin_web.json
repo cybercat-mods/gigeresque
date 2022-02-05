@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gigeresque:block/nest_resin_web_1"
+  }
+}

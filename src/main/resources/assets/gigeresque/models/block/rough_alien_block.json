@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "gigeresque:block/rough_alien_block"
+  }
+}

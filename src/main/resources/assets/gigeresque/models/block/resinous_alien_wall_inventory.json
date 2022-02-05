@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "gigeresque:block/resinous_alien_pillar"
+  }
+}

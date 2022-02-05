@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "gigeresque:block/rough_alien_slab"
+    },
+    "type=double": {
+      "model": "gigeresque:block/rough_alien_block"
+    },
+    "type=top": {
+      "model": "gigeresque:block/rough_alien_slab_top"
+    }
+  }
+}

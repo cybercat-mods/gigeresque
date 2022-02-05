@@ -1,0 +1,775 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "one",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_1",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+
+
+
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "two",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_2",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+
+
+
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "three",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_3",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+
+
+
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "four",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_4",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+
+
+
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "five",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_5",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+
+
+
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "x": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "north": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6"
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "west": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "south": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "east": "true"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "nest_resin_web_variant": "six",
+        "up": "false",
+        "north": "false",
+        "west": "false",
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "gigeresque:block/nest_resin_web_6",
+        "y": 90,
+        "uvlock": true
+      }
+    }
+  ]
+}

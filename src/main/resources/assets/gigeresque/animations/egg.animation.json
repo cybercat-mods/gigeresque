@@ -1,0 +1,215 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"hatching": {
+			"animation_length": 2,
+			"bones": {
+				"lobeN": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.88": {
+							"vector": [5, 0, 0]
+						}
+					}
+				},
+				"lobeNTop": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.88": {
+							"vector": [-7.5, 0, 0]
+						},
+						"1.88": {
+							"vector": [100, 0, 0]
+						}
+					}
+				},
+				"lobeS2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.88": {
+							"vector": [5, 0, 0]
+						}
+					}
+				},
+				"lobeSTop": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.88": {
+							"vector": [-7.5, 0, 0]
+						},
+						"1.88": {
+							"vector": [100, 0, 0]
+						}
+					}
+				},
+				"lobeE": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, -5]
+						}
+					}
+				},
+				"lobeETop": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [-7.5, 0, 0]
+						},
+						"2.0": {
+							"vector": [100, 0, 0]
+						}
+					}
+				},
+				"lobeW": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 5]
+						}
+					}
+				},
+				"lobeWTop": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [-7.5, 0, 0]
+						},
+						"2.0": {
+							"vector": [100, 0, 0]
+						}
+					}
+				},
+				"seal": {
+					"scale": {
+						"vector": [0, 0, 0],
+						"easing": "linear"
+					}
+				}
+			}
+		},
+		"open_loop": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"lobeN": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					}
+				},
+				"lobeNTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeS2": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					}
+				},
+				"lobeSTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeE": {
+					"rotation": {
+						"vector": [0, 0, -5]
+					}
+				},
+				"lobeETop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeW": {
+					"rotation": {
+						"vector": [0, 0, 5]
+					}
+				},
+				"lobeWTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"seal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"open_loop_nobag": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"lobeN": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					}
+				},
+				"lobeNTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeS2": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					}
+				},
+				"lobeSTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeE": {
+					"rotation": {
+						"vector": [0, 0, -5]
+					}
+				},
+				"lobeETop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"lobeW": {
+					"rotation": {
+						"vector": [0, 0, 5]
+					}
+				},
+				"lobeWTop": {
+					"rotation": {
+						"vector": [100, 0, 0]
+					}
+				},
+				"seal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"bag": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		}
+	}
+}

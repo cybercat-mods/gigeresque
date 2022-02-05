@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "gigeresque:block/resinous_alien_pillar_top",
+    "side": "gigeresque:block/resinous_alien_pillar"
+  }
+}
