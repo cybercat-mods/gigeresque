@@ -11,7 +11,7 @@ import net.minecraft.world.World
 /**
  * @author Boston Vanseghi
  */
-class CobwebBlock(settings: Settings) : Block(settings) {
+class NestResinWebFullBlock(settings: Settings) : Block(settings) {
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if (entity !is AlienEntity) {
             entity.slowMovement(state, Vec3d(0.25, 0.05000000074505806, 0.25))

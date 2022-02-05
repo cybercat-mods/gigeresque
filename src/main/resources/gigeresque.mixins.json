@@ -1,24 +1,27 @@
 {
   "required": true,
   "package": "com.bvanseg.gigeresque.mixins",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "LivingEntityMixin",
-    "MemoryModuleTypeInvoker",
-    "MobEntityMixin",
-    "SensorTypeInvoker",
-    "SpawnGroupMixin"
+    "common.SpawnGroupMixin",
+    "common.entity.LivingEntityMixin",
+    "common.entity.MobEntityMixin",
+    "common.entity.VillagerEntityMixin",
+    "common.entity.WanderingTraderEntityMixin",
+    "common.entity.ai.MemoryModuleTypeInvoker",
+    "common.entity.ai.SensorTypeInvoker",
+    "common.recipe.RecipeManagerMixin"
   ],
   "client": [
-    "GeoEntityRendererMixin",
-    "InGameOverlayRendererMixin",
-    "LivingEntityRendererMixin",
-    "SheepWoolFeatureRendererMixin",
-    "SlimeOverlayFeatureRendererMixin",
-    "VillagerClothingFeatureRendererMixin"
+    "client.entity.render.GeoEntityRendererMixin",
+    "client.entity.render.LivingEntityRendererMixin",
+    "client.entity.render.feature.SheepWoolFeatureRendererMixin",
+    "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
+    "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
+    "client.render.InGameOverlayRendererMixin"
   ],
   "server": []
 }

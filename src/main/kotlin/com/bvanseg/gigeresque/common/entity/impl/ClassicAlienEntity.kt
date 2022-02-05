@@ -1,21 +1,15 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
 import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.data.handler.TrackedDataHandlers
 import com.bvanseg.gigeresque.common.entity.AlienAttackType
 import com.bvanseg.gigeresque.common.entity.GenericAlienAttackType
-import com.bvanseg.gigeresque.common.entity.ai.brain.ClassicAlienBrain
-import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes
-import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypes
-import com.mojang.serialization.Dynamic
+import com.bvanseg.gigeresque.common.entity.attribute.AlienEntityAttributes
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.ai.brain.Brain
-import net.minecraft.entity.ai.brain.MemoryModuleType
-import net.minecraft.entity.ai.brain.sensor.Sensor
-import net.minecraft.entity.ai.brain.sensor.SensorType
 import net.minecraft.entity.attribute.DefaultAttributeContainer
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.damage.DamageSource
@@ -39,44 +33,19 @@ import kotlin.math.max
 class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World) : AdultAlienEntity(type, world) {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0)
             .add(EntityAttributes.GENERIC_ARMOR, 6.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
             .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
             .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.ISOLATION_MODE_DAMAGE_BASE)
             .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
+            .add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0)
 
         private val CURRENT_ATTACK_TYPE: TrackedData<AlienAttackType> =
             DataTracker.registerData(ClassicAlienEntity::class.java, TrackedDataHandlers.ALIEN_ATTACK_TYPE)
-
-        private val SENSOR_TYPES: List<SensorType<out Sensor<in ClassicAlienEntity>>> =
-            listOf(
-                SensorTypes.NEAREST_ALIEN_WEBBING,
-                SensorType.NEAREST_LIVING_ENTITIES,
-                SensorTypes.NEAREST_ALIEN_TARGET,
-                SensorTypes.ALIEN_REPELLENT,
-                SensorTypes.DESTRUCTIBLE_LIGHT
-            )
-
-        private val MEMORY_MODULE_TYPES: List<MemoryModuleType<*>> =
-            listOf(
-                MemoryModuleType.ATTACK_TARGET,
-                MemoryModuleType.ATTACK_COOLING_DOWN,
-                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-                MemoryModuleTypes.EGGMORPH_TARGET,
-                MemoryModuleType.HOME,
-                MemoryModuleType.LOOK_TARGET,
-                MemoryModuleType.MOBS,
-                MemoryModuleTypes.NEAREST_ALIEN_WEBBING,
-                MemoryModuleTypes.NEAREST_LIGHT_SOURCE,
-                MemoryModuleType.NEAREST_REPELLENT,
-                MemoryModuleType.PATH,
-                MemoryModuleType.VISIBLE_MOBS,
-                MemoryModuleType.WALK_TARGET,
-            )
     }
 
     private val animationFactory: AnimationFactory = AnimationFactory(this)
@@ -87,8 +56,6 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
 
     private var attackProgress = 0
 
-    private lateinit var complexBrain: ClassicAlienBrain
-
     private var isSearching: Boolean = false
     private var searchingLeft: Boolean = false
     private var searchingProgress = 0L
@@ -98,18 +65,6 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
         super.initDataTracker()
         dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE)
     }
-
-    override fun createBrainProfile(): Brain.Profile<out ClassicAlienEntity> {
-        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES)
-    }
-
-    override fun deserializeBrain(dynamic: Dynamic<*>): Brain<out ClassicAlienEntity> {
-        complexBrain = ClassicAlienBrain(this)
-        return complexBrain.initialize(createBrainProfile().deserialize(dynamic))
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getBrain(): Brain<ClassicAlienEntity> = super.getBrain() as Brain<ClassicAlienEntity>
 
     override fun tick() {
         super.tick()
@@ -129,7 +84,7 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
         }
 
         if (!world.isClient && currentAttackType == AlienAttackType.NONE) {
-            currentAttackType = when(random.nextInt(6)) {
+            currentAttackType = when (random.nextInt(6)) {
                 0 -> AlienAttackType.CLAW_LEFT
                 1 -> AlienAttackType.CLAW_RIGHT
                 2 -> AlienAttackType.TAIL_LEFT
@@ -167,16 +122,10 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
         }
     }
 
-    override fun mobTick() {
-        world.profiler.push("classicAlienBrain")
-        complexBrain.tick()
-        world.profiler.pop()
-        complexBrain.tickActivities()
-        super.mobTick()
-    }
+    override fun getGrowthMultiplier(): Float = Gigeresque.config.miscellaneous.alienGrowthMultiplier
 
     override fun tryAttack(target: Entity): Boolean {
-        var additionalDamage = when(currentAttackType.genericAttackType) {
+        var additionalDamage = when (currentAttackType.genericAttackType) {
             GenericAlienAttackType.BITE -> 23.0f
             GenericAlienAttackType.TAIL -> 3.0f
             else -> 0.0f
@@ -184,12 +133,12 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
 
         if (target is LivingEntity && !world.isClient) {
             currentAttackType.genericAttackType.also { genericAttackType ->
-                when(genericAttackType) {
+                when (genericAttackType) {
                     GenericAlienAttackType.NONE -> Unit
                     GenericAlienAttackType.BITE -> {
                         val helmet = target.armorItems.firstOrNull {
                             val item = it.item
-                            return@firstOrNull(item is ArmorItem && item.slotType == EquipmentSlot.HEAD)
+                            return@firstOrNull (item is ArmorItem && item.slotType == EquipmentSlot.HEAD)
                         }
 
                         if (helmet != null) {
@@ -228,19 +177,28 @@ class ClassicAlienEntity(type: EntityType<out ClassicAlienEntity>, world: World)
 
         return if (velocityLength > 0.0 && !this.isTouchingWater) {
             if (this.isAttacking) {
-                event.controller.setAnimation(AnimationBuilder()
-                    .addAnimation("moving_aggro", true)
-                    .addAttackAnimation())
+                event.controller.setAnimation(
+                    AnimationBuilder()
+                        .addAnimation("moving_aggro", true)
+                        .addAttackAnimation()
+                )
                 PlayState.CONTINUE
             } else {
-                event.controller.setAnimation(AnimationBuilder()
-                    .addAnimation("moving_noaggro", true)
-                    .addAttackAnimation())
+                event.controller.setAnimation(
+                    AnimationBuilder()
+                        .addAnimation("moving_noaggro", true)
+                        .addAttackAnimation()
+                )
                 PlayState.CONTINUE
             }
         } else {
             if (!this.isTouchingWater && isSearching && !this.isAttacking) {
-                event.controller.setAnimation(AnimationBuilder().addAnimation(if (searchingLeft) "search_left" else "search_right", false))
+                event.controller.setAnimation(
+                    AnimationBuilder().addAnimation(
+                        if (searchingLeft) "search_left" else "search_right",
+                        false
+                    )
+                )
                 return PlayState.CONTINUE
             }
 

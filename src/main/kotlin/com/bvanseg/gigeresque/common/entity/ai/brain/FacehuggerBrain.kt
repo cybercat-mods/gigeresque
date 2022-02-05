@@ -7,25 +7,14 @@ import com.bvanseg.gigeresque.common.extensions.isPotentialHost
 import com.bvanseg.gigeresque.interfacing.Host
 import com.google.common.collect.ImmutableList
 import com.mojang.datafixers.util.Pair
-import java.util.function.Predicate
-import net.minecraft.entity.ai.brain.Activity
 import net.minecraft.entity.ai.brain.MemoryModuleType
-import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask
-import net.minecraft.entity.ai.brain.task.LookAroundTask
-import net.minecraft.entity.ai.brain.task.RandomTask
-import net.minecraft.entity.ai.brain.task.RangedApproachTask
-import net.minecraft.entity.ai.brain.task.StayAboveWaterTask
-import net.minecraft.entity.ai.brain.task.StrollTask
-import net.minecraft.entity.ai.brain.task.Task
-import net.minecraft.entity.ai.brain.task.UpdateAttackTargetTask
-import net.minecraft.entity.ai.brain.task.WaitTask
-import net.minecraft.entity.ai.brain.task.WalkTask
-import net.minecraft.entity.ai.brain.task.WanderAroundTask
+import net.minecraft.entity.ai.brain.task.*
+import java.util.function.Predicate
 
 /**
  * @author Boston Vanseghi
  */
-class FacehuggerBrain(entity: FacehuggerEntity): ComplexBrain<FacehuggerEntity>(entity) {
+class FacehuggerBrain(entity: FacehuggerEntity) : ComplexBrain<FacehuggerEntity>(entity) {
 
     override fun addCoreActivities(tasks: MutableList<Task<in FacehuggerEntity>>) {
         tasks.add(StayAboveWaterTask(0.8f))
@@ -54,17 +43,6 @@ class FacehuggerBrain(entity: FacehuggerEntity): ComplexBrain<FacehuggerEntity>(
         }))
         tasks.add(RangedApproachTask(1.0f))
         tasks.add(FacehuggerPounceTask())
-    }
-
-    override fun tickActivities() {
-        brain.resetPossibleActivities(
-            ImmutableList.of(
-                Activity.FIGHT,
-                Activity.AVOID,
-                Activity.IDLE
-            )
-        )
-        entity.isAttacking = brain.hasMemoryModule(MemoryModuleType.ATTACK_TARGET)
     }
 
     private fun makeRandomWanderTask(): RandomTask<FacehuggerEntity> {

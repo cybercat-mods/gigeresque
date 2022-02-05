@@ -3,6 +3,8 @@ package com.bvanseg.gigeresque.client.entity.render.feature
 import com.bvanseg.gigeresque.client.entity.model.EntityModels
 import com.bvanseg.gigeresque.client.entity.texture.EntityTextures
 import com.bvanseg.gigeresque.common.entity.impl.RunnerAlienEntity
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -13,7 +15,9 @@ import software.bernie.geckolib3.renderers.geo.IGeoRenderer
 /**
  * @author Boston Vanseghi
  */
-class RunnerAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<RunnerAlienEntity>): GeoLayerRenderer<RunnerAlienEntity>(entityRenderer) {
+@Environment(EnvType.CLIENT)
+class RunnerAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<RunnerAlienEntity>) :
+    GeoLayerRenderer<RunnerAlienEntity>(entityRenderer) {
 
     override fun render(
         matrixStackIn: MatrixStack,
@@ -39,7 +43,10 @@ class RunnerAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<Runner
             bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.RUNNER_ALIEN_YOUNG)),
             packedLightIn,
             uv,
-            1.0f, 1.0f, 1.0f, ((runnerAlienEntity.maxGrowth - runnerAlienEntity.growth) / runnerAlienEntity.maxGrowth.toFloat())
+            1.0f,
+            1.0f,
+            1.0f,
+            ((runnerAlienEntity.maxGrowth - runnerAlienEntity.growth) / runnerAlienEntity.maxGrowth.toFloat())
         )
     }
 

@@ -27,16 +27,14 @@ class BloodParticle(
     private val spriteProvider: SpriteProvider
 
     init {
-        field_28786 = 0.96f
         velocityX = g
         velocityY = h
         velocityZ = i
         val red = 170 / 255.0f
         val green = 0 / 255.0f
         val blue = 0 / 255.0f
-        colorRed = MathHelper.nextFloat(random, red - 0.05f, red + 0.05f)
-        colorGreen = green
-        colorBlue = blue
+        val colorRed = MathHelper.nextFloat(random, red - 0.05f, red + 0.05f)
+        setColor(colorRed, green, blue)
         scale *= 0.75f
         maxAge = (20.0 / (random.nextFloat().toDouble() * 0.8 + 0.2)).toInt()
         reachedGround = false
@@ -61,11 +59,6 @@ class BloodParticle(
             if (y == prevPosY) {
                 velocityX *= 1.1
                 velocityZ *= 1.1
-            }
-            velocityX *= field_28786.toDouble()
-            velocityZ *= field_28786.toDouble()
-            if (reachedGround) {
-                velocityY *= field_28786.toDouble()
             }
         }
     }

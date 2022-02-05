@@ -1,6 +1,7 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
 import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.entity.AlienEntity
 import com.bvanseg.gigeresque.common.entity.Entities
 import com.bvanseg.gigeresque.common.entity.Growable
@@ -27,7 +28,6 @@ import software.bernie.geckolib3.core.controller.AnimationController
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent
 import software.bernie.geckolib3.core.manager.AnimationData
 import software.bernie.geckolib3.core.manager.AnimationFactory
-import kotlin.math.min
 
 /**
  * @author Boston Vanseghi
@@ -36,13 +36,13 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
     IAnimatable, Growable {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
             .add(EntityAttributes.GENERIC_ARMOR, 2.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
             .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
             .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.43000000417232513)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.43000000417232515)
             .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
             .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3)
 
@@ -63,6 +63,7 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.LOOK_TARGET,
                 MemoryModuleType.MOBS,
+                MemoryModuleType.NEAREST_ATTACKABLE,
                 MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
                 MemoryModuleType.NEAREST_REPELLENT,
                 MemoryModuleType.PATH,
@@ -70,13 +71,13 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
                 MemoryModuleType.WALK_TARGET,
             )
 
-        private val GROWTH: TrackedData<Int> =
-            DataTracker.registerData(ChestbursterEntity::class.java, TrackedDataHandlerRegistry.INTEGER)
+        private val GROWTH: TrackedData<Float> =
+            DataTracker.registerData(ChestbursterEntity::class.java, TrackedDataHandlerRegistry.FLOAT)
     }
 
     private val animationFactory: AnimationFactory = AnimationFactory(this)
 
-    override var growth: Int
+    override var growth: Float
         get() = dataTracker.get(GROWTH)
         set(value) = dataTracker.set(GROWTH, value)
 
@@ -88,7 +89,7 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
 
     override fun initDataTracker() {
         super.initDataTracker()
-        dataTracker.startTracking(GROWTH, 0)
+        dataTracker.startTracking(GROWTH, 0.0f)
     }
 
     override fun createBrainProfile(): Brain.Profile<out ChestbursterEntity> {
@@ -107,7 +108,7 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
         super.tick()
 
         if (!world.isClient && this.isAlive) {
-            grow(1)
+            grow(this, 1 * getGrowthMultiplier())
         }
     }
 
@@ -121,33 +122,36 @@ open class ChestbursterEntity(type: EntityType<out ChestbursterEntity>, world: W
 
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
-        nbt.putInt("growth", growth)
+        nbt.putFloat("growth", growth)
         hostId?.let { nbt.putString("hostId", hostId) }
     }
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
-        if (nbt.contains("growth")) { growth = nbt.getInt("growth") }
-        if (nbt.contains("hostId")) { hostId = nbt.getString("hostId") }
+        if (nbt.contains("growth")) {
+            growth = nbt.getFloat("growth")
+        }
+        if (nbt.contains("hostId")) {
+            hostId = nbt.getString("hostId")
+        }
     }
 
     /*
      * GROWTH
      */
 
-    override val maxGrowth: Int = Constants.TPD / 2
+    override fun getGrowthMultiplier(): Float = Gigeresque.config.miscellaneous.chestbursterGrowthMultiplier
 
-    override fun grow(amount: Int) {
-        growth = min(growth + amount, maxGrowth)
-
-        if (growth >= maxGrowth) {
-            growUp(this)
-        }
-    }
+    override val maxGrowth: Float = Constants.TPD / 2.0f
 
     override fun growInto(): LivingEntity? {
         val entity = RunnerbursterEntity(Entities.RUNNERBURSTER, world)
         entity.hostId = this.hostId
+
+        if (hasCustomName()) {
+            entity.customName = this.customName
+        }
+
         return entity
     }
 

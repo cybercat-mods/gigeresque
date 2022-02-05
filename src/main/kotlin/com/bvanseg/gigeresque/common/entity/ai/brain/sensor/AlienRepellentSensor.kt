@@ -2,12 +2,12 @@ package com.bvanseg.gigeresque.common.entity.ai.brain.sensor
 
 import com.bvanseg.gigeresque.common.block.tag.BlockTags
 import com.google.common.collect.ImmutableSet
-import java.util.Optional
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.ai.brain.MemoryModuleType
 import net.minecraft.entity.ai.brain.sensor.Sensor
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import java.util.*
 
 /**
  * @author Boston Vanseghi

@@ -16,7 +16,7 @@ import net.minecraft.world.LightType
 /**
  * @author Boston Vanseghi
  */
-class DestroyLightTask(private val speed: Double): Task<AlienEntity>(
+class DestroyLightTask(private val speed: Double) : Task<AlienEntity>(
     ImmutableMap.of(
         MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,
         MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleState.VALUE_PRESENT
@@ -29,7 +29,8 @@ class DestroyLightTask(private val speed: Double): Task<AlienEntity>(
     }
 
     override fun run(serverWorld: ServerWorld, alien: AlienEntity, l: Long) {
-        val lightSourceLocation = alien.brain.getOptionalMemory(MemoryModuleTypes.NEAREST_LIGHT_SOURCE).getOrNull() ?: return
+        val lightSourceLocation =
+            alien.brain.getOptionalMemory(MemoryModuleTypes.NEAREST_LIGHT_SOURCE).getOrNull() ?: return
         startMovingToTarget(alien, lightSourceLocation)
 
         if (lightSourceLocation.isWithinDistance(alien.pos, getDesiredDistanceToTarget())) {
@@ -42,8 +43,15 @@ class DestroyLightTask(private val speed: Double): Task<AlienEntity>(
                     val f = random.nextGaussian() * 0.02
                     val g = random.nextGaussian() * 0.02
                     (world as ServerWorld).spawnParticles(
-                        ParticleTypes.POOF, lightSourceLocation.x.toDouble() + 0.5,
-                        lightSourceLocation.y.toDouble(), lightSourceLocation.z.toDouble() + 0.5, 1, e, f, g, 0.15000000596046448
+                        ParticleTypes.POOF,
+                        lightSourceLocation.x.toDouble() + 0.5,
+                        lightSourceLocation.y.toDouble(),
+                        lightSourceLocation.z.toDouble() + 0.5,
+                        1,
+                        e,
+                        f,
+                        g,
+                        0.15000000596046448
                     )
                 }
                 alien.brain.forget(MemoryModuleTypes.NEAREST_LIGHT_SOURCE)

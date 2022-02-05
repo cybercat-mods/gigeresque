@@ -1,5 +1,6 @@
 package com.bvanseg.gigeresque.client.fluid.render
 
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.fluid.Fluids
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializer
 import com.bvanseg.gigeresque.common.util.initializingBlock
@@ -32,7 +33,7 @@ object FluidRenderHandlers : GigeresqueInitializer {
         setupFluidRendering(
             Fluids.BLACK_FLUID_STILL,
             Fluids.BLACK_FLUID_FLOWING,
-            Identifier("gigeresque", "black_fluid"),
+            Identifier(Gigeresque.MOD_ID, "black_fluid"),
         )
         BlockRenderLayerMap.INSTANCE.putFluids(
             RenderLayer.getSolid(),

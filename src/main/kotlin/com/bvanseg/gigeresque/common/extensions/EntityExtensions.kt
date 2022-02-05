@@ -25,6 +25,10 @@ fun Entity?.isPotentialHost(): Boolean {
     if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity::class, this)) return false
     if (ConfigAccessor.isTargetWhitelisted(FacehuggerEntity::class, this)) return true
 
+    val vehicleCondition = if (this?.vehicle != null) {
+        this.vehicle !is AlienEntity
+    } else true
+
     return this != null &&
             this.isAlive &&
             this is LivingEntity &&
@@ -33,6 +37,7 @@ fun Entity?.isPotentialHost(): Boolean {
             (this as Host).doesNotHaveParasite() &&
             (this as Eggmorphable).isNotEggmorphing &&
             this.group != EntityGroup.UNDEAD &&
+            vehicleCondition &&
             playerCondition
 }
 

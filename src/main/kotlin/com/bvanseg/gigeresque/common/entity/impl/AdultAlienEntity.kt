@@ -1,14 +1,23 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
 import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.entity.AlienEntity
 import com.bvanseg.gigeresque.common.entity.Growable
+import com.bvanseg.gigeresque.common.entity.ai.brain.AdultAlienBrain
+import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes
+import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypes
 import com.bvanseg.gigeresque.common.extensions.isEggmorphable
 import com.bvanseg.gigeresque.common.sound.Sounds
+import com.mojang.serialization.Dynamic
 import net.minecraft.entity.EntityData
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.SpawnReason
+import net.minecraft.entity.ai.brain.Brain
+import net.minecraft.entity.ai.brain.MemoryModuleType
+import net.minecraft.entity.ai.brain.sensor.Sensor
+import net.minecraft.entity.ai.brain.sensor.SensorType
 import net.minecraft.entity.ai.pathing.EntityNavigation
 import net.minecraft.entity.ai.pathing.SpiderNavigation
 import net.minecraft.entity.damage.DamageSource
@@ -17,23 +26,51 @@ import net.minecraft.entity.data.TrackedData
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.sound.SoundEvent
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.LocalDifficulty
 import net.minecraft.world.ServerWorldAccess
 import net.minecraft.world.World
 import software.bernie.geckolib3.core.IAnimatable
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * @author Boston Vanseghi
  */
-abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: World): AlienEntity(type, world), IAnimatable, Growable {
+abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: World) : AlienEntity(type, world),
+    IAnimatable, Growable {
     companion object {
-        private val GROWTH: TrackedData<Int> =
-            DataTracker.registerData(AdultAlienEntity::class.java, TrackedDataHandlerRegistry.INTEGER)
+        private val GROWTH: TrackedData<Float> =
+            DataTracker.registerData(AdultAlienEntity::class.java, TrackedDataHandlerRegistry.FLOAT)
 
         private val IS_HISSING: TrackedData<Boolean> =
             DataTracker.registerData(AdultAlienEntity::class.java, TrackedDataHandlerRegistry.BOOLEAN)
+
+        private val SENSOR_TYPES: List<SensorType<out Sensor<in ClassicAlienEntity>>> =
+            listOf(
+                SensorTypes.NEAREST_ALIEN_WEBBING,
+                SensorType.NEAREST_LIVING_ENTITIES,
+                SensorTypes.NEAREST_ALIEN_TARGET,
+                SensorTypes.ALIEN_REPELLENT,
+                SensorTypes.DESTRUCTIBLE_LIGHT
+            )
+
+        private val MEMORY_MODULE_TYPES: List<MemoryModuleType<*>> =
+            listOf(
+                MemoryModuleType.ATTACK_TARGET,
+                MemoryModuleType.ATTACK_COOLING_DOWN,
+                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+                MemoryModuleTypes.EGGMORPH_TARGET,
+                MemoryModuleType.HOME,
+                MemoryModuleType.LOOK_TARGET,
+                MemoryModuleType.MOBS,
+                MemoryModuleTypes.NEAREST_ALIEN_WEBBING,
+                MemoryModuleType.NEAREST_ATTACKABLE,
+                MemoryModuleTypes.NEAREST_LIGHT_SOURCE,
+                MemoryModuleType.NEAREST_REPELLENT,
+                MemoryModuleType.PATH,
+                MemoryModuleType.VISIBLE_MOBS,
+                MemoryModuleType.WALK_TARGET,
+            )
     }
 
     init {
@@ -46,26 +83,52 @@ abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: W
 
     private var hissingCooldown = 0L
 
-    override var growth: Int
+    override var growth: Float
         get() = dataTracker.get(GROWTH)
         set(value) = dataTracker.set(GROWTH, value)
 
+    private lateinit var complexBrain: AdultAlienBrain
+
+    override fun createBrainProfile(): Brain.Profile<out AdultAlienEntity> {
+        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES)
+    }
+
+    override fun deserializeBrain(dynamic: Dynamic<*>): Brain<out AdultAlienEntity> {
+        complexBrain = AdultAlienBrain(this)
+        return complexBrain.initialize(createBrainProfile().deserialize(dynamic))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getBrain(): Brain<AdultAlienEntity> = super.getBrain() as Brain<AdultAlienEntity>
+
+    override fun mobTick() {
+        world.profiler.push("adultAlienBrain")
+        complexBrain.tick()
+        world.profiler.pop()
+        complexBrain.tickActivities()
+        super.mobTick()
+    }
+
     override fun initDataTracker() {
         super.initDataTracker()
-        dataTracker.startTracking(GROWTH, 0)
+        dataTracker.startTracking(GROWTH, 0.0f)
         dataTracker.startTracking(IS_HISSING, false)
     }
 
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
-        nbt.putInt("growth", growth)
+        nbt.putFloat("growth", growth)
         nbt.putBoolean("isHissing", isHissing)
     }
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
-        if (nbt.contains("growth")) { growth = nbt.getInt("growth") }
-        if (nbt.contains("isHissing")) { isHissing = nbt.getBoolean("isHissing") }
+        if (nbt.contains("growth")) {
+            growth = nbt.getFloat("growth")
+        }
+        if (nbt.contains("isHissing")) {
+            isHissing = nbt.getBoolean("isHissing")
+        }
     }
 
     override fun computeFallDamage(fallDistance: Float, damageMultiplier: Float): Int {
@@ -83,7 +146,7 @@ abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: W
         entityNbt: NbtCompound?
     ): EntityData? {
         if (spawnReason != SpawnReason.NATURAL) {
-            growth = maxGrowth.toInt()
+            growth = maxGrowth
         }
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt)
     }
@@ -92,7 +155,7 @@ abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: W
         super.tick()
 
         if (!world.isClient && this.isAlive) {
-            grow(1)
+            grow(this, 1 * getGrowthMultiplier())
         }
 
         // Hissing Logic
@@ -112,7 +175,10 @@ abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: W
             source.isProjectile -> 0.5f
             else -> 1.0f
         }
-        return super.damage(source, amount * multiplier)
+
+        val isolationModeMultiplier = if (Gigeresque.config.features.isolationMode) 0.05f else 1.0f
+
+        return super.damage(source, amount * multiplier * isolationModeMultiplier)
     }
 
     override fun isClimbing(): Boolean {
@@ -127,19 +193,18 @@ abstract class AdultAlienEntity(type: EntityType<out AdultAlienEntity>, world: W
         it.isEggmorphable()
     } ?: true
 
+    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d {
+        if (!this.world.isClient) {
+            complexBrain.stun(Constants.TPS * 3)
+        }
+        return super.updatePassengerForDismount(passenger)
+    }
+
     /*
      * GROWTH
      */
 
-    override val maxGrowth : Int= Constants.TPM
-
-    override fun grow(amount: Int) {
-        growth = min(growth + amount, maxGrowth)
-
-        if (growth >= maxGrowth) {
-            growUp(this)
-        }
-    }
+    override val maxGrowth: Float = Constants.TPM.toFloat()
 
     override fun growInto(): LivingEntity? = null
 

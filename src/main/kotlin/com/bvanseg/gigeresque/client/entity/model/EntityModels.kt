@@ -1,11 +1,14 @@
 package com.bvanseg.gigeresque.client.entity.model
 
 import com.bvanseg.gigeresque.common.Gigeresque
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
 
 /**
  * @author Boston Vanseghi
  */
+@Environment(EnvType.CLIENT)
 object EntityModels {
     val ALIEN = Identifier(Gigeresque.MOD_ID, "geo/alien.geo.json")
     val AQUATIC_ALIEN = Identifier(Gigeresque.MOD_ID, "geo/aquatic_alien.geo.json")

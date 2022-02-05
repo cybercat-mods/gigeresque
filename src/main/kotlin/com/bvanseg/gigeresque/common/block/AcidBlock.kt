@@ -48,8 +48,8 @@ class AcidBlock(settings: Settings) : CustomFallingBlock(settings), Waterloggabl
     }
 
     private fun scheduleTickIfNotScheduled(world: World, pos: BlockPos) {
-        if (!world.blockTickScheduler.isScheduled(pos, this)) {
-            world.blockTickScheduler.schedule(pos, this, 40)
+        if (!world.isClient && !world.blockTickScheduler.isQueued(pos, this)) {
+            world.createAndScheduleBlockTick(pos, this, 40)
         }
     }
 
@@ -86,8 +86,8 @@ class AcidBlock(settings: Settings) : CustomFallingBlock(settings), Waterloggabl
         pos: BlockPos?,
         neighborPos: BlockPos?
     ): BlockState {
-        if (state.get(WATERLOGGED) as Boolean) {
-            world.fluidTickScheduler.schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
+        if (!world.isClient && state.get(WATERLOGGED) as Boolean) {
+            world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos)
     }

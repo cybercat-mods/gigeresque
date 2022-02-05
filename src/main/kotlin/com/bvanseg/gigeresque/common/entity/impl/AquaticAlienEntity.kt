@@ -1,21 +1,14 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
-import com.bvanseg.gigeresque.common.entity.ai.brain.AquaticAlienBrain
-import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypes
+import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.entity.ai.pathing.AmphibiousNavigation
-import com.mojang.serialization.Dynamic
-import net.minecraft.entity.EntityDimensions
-import net.minecraft.entity.EntityPose
-import net.minecraft.entity.EntityType
-import net.minecraft.entity.MovementType
-import net.minecraft.entity.ai.brain.Brain
-import net.minecraft.entity.ai.brain.MemoryModuleType
-import net.minecraft.entity.ai.brain.sensor.Sensor
-import net.minecraft.entity.ai.brain.sensor.SensorType
-import net.minecraft.entity.ai.control.AquaticLookControl
+import com.bvanseg.gigeresque.common.entity.attribute.AlienEntityAttributes
+import net.minecraft.entity.*
 import net.minecraft.entity.ai.control.AquaticMoveControl
 import net.minecraft.entity.ai.control.LookControl
 import net.minecraft.entity.ai.control.MoveControl
+import net.minecraft.entity.ai.control.YawAdjustingLookControl
 import net.minecraft.entity.ai.pathing.EntityNavigation
 import net.minecraft.entity.ai.pathing.MobNavigation
 import net.minecraft.entity.ai.pathing.PathNodeType
@@ -39,40 +32,19 @@ import software.bernie.geckolib3.core.manager.AnimationFactory
 class AquaticAlienEntity(type: EntityType<out AquaticAlienEntity>, world: World) : AdultAlienEntity(type, world) {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 90.0)
             .add(EntityAttributes.GENERIC_ARMOR, 4.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
             .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
             .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2500000417232513)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.ISOLATION_MODE_DAMAGE_BASE)
             .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
-
-        private val SENSOR_TYPES: List<SensorType<out Sensor<in AquaticAlienEntity>>> =
-            listOf(
-                SensorType.NEAREST_LIVING_ENTITIES,
-                SensorTypes.NEAREST_ALIEN_TARGET,
-                SensorTypes.ALIEN_REPELLENT,
-            )
-
-        private val MEMORY_MODULE_TYPES: List<MemoryModuleType<*>> =
-            listOf(
-                MemoryModuleType.ATTACK_TARGET,
-                MemoryModuleType.ATTACK_COOLING_DOWN,
-                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-                MemoryModuleType.LOOK_TARGET,
-                MemoryModuleType.MOBS,
-                MemoryModuleType.NEAREST_REPELLENT,
-                MemoryModuleType.PATH,
-                MemoryModuleType.VISIBLE_MOBS,
-                MemoryModuleType.WALK_TARGET,
-            )
+            .add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.85)
     }
 
     private val animationFactory: AnimationFactory = AnimationFactory(this)
-
-    private lateinit var complexBrain: AquaticAlienBrain
 
     private val landNavigation = MobNavigation(this, world)
     private val swimNavigation = AmphibiousNavigation(this, world)
@@ -80,7 +52,7 @@ class AquaticAlienEntity(type: EntityType<out AquaticAlienEntity>, world: World)
     private val landMoveControl = MoveControl(this)
     private val landLookControl = LookControl(this)
     private val swimMoveControl = AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false)
-    private val swimLookControl = AquaticLookControl(this, 10)
+    private val swimLookControl = YawAdjustingLookControl(this, 10)
 
     init {
         ignoreCameraFrustum = true
@@ -93,25 +65,7 @@ class AquaticAlienEntity(type: EntityType<out AquaticAlienEntity>, world: World)
         setPathfindingPenalty(PathNodeType.WATER, 0.0f)
     }
 
-    override fun createBrainProfile(): Brain.Profile<out AquaticAlienEntity> {
-        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES)
-    }
-
-    override fun deserializeBrain(dynamic: Dynamic<*>): Brain<out AquaticAlienEntity> {
-        complexBrain = AquaticAlienBrain(this)
-        return complexBrain.initialize(createBrainProfile().deserialize(dynamic))
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getBrain(): Brain<AquaticAlienEntity> = super.getBrain() as Brain<AquaticAlienEntity>
-
-    override fun mobTick() {
-        world.profiler.push("aquaticAlienBrain")
-        complexBrain.tick()
-        world.profiler.pop()
-        complexBrain.tickActivities()
-        super.mobTick()
-    }
+    override fun getGrowthMultiplier(): Float = Gigeresque.config.miscellaneous.aquaticAlienGrowthMultiplier
 
     override fun travel(movementInput: Vec3d?) {
         this.navigation = if (this.isSubmergedInWater || this.isTouchingWater) swimNavigation else landNavigation

@@ -5,15 +5,15 @@ import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.entity.AlienEntity
 import com.bvanseg.gigeresque.common.entity.ai.brain.FacehuggerBrain
 import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypes
-import com.bvanseg.gigeresque.common.extensions.isNotPotentialHost
+import com.bvanseg.gigeresque.common.extensions.getOrNull
 import com.bvanseg.gigeresque.common.extensions.playServerSound
 import com.bvanseg.gigeresque.common.sound.Sounds
 import com.bvanseg.gigeresque.interfacing.Host
 import com.mojang.serialization.Dynamic
+import net.minecraft.block.BlockState
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.ai.TargetPredicate
 import net.minecraft.entity.ai.brain.Brain
 import net.minecraft.entity.ai.brain.MemoryModuleType
 import net.minecraft.entity.ai.brain.sensor.Sensor
@@ -29,7 +29,10 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
+import net.minecraft.sound.SoundEvents
 import net.minecraft.tag.Tag
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import software.bernie.geckolib3.core.IAnimatable
 import software.bernie.geckolib3.core.PlayState
@@ -44,13 +47,13 @@ import software.bernie.geckolib3.core.manager.AnimationFactory
  */
 class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : AlienEntity(type, world), IAnimatable {
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
             .add(EntityAttributes.GENERIC_ARMOR, 1.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
             .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
             .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
-            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.33000000417232513)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251)
 
         private val IS_INFERTILE: TrackedData<Boolean> =
             DataTracker.registerData(FacehuggerEntity::class.java, TrackedDataHandlerRegistry.BOOLEAN)
@@ -68,6 +71,7 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
                 MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
                 MemoryModuleType.LOOK_TARGET,
                 MemoryModuleType.MOBS,
+                MemoryModuleType.NEAREST_ATTACKABLE,
                 MemoryModuleType.NEAREST_REPELLENT,
                 MemoryModuleType.PATH,
                 MemoryModuleType.VISIBLE_MOBS,
@@ -88,10 +92,7 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
         get() = this.dataTracker.get(IS_INFERTILE)
         set(value) = this.dataTracker.set(IS_INFERTILE, value)
 
-    var ticksAttachedToHost = -1L
-
-    private val targetPredicate =
-        TargetPredicate.createNonAttackable().setBaseMaxDistance(6.0).setPredicate { true }
+    var ticksAttachedToHost = -1.0f
 
     override fun createBrainProfile(): Brain.Profile<out FacehuggerEntity> {
         return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES)
@@ -120,7 +121,7 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
 
     private fun detachFromHost(removesParasite: Boolean) {
         this.stopRiding()
-        this.ticksAttachedToHost = -1L
+        this.ticksAttachedToHost = -1.0f
 
         val vehicle = this.vehicle
 
@@ -129,7 +130,14 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
         }
     }
 
-    private fun isAttachedToHost(): Boolean = this.vehicle != null && this.vehicle is LivingEntity
+    override fun updatePassengerForDismount(passenger: LivingEntity): Vec3d {
+        if (!this.world.isClient) {
+            complexBrain.stun(Constants.TPS * 5)
+        }
+        return super.updatePassengerForDismount(passenger)
+    }
+
+    fun isAttachedToHost(): Boolean = this.vehicle != null && this.vehicle is LivingEntity
 
     private fun attachToHost(validHost: LivingEntity) {
         this.startRiding(validHost)
@@ -152,12 +160,12 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
             val host = (this.vehicle as Host)
 
             if (ticksAttachedToHost > Constants.TPS * 3 && host.doesNotHaveParasite()) {
-                host.ticksUntilImpregnation = Constants.TPD
+                host.ticksUntilImpregnation = Constants.TPD.toFloat()
                 world.playServerSound(null, this.blockPos, Sounds.FACEHUGGER_IMPLANT, SoundCategory.NEUTRAL, 0.5f)
                 isInfertile = true
             }
         } else {
-            ticksAttachedToHost = -1L
+            ticksAttachedToHost = -1.0f
         }
 
         val vehicle = this.vehicle
@@ -175,10 +183,10 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
         // - If the entity's vehicle is not null, no need to check.
         // - We should only check every 10 ticks to avoid constantly checking collision.
         if (vehicle == null && !isInfertile) {
-            val validHost = findClosestValidHost() ?: return
+            val target = this.target ?: brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).getOrNull() ?: return
 
-            if (canStartRiding(validHost)) {
-                attachToHost(validHost)
+            if (this.distanceTo(target) < target.width * 2 && canStartRiding(target)) {
+                attachToHost(target)
             }
         }
     }
@@ -186,30 +194,22 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
     override fun writeCustomDataToNbt(nbt: NbtCompound) {
         super.writeCustomDataToNbt(nbt)
         nbt.putBoolean("isInfertile", isInfertile)
-        nbt.putLong("ticksAttachedToHost", ticksAttachedToHost)
+        nbt.putFloat("ticksAttachedToHost", ticksAttachedToHost)
     }
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
-        if (nbt.contains("isInfertile")) { isInfertile = nbt.getBoolean("isInfertile") }
-        if (nbt.contains("ticksAttachedToHost")) { ticksAttachedToHost = nbt.getLong("ticksAttachedToHost") }
+        if (nbt.contains("isInfertile")) {
+            isInfertile = nbt.getBoolean("isInfertile")
+        }
+        if (nbt.contains("ticksAttachedToHost")) {
+            ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost")
+        }
     }
 
     // This prevents the Facehugger from attacking, since we need to use the melee attack goal to move the Facehugger,
     // but we do not want the Facehugger to deal damage on collision.
     override fun tryAttack(target: Entity): Boolean = true
-
-    private fun findClosestValidHost(): LivingEntity? {
-        val viableTargets =
-            this.world.getEntitiesByClass(LivingEntity::class.java, this.boundingBox.expand(1.5)) { true }
-
-        val closestEntity =
-            this.world.getClosestEntity(viableTargets, targetPredicate, this, this.x, this.eyeY, this.z)
-
-        if (closestEntity.isNotPotentialHost()) return null
-
-        return closestEntity
-    }
 
     override fun damage(source: DamageSource, amount: Float): Boolean {
         if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f) {
@@ -231,9 +231,17 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
 
     override fun squaredAttackRange(target: LivingEntity): Double = 0.0
 
-    override fun getAmbientSound(): SoundEvent? = if (isAttachedToHost() || isInfertile) null else Sounds.FACEHUGGER_AMBIENT
-    override fun getHurtSound(source: DamageSource): SoundEvent? = if (isAttachedToHost() || isInfertile) null else Sounds.FACEHUGGER_HURT
+    override fun getAmbientSound(): SoundEvent? =
+        if (isAttachedToHost() || isInfertile) null else Sounds.FACEHUGGER_AMBIENT
+
+    override fun getHurtSound(source: DamageSource): SoundEvent? =
+        if (isAttachedToHost() || isInfertile) null else Sounds.FACEHUGGER_HURT
+
     override fun getDeathSound(): SoundEvent? = if (isAttachedToHost() || isInfertile) null else Sounds.FACEHUGGER_DEATH
+    override fun playStepSound(pos: BlockPos, state: BlockState) =
+        playSound(SoundEvents.ENTITY_SPIDER_STEP, 0.05f, 10.0f)
+
+    override fun calculateNextStepSoundDistance(): Float = this.distanceTraveled + 0.25f
 
     override fun swimUpward(fluid: Tag<Fluid>) {
         if (!this.isInfertile) {
@@ -273,10 +281,15 @@ class FacehuggerEntity(type: EntityType<out FacehuggerEntity>, world: World) : A
 
         return if (velocityLength > 0.0) {
             if (this.isAttacking) {
-                event.controller.setAnimation(AnimationBuilder().addAnimation("crawling_aggro", true))
-                PlayState.CONTINUE
+                if (!this.isOnGround) {
+                    event.controller.setAnimation(AnimationBuilder().addAnimation("midair_loop", true))
+                    PlayState.CONTINUE
+                } else {
+                    event.controller.setAnimation(AnimationBuilder().addAnimation("moving_aggro", true))
+                    PlayState.CONTINUE
+                }
             } else {
-                event.controller.setAnimation(AnimationBuilder().addAnimation("crawling_noaggro", true))
+                event.controller.setAnimation(AnimationBuilder().addAnimation("moving_noaggro", true))
                 PlayState.CONTINUE
             }
         } else {

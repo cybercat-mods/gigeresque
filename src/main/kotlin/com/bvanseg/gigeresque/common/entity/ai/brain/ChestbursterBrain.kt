@@ -14,7 +14,7 @@ import java.util.function.Predicate
 /**
  * @author Boston Vanseghi
  */
-open class ChestbursterBrain(entity: ChestbursterEntity): ComplexBrain<ChestbursterEntity>(entity) {
+open class ChestbursterBrain(entity: ChestbursterEntity) : ComplexBrain<ChestbursterEntity>(entity) {
 
     override fun addCoreActivities(tasks: MutableList<Task<in ChestbursterEntity>>) {
         if (entity !is AquaticChestbursterEntity) {
@@ -36,8 +36,12 @@ open class ChestbursterBrain(entity: ChestbursterEntity): ComplexBrain<Chestburs
     }
 
     override fun addAvoidActivities(tasks: MutableList<Task<in ChestbursterEntity>>) {
-        tasks.add(GoToRememberedPositionTask.toEntity(MemoryModuleType.AVOID_TARGET,
-            if (entity is RunnerbursterEntity) 1.5f else 1.0f, 12, true))
+        tasks.add(
+            GoToRememberedPositionTask.toEntity(
+                MemoryModuleType.AVOID_TARGET,
+                if (entity is RunnerbursterEntity) 1.5f else 1.0f, 12, true
+            )
+        )
         tasks.add(makeRandomWanderTask())
         tasks.add(ForgetTask(Predicate { chestburster ->
             if (brain.hasMemoryModule(MemoryModuleType.AVOID_TARGET)) {

@@ -1,7 +1,6 @@
 package com.bvanseg.gigeresque.common.block
 
 import com.bvanseg.gigeresque.common.entity.AlienEntity
-import com.bvanseg.gigeresque.common.extensions.getOrNull
 import com.bvanseg.gigeresque.common.util.clamp
 import net.minecraft.block.*
 import net.minecraft.block.Blocks
@@ -24,7 +23,7 @@ import net.minecraft.world.WorldView
 /**
  * @author Boston Vanseghi
  */
-class NestResinBlock(settings: Settings): Block(settings) {
+class NestResinBlock(settings: Settings) : Block(settings) {
 
     companion object {
         private fun interpolateShapes(divide: Boolean): List<VoxelShape> {
@@ -75,7 +74,7 @@ class NestResinBlock(settings: Settings): Block(settings) {
         world: BlockView,
         pos: BlockPos,
         context: ShapeContext
-    ): VoxelShape = if (context is EntityShapeContext && context.entity.getOrNull() is AlienEntity) {
+    ): VoxelShape = if (context is EntityShapeContext && context.entity is AlienEntity) {
         ALIEN_LAYERS_TO_SHAPE[(state.get(LAYERS) as Int)]
     } else {
         LAYERS_TO_SHAPE[(state.get(LAYERS) as Int)]
@@ -84,7 +83,8 @@ class NestResinBlock(settings: Settings): Block(settings) {
     override fun getSidesShape(
         state: BlockState,
         world: BlockView,
-        pos: BlockPos): VoxelShape = LAYERS_TO_SHAPE[(state.get(LAYERS) as Int)]
+        pos: BlockPos
+    ): VoxelShape = LAYERS_TO_SHAPE[(state.get(LAYERS) as Int)]
 
     override fun getCameraCollisionShape(
         state: BlockState,

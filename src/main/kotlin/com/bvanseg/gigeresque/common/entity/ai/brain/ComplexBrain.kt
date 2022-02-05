@@ -16,9 +16,11 @@ import java.util.*
 /**
  * @author Boston Vanseghi
  */
-abstract class ComplexBrain<T: LivingEntity>(protected val entity: T) {
+abstract class ComplexBrain<T : LivingEntity>(protected val entity: T) {
 
     lateinit var brain: Brain<T>
+
+    var timeStunned = 0
 
     open fun initialize(brain: Brain<out T>): Brain<out T> {
         val coreTasks = mutableListOf<Task<in T>>()
@@ -35,8 +37,18 @@ abstract class ComplexBrain<T: LivingEntity>(protected val entity: T) {
 
         brain.setTaskList(Activity.CORE, 0, ImmutableList.builder<Task<in T>>().addAll(coreTasks).build())
         brain.setTaskList(Activity.IDLE, 10, ImmutableList.builder<Task<in T>>().addAll(idleTasks).build())
-        brain.setTaskList(Activity.FIGHT, 10, ImmutableList.builder<Task<in T>>().addAll(fightTasks).build(), MemoryModuleType.ATTACK_TARGET)
-        brain.setTaskList(Activity.AVOID, 10, ImmutableList.builder<Task<in T>>().addAll(avoidTasks).build(), MemoryModuleType.AVOID_TARGET)
+        brain.setTaskList(
+            Activity.FIGHT,
+            10,
+            ImmutableList.builder<Task<in T>>().addAll(fightTasks).build(),
+            MemoryModuleType.ATTACK_TARGET
+        )
+        brain.setTaskList(
+            Activity.AVOID,
+            10,
+            ImmutableList.builder<Task<in T>>().addAll(avoidTasks).build(),
+            MemoryModuleType.AVOID_TARGET
+        )
 
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE))
         brain.setDefaultActivity(Activity.IDLE)
@@ -47,7 +59,14 @@ abstract class ComplexBrain<T: LivingEntity>(protected val entity: T) {
         return brain
     }
 
-    open fun tick() = brain.tick(entity.world as ServerWorld, entity)
+    open fun tick() {
+        if (timeStunned > 0) {
+            timeStunned--
+            return
+        }
+
+        brain.tick(entity.world as ServerWorld, entity)
+    }
 
     open fun tickActivities() {
         brain.resetPossibleActivities(
@@ -74,7 +93,12 @@ abstract class ComplexBrain<T: LivingEntity>(protected val entity: T) {
      */
 
     protected open fun getPreferredTarget(entity: T): Optional<out LivingEntity> {
-        return brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET)
+        var entityOptional = brain.getOptionalMemory(MemoryModuleType.NEAREST_ATTACKABLE)
+
+        if (entityOptional.isEmpty) {
+            entityOptional = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET)
+        }
+        return entityOptional
     }
 
     /*
@@ -83,5 +107,9 @@ abstract class ComplexBrain<T: LivingEntity>(protected val entity: T) {
 
     protected open fun avoidRepellentTask(): GoToRememberedPositionTask<BlockPos> {
         return GoToRememberedPositionTask.toBlock(MemoryModuleType.NEAREST_REPELLENT, 1.0f, 8, false)
+    }
+
+    fun stun(duration: Int) {
+        timeStunned = duration
     }
 }

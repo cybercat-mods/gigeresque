@@ -7,6 +7,8 @@ import com.bvanseg.gigeresque.client.extensions.green
 import com.bvanseg.gigeresque.client.extensions.red
 import com.bvanseg.gigeresque.common.entity.impl.AquaticAlienEntity
 import com.bvanseg.gigeresque.common.util.clamp
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -18,7 +20,9 @@ import kotlin.math.max
 /**
  * @author Boston Vanseghi
  */
-class AquaticAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<AquaticAlienEntity>): GeoLayerRenderer<AquaticAlienEntity>(entityRenderer) {
+@Environment(EnvType.CLIENT)
+class AquaticAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<AquaticAlienEntity>) :
+    GeoLayerRenderer<AquaticAlienEntity>(entityRenderer) {
 
     override fun render(
         matrixStackIn: MatrixStack,
@@ -53,7 +57,10 @@ class AquaticAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<Aquat
             bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.AQUATIC_ALIEN_YOUNG)),
             packedLightIn,
             uv,
-            1.0f, 1.0f, 1.0f, ((aquaticAlienEntity.maxGrowth - aquaticAlienEntity.growth) / aquaticAlienEntity.maxGrowth.toFloat())
+            1.0f,
+            1.0f,
+            1.0f,
+            ((aquaticAlienEntity.maxGrowth - aquaticAlienEntity.growth) / aquaticAlienEntity.maxGrowth.toFloat())
         )
 
         entityRenderer.render(

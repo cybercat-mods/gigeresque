@@ -32,7 +32,8 @@ class NestResinWebBlock(settings: Settings) : Block(settings) {
         val WEST: BooleanProperty = ConnectingBlock.WEST
         val FACING_PROPERTIES: Map<Direction, BooleanProperty> = ConnectingBlock.FACING_PROPERTIES.entries.stream()
             .filter { (key, _) -> key != Direction.DOWN }.collect(Util.toMap())
-        val VARIANTS: EnumProperty<NestResinWebVariant> = EnumProperty.of("nest_resin_web_variant", NestResinWebVariant::class.java)
+        val VARIANTS: EnumProperty<NestResinWebVariant> =
+            EnumProperty.of("nest_resin_web_variant", NestResinWebVariant::class.java)
 
         private val UP_SHAPE = createCuboidShape(0.0, 15.0, 0.0, 16.0, 16.0, 16.0)
         private val EAST_SHAPE = createCuboidShape(0.0, 0.0, 0.0, 1.0, 16.0, 16.0)
@@ -73,12 +74,12 @@ class NestResinWebBlock(settings: Settings) : Block(settings) {
 
     init {
         defaultState = stateManager.defaultState
-                .with(UP, false)
-                .with(NORTH, false)
-                .with(EAST, false)
-                .with(SOUTH, false)
-                .with(WEST, false)
-                .with(VARIANTS, NestResinWebVariant.ONE)
+            .with(UP, false)
+            .with(NORTH, false)
+            .with(EAST, false)
+            .with(SOUTH, false)
+            .with(WEST, false)
+            .with(VARIANTS, NestResinWebVariant.ONE)
 
         shapesByState = stateManager.states.stream().collect(
             Collectors.toMap(Function.identity()) {
