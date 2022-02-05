@@ -19,7 +19,7 @@ object EntityIdentifiers {
     val RUNNERBURSTER = Identifier(Gigeresque.MOD_ID, "runnerburster")
 
     val typeMappings = mapOf<KClass<*>, Identifier>(
-        AlienEntity::class to ALIEN,
+        ClassicAlienEntity::class to ALIEN,
         AquaticAlienEntity::class to AQUATIC_ALIEN,
         AquaticChestbursterEntity::class to AQUATIC_CHESTBURSTER,
         ChestbursterEntity::class to CHESTBURSTER,

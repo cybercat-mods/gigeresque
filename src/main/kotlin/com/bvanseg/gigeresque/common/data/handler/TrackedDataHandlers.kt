@@ -10,7 +10,7 @@ import net.minecraft.network.PacketByteBuf
 /**
  * @author Boston Vanseghi
  */
-object TrackedDataHandlers: GigeresqueInitializer {
+object TrackedDataHandlers : GigeresqueInitializer {
 
     val ALIEN_ATTACK_TYPE: TrackedDataHandler<AlienAttackType> = object : TrackedDataHandler<AlienAttackType> {
         override fun write(packetByteBuf: PacketByteBuf, alienAttackType: AlienAttackType) {

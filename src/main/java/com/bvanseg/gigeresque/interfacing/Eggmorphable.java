@@ -4,9 +4,9 @@ package com.bvanseg.gigeresque.interfacing;
  * @author Boston Vanseghi
  */
 public interface Eggmorphable {
-    int getTicksUntilEggmorphed();
+    float getTicksUntilEggmorphed();
 
-    void setTicksUntilEggmorphed(int ticksUntilEggmorphed);
+    void setTicksUntilEggmorphed(float ticksUntilEggmorphed);
 
     default boolean isEggmorphing() {
         return getTicksUntilEggmorphed() >= 0;

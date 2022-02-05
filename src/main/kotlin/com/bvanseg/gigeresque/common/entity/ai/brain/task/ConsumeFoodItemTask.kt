@@ -16,7 +16,7 @@ import kotlin.math.min
 /**
  * @author Boston Vanseghi
  */
-class ConsumeFoodItemTask(private val speed: Double): Task<ChestbursterEntity>(
+class ConsumeFoodItemTask(private val speed: Double) : Task<ChestbursterEntity>(
     ImmutableMap.of(
         MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,
         MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_ABSENT,
@@ -24,12 +24,14 @@ class ConsumeFoodItemTask(private val speed: Double): Task<ChestbursterEntity>(
     )
 ) {
 
-    override fun shouldRun(serverWorld: ServerWorld, chestburster: ChestbursterEntity): Boolean = chestburster.brain.hasMemoryModule(
-        MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM
-    )
+    override fun shouldRun(serverWorld: ServerWorld, chestburster: ChestbursterEntity): Boolean =
+        chestburster.brain.hasMemoryModule(
+            MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM
+        )
 
     override fun run(serverWorld: ServerWorld, chestburster: ChestbursterEntity, l: Long) {
-        val foodItemEntity = chestburster.brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).getOrNull() ?: return
+        val foodItemEntity =
+            chestburster.brain.getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM).getOrNull() ?: return
 
         if (foodItemEntity.distanceTo(chestburster) <= getDesiredDistanceToTarget()) {
             val world = chestburster.world
@@ -42,7 +44,7 @@ class ConsumeFoodItemTask(private val speed: Double): Task<ChestbursterEntity>(
                 foodItemEntity.stack.decrement(amountToEat)
                 chestburster.playSound(chestburster.getEatSound(foodItemEntity.stack), 1.0f, 1.0f)
 
-                chestburster.grow(amountToEat * Constants.TPM * 2)
+                chestburster.grow(chestburster, amountToEat * Constants.TPM * 2.0f)
                 chestburster.brain.forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)
             }
         } else {

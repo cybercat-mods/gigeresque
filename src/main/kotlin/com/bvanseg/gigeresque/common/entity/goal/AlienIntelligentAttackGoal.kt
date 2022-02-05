@@ -4,13 +4,13 @@ import com.bvanseg.gigeresque.common.entity.AlienEntity
 import com.bvanseg.gigeresque.common.extensions.isBeingStaredAtBy
 import com.bvanseg.gigeresque.common.extensions.isFacehuggerAttached
 import com.bvanseg.gigeresque.interfacing.Host
-import java.util.EnumSet
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.ai.pathing.Path
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.predicate.entity.EntityPredicates
 import net.minecraft.util.Hand
+import java.util.*
 
 /**
  * A more advanced version of the MeleeAttackGoal class. This type of goal is more advanced for the following reasons:

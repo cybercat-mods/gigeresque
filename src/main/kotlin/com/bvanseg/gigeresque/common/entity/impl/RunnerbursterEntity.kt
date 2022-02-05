@@ -1,6 +1,7 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
 import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.config.ConfigAccessor
 import com.bvanseg.gigeresque.common.entity.Entities
 import com.bvanseg.gigeresque.common.entity.Growable
@@ -19,7 +20,6 @@ import software.bernie.geckolib3.core.controller.AnimationController
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent
 import software.bernie.geckolib3.core.manager.AnimationData
 import software.bernie.geckolib3.core.manager.AnimationFactory
-import kotlin.math.min
 
 /**
  * @author Boston Vanseghi
@@ -28,7 +28,7 @@ class RunnerbursterEntity(type: EntityType<out RunnerbursterEntity>, world: Worl
     IAnimatable, Growable {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
             .add(EntityAttributes.GENERIC_ARMOR, 2.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
@@ -47,24 +47,24 @@ class RunnerbursterEntity(type: EntityType<out RunnerbursterEntity>, world: Worl
      * GROWTH
      */
 
-    override val maxGrowth: Int = Constants.TPD / 2
+    override fun getGrowthMultiplier(): Float = Gigeresque.config.miscellaneous.runnerbursterGrowthMultiplier
 
-    override fun grow(amount: Int) {
-        growth = min(growth + amount, maxGrowth)
-
-        if (growth >= maxGrowth) {
-            growUp(this)
-        }
-    }
+    override val maxGrowth: Float = Constants.TPD / 2.0f
 
     override fun growInto(): LivingEntity? {
         if (hostId == null) return ClassicAlienEntity(Entities.ALIEN, world)
 
         val variantId = ConfigAccessor.reversedMorphMappings[hostId] ?: return ClassicAlienEntity(Entities.ALIEN, world)
         val identifier = Identifier(variantId)
-        val entityType = Registry.ENTITY_TYPE.getOrEmpty(identifier).getOrNull() ?: return ClassicAlienEntity(Entities.ALIEN, world)
+        val entityType =
+            Registry.ENTITY_TYPE.getOrEmpty(identifier).getOrNull() ?: return ClassicAlienEntity(Entities.ALIEN, world)
+        val entity = entityType.create(world)
 
-        return entityType.create(world) as LivingEntity?
+        if (hasCustomName()) {
+            entity?.customName = this.customName
+        }
+
+        return entity as LivingEntity?
     }
 
     /*
@@ -78,12 +78,14 @@ class RunnerbursterEntity(type: EntityType<out RunnerbursterEntity>, world: Worl
             if (this.isAttacking) {
                 event.controller.setAnimation(
                     AnimationBuilder()
-                    .addAnimation("moving_aggro", true))
+                        .addAnimation("moving_aggro", true)
+                )
                 PlayState.CONTINUE
             } else {
                 event.controller.setAnimation(
                     AnimationBuilder()
-                    .addAnimation("moving_noaggro", true))
+                        .addAnimation("moving_noaggro", true)
+                )
                 PlayState.CONTINUE
             }
         } else {

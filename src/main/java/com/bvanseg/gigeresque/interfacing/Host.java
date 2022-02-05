@@ -4,9 +4,9 @@ package com.bvanseg.gigeresque.interfacing;
  * @author Boston Vanseghi
  */
 public interface Host {
-    int getTicksUntilImpregnation();
+    float getTicksUntilImpregnation();
 
-    void setTicksUntilImpregnation(int ticksUntilImpregnation);
+    void setTicksUntilImpregnation(float ticksUntilImpregnation);
 
     default boolean hasParasite() {
         return getTicksUntilImpregnation() >= 0;
@@ -17,6 +17,10 @@ public interface Host {
     }
 
     default void removeParasite() {
-        setTicksUntilImpregnation(-1);
+        setTicksUntilImpregnation(-1.0f);
     }
+
+    boolean isBleeding();
+
+    void setBleeding(boolean isBleeding);
 }

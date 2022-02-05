@@ -17,10 +17,13 @@ object EntityTextures {
     val ALIEN = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/alien/alien.png")
     val ALIEN_YOUNG = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/alien/alien_young.png")
     val AQUATIC_ALIEN = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien.png")
-    val AQUATIC_ALIEN_CONSTANT = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien_constant.png")
-    val AQUATIC_ALIEN_TINTABLE = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien_tintable.png")
+    val AQUATIC_ALIEN_CONSTANT =
+        Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien_constant.png")
+    val AQUATIC_ALIEN_TINTABLE =
+        Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien_tintable.png")
     val AQUATIC_ALIEN_YOUNG = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_alien/aquatic_alien_young.png")
-    val AQUATIC_CHESTBURSTER = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_chestburster/aquatic_chestburster.png")
+    val AQUATIC_CHESTBURSTER =
+        Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/aquatic_chestburster/aquatic_chestburster.png")
     val CHESTBURSTER = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/chestburster/chestburster.png")
     val EGG = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/egg/egg.png")
     val FACEHUGGER = Identifier(Gigeresque.MOD_ID, "$BASE_ENTITY_URL/facehugger/facehugger.png")

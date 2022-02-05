@@ -8,6 +8,7 @@ import com.bvanseg.gigeresque.common.util.GigeresqueInitializer
 import com.bvanseg.gigeresque.common.util.initializingBlock
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry
 import net.minecraft.block.*
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemGroup
@@ -40,9 +41,15 @@ object Blocks : GigeresqueInitializer {
     val NEST_RESIN_BLOCK =
         Block(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).strength(5.0f, 8.0f))
     val NEST_RESIN_WEB =
-        NestResinWebBlock(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).noCollision().strength(5.0f, 8.0f))
+        NestResinWebBlock(
+            FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).noCollision()
+                .strength(5.0f, 8.0f)
+        )
     val NEST_RESIN_WEB_CROSS =
-        CobwebBlock(FabricBlockSettings.of(Materials.NEST_RESIN_WEB).sounds(BlockSoundGroup.HONEY).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f))
+        NestResinWebFullBlock(
+            FabricBlockSettings.of(Materials.NEST_RESIN_WEB).sounds(BlockSoundGroup.HONEY).noCollision().nonOpaque()
+                .requiresTool().strength(5.0f, 8.0f)
+        )
 
     private val ORGANIC_ALIEN_BLOCK = Block(
         FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK)
@@ -121,6 +128,12 @@ object Blocks : GigeresqueInitializer {
 
         registerItemBlock("nest_resin_web", NEST_RESIN_WEB)
         registerItemBlock("nest_resin_web_cross", NEST_RESIN_WEB_CROSS)
+
+        // Flammability
+        FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN, 5, 5)
+        FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_BLOCK, 5, 5)
+        FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5)
+        FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5)
 
         Registry.register(Registry.BLOCK, Identifier(Gigeresque.MOD_ID, "acid_block"), ACID_BLOCK)
 

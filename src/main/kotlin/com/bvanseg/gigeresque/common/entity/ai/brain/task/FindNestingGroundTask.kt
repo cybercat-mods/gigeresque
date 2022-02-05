@@ -3,6 +3,7 @@ package com.bvanseg.gigeresque.common.entity.ai.brain.task
 import com.bvanseg.gigeresque.common.block.Blocks
 import com.bvanseg.gigeresque.common.block.NestResinBlock
 import com.bvanseg.gigeresque.common.entity.AlienEntity
+import com.bvanseg.gigeresque.common.entity.impl.AdultAlienEntity
 import com.google.common.collect.ImmutableMap
 import net.minecraft.entity.ai.brain.MemoryModuleState
 import net.minecraft.entity.ai.brain.MemoryModuleType
@@ -17,7 +18,7 @@ import java.util.*
 /**
  * @author Boston Vanseghi
  */
-class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
+class FindNestingGroundTask(private val speed: Double) : Task<AdultAlienEntity>(
     ImmutableMap.of(
         MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,
         MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT,
@@ -27,11 +28,12 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
     var hasReachedNestingGround = false
     var targetPos: BlockPos? = null
 
-    override fun shouldRun(serverWorld: ServerWorld, alien: AlienEntity): Boolean {
-        return !alien.brain.hasMemoryModule(MemoryModuleType.HOME) || !hasReachedNestingGround
+    override fun shouldRun(serverWorld: ServerWorld, alien: AdultAlienEntity): Boolean {
+        return alien.growth == alien.maxGrowth &&
+                (!alien.brain.hasMemoryModule(MemoryModuleType.HOME) || !hasReachedNestingGround)
     }
 
-    override fun run(serverWorld: ServerWorld, alien: AlienEntity, l: Long) {
+    override fun run(serverWorld: ServerWorld, alien: AdultAlienEntity, l: Long) {
         val world = alien.world
 
         if (targetPos == null) {
@@ -79,8 +81,8 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
 
                         var i = 0
                         while (!world.getBlockState(resinPos).isAir || !world.getBlockState(downPos).isOpaque) {
-                            resinPos.add(0, if(travelUp) 1 else -1, 0)
-                            downPos.add(0, if(travelUp) 1 else -1, 0)
+                            resinPos.add(0, if (travelUp) 1 else -1, 0)
+                            downPos.add(0, if (travelUp) 1 else -1, 0)
 
                             i++
                             if (i > 4) { // Limit search to prevent infinite loop
@@ -92,13 +94,20 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
                         if (topState.isAir) {
                             val downState = world.getBlockState(downPos)
                             if (downState.block == Blocks.NEST_RESIN) {
-                                world.setBlockState(downPos, downState.with(NestResinBlock.LAYERS, downState.get(NestResinBlock.LAYERS) + 1))
+                                world.setBlockState(
+                                    downPos,
+                                    downState.with(NestResinBlock.LAYERS, downState.get(NestResinBlock.LAYERS) + 1)
+                                )
                             } else if (downState.isOpaqueFullCube(world, downPos)) {
                                 world.setBlockState(resinPos, Blocks.NEST_RESIN.defaultState)
                             }
                         } else if (world.getBlockState(resinPos) == Blocks.NEST_RESIN.defaultState &&
-                            topState.isOpaqueFullCube(world, resinPos)) {
-                            world.setBlockState(resinPos, topState.with(NestResinBlock.LAYERS, topState.get(NestResinBlock.LAYERS) + 1))
+                            topState.isOpaqueFullCube(world, resinPos)
+                        ) {
+                            world.setBlockState(
+                                resinPos,
+                                topState.with(NestResinBlock.LAYERS, topState.get(NestResinBlock.LAYERS) + 1)
+                            )
                         }
                     }
                 }
@@ -106,7 +115,7 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
         }
     }
 
-    override fun finishRunning(world: ServerWorld, entity: AlienEntity, time: Long) {
+    override fun finishRunning(world: ServerWorld, entity: AdultAlienEntity, time: Long) {
         super.finishRunning(world, entity, time)
         hasReachedNestingGround = false
     }
@@ -118,7 +127,8 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
         if (!entity.world.isSkyVisible(blockPos) &&
             entity.world.getBlockState(blockPos).isAir &&
             entity.world.getBlockState(blockPos.down()).isOpaque &&
-            entity.world.getLightLevel(LightType.SKY, blockPos) < 4) {
+            entity.world.getLightLevel(LightType.SKY, blockPos) < 4
+        ) {
             return Vec3d.ofBottomCenter(blockPos)
         }
 
@@ -127,7 +137,8 @@ class FindNestingGroundTask(private val speed: Double): Task<AlienEntity>(
             if (!entity.world.isSkyVisible(blockPos2) &&
                 entity.world.getBlockState(blockPos2).isAir &&
                 entity.world.getBlockState(blockPos2.down()).isOpaque &&
-                entity.world.getLightLevel(LightType.SKY, blockPos2) < 4) {
+                entity.world.getLightLevel(LightType.SKY, blockPos2) < 4
+            ) {
                 return Vec3d.ofBottomCenter(blockPos2)
             }
         }

@@ -1,14 +1,17 @@
-package com.bvanseg.gigeresque.mixins;
+package com.bvanseg.gigeresque.mixins.common.entity;
 
 import com.bvanseg.gigeresque.Constants;
 import com.bvanseg.gigeresque.client.particle.Particles;
 import com.bvanseg.gigeresque.common.Gigeresque;
+import com.bvanseg.gigeresque.common.block.Blocks;
 import com.bvanseg.gigeresque.common.config.ConfigAccessor;
 import com.bvanseg.gigeresque.common.entity.Entities;
+import com.bvanseg.gigeresque.common.entity.EntityIdentifiers;
 import com.bvanseg.gigeresque.common.entity.impl.*;
 import com.bvanseg.gigeresque.common.source.DamageSources;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.bvanseg.gigeresque.interfacing.Host;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -40,9 +43,9 @@ import java.util.Map;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements Host, Eggmorphable {
 
-    private static TrackedData<Boolean> IS_BLEEDING = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static TrackedData<Integer> EGGMORPH_TICKS = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public int ticksUntilImpregnation = -1;
+    private static final TrackedData<Boolean> IS_BLEEDING = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Float> EGGMORPH_TICKS = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.FLOAT);
+    public float ticksUntilImpregnation = -1.0f;
     public boolean hasParasiteSpawned = false;
     public boolean hasEggSpawned = false;
 
@@ -68,43 +71,39 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     @Shadow
     public abstract boolean isAlive();
 
-    @Shadow public abstract float getHealth();
+    @Shadow
+    public abstract float getHealth();
 
-    @Shadow public abstract void kill();
-
-    @Shadow private float movementSpeed;
+    @Shadow
+    public abstract void kill();
 
     private void handleStatusEffect(long offset, StatusEffect statusEffect, Boolean checkStatusEffect) {
         if (ticksUntilImpregnation < offset && (!checkStatusEffect || !hasStatusEffect(statusEffect))) {
-            int amplifier = (int)(((Constants.TPD - (Constants.TPM * 8L)) - (float)ticksUntilImpregnation) / (Constants.TPS * 30));
-            this.addStatusEffect(new StatusEffectInstance(statusEffect, (int)ticksUntilImpregnation, amplifier));
+            int amplifier = (int) (((Constants.TPD - (Constants.TPM * 8L)) - ticksUntilImpregnation) / (Constants.TPS * 30));
+            this.addStatusEffect(new StatusEffectInstance(statusEffect, (int) ticksUntilImpregnation, amplifier));
         }
     }
 
     @Inject(method = {"tick"}, at = {@At("HEAD")})
     void tick(CallbackInfo callbackInfo) {
-        if (this.isAlive() && this.getEntityWorld().isClient && Boolean.TRUE.equals(dataTracker.get(IS_BLEEDING))) {
+        if (this.isAlive() && this.getEntityWorld().isClient && Boolean.TRUE.equals(isBleeding())) {
             double yOffset = this.getEyeY() - ((this.getEyeY() - this.getBlockPos().getY()) / 2.0);
             double d = this.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
             double f = this.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
 
-            for (int i = 0; i < 1 + (int)(this.getMaxHealth() - this.getHealth()); i++) {
+            for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++) {
                 this.getEntityWorld().addImportantParticle(
                         Particles.INSTANCE.getBLOOD(), d, yOffset, f, 0.0, -0.15, 0.0);
             }
         }
 
         if (!this.world.isClient) {
-            if (((((Object)this) instanceof PlayerEntity playerEntity && playerEntity.isCreative()) ||
+            if (((((Object) this) instanceof PlayerEntity playerEntity && playerEntity.isCreative()) ||
                     this.isSpectator() ||
                     world.getDifficulty() == Difficulty.PEACEFUL)) {
-                if (hasParasite()) {
-                    removeParasite();
-                }
-
-                if (isEggmorphing()) {
-                    resetEggmorphing();
-                }
+                removeParasite();
+                resetEggmorphing();
+                setBleeding(false);
             }
 
             handleEggmorphingLogic();
@@ -114,12 +113,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     private void handleEggmorphingLogic() {
         if (isEggmorphing()) {
-            this.movementSpeed = 0.0f;
-            this.setVelocity(0, 0, 0);
-            if(this.getX() != this.prevX || this.getY() != this.prevY || this.getZ() != this.prevZ) {
-                this.setPosition(this.prevX, this.prevY, this.prevZ);
-            }
-            setTicksUntilEggmorphed(Math.max(getTicksUntilEggmorphed() - Gigeresque.config.getMiscellaneous().getEggmorphTickMultiplier(), 0));
+            setTicksUntilEggmorphed(Math.max(getTicksUntilEggmorphed() - Gigeresque.config.getMiscellaneous().getEggmorphTickMultiplier(), 0f));
+        } else {
+            // Reset eggmorphing counter if the entity is no longer eggmorphing at any point.
+            resetEggmorphing();
         }
 
         if (getTicksUntilEggmorphed() == 0L && !hasEggSpawned && !this.isDead()) {
@@ -127,18 +124,18 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
             world.spawnEntity(egg);
             this.hasEggSpawned = true;
-            this.kill();
+            this.damage(DamageSources.INSTANCE.getEGGMORPHING(), Float.MAX_VALUE);
         }
     }
 
     private void handleHostLogic() {
         if (hasParasite()) {
-            ticksUntilImpregnation = Math.max(ticksUntilImpregnation - Gigeresque.config.getMiscellaneous().getImpregnationTickMultiplier(), 0);
+            ticksUntilImpregnation = Math.max(ticksUntilImpregnation - Gigeresque.config.getMiscellaneous().getImpregnationTickMultiplier(), 0f);
 
-            if (Boolean.TRUE.equals(!dataTracker.get(IS_BLEEDING)) &&
+            if (Boolean.TRUE.equals(!isBleeding()) &&
                     ticksUntilImpregnation >= 0 &&
                     ticksUntilImpregnation < Constants.TPS * 30L) {
-                dataTracker.set(IS_BLEEDING, true);
+                setBleeding(true);
             }
 
             handleStatusEffect(Constants.TPM * 12L, StatusEffects.HUNGER, false);
@@ -154,19 +151,21 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             if (this.isDead() && !hasParasiteSpawned) {
                 Identifier identifier = Registry.ENTITY_TYPE.getId(this.getType());
                 Map<String, String> morphMappings = ConfigAccessor.INSTANCE.getReversedMorphMappings();
-                String producedVariant = morphMappings.getOrDefault(identifier.toString(), Gigeresque.MOD_ID + ":alien");
+                String producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.INSTANCE.getALIEN().toString());
 
                 ChestbursterEntity burster = switch (producedVariant) {
-                    case Gigeresque.MOD_ID + ":runner_alien" ->
-                            new RunnerbursterEntity(Entities.INSTANCE.getRUNNERBURSTER(), this.world);
-                    case Gigeresque.MOD_ID + ":aquatic_alien" ->
-                            new AquaticChestbursterEntity(Entities.INSTANCE.getAQUATIC_CHESTBURSTER(), this.world);
-                    default ->
-                            new ChestbursterEntity(Entities.INSTANCE.getCHESTBURSTER(), this.world);
+                    case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.INSTANCE.getRUNNERBURSTER(), this.world);
+                    case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.INSTANCE.getAQUATIC_CHESTBURSTER(), this.world);
+                    default -> new ChestbursterEntity(Entities.INSTANCE.getCHESTBURSTER(), this.world);
                 };
 
                 burster.setHostId(identifier.toString());
                 burster.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
+
+                if (this.hasCustomName()) {
+                    burster.setCustomName(this.getCustomName());
+                }
+
                 this.world.spawnEntity(burster);
                 hasParasiteSpawned = true;
             }
@@ -175,7 +174,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"isImmobile"}, at = {@At("RETURN")})
     protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+        if (
+                this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance) ||
+                        this.isEggmorphing()
+        ) {
             return true;
         }
         return callbackInfo.getReturnValue();
@@ -184,14 +186,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     @Inject(method = {"initDataTracker"}, at = {@At("RETURN")})
     void initDataTracker(CallbackInfo callbackInfo) {
         dataTracker.startTracking(IS_BLEEDING, false);
-        dataTracker.startTracking(EGGMORPH_TICKS, -1);
+        dataTracker.startTracking(EGGMORPH_TICKS, -1.0f);
     }
 
     @Inject(method = {"writeCustomDataToNbt"}, at = {@At("RETURN")})
     void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo callbackInfo) {
-        nbt.putInt("ticksUntilImpregnation", ticksUntilImpregnation);
-        nbt.putInt("ticksUntilEggmorphed", getTicksUntilEggmorphed());
-        nbt.putBoolean("isBleeding", this.dataTracker.get(IS_BLEEDING));
+        nbt.putFloat("ticksUntilImpregnation", ticksUntilImpregnation);
+        nbt.putFloat("ticksUntilEggmorphed", getTicksUntilEggmorphed());
+        nbt.putBoolean("isBleeding", isBleeding());
     }
 
     @Inject(method = {"readCustomDataFromNbt"}, at = {@At("RETURN")})
@@ -203,7 +205,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             setTicksUntilEggmorphed(nbt.getInt("ticksUntilEggmorphed"));
         }
         if (nbt.contains("isBleeding")) {
-            dataTracker.set(IS_BLEEDING, nbt.getBoolean("isBleeding"));
+            setBleeding(nbt.getBoolean("isBleeding"));
         }
     }
 
@@ -217,22 +219,45 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     }
 
     @Override
-    public int getTicksUntilImpregnation() {
+    public boolean isPushable() {
+        return super.isPushable() && isNotEggmorphing();
+    }
+
+    @Override
+    public float getTicksUntilImpregnation() {
         return ticksUntilImpregnation;
     }
 
     @Override
-    public void setTicksUntilImpregnation(int ticksUntilImpregnation) {
+    public void setTicksUntilImpregnation(float ticksUntilImpregnation) {
         this.ticksUntilImpregnation = ticksUntilImpregnation;
     }
 
     @Override
-    public int getTicksUntilEggmorphed() {
-        return dataTracker.get(EGGMORPH_TICKS);
+    public boolean isEggmorphing() {
+        Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
+        Block pos = this.getBlockStateAtPos().getBlock();
+        boolean isCoveredInResin = cameraBlock == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS() || pos == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS();
+        return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
     }
 
     @Override
-    public void setTicksUntilEggmorphed(int ticksUntilEggmorphed) {
+    public float getTicksUntilEggmorphed() {
+        return dataTracker.get(EGGMORPH_TICKS).floatValue();
+    }
+
+    @Override
+    public void setTicksUntilEggmorphed(float ticksUntilEggmorphed) {
         this.dataTracker.set(EGGMORPH_TICKS, ticksUntilEggmorphed);
+    }
+
+    @Override
+    public boolean isBleeding() {
+        return dataTracker.get(IS_BLEEDING);
+    }
+
+    @Override
+    public void setBleeding(boolean isBleeding) {
+        dataTracker.set(IS_BLEEDING, isBleeding);
     }
 }

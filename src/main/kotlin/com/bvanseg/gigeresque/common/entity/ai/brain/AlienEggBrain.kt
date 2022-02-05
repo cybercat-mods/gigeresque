@@ -12,7 +12,7 @@ import java.util.function.Predicate
 /**
  * @author Boston Vanseghi
  */
-class AlienEggBrain(entity: AlienEggEntity): ComplexBrain<AlienEggEntity>(entity) {
+class AlienEggBrain(entity: AlienEggEntity) : ComplexBrain<AlienEggEntity>(entity) {
 
     override fun addCoreActivities(tasks: MutableList<Task<in AlienEggEntity>>) = Unit
 
@@ -41,7 +41,7 @@ class AlienEggBrain(entity: AlienEggEntity): ComplexBrain<AlienEggEntity>(entity
     private fun tryHatch() {
         val nearestEggs = brain.getOptionalMemory(MemoryModuleTypes.NEAREST_EGGS).orElseGet { emptyList() }
         val nearestFacehuggers = brain.getOptionalMemory(MemoryModuleTypes.NEAREST_FACEHUGGERS)
-            .orElseGet { emptyList() }.filter { it.ticksAttachedToHost == -1L }
+            .orElseGet { emptyList() }.filter { it.ticksAttachedToHost < 0 }
         val nearestHosts = brain.getOptionalMemory(MemoryModuleTypes.NEAREST_HOSTS).orElseGet { emptyList() }
         val nearestHatchingEggs = nearestEggs.filter { it.isHatching || (it.isHatched && it.hasFacehugger) }
 

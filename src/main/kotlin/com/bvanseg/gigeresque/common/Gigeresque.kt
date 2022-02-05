@@ -7,6 +7,7 @@ import com.bvanseg.gigeresque.common.entity.Entities
 import com.bvanseg.gigeresque.common.fluid.Fluids
 import com.bvanseg.gigeresque.common.item.Items
 import com.bvanseg.gigeresque.common.sound.Sounds
+import com.bvanseg.gigeresque.common.status.effect.StatusEffects
 import com.bvanseg.gigeresque.common.util.initializingBlock
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
@@ -36,6 +37,7 @@ object Gigeresque : ModInitializer {
         Blocks.initialize()
         Fluids.initialize()
         Sounds.initialize()
+        StatusEffects.initialize()
         TrackedDataHandlers.initialize()
         Entities.initialize()
     }

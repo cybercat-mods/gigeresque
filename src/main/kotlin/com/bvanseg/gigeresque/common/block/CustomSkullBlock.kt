@@ -16,21 +16,21 @@ import net.minecraft.world.BlockView
 /**
  * @author Boston Vanseghi
  */
-class CustomSkullBlock(skullType: AlienSkullType, settings: Settings): AbstractSkullBlock(skullType, settings) {
+class CustomSkullBlock(skullType: AlienSkullType, settings: Settings) : AbstractSkullBlock(skullType, settings) {
 
     companion object {
         val ROTATION: IntProperty = Properties.ROTATION
         val SHAPE: VoxelShape = createCuboidShape(4.0, 0.0, 4.0, 12.0, 8.0, 12.0)
     }
 
-    enum class AlienSkullType: SkullBlock.SkullType {
+    enum class AlienSkullType : SkullBlock.SkullType {
         AQUA,
         CLASSIC,
         RUNNER,
     }
 
     init {
-        defaultState =  (stateManager.defaultState as BlockState).with(ROTATION, 0) as BlockState
+        defaultState = (stateManager.defaultState as BlockState).with(ROTATION, 0) as BlockState
     }
 
     override fun getOutlineShape(

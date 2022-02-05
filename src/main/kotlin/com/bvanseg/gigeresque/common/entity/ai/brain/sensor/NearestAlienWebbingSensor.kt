@@ -3,6 +3,7 @@ package com.bvanseg.gigeresque.common.entity.ai.brain.sensor
 import com.bvanseg.gigeresque.common.block.Blocks
 import com.bvanseg.gigeresque.common.entity.AlienEntity
 import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes
+import com.bvanseg.gigeresque.common.util.nest.NestBuildingHelper
 import com.google.common.collect.ImmutableSet
 import net.minecraft.entity.ai.brain.MemoryModuleType
 import net.minecraft.entity.ai.brain.sensor.Sensor
@@ -31,7 +32,7 @@ class NearestAlienWebbingSensor : Sensor<AlienEntity>() {
         private fun isAlienWebbing(alien: AlienEntity, world: ServerWorld, pos: BlockPos): Boolean {
             val blockState = world.getBlockState(pos)
             return blockState.block == Blocks.NEST_RESIN_WEB_CROSS &&
-                    world.getBlockState(pos.up()).isAir &&
+                    (world.getBlockState(pos.up()).isAir || NestBuildingHelper.isResinBlock(world.getBlockState(pos.up()).block)) &&
                     world.getBlockState(pos.down()).isOpaqueFullCube(world, pos) &&
                     world.getOtherEntities(alien, Box(pos)).isEmpty()
 

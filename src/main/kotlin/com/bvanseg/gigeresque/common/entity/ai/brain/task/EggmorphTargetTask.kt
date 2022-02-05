@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d
 /**
  * @author Boston Vanseghi
  */
-class EggmorphTargetTask(private val speed: Double): Task<AdultAlienEntity>(
+class EggmorphTargetTask(private val speed: Double) : Task<AdultAlienEntity>(
     ImmutableMap.of(
         MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,
         MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleState.REGISTERED,
@@ -24,8 +24,14 @@ class EggmorphTargetTask(private val speed: Double): Task<AdultAlienEntity>(
     )
 ) {
 
+    private var timeRunning = 0
+
     override fun shouldRun(serverWorld: ServerWorld, alien: AdultAlienEntity): Boolean {
         return alien.isCarryingEggmorphableTarget()
+    }
+
+    override fun shouldKeepRunning(world: ServerWorld, alien: AdultAlienEntity, time: Long): Boolean {
+        return alien.isCarryingEggmorphableTarget() && (timeRunning++ < Constants.TPS * 10)
     }
 
     override fun run(serverWorld: ServerWorld, alien: AdultAlienEntity, l: Long) {
@@ -33,11 +39,13 @@ class EggmorphTargetTask(private val speed: Double): Task<AdultAlienEntity>(
         val home = alien.brain.getOptionalMemory(MemoryModuleType.HOME).getOrNull()?.pos ?: return
 
         if (alien.blockPos.getManhattanDistance(home) < 32 &&
-            alien.brain.hasMemoryModule(MemoryModuleTypes.NEAREST_ALIEN_WEBBING)) {
-            val nearestWebbing = alien.brain.getOptionalMemory(MemoryModuleTypes.NEAREST_ALIEN_WEBBING).getOrNull() ?: return
+            alien.brain.hasMemoryModule(MemoryModuleTypes.NEAREST_ALIEN_WEBBING)
+        ) {
+            val nearestWebbing =
+                alien.brain.getOptionalMemory(MemoryModuleTypes.NEAREST_ALIEN_WEBBING).getOrNull() ?: return
 
             if (alien.blockPos.getManhattanDistance(nearestWebbing) < 4) {
-                (target as Eggmorphable).ticksUntilEggmorphed = Constants.TPD
+                (target as Eggmorphable).ticksUntilEggmorphed = Constants.EGGMORPH_DURATION.toFloat()
                 target.stopRiding()
                 target.setPosition(Vec3d.ofBottomCenter(nearestWebbing))
 
@@ -57,7 +65,7 @@ class EggmorphTargetTask(private val speed: Double): Task<AdultAlienEntity>(
                     for (i in 0 until 20) {
                         val state = alien.world.getBlockState(up)
 
-                        if (state.isAir) {
+                        if (state.isAir || state.block == Blocks.NEST_RESIN_WEB) {
                             alien.world.setBlockState(up, Blocks.NEST_RESIN_WEB_CROSS.defaultState)
                         } else {
                             break
@@ -67,11 +75,23 @@ class EggmorphTargetTask(private val speed: Double): Task<AdultAlienEntity>(
                 }
 
             } else {
-                alien.navigation.startMovingTo(nearestWebbing.x.toDouble(), nearestWebbing.y.toDouble(), nearestWebbing.z.toDouble(), speed)
+                alien.navigation.startMovingTo(
+                    nearestWebbing.x.toDouble(),
+                    nearestWebbing.y.toDouble(),
+                    nearestWebbing.z.toDouble(),
+                    speed
+                )
             }
 
         } else {
             alien.navigation.startMovingTo(home.x.toDouble(), home.y.toDouble(), home.z.toDouble(), speed)
         }
+    }
+
+    override fun finishRunning(world: ServerWorld, alien: AdultAlienEntity, time: Long) {
+        super.finishRunning(world, alien, time)
+        val target = alien.firstPassenger ?: return
+        target.stopRiding()
+        timeRunning = 0
     }
 }

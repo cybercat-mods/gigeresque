@@ -1,6 +1,10 @@
-package com.bvanseg.gigeresque.mixins;
+package com.bvanseg.gigeresque.mixins.common;
 
+import com.bvanseg.gigeresque.Constants;
 import com.bvanseg.gigeresque.CustomSpawnGroup;
+import com.bvanseg.gigeresque.common.config.GigeresqueConfig;
+import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -12,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -46,12 +52,26 @@ public class SpawnGroupMixin {
         var spawnGroups = new ArrayList<>(Arrays.asList(field_6301));
         var last = spawnGroups.get(spawnGroups.size() - 1);
 
+        var configPath = FabricLoader.getInstance().getConfigDir().resolve("gigeresque.json");
+        var config = configPath.toFile();
+        var alienSpawnCap = Constants.ALIEN_SPAWN_CAP;
+
+        if (config.exists()) {
+            try {
+                var gson = new GsonBuilder().create();
+                var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfig.class);
+                alienSpawnCap = gigeresqueConfig.getMiscellaneous().getAlienSpawnCap();
+            } catch (Exception e) {
+                // Do nothing
+            }
+        }
+
         // This means our code will still work if other mods or Mojang add more spawn groups!
         var alien = newSpawnGroup(
                 "ALIEN",
                 last.ordinal() + 1,
                 "alien",
-                70,
+                alienSpawnCap,
                 false,
                 false,
                 128

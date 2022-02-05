@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.sensor
 
-import com.bvanseg.gigeresque.mixins.SensorTypeInvoker
+import com.bvanseg.gigeresque.mixins.common.entity.ai.SensorTypeInvoker
 
 /**
  * @author Boston Vanseghi
@@ -16,5 +16,6 @@ object SensorTypes {
     val NEAREST_HOST = SensorTypeInvoker.register("nearest_host_sensor", ::NearestHostSensor)
     val NEAREST_HOSTS = SensorTypeInvoker.register("nearest_hosts_sensor", ::NearestHostsSensor)
     val NEAREST_LARGER_THREAT = SensorTypeInvoker.register("nearest_larger_threat_sensor", ::NearestLargerThreatSensor)
-    val NEAREST_SMALLER_TARGET = SensorTypeInvoker.register("nearest_smaller_target_sensor", ::NearestSmallerTargetSensor)
+    val NEAREST_SMALLER_TARGET =
+        SensorTypeInvoker.register("nearest_smaller_target_sensor", ::NearestSmallerTargetSensor)
 }

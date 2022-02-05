@@ -27,8 +27,14 @@ object Items : GigeresqueInitializer {
         Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ItemGroups.GENERAL)
     )
 
+    val SURGERY_KIT = SurgeryKitItem(Item.Settings().maxDamage(4).group(ItemGroups.GENERAL))
+
     override fun initialize() = initializingBlock("Items") {
         Registry.register(Registry.ITEM, Identifier(Gigeresque.MOD_ID, "black_fluid_bucket"), BLACK_FLUID_BUCKET)
+
+        if (Gigeresque.config.features.surgeryKit) {
+            Registry.register(Registry.ITEM, Identifier(Gigeresque.MOD_ID, "surgery_kit"), SURGERY_KIT)
+        }
 
         registerSpawnEgg("alien", Entities.ALIEN, 0x2C2B27, 0x4D4B3F)
         registerSpawnEgg("aquatic_alien", Entities.AQUATIC_ALIEN, 0x404345, 0x949597)

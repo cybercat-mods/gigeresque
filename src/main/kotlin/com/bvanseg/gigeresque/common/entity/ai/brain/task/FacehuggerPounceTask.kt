@@ -3,8 +3,6 @@ package com.bvanseg.gigeresque.common.entity.ai.brain.task
 import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntity
 import com.bvanseg.gigeresque.common.util.clamp
 import com.google.common.collect.ImmutableMap
-import kotlin.math.abs
-import kotlin.math.sqrt
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.ai.brain.MemoryModuleState
 import net.minecraft.entity.ai.brain.MemoryModuleType
@@ -12,11 +10,13 @@ import net.minecraft.entity.ai.brain.task.Task
 import net.minecraft.entity.mob.PathAwareEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.Vec3d
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 /**
  * @author Boston Vanseghi
  */
-class FacehuggerPounceTask: Task<FacehuggerEntity>(
+class FacehuggerPounceTask : Task<FacehuggerEntity>(
     ImmutableMap.of(
         MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,
         MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_PRESENT
@@ -31,7 +31,7 @@ class FacehuggerPounceTask: Task<FacehuggerEntity>(
         val yDiff = abs(facehugger.blockY - target.blockY)
         return facehugger.isOnGround &&
                 facehugger.distanceTo(target) < MAX_LEAP_DISTANCE &&
-                yDiff < 3
+                yDiff < 3 && facehugger.canSee(target)
     }
 
     override fun run(serverWorld: ServerWorld, facehugger: FacehuggerEntity, l: Long) {
@@ -47,8 +47,9 @@ class FacehuggerPounceTask: Task<FacehuggerEntity>(
         val maxXVel = clamp(vec3d2.x, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE)
         val maxZVel = clamp(vec3d2.z, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE)
 
-        facehugger.setVelocity(maxXVel * length, 0.25, maxZVel * length)
+        facehugger.addVelocity(maxXVel * length, target.standingEyeHeight / 2.0, maxZVel * length)
     }
 
-    private fun getTarget(entity: PathAwareEntity): LivingEntity = entity.brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).get()
+    private fun getTarget(entity: PathAwareEntity): LivingEntity =
+        entity.brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).get()
 }

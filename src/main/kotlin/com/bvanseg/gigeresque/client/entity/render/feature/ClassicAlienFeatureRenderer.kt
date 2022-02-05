@@ -3,6 +3,8 @@ package com.bvanseg.gigeresque.client.entity.render.feature
 import com.bvanseg.gigeresque.client.entity.model.EntityModels
 import com.bvanseg.gigeresque.client.entity.texture.EntityTextures
 import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntity
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -13,7 +15,9 @@ import software.bernie.geckolib3.renderers.geo.IGeoRenderer
 /**
  * @author Boston Vanseghi
  */
-class ClassicAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<ClassicAlienEntity>): GeoLayerRenderer<ClassicAlienEntity>(entityRenderer) {
+@Environment(EnvType.CLIENT)
+class ClassicAlienFeatureRenderer(private val entityRenderer: IGeoRenderer<ClassicAlienEntity>) :
+    GeoLayerRenderer<ClassicAlienEntity>(entityRenderer) {
 
     override fun render(
         matrixStackIn: MatrixStack,

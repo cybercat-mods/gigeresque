@@ -1,15 +1,12 @@
 package com.bvanseg.gigeresque.common.entity.impl
 
+import com.bvanseg.gigeresque.Constants
+import com.bvanseg.gigeresque.common.Gigeresque
 import com.bvanseg.gigeresque.common.data.handler.TrackedDataHandlers
 import com.bvanseg.gigeresque.common.entity.AlienAttackType
-import com.bvanseg.gigeresque.common.entity.ai.brain.RunnerAlienBrain
-import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypes
-import com.mojang.serialization.Dynamic
+import com.bvanseg.gigeresque.common.entity.attribute.AlienEntityAttributes
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.ai.brain.Brain
-import net.minecraft.entity.ai.brain.MemoryModuleType
-import net.minecraft.entity.ai.brain.sensor.Sensor
-import net.minecraft.entity.ai.brain.sensor.SensorType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.DefaultAttributeContainer
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.data.DataTracker
@@ -29,39 +26,19 @@ import software.bernie.geckolib3.core.manager.AnimationFactory
 class RunnerAlienEntity(type: EntityType<out RunnerAlienEntity>, world: World) : AdultAlienEntity(type, world) {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 80.0)
             .add(EntityAttributes.GENERIC_ARMOR, 4.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
             .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
             .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
             .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23000000417232513)
-            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.ISOLATION_MODE_DAMAGE_BASE)
             .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
+            .add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5)
 
         private val CURRENT_ATTACK_TYPE: TrackedData<AlienAttackType> =
             DataTracker.registerData(RunnerAlienEntity::class.java, TrackedDataHandlers.ALIEN_ATTACK_TYPE)
-
-        private val SENSOR_TYPES: List<SensorType<out Sensor<in RunnerAlienEntity>>> =
-            listOf(
-                SensorType.NEAREST_LIVING_ENTITIES,
-                SensorTypes.NEAREST_ALIEN_TARGET,
-                SensorTypes.ALIEN_REPELLENT,
-            )
-
-        private val MEMORY_MODULE_TYPES: List<MemoryModuleType<*>> =
-            listOf(
-                MemoryModuleType.ATTACK_TARGET,
-                MemoryModuleType.ATTACK_COOLING_DOWN,
-                MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-                MemoryModuleType.HOME,
-                MemoryModuleType.LOOK_TARGET,
-                MemoryModuleType.MOBS,
-                MemoryModuleType.NEAREST_REPELLENT,
-                MemoryModuleType.PATH,
-                MemoryModuleType.VISIBLE_MOBS,
-                MemoryModuleType.WALK_TARGET,
-            )
     }
 
     private val animationFactory: AnimationFactory = AnimationFactory(this)
@@ -72,24 +49,10 @@ class RunnerAlienEntity(type: EntityType<out RunnerAlienEntity>, world: World) :
 
     private var attackProgress = 0
 
-    private lateinit var complexBrain: RunnerAlienBrain
-
     override fun initDataTracker() {
         super.initDataTracker()
         dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE)
     }
-
-    override fun createBrainProfile(): Brain.Profile<out RunnerAlienEntity> {
-        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES)
-    }
-
-    override fun deserializeBrain(dynamic: Dynamic<*>): Brain<out RunnerAlienEntity> {
-        complexBrain = RunnerAlienBrain(this)
-        return complexBrain.initialize(createBrainProfile().deserialize(dynamic))
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getBrain(): Brain<RunnerAlienEntity> = super.getBrain() as Brain<RunnerAlienEntity>
 
     override fun tick() {
         super.tick()
@@ -109,7 +72,7 @@ class RunnerAlienEntity(type: EntityType<out RunnerAlienEntity>, world: World) :
         }
 
         if (!world.isClient && currentAttackType == AlienAttackType.NONE) {
-            currentAttackType = when(random.nextInt(6)) {
+            currentAttackType = when (random.nextInt(6)) {
                 0 -> AlienAttackType.CLAW_LEFT
                 1 -> AlienAttackType.CLAW_RIGHT
                 2 -> AlienAttackType.TAIL_LEFT
@@ -121,13 +84,7 @@ class RunnerAlienEntity(type: EntityType<out RunnerAlienEntity>, world: World) :
         }
     }
 
-    override fun mobTick() {
-        world.profiler.push("runnerAlienBrain")
-        complexBrain.tick()
-        world.profiler.pop()
-        complexBrain.tickActivities()
-        super.mobTick()
-    }
+    override fun getGrowthMultiplier(): Float = Gigeresque.config.miscellaneous.runnerAlienGrowthMultiplier
 
     /*
         ANIMATIONS
@@ -140,14 +97,16 @@ class RunnerAlienEntity(type: EntityType<out RunnerAlienEntity>, world: World) :
             if (this.isAttacking) {
                 event.controller.setAnimation(
                     AnimationBuilder()
-                    .addAnimation("moving_aggro", true)
-                    .addAttackAnimation())
+                        .addAnimation("moving_aggro", true)
+                        .addAttackAnimation()
+                )
                 PlayState.CONTINUE
             } else {
                 event.controller.setAnimation(
                     AnimationBuilder()
-                    .addAnimation("moving_noaggro", true)
-                    .addAttackAnimation())
+                        .addAnimation("moving_noaggro", true)
+                        .addAttackAnimation()
+                )
                 PlayState.CONTINUE
             }
         } else {

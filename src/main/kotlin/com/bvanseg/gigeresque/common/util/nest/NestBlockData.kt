@@ -7,6 +7,7 @@ data class NestBlockData(
     val coverage: Int,
     val isCorner: Boolean,
     val isFloor: Boolean,
+    val isCeiling: Boolean,
     val isWall: Boolean,
     val upCoverage: Boolean,
     val downCoverage: Boolean,

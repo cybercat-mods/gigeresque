@@ -8,4 +8,5 @@ import net.minecraft.entity.damage.DamageSource
 object DamageSources {
     val ACID = object : DamageSource("alien.acid") {}
     val CHESTBURSTING = object : DamageSource("chestburst") {}
+    val EGGMORPHING = object : DamageSource("eggmorph") {}
 }

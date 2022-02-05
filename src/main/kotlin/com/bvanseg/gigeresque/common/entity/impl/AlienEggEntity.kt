@@ -12,6 +12,7 @@ import com.bvanseg.gigeresque.common.sound.Sounds
 import com.mojang.serialization.Dynamic
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.ai.brain.Brain
 import net.minecraft.entity.ai.brain.MemoryModuleType
 import net.minecraft.entity.ai.brain.sensor.Sensor
@@ -39,7 +40,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory
 class AlienEggEntity(type: EntityType<out AlienEggEntity>, world: World) : AlienEntity(type, world), IAnimatable {
 
     companion object {
-        fun createAttributes(): DefaultAttributeContainer.Builder = DefaultAttributeContainer.builder()
+        fun createAttributes(): DefaultAttributeContainer.Builder = LivingEntity.createLivingAttributes()
             .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
             .add(EntityAttributes.GENERIC_ARMOR, 1.0)
             .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
@@ -68,6 +69,7 @@ class AlienEggEntity(type: EntityType<out AlienEggEntity>, world: World) : Alien
             listOf(
                 MemoryModuleType.ATTACK_TARGET,
                 MemoryModuleType.MOBS,
+                MemoryModuleType.NEAREST_ATTACKABLE,
                 MemoryModuleType.VISIBLE_MOBS,
                 MemoryModuleTypes.NEAREST_FACEHUGGERS,
                 MemoryModuleTypes.NEAREST_EGGS
@@ -136,11 +138,21 @@ class AlienEggEntity(type: EntityType<out AlienEggEntity>, world: World) : Alien
 
     override fun readCustomDataFromNbt(nbt: NbtCompound) {
         super.readCustomDataFromNbt(nbt)
-        if(nbt.contains("isHatching")) { isHatching = nbt.getBoolean("isHatching") }
-        if(nbt.contains("isHatched")) { isHatched = nbt.getBoolean("isHatched") }
-        if(nbt.contains("hasFacehugger")) { hasFacehugger = nbt.getBoolean("hasFacehugger") }
-        if(nbt.contains("hatchProgress")) { hatchProgress = nbt.getLong("hatchProgress") }
-        if(nbt.contains("ticksOpen")) { ticksOpen = nbt.getLong("ticksOpen") }
+        if (nbt.contains("isHatching")) {
+            isHatching = nbt.getBoolean("isHatching")
+        }
+        if (nbt.contains("isHatched")) {
+            isHatched = nbt.getBoolean("isHatched")
+        }
+        if (nbt.contains("hasFacehugger")) {
+            hasFacehugger = nbt.getBoolean("hasFacehugger")
+        }
+        if (nbt.contains("hatchProgress")) {
+            hatchProgress = nbt.getLong("hatchProgress")
+        }
+        if (nbt.contains("ticksOpen")) {
+            ticksOpen = nbt.getLong("ticksOpen")
+        }
     }
 
     override fun tick() {

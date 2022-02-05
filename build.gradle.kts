@@ -30,16 +30,17 @@ dependencies {
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
     val geckoLibVersion: String by project
-    modImplementation("software.bernie.geckolib:geckolib-fabric-1.17:$geckoLibVersion")
+    modImplementation("software.bernie.geckolib:geckolib-fabric-1.18:$geckoLibVersion")
     val modMenuVersion: String by project
     modImplementation("com.terraformersmc:modmenu:$modMenuVersion")
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.38") {
+    val clothConfigVersion: String by project
+    modApi("me.shedaniel.cloth:cloth-config-fabric:$clothConfigVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 }
 tasks {
-    val javaVersion = JavaVersion.VERSION_16
+    val javaVersion = JavaVersion.VERSION_17
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = javaVersion.toString()

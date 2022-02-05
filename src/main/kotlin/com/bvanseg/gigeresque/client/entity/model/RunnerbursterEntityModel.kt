@@ -3,6 +3,8 @@ package com.bvanseg.gigeresque.client.entity.model
 import com.bvanseg.gigeresque.client.entity.animation.EntityAnimations
 import com.bvanseg.gigeresque.client.entity.texture.EntityTextures
 import com.bvanseg.gigeresque.common.entity.impl.RunnerbursterEntity
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent
 import software.bernie.geckolib3.model.AnimatedGeoModel
@@ -11,6 +13,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData
 /**
  * @author Boston Vanseghi
  */
+@Environment(EnvType.CLIENT)
 class RunnerbursterEntityModel : AnimatedGeoModel<RunnerbursterEntity>() {
     override fun getModelLocation(entity: RunnerbursterEntity): Identifier = EntityModels.RUNNERBURSTER
     override fun getTextureLocation(entity: RunnerbursterEntity): Identifier = EntityTextures.RUNNERBURSTER

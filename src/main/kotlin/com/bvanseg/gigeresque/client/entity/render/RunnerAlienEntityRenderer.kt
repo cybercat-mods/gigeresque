@@ -4,6 +4,8 @@ import com.bvanseg.gigeresque.client.entity.model.RunnerAlienEntityModel
 import com.bvanseg.gigeresque.client.entity.render.feature.RunnerAlienFeatureRenderer
 import com.bvanseg.gigeresque.client.extensions.scale
 import com.bvanseg.gigeresque.common.entity.impl.RunnerAlienEntity
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
@@ -12,6 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer
 /**
  * @author Boston Vanseghi
  */
+@Environment(EnvType.CLIENT)
 class RunnerAlienEntityRenderer(context: EntityRendererFactory.Context) : GeoEntityRenderer<RunnerAlienEntity>(
     context,
     RunnerAlienEntityModel()

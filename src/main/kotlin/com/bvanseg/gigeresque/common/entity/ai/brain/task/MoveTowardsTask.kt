@@ -57,8 +57,9 @@ class MoveTowardsTask(
                             pathAwareEntity,
                             15,
                             7,
-                            Vec3d.ofBottomCenter(globalPos.pos),
-                            1.5707963705062866
+                            // TODO: What is the drawback of excluding these parameters?
+//                            Vec3d.ofBottomCenter(globalPos.pos),
+//                            1.5707963705062866
                         )
                         ++i
                     }

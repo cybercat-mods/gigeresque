@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "gigeresque",
-  "version": "1.0.0-alpha14",
+  "version": "1.0.0-alpha17",
   "name": "Gigeresque",
   "description": "An Alien-themed mod for Fabric.",
   "authors": [
@@ -39,11 +39,11 @@
     "gigeresque.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.6",
+    "fabricloader": ">=0.12.12",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.6.2+kotlin.1.5.30",
-    "minecraft": "1.17.x",
-    "geckolib3": ">=3.0.10",
-    "java": ">=16"
+    "fabric-language-kotlin": ">=1.6.2+kotlin.1.6.10",
+    "minecraft": "1.18.x",
+    "geckolib3": ">=3.0.23",
+    "java": ">=17"
   }
 }

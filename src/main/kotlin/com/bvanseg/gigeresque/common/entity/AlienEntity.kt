@@ -1,5 +1,6 @@
 package com.bvanseg.gigeresque.common.entity
 
+import com.bvanseg.gigeresque.Constants
 import com.bvanseg.gigeresque.common.block.AcidBlock
 import com.bvanseg.gigeresque.common.block.Blocks
 import com.bvanseg.gigeresque.common.extensions.isNotPuncturing
@@ -25,6 +26,16 @@ abstract class AlienEntity(type: EntityType<out AlienEntity>, world: World) : Ho
     init {
         setPathfindingPenalty(PathNodeType.DANGER_FIRE, 16.0f)
         setPathfindingPenalty(PathNodeType.DAMAGE_FIRE, -1.0f)
+
+        navigation?.setCanSwim(true)
+    }
+
+    override fun tick() {
+        super.tick()
+
+        if (!world.isClient && world.getBlockState(blockPos).block == Blocks.NEST_RESIN && this.age % Constants.TPS == 0) {
+            this.heal(0.0833f)
+        }
     }
 
     override fun canImmediatelyDespawn(distanceSquared: Double): Boolean = false
@@ -81,29 +92,31 @@ abstract class AlienEntity(type: EntityType<out AlienEntity>, world: World) : Ho
 
         if (source.isNotPuncturing) return super.damage(source, amount)
 
-        var acidThickness = if (this.health < (this.maxHealth / 2)) 1 else 0
+        if (!this.world.isClient) {
+            var acidThickness = if (this.health < (this.maxHealth / 2)) 1 else 0
 
-        if (this.health < (this.maxHealth / 4)) {
-            acidThickness += 1
+            if (this.health < (this.maxHealth / 4)) {
+                acidThickness += 1
+            }
+
+            if (amount >= 5) {
+                acidThickness += 1
+            }
+
+            if (amount > (this.maxHealth / 10)) {
+                acidThickness += 1
+            }
+
+            if (acidThickness == 0) return super.damage(source, amount)
+
+            var newState = Blocks.ACID_BLOCK.defaultState.with(AcidBlock.THICKNESS, acidThickness)
+
+            if (this.blockStateAtPos.block == net.minecraft.block.Blocks.WATER) {
+                newState = newState.with(Properties.WATERLOGGED, true)
+            }
+
+            world.setBlockState(this.blockPos, newState)
         }
-
-        if (amount >= 5) {
-            acidThickness += 1
-        }
-
-        if (amount > (this.maxHealth / 10)) {
-            acidThickness += 1
-        }
-
-        if (acidThickness == 0) return super.damage(source, amount)
-
-        var newState = Blocks.ACID_BLOCK.defaultState.with(AcidBlock.THICKNESS, acidThickness)
-
-        if (this.blockStateAtPos.block == net.minecraft.block.Blocks.WATER) {
-            newState = newState.with(Properties.WATERLOGGED, true)
-        }
-
-        world.setBlockState(this.blockPos, newState)
 
         return super.damage(source, amount)
     }

@@ -28,7 +28,7 @@ object NestBuildingHelper {
                         alien.world.setBlockState(blockPos, Blocks.NEST_RESIN_WEB_CROSS.defaultState)
                     }
 
-                    if (nestBlockData.isWall) {
+                    if (nestBlockData.isWall || nestBlockData.isCeiling) {
                         val nestResinWebState = Blocks.NEST_RESIN_WEB.defaultState
                             .with(NestResinWebBlock.UP, nestBlockData.upCoverage)
                             .with(NestResinWebBlock.NORTH, nestBlockData.northCoverage)
@@ -43,7 +43,7 @@ object NestBuildingHelper {
         }
     }
 
-    private fun isResinBlock(block: Block): Boolean = block == Blocks.NEST_RESIN ||
+    fun isResinBlock(block: Block): Boolean = block == Blocks.NEST_RESIN ||
             block == Blocks.NEST_RESIN_WEB ||
             block == Blocks.NEST_RESIN_WEB_CROSS ||
             block == Blocks.NEST_RESIN_BLOCK
@@ -73,7 +73,12 @@ object NestBuildingHelper {
         val westState = world.getBlockState(westPos)
 
         val blockStates = listOf(
-            upPos to upState, downPos to downState, northPos to northState, southPos to southState, eastPos to eastState, westPos to westState
+            upPos to upState,
+            downPos to downState,
+            northPos to northState,
+            southPos to southState,
+            eastPos to eastState,
+            westPos to westState
         )
 
         var fullCoverage = 0
@@ -95,14 +100,25 @@ object NestBuildingHelper {
             }
         }
 
-        val isFloor = actualState.isAir && upState.isAir && !isResinBlock(downState.block) && downState.isOpaqueFullCube(world, downPos)
-        val isWall = !isFloor && actualState.isAir && upState.isAir && horizontalCoverage in 1..2
+        val isFloor =
+            actualState.isAir && upState.isAir && !isResinBlock(downState.block) && downState.isOpaqueFullCube(
+                world,
+                downPos
+            )
+        val isWall =
+            !isFloor && actualState.isAir && (upState.isAir || isResinBlock(upState.block)) && horizontalCoverage in 1..2
         val isCorner = actualState.isAir && fullCoverage in 3..5
+        val isCeiling =
+            actualState.isAir && (downState.isAir || isResinBlock(downState.block)) && upState.isOpaqueFullCube(
+                world,
+                downPos
+            ) && !isCorner
 
         return NestBlockData(
             coverage = fullCoverage,
             isCorner = isCorner,
             isFloor = isFloor,
+            isCeiling = isCeiling,
             isWall = isWall,
             upCoverage = upState.isOpaqueFullCube(world, upPos),
             downCoverage = downState.isOpaqueFullCube(world, downPos),

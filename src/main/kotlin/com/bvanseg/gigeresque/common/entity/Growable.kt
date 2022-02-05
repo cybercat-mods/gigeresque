@@ -2,15 +2,23 @@ package com.bvanseg.gigeresque.common.entity
 
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
+import kotlin.math.min
 
 /**
  * @author Boston Vanseghi
  */
 interface Growable {
-    var growth: Int
-    val maxGrowth: Int
+    var growth: Float
+    val maxGrowth: Float
 
-    fun grow(amount: Int)
+    fun grow(entity: LivingEntity, amount: Float) {
+        growth = min(growth + amount, maxGrowth)
+
+        if (growth >= maxGrowth) {
+            growUp(entity)
+        }
+    }
+
     fun growInto(): LivingEntity?
 
     fun growUp(entity: LivingEntity) {
@@ -23,5 +31,7 @@ interface Growable {
         }
     }
 
-    fun getGrowthNeededUntilGrowUp(): Int = maxGrowth - growth
+    fun getGrowthNeededUntilGrowUp(): Float = maxGrowth - growth
+
+    fun getGrowthMultiplier() = 1.0f
 }

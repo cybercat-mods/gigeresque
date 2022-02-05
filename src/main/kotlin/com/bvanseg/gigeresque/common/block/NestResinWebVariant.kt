@@ -5,7 +5,7 @@ import net.minecraft.util.StringIdentifiable
 /**
  * @author Boston Vanseghi
  */
-enum class NestResinWebVariant(private val dirName: String): StringIdentifiable {
+enum class NestResinWebVariant(private val dirName: String) : StringIdentifiable {
     ONE("one"),
     TWO("two"),
     THREE("three"),
