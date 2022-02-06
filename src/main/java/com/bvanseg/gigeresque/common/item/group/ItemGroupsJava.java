@@ -1,4 +1,4 @@
-package com.bvanseg.gigeresque.common.item;
+package com.bvanseg.gigeresque.common.item.group;
 
 import com.bvanseg.gigeresque.common.GigeresqueJava;
 import com.bvanseg.gigeresque.common.block.BlocksJava;

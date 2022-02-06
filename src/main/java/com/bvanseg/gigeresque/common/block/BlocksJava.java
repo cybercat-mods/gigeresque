@@ -1,8 +1,9 @@
 package com.bvanseg.gigeresque.common.block;
 
 import com.bvanseg.gigeresque.common.GigeresqueJava;
+import com.bvanseg.gigeresque.common.block.material.MaterialsJava;
 import com.bvanseg.gigeresque.common.fluid.FluidsJava;
-import com.bvanseg.gigeresque.common.item.ItemGroupsJava;
+import com.bvanseg.gigeresque.common.item.group.ItemGroupsJava;
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializerJava;
 import com.bvanseg.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;

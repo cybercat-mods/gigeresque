@@ -73,8 +73,8 @@ class AdultAlienBrain(entity: AdultAlienEntity) : ComplexBrain<AdultAlienEntity>
     }
 
     private fun makeRandomWanderTask(): RandomTask<AdultAlienEntity> {
-        return RandomTask(
-            ImmutableList.of(
+        return RandomTask<AdultAlienEntity>(
+            ImmutableList.of<Pair<Task<in AdultAlienEntity>, Int>>(
                 Pair.of<Task<in AdultAlienEntity>, Int>(StrollTask(1.0f), 2),
                 Pair.of<Task<in AdultAlienEntity>, Int>(WaitTask(60, 120), 1)
             )

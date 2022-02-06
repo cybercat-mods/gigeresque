@@ -26,7 +26,7 @@ class NearestEggsSensor : Sensor<LivingEntity>() {
             brain.getOptionalMemory(MemoryModuleType.VISIBLE_MOBS).orElse(LivingTargetCache.empty())
 
         @Suppress("UNCHECKED_CAST")
-        val nearestEggs = nearestVisibleMobs.stream { it is AlienEggEntity }.toList() as MutableList<AlienEggEntity>
+        val nearestEggs: MutableList<AlienEggEntity> = nearestVisibleMobs.stream { it is AlienEggEntity }.toList() as MutableList<AlienEggEntity>
 
         brain.remember(MemoryModuleTypes.NEAREST_EGGS, nearestEggs)
     }

@@ -1,6 +1,7 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.sensor
 
 import com.bvanseg.gigeresque.mixins.common.entity.ai.SensorTypeInvoker
+import net.minecraft.entity.ai.brain.sensor.SensorType
 
 /**
  * @author Boston Vanseghi
