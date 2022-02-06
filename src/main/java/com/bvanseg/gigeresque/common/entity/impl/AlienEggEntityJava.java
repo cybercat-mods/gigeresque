@@ -33,7 +33,7 @@ public class AlienEggEntityJava extends AlienEntityJava implements IAnimatable {
 
     private static final long MAX_HATCH_PROGRESS = 50L;
 
-    private static final List<SensorType<? extends Sensor<? extends LivingEntity>>> SENSOR_TYPES = List.of(
+    private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
             SensorType.NEAREST_LIVING_ENTITIES,
             SensorTypesJava.NEAREST_EGGS,
             SensorTypesJava.NEAREST_FACEHUGGER,

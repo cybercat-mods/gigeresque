@@ -1,7 +1,6 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.sensor;
 
 import com.bvanseg.gigeresque.common.block.BlocksJava;
-import com.bvanseg.gigeresque.common.entity.AlienEntity;
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
 import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypesJava;
 import com.bvanseg.gigeresque.common.util.nest.NestBuildingHelperJava;

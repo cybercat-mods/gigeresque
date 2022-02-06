@@ -18,11 +18,17 @@ import java.util.List;
 public class AdultAlienBrainJava extends ComplexBrainJava<AdultAlienEntityJava> {
     private double intelligence = entity.getAttributes().getValue(AlienEntityAttributesJava.INTELLIGENCE_ATTRIBUTE);
 
+    public AdultAlienBrainJava(AdultAlienEntityJava entity) {
+        super(entity);
+    }
+
     private boolean isAquatic() {
         return entity instanceof AquaticAlienEntityJava;
     }
 
     private float aquaticLandPenalty = (isAquatic() && !entity.isTouchingWater()) ? 0.5f : 1.0f;
+
+
 
     @Override
     protected void addCoreActivities(List<Task<? super AdultAlienEntityJava>> tasks) {

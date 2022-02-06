@@ -10,7 +10,7 @@ object SensorTypes {
     val ALIEN_REPELLENT = SensorTypeInvoker.register("alien_repellent_sensor", ::AlienRepellentSensor)
     val DESTRUCTIBLE_LIGHT = SensorTypeInvoker.register("destructible_light_sensor", ::DestructibleLightSensor)
     val NEAREST_ALIEN_TARGET = SensorTypeInvoker.register("nearest_alien_target_sensor", ::NearestAlienTargetSensor)
-    val NEAREST_ALIEN_WEBBING = SensorTypeInvoker.register("nearest_alien_webbing_sensor", ::NearestAlienWebbingSensor)
+    val NEAREST_ALIEN_WEBBING: SensorType<NearestAlienWebbingSensor> = SensorTypeInvoker.register("nearest_alien_webbing_sensor", ::NearestAlienWebbingSensor)
     val NEAREST_EGGS = SensorTypeInvoker.register("nearest_eggs_sensor", ::NearestEggsSensor)
     val NEAREST_FACEHUGGER = SensorTypeInvoker.register("nearest_facehugger_sensor", ::NearestFacehuggersSensor)
     val NEAREST_FOOD_ITEM = SensorTypeInvoker.register("nearest_food_item_sensor", ::NearestFoodItemSensor)

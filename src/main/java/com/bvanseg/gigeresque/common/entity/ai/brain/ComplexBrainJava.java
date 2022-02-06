@@ -12,7 +12,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public abstract class ComplexBrainJava<T extends LivingEntity> {
     }
 
 
-    public Brain<T> initialize(Brain<T> brain) {
+    public Brain<? extends T> initialize(Brain<? extends T> brain) {
         List<Task<? super T>> coreTasks = List.of();
         addCoreActivities(coreTasks);
 
@@ -58,7 +57,7 @@ public abstract class ComplexBrainJava<T extends LivingEntity> {
         brain.setDefaultActivity(Activity.IDLE);
         brain.resetPossibleActivities();
 
-        this.brain = brain;
+        this.brain = (Brain<T>) brain;
         return brain;
     }
 

@@ -1,31 +1,46 @@
 package com.bvanseg.gigeresque.common.entity.impl;
 
+import com.bvanseg.gigeresque.ConstantsJava;
+import com.bvanseg.gigeresque.common.GigeresqueJava;
 import com.bvanseg.gigeresque.common.entity.AlienEntity;
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.Growable;
+import com.bvanseg.gigeresque.common.entity.GrowableJava;
 import com.bvanseg.gigeresque.common.entity.ai.brain.AdultAlienBrainJava;
 import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypesJava;
 import com.bvanseg.gigeresque.common.entity.ai.brain.sensor.SensorTypesJava;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import com.bvanseg.gigeresque.common.sound.SoundsJava;
+import com.bvanseg.gigeresque.common.util.EntityUtils;
+import com.mojang.serialization.Dynamic;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
 
 import java.util.List;
 
-public class AdultAlienEntityJava extends AlienEntityJava implements IAnimatable, Growable {
+import static java.lang.Math.max;
+
+public abstract class AdultAlienEntityJava extends AlienEntityJava implements IAnimatable, GrowableJava {
 
     private static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class, TrackedDataHandlerRegistry.FLOAT);
     private static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
-    private static final List<SensorType<? extends Sensor<? extends LivingEntity>>> SENSOR_TYPES = List.of(
+    private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
             SensorTypesJava.NEAREST_ALIEN_WEBBING,
             SensorType.NEAREST_LIVING_ENTITIES,
             SensorTypesJava.NEAREST_ALIEN_TARGET,
@@ -74,4 +89,177 @@ public class AdultAlienEntityJava extends AlienEntityJava implements IAnimatable
     }
 
     private AdultAlienBrainJava complexBrain;
+
+    @Override
+    public Brain.Profile<? extends AdultAlienEntityJava> createBrainProfile() {
+        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
+    }
+
+    @Override
+    public Brain<? extends AdultAlienEntityJava> deserializeBrain(Dynamic<?> dynamic) {
+        complexBrain = new AdultAlienBrainJava(this);
+        Brain<? extends AdultAlienEntityJava> deserialize = createBrainProfile().deserialize(dynamic);
+        return complexBrain.initialize(deserialize);
+    }
+
+    @Override
+    public Brain<AdultAlienEntityJava> getBrain() {
+        return (Brain<AdultAlienEntityJava>) super.getBrain();
+    }
+
+    @Override
+    public void mobTick() {
+        world.getProfiler().push("adultAlienBrain");
+        complexBrain.tick();
+        world.getProfiler().pop();
+        complexBrain.tickActivities();
+        super.mobTick();
+    }
+
+    @Override
+    public void initDataTracker() {
+        super.initDataTracker();
+        dataTracker.startTracking(GROWTH, 0.0f);
+        dataTracker.startTracking(IS_HISSING, false);
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putFloat("growth", getGrowth());
+        nbt.putBoolean("isHissing", isHissing());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("growth")) {
+            setGrowth(nbt.getFloat("growth"));
+        }
+        if (nbt.contains("isHissing")) {
+            setIsHissing(nbt.getBoolean("isHissing"));
+        }
+    }
+
+    @Override
+    public int computeFallDamage(float fallDistance, float damageMultiplier) {
+        if (fallDistance <= 9) return 0;
+        return super.computeFallDamage(fallDistance, damageMultiplier);
+    }
+
+    @Override
+    public int getSafeFallDistance() {
+        return 9;
+    }
+
+    @Override
+    public EntityData initialize(
+            ServerWorldAccess world,
+            LocalDifficulty difficulty,
+            SpawnReason spawnReason,
+            EntityData entityData,
+            NbtCompound entityNbt
+    ) {
+        if (spawnReason != SpawnReason.NATURAL) {
+            setGrowth(getMaxGrowth());
+        }
+        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!world.isClient && this.isAlive()) {
+            grow(this, 1 * getGrowthMultiplier());
+        }
+
+        // Hissing Logic
+
+        if (!world.isClient && isHissing()) {
+            hissingCooldown = max(hissingCooldown - 1, 0);
+
+            if (hissingCooldown <= 0) {
+                setIsHissing(false);
+            }
+        }
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        var multiplier = 1.0f;
+        if (source.isFire()) {
+            multiplier = 2.0f;
+        } else if (source.isProjectile()) {
+            multiplier = 0.5f;
+        }
+
+        var isolationModeMultiplier = GigeresqueJava.config.features.isolationMode ? 0.05f : 1.0f;
+
+        return super.damage(source, amount * multiplier * isolationModeMultiplier);
+    }
+
+    @Override
+    public boolean isClimbing() {
+        LivingEntity target = this.getTarget();
+        boolean isTargetAbove = target != null && target.getBlockY() > this.getBlockY();
+        return this.horizontalCollision && isTargetAbove;
+    }
+
+    @Override
+    public EntityNavigation createNavigation(World world) {
+        return new SpiderNavigation(this, world);
+    }
+
+    public boolean isCarryingEggmorphableTarget() {
+        return !getPassengerList().isEmpty() && EntityUtils.isEggmorphable(this.getFirstPassenger());
+    }
+
+    @Override
+    public Vec3d updatePassengerForDismount(LivingEntity passenger) {
+        if (!this.world.isClient) {
+            complexBrain.stun(ConstantsJava.TPS * 3);
+        }
+        return super.updatePassengerForDismount(passenger);
+    }
+
+    /*
+     * GROWTH
+     */
+
+    @Override
+    public float getMaxGrowth() {
+        return ConstantsJava.TPM;
+    }
+
+    @Override
+    public LivingEntity growInto() {
+        return null;
+    }
+
+    /*
+     * SOUNDS
+     */
+
+    @Override
+    public SoundEvent getAmbientSound() {
+        return SoundsJava.ALIEN_AMBIENT;
+    }
+    @Override
+    public SoundEvent getHurtSound(DamageSource source) {
+        return SoundsJava.ALIEN_HURT;
+    }
+    @Override
+    public SoundEvent getDeathSound() {
+        return SoundsJava.ALIEN_DEATH;
+    }
+
+    @Override
+    public void playAmbientSound() {
+        if (!world.isClient) {
+            setIsHissing(true);
+            hissingCooldown = 80L;
+        }
+        super.playAmbientSound();
+    }
 }
