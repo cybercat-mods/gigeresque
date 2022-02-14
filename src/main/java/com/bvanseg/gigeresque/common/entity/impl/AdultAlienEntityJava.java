@@ -65,7 +65,7 @@ public abstract class AdultAlienEntityJava extends AlienEntityJava implements IA
             MemoryModuleType.WALK_TARGET
     );
 
-    public AdultAlienEntityJava(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
+    public AdultAlienEntityJava(@NotNull EntityType<? extends AlienEntityJava> type, @NotNull World world) {
         super(type, world);
         stepHeight = 1.5f;
     }

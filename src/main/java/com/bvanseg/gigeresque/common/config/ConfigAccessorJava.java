@@ -87,4 +87,29 @@ public class ConfigAccessorJava {
         return blacklist.contains(targetIdentifier.toString());
     }
 
+    public static synchronized Map<String, String> getReversedMorphMappings() {
+        if (reversedMorphMappings == null) {
+            processReversedMorphMappings();
+        }
+        return reversedMorphMappings;
+    }
+
+    private static void processReversedMorphMappings() {
+        HashMap<String, String> map = new HashMap<>();
+
+        Map<String, List<String>> internalMap = Map.of(
+                EntityIdentifiersJava.ALIEN.toString(), GigeresqueJava.config.morphing.alienHosts,
+                EntityIdentifiersJava.AQUATIC_ALIEN.toString(), GigeresqueJava.config.morphing.aquaticAlienHosts,
+                EntityIdentifiersJava.RUNNER_ALIEN.toString(), GigeresqueJava.config.morphing.runnerHosts
+        );
+
+        internalMap.forEach((morphTo, morphFromSet) ->
+                morphFromSet.forEach(morphFrom ->
+                        map.computeIfAbsent(morphFrom, (it) -> morphTo
+                        )
+                )
+        );
+        reversedMorphMappings = map;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.bvanseg.gigeresque.common.block;
 
+import com.bvanseg.gigeresque.client.particle.ParticlesJava;
 import com.bvanseg.gigeresque.common.entity.AlienEntity;
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
 import com.bvanseg.gigeresque.common.source.DamageSourcesJava;

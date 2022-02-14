@@ -5,19 +5,13 @@ import com.bvanseg.gigeresque.common.GigeresqueJava;
 import com.bvanseg.gigeresque.common.data.handler.TrackedDataHandlersJava;
 import com.bvanseg.gigeresque.common.entity.AlienAttackTypeJava;
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.GenericAlienAttackTypeJava;
 import com.bvanseg.gigeresque.common.entity.attribute.AlienEntityAttributesJava;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -28,29 +22,27 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+public class RunnerAlienEntityJava extends AdultAlienEntityJava {
+    public RunnerAlienEntityJava(EntityType<? extends AlienEntityJava> type, World world) {
+        super(type, world);
+    }
 
-import static java.lang.Math.max;
-
-public class ClassicAlienEntityJava extends AdultAlienEntityJava {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0)
-                .add(EntityAttributes.GENERIC_ARMOR, 6.0)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 80.0)
+                .add(EntityAttributes.GENERIC_ARMOR, 4.0)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23000000417232513)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * ConstantsJava.getIsolationModeDamageBase())
                 .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
-                .add(AlienEntityAttributesJava.INTELLIGENCE_ATTRIBUTE, 1.0);
+                .add(AlienEntityAttributesJava.INTELLIGENCE_ATTRIBUTE, 0.5);
     }
 
-    private static final TrackedData<AlienAttackTypeJava> CURRENT_ATTACK_TYPE = DataTracker.registerData(ClassicAlienEntityJava.class, TrackedDataHandlersJava.ALIEN_ATTACK_TYPE);
+    private static final TrackedData<AlienAttackTypeJava> CURRENT_ATTACK_TYPE = DataTracker.registerData(RunnerAlienEntity.class, TrackedDataHandlersJava.ALIEN_ATTACK_TYPE);
 
-    private AnimationFactory animationFactory = new AnimationFactory(this);
+    private final AnimationFactory animationFactory = new AnimationFactory(this);
 
     private AlienAttackTypeJava getCurrentAttackType() {
         return dataTracker.get(CURRENT_ATTACK_TYPE);
@@ -61,14 +53,6 @@ public class ClassicAlienEntityJava extends AdultAlienEntityJava {
     }
 
     private int attackProgress = 0;
-    private boolean isSearching = false;
-    private boolean searchingLeft = false;
-    private long searchingProgress = 0L;
-    private long searchingCooldown = 0L;
-
-    public ClassicAlienEntityJava(@NotNull EntityType<? extends AlienEntityJava> type, @NotNull World world) {
-        super(type, world);
-    }
 
     @Override
     public void initDataTracker() {
@@ -105,89 +89,15 @@ public class ClassicAlienEntityJava extends AdultAlienEntityJava {
                 default -> AlienAttackTypeJava.CLAW_LEFT;
             });
         }
-
-        // Searching Logic
-
-        if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking()) {
-            if (isSearching) {
-                if (searchingProgress > ConstantsJava.TPS * 3) {
-                    searchingProgress = 0;
-                    searchingCooldown = ConstantsJava.TPS * 15L;
-                    isSearching = false;
-                } else {
-                    searchingProgress++;
-                }
-            } else {
-                searchingCooldown = max(searchingCooldown - 1, 0);
-
-                if (searchingCooldown <= 0) {
-                    int next = random.nextInt(10);
-
-                    isSearching = next == 0 || next == 1;
-
-                    if (isSearching) {
-                        searchingLeft = next == 0;
-                    }
-                }
-            }
-        }
     }
 
     @Override
     public float getGrowthMultiplier() {
-        return GigeresqueJava.config.miscellaneous.alienGrowthMultiplier;
-    }
-
-    @Override
-    public boolean tryAttack(Entity target) {
-        float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-            case BITE -> 23.0f;
-            case TAIL -> 3.0f;
-            default -> 0.0f;
-        };
-
-        if (target instanceof LivingEntity && !world.isClient) {
-            switch (getCurrentAttackType().genericAttackType) {
-                case NONE -> {
-                }
-                case BITE -> {
-                    var helmet = StreamSupport.stream(target.getArmorItems().spliterator(), false).filter(it -> {
-                        var item = it.getItem();
-                        return (item instanceof ArmorItem && ((ArmorItem) item).getSlotType() == EquipmentSlot.HEAD);
-                    }).findFirst().orElse(null);
-
-                    if (helmet != null) {
-                        helmet.damage(15, this, it -> {
-                        });
-                        additionalDamage -= 15;
-                    }
-                }
-                case CLAW -> {
-                    if (target instanceof PlayerEntity playerEntity && this.random.nextInt(7) == 0) {
-                        playerEntity.dropItem(playerEntity.getInventory().getMainHandStack(), true, false);
-                        playerEntity.getInventory().removeOne(playerEntity.getInventory().getMainHandStack());
-                    }
-                }
-                case TAIL -> {
-                    var armorItems = StreamSupport.stream(target.getArmorItems().spliterator(), false).collect(Collectors.toList());
-                    if (!armorItems.isEmpty()) {
-                        armorItems.get(new Random().nextInt(armorItems.size())).damage(10, this, it -> {
-                        });
-                    }
-                }
-            }
-        }
-
-        target.damage(
-                DamageSource.mob(this),
-                additionalDamage
-        );
-
-        return super.tryAttack(target);
+        return GigeresqueJava.config.miscellaneous.runnerAlienGrowthMultiplier;
     }
 
     /*
-     * ANIMATIONS
+        ANIMATIONS
      */
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -198,26 +108,18 @@ public class ClassicAlienEntityJava extends AdultAlienEntityJava {
                 event.getController().setAnimation(
                         new AnimationBuilder()
                                 .addAnimation("moving_aggro", true)
-                                .addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true)
+//                        .addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true)
                 );
                 return PlayState.CONTINUE;
             } else {
                 event.getController().setAnimation(
                         new AnimationBuilder()
                                 .addAnimation("moving_noaggro", true)
-                                .addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true)
+//                        .addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true)
                 );
                 return PlayState.CONTINUE;
             }
         } else {
-            if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
-                event.getController().setAnimation(
-                        new AnimationBuilder().addAnimation(searchingLeft ? "search_left" : "search_right", false
-                        )
-                );
-                return PlayState.CONTINUE;
-            }
-
             event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
             return PlayState.CONTINUE;
         }
@@ -225,7 +127,9 @@ public class ClassicAlienEntityJava extends AdultAlienEntityJava {
 
     private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
         if (getCurrentAttackType() != AlienAttackTypeJava.NONE && attackProgress > 0) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true));
+            event.getController().setAnimation(new AnimationBuilder()
+//                        .addAnimation(AlienAttackTypeJava.animationMappings.get(getCurrentAttackType()), true)
+            );
             return PlayState.CONTINUE;
         }
 
@@ -252,5 +156,4 @@ public class ClassicAlienEntityJava extends AdultAlienEntityJava {
     public AnimationFactory getFactory() {
         return animationFactory;
     }
-
 }

@@ -1,10 +1,10 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain;
 
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.ai.brain.task.BuildNestTaskJava;
-import com.bvanseg.gigeresque.common.entity.ai.brain.task.FindNestingGroundTaskJava;
+import com.bvanseg.gigeresque.common.entity.ai.brain.task.*;
 import com.bvanseg.gigeresque.common.entity.attribute.AlienEntityAttributesJava;
 import com.bvanseg.gigeresque.common.entity.impl.AdultAlienEntityJava;
+import com.bvanseg.gigeresque.common.entity.impl.AquaticAlienEntityJava;
 import com.bvanseg.gigeresque.common.util.EntityUtils;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.bvanseg.gigeresque.interfacing.Host;
@@ -53,7 +53,7 @@ public class AdultAlienBrainJava extends ComplexBrainJava<AdultAlienEntityJava> 
         }
 
         if (intelligence >= AlienEntityAttributesJava.SELF_PRESERVE_THRESHOLD) {
-            tasks.add(new AvoidRepellentTaskJava());
+            tasks.add(avoidRepellentTask());
         }
 
         tasks.add(makeRandomWanderTask());

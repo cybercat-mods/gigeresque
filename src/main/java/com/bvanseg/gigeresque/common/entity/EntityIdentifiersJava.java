@@ -1,10 +1,7 @@
 package com.bvanseg.gigeresque.common.entity;
 
 import com.bvanseg.gigeresque.common.GigeresqueJava;
-import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntity;
-import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
+import com.bvanseg.gigeresque.common.entity.impl.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 

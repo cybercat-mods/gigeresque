@@ -20,9 +20,9 @@ public enum AlienAttackTypeJava {
             TAIL_RIGHT, "attacking_tail_right"
     );
 
-    public final GenericAlienAttackTypeJava genericAlienAttackType;
+    public final GenericAlienAttackTypeJava genericAttackType;
 
-    AlienAttackTypeJava(GenericAlienAttackTypeJava genericAlienAttackType) {
-        this.genericAlienAttackType = genericAlienAttackType;
+    AlienAttackTypeJava(GenericAlienAttackTypeJava genericAttackType) {
+        this.genericAttackType = genericAttackType;
     }
 }

@@ -6,6 +6,7 @@ import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypesJav
 import com.bvanseg.gigeresque.common.util.nest.NestBuildingHelperJava;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
@@ -16,12 +17,12 @@ import net.minecraft.util.math.Box;
 import java.util.Optional;
 import java.util.Set;
 
-public class NearestAlienWebbingSensorJava extends Sensor<AlienEntityJava> {
-    private static Optional<BlockPos> findAlienWebbing(ServerWorld world, AlienEntityJava alien) {
+public class NearestAlienWebbingSensorJava<E extends LivingEntity> extends Sensor<E> {
+    private Optional<BlockPos> findAlienWebbing(ServerWorld world, E alien) {
         return BlockPos.findClosest(alien.getBlockPos(), 8, 3, pos -> isAlienWebbing(alien, world, pos));
     }
 
-    private static boolean isAlienWebbing(AlienEntityJava alien, ServerWorld world, BlockPos pos) {
+    private boolean isAlienWebbing(E alien, ServerWorld world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         return blockState.getBlock() == BlocksJava.NEST_RESIN_WEB_CROSS &&
                 (world.getBlockState(pos.up()).isAir() || NestBuildingHelperJava.isResinBlock(world.getBlockState(pos.up()).getBlock())) &&
@@ -37,7 +38,7 @@ public class NearestAlienWebbingSensorJava extends Sensor<AlienEntityJava> {
     }
 
     @Override
-    protected void sense(ServerWorld world, AlienEntityJava alien) {
+    protected void sense(ServerWorld world, E alien) {
         Brain<?> brain = alien.getBrain();
         brain.remember(MemoryModuleTypesJava.NEAREST_ALIEN_WEBBING, findAlienWebbing(world, alien));
     }

@@ -17,8 +17,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AlienEntityJava extends HostileEntity {
-
-    protected int acidDiameter = 3;
+    protected int getAcidDiameter() {
+        return 3;
+    }
 
     protected AlienEntityJava(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -71,10 +72,10 @@ public abstract class AlienEntityJava extends HostileEntity {
         }
 
         if (!this.world.isClient) {
-            if (acidDiameter == 1) {
+            if (getAcidDiameter() == 1) {
                 generateAcidPool(0, 0);
             } else {
-                int radius = (acidDiameter - 1) / 2;
+                int radius = (getAcidDiameter() - 1) / 2;
 
                 for (int x = -radius; x <= radius; x++) {
                     for (int z = -radius; z <= radius; z++) {
