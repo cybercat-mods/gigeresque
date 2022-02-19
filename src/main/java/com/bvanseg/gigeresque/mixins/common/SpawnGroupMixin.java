@@ -47,7 +47,7 @@ public class SpawnGroupMixin {
     SpawnGroup[] field_6301;
 
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
+        @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
     private static void addCustomSpawnGroup(CallbackInfo ci) {
         var spawnGroups = new ArrayList<>(Arrays.asList(field_6301));
         var last = spawnGroups.get(spawnGroups.size() - 1);
@@ -60,7 +60,7 @@ public class SpawnGroupMixin {
             try {
                 var gson = new GsonBuilder().create();
                 var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfig.class);
-                alienSpawnCap = gigeresqueConfig.getMiscellaneous().getAlienSpawnCap();
+                alienSpawnCap = gigeresqueConfig.miscellaneous.getAlienSpawnCap();
             } catch (Exception e) {
                 // Do nothing
             }

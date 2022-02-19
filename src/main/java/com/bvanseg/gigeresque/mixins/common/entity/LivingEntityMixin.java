@@ -93,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
             for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++) {
                 this.getEntityWorld().addImportantParticle(
-                        Particles.INSTANCE.getBLOOD(), d, yOffset, f, 0.0, -0.15, 0.0);
+                        Particles.BLOOD, d, yOffset, f, 0.0, -0.15, 0.0);
             }
         }
 
@@ -120,11 +120,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
         }
 
         if (getTicksUntilEggmorphed() == 0L && !hasEggSpawned && !this.isDead()) {
-            AlienEggEntity egg = new AlienEggEntity(Entities.INSTANCE.getEGG(), world);
+            AlienEggEntity egg = new AlienEggEntity(Entities.EGG, world);
             egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
             world.spawnEntity(egg);
             this.hasEggSpawned = true;
-            this.damage(DamageSources.INSTANCE.getEGGMORPHING(), Float.MAX_VALUE);
+            this.damage(DamageSources.EGGMORPHING, Float.MAX_VALUE);
         }
     }
 
@@ -145,18 +145,18 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
         if (ticksUntilImpregnation == 0L) {
             if (age % Constants.TPS == 0L) {
-                this.damage(DamageSources.INSTANCE.getCHESTBURSTING(), this.getMaxHealth() / 8f);
+                this.damage(DamageSources.CHESTBURSTING, this.getMaxHealth() / 8f);
             }
 
             if (this.isDead() && !hasParasiteSpawned) {
                 Identifier identifier = Registry.ENTITY_TYPE.getId(this.getType());
-                Map<String, String> morphMappings = ConfigAccessor.INSTANCE.getReversedMorphMappings();
-                String producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.INSTANCE.getALIEN().toString());
+                Map<String, String> morphMappings = ConfigAccessor.getReversedMorphMappings();
+                String producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
 
                 ChestbursterEntity burster = switch (producedVariant) {
-                    case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.INSTANCE.getRUNNERBURSTER(), this.world);
-                    case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.INSTANCE.getAQUATIC_CHESTBURSTER(), this.world);
-                    default -> new ChestbursterEntity(Entities.INSTANCE.getCHESTBURSTER(), this.world);
+                    case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.RUNNERBURSTER, this.world);
+                    case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.world);
+                    default -> new ChestbursterEntity(Entities.CHESTBURSTER, this.world);
                 };
 
                 burster.setHostId(identifier.toString());
@@ -237,13 +237,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     public boolean isEggmorphing() {
         Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
         Block pos = this.getBlockStateAtPos().getBlock();
-        boolean isCoveredInResin = cameraBlock == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS() || pos == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS();
+        boolean isCoveredInResin = cameraBlock == Blocks.NEST_RESIN_WEB_CROSS || pos == Blocks.NEST_RESIN_WEB_CROSS;
         return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
     }
 
     @Override
     public float getTicksUntilEggmorphed() {
-        return dataTracker.get(EGGMORPH_TICKS).floatValue();
+        return dataTracker.get(EGGMORPH_TICKS);
     }
 
     @Override

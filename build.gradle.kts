@@ -1,7 +1,5 @@
 plugins {
     id("fabric-loom")
-    val kotlinVersion: String by System.getProperties()
-    kotlin("jvm").version(kotlinVersion)
 }
 base {
     val archivesBaseName: String by project
@@ -27,8 +25,6 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    val fabricKotlinVersion: String by project
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
     val geckoLibVersion: String by project
     modImplementation("software.bernie.geckolib:geckolib-fabric-1.18:$geckoLibVersion")
     val modMenuVersion: String by project
@@ -46,11 +42,6 @@ tasks {
         sourceCompatibility = javaVersion.toString()
         targetCompatibility = javaVersion.toString()
         options.release.set(javaVersion.toString().toInt())
-    }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions { jvmTarget = javaVersion.toString() }
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
     }
     jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
     processResources {

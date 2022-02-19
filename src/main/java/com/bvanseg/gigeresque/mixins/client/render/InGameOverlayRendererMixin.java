@@ -36,7 +36,7 @@ public class InGameOverlayRendererMixin {
             BlockPos blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
             FluidState fluidState = client.player.world.getFluidState(blockPos);
 
-            if (fluidState.getBlockState().getBlock() == Blocks.INSTANCE.getBLACK_FLUID()) {
+            if (fluidState.getBlockState().getBlock() == Blocks.BLACK_FLUID) {
                 renderBlackFluidOverlay(client, matrices);
             }
 
