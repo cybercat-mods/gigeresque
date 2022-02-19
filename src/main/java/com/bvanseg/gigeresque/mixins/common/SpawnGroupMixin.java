@@ -1,8 +1,8 @@
 package com.bvanseg.gigeresque.mixins.common;
 
-import com.bvanseg.gigeresque.Constants;
+import com.bvanseg.gigeresque.ConstantsJava;
 import com.bvanseg.gigeresque.CustomSpawnGroup;
-import com.bvanseg.gigeresque.common.config.GigeresqueConfig;
+import com.bvanseg.gigeresque.common.config.GigeresqueConfigJava;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
@@ -47,20 +47,20 @@ public class SpawnGroupMixin {
     SpawnGroup[] field_6301;
 
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
+        @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
     private static void addCustomSpawnGroup(CallbackInfo ci) {
         var spawnGroups = new ArrayList<>(Arrays.asList(field_6301));
         var last = spawnGroups.get(spawnGroups.size() - 1);
 
         var configPath = FabricLoader.getInstance().getConfigDir().resolve("gigeresque.json");
         var config = configPath.toFile();
-        var alienSpawnCap = Constants.ALIEN_SPAWN_CAP;
+        var alienSpawnCap = ConstantsJava.ALIEN_SPAWN_CAP;
 
         if (config.exists()) {
             try {
                 var gson = new GsonBuilder().create();
-                var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfig.class);
-                alienSpawnCap = gigeresqueConfig.getMiscellaneous().getAlienSpawnCap();
+                var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfigJava.class);
+                alienSpawnCap = gigeresqueConfig.miscellaneous.getAlienSpawnCap();
             } catch (Exception e) {
                 // Do nothing
             }

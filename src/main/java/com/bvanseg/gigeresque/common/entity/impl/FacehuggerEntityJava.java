@@ -59,7 +59,7 @@ public class FacehuggerEntityJava extends AlienEntityJava implements IAnimatable
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251);
     }
 
-    private static final TrackedData<Boolean> IS_INFERTILE = DataTracker.registerData(FacehuggerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> IS_INFERTILE = DataTracker.registerData(FacehuggerEntityJava.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     private static final List<SensorType<? extends Sensor<? super FacehuggerEntityJava>>> SENSOR_TYPES = List.of(
             SensorType.NEAREST_LIVING_ENTITIES,
@@ -158,7 +158,7 @@ public class FacehuggerEntityJava extends AlienEntityJava implements IAnimatable
         return super.updatePassengerForDismount(passenger);
     }
 
-    boolean isAttachedToHost() {
+    public boolean isAttachedToHost() {
         return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity;
     }
 

@@ -21,18 +21,16 @@
   "entrypoints": {
     "main": [
       {
-        "adapter": "kotlin",
-        "value": "com.bvanseg.gigeresque.common.Gigeresque"
+        "value": "com.bvanseg.gigeresque.common.GigeresqueJava"
       }
     ],
     "client": [
       {
-        "adapter": "kotlin",
-        "value": "com.bvanseg.gigeresque.client.GigeresqueClient"
+        "value": "com.bvanseg.gigeresque.client.GigeresqueClientJava"
       }
     ],
     "modmenu": [
-      "com.bvanseg.gigeresque.client.config.ModMenuGigeresque"
+      "com.bvanseg.gigeresque.client.config.ModMenuGigeresqueJava"
     ]
   },
   "mixins": [
@@ -41,7 +39,6 @@
   "depends": {
     "fabricloader": ">=0.12.12",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.6.2+kotlin.1.6.10",
     "minecraft": "1.18.x",
     "geckolib3": ">=3.0.23",
     "java": ">=17"

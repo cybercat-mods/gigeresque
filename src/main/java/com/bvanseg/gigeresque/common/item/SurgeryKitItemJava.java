@@ -71,7 +71,7 @@ public class SurgeryKitItemJava extends Item {
             burster = new ChestbursterEntityJava(EntitiesJava.CHESTBURSTER, entity.world);
         }
 
-        burster.hostId = identifier.toString();
+        burster.setHostId(identifier.toString());
         burster.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
         entity.world.spawnEntity(burster);
     }

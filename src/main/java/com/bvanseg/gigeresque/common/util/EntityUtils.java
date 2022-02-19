@@ -1,7 +1,7 @@
 package com.bvanseg.gigeresque.common.util;
 
 import com.bvanseg.gigeresque.common.config.ConfigAccessorJava;
-import com.bvanseg.gigeresque.common.entity.AlienEntity;
+import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
 import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntityJava;
 import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
@@ -24,11 +24,11 @@ public class EntityUtils {
         if (ConfigAccessorJava.isTargetBlacklisted(FacehuggerEntityJava.class, entity)) return false;
         if (ConfigAccessorJava.isTargetWhitelisted(FacehuggerEntityJava.class, entity)) return true;
 
-        boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
+        boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntityJava);
 
         return entity.isAlive() &&
                 entity instanceof LivingEntity &&
-                !(entity instanceof AlienEntity) &&
+                !(entity instanceof AlienEntityJava) &&
                 entity.getPassengerList().isEmpty() &&
                 ((Host) entity).doesNotHaveParasite() &&
                 ((Eggmorphable) entity).isNotEggmorphing() &&
@@ -50,7 +50,7 @@ public class EntityUtils {
 
         return entity.isAlive() &&
                 entity instanceof LivingEntity &&
-                !(entity instanceof AlienEntity) &&
+                !(entity instanceof AlienEntityJava) &&
                 ((Host) entity).doesNotHaveParasite() &&
                 ((Eggmorphable) entity).isNotEggmorphing() &&
                 ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD &&

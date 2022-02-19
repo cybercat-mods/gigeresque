@@ -1,6 +1,5 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.sensor;
 
-import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypesJava;
 import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
 import com.google.common.collect.ImmutableSet;

@@ -1,7 +1,7 @@
 package com.bvanseg.gigeresque.common.config
 
-import com.bvanseg.gigeresque.Constants
-import com.bvanseg.gigeresque.common.Gigeresque
+import com.bvanseg.gigeresque.ConstantsJava
+import com.bvanseg.gigeresque.common.GigeresqueJava
 import me.shedaniel.autoconfig.ConfigData
 import me.shedaniel.autoconfig.annotation.Config
 import me.shedaniel.autoconfig.annotation.ConfigEntry
@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry
 /**
  * @author Boston Vanseghi
  */
-@Config(name = Gigeresque.MOD_ID)
+@Config(name = GigeresqueJava.MOD_ID)
 class GigeresqueConfig : ConfigData {
 
     class Features {
@@ -75,7 +75,7 @@ class GigeresqueConfig : ConfigData {
         var alienGrowthMultiplier = 1.0f
 
         @ConfigEntry.Gui.Tooltip(count = 2)
-        var alienSpawnCap = Constants.ALIEN_SPAWN_CAP
+        var alienSpawnCap = ConstantsJava.ALIEN_SPAWN_CAP
 
         @ConfigEntry.Gui.Tooltip(count = 1)
         var aquaticAlienGrowthMultiplier = 1.0f

@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.common.entity;
 
-import com.bvanseg.gigeresque.common.item.SurgeryKitItem;
+import com.bvanseg.gigeresque.common.item.SurgeryKitItemJava;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -25,7 +25,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
 
     @Inject(method = {"interactMob"}, at = {@At("HEAD")}, cancellable = true)
     protected ActionResult interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> callbackInfo) {
-        if (player.getStackInHand(hand).getItem() instanceof SurgeryKitItem) {
+        if (player.getStackInHand(hand).getItem() instanceof SurgeryKitItemJava) {
             callbackInfo.setReturnValue(super.interactMob(player, hand));
         }
         return super.interactMob(player, hand);

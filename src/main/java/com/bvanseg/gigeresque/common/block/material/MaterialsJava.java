@@ -1,6 +1,5 @@
 package com.bvanseg.gigeresque.common.block.material;
 
-import com.bvanseg.gigeresque.common.block.material.MaterialBuilder;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 

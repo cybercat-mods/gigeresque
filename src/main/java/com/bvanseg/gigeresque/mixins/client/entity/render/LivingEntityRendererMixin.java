@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.client.entity.render;
 
-import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
+import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRendererJava;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -26,6 +26,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(EntityRendererFactory.Context ctx, M model, float shadowRadius, CallbackInfo ci) {
-        this.addFeature(new EggmorphFeatureRenderer<>((FeatureRendererContext<T, M>) this));
+        this.addFeature(new EggmorphFeatureRendererJava<>((FeatureRendererContext<T, M>) this));
     }
 }

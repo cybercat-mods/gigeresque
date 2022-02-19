@@ -27,6 +27,6 @@ import net.minecraft.particle.DefaultParticleType;
                 double h,
                 double i
         ) {
-            return new BloodParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
+            return new BloodParticleJava(clientWorld, d, e, f, g, h, i, spriteProvider);
         }
     }

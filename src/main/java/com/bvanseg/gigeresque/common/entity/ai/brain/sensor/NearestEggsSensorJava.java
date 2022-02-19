@@ -1,7 +1,6 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.sensor;
 
 import com.bvanseg.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypesJava;
-import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntity;
 import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntityJava;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.LivingEntity;

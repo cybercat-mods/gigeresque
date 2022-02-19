@@ -1,8 +1,6 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain.memory;
 
-import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntity;
 import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntity;
 import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
 import com.bvanseg.gigeresque.mixins.common.entity.ai.MemoryModuleTypeInvoker;
 import net.minecraft.entity.LivingEntity;

@@ -91,7 +91,15 @@ public class ChestbursterEntityJava extends AlienEntityJava implements IAnimatab
     }
 
     private ChestbursterBrainJava complexBrain;
-    public String hostId = null;
+    protected String hostId = null;
+
+    public String getHostId() {
+        return hostId;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
 
     @Override
     protected void initDataTracker() {

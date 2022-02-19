@@ -1,10 +1,8 @@
 package com.bvanseg.gigeresque.common.entity.ai.brain;
 
-import com.bvanseg.gigeresque.common.entity.ai.brain.task.ConsumeFoodItemTask;
 import com.bvanseg.gigeresque.common.entity.ai.brain.task.ConsumeFoodItemTaskJava;
 import com.bvanseg.gigeresque.common.entity.impl.AquaticChestbursterEntityJava;
 import com.bvanseg.gigeresque.common.entity.impl.ChestbursterEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.RunnerbursterEntity;
 import com.bvanseg.gigeresque.common.entity.impl.RunnerbursterEntityJava;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;

@@ -1,6 +1,5 @@
 package com.bvanseg.gigeresque.common.config;
 
-import com.bvanseg.gigeresque.Constants;
 import com.bvanseg.gigeresque.ConstantsJava;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -11,15 +10,23 @@ import net.minecraft.util.registry.Registry;
 import java.util.List;
 
 public class GigeresqueConfigJava implements ConfigData {
-    public class Features {
+    public static class Features {
         @ConfigEntry.Gui.Tooltip(count = 3)
         public boolean isolationMode = false;
 
         @ConfigEntry.Gui.Tooltip(count = 3)
         public boolean surgeryKit = false;
+
+        public boolean getIsolationMode() {
+            return isolationMode;
+        }
+
+        public boolean getSurgeryKit() {
+            return surgeryKit;
+        }
     }
 
-    public class Miscellaneous {
+    public static class Miscellaneous {
         @ConfigEntry.Gui.Tooltip(count = 1)
         public List<String> acidResistantBlocks = List.of(
                 "gigeresque:nest_resin",
@@ -96,9 +103,53 @@ public class GigeresqueConfigJava implements ConfigData {
 
         @ConfigEntry.Gui.Tooltip(count = 1)
         public float runnerbursterGrowthMultiplier = 1.0f;
+
+        public List<String> getAcidResistantBlocks() {
+            return acidResistantBlocks;
+        }
+
+        public float getAlienGrowthMultiplier() {
+            return alienGrowthMultiplier;
+        }
+
+        public int getAlienSpawnCap() {
+            return alienSpawnCap;
+        }
+
+        public float getAquaticAlienGrowthMultiplier() {
+            return aquaticAlienGrowthMultiplier;
+        }
+
+        public float getAquaticChestbursterGrowthMultiplier() {
+            return aquaticChestbursterGrowthMultiplier;
+        }
+
+        public float getChestbursterGrowthMultiplier() {
+            return chestbursterGrowthMultiplier;
+        }
+
+        public float getEggmorphTickMultiplier() {
+            return eggmorphTickMultiplier;
+        }
+
+        public float getFacehuggerAttachTickMultiplier() {
+            return facehuggerAttachTickMultiplier;
+        }
+
+        public float getImpregnationTickMultiplier() {
+            return impregnationTickMultiplier;
+        }
+
+        public float getRunnerAlienGrowthMultiplier() {
+            return runnerAlienGrowthMultiplier;
+        }
+
+        public float getRunnerbursterGrowthMultiplier() {
+            return runnerbursterGrowthMultiplier;
+        }
     }
 
-    public class Morphing {
+    public static class Morphing {
         @ConfigEntry.Gui.Tooltip(count = 1)
         public List<String> alienHosts = List.of(
                 Registry.ENTITY_TYPE.getId(EntityType.EVOKER).toString(),
@@ -137,7 +188,7 @@ public class GigeresqueConfigJava implements ConfigData {
         );
     }
 
-    public class Targeting {
+    public static class Targeting {
 
         @ConfigEntry.Gui.Tooltip(count = 1)
         public List<String> alienWhitelist = List.of("");
@@ -217,4 +268,20 @@ public class GigeresqueConfigJava implements ConfigData {
 
     @ConfigEntry.Gui.CollapsibleObject
     public Targeting targeting = new Targeting();
+
+    public Features getFeatures() {
+        return features;
+    }
+
+    public Miscellaneous getMiscellaneous() {
+        return miscellaneous;
+    }
+
+    public Morphing getMorphing() {
+        return morphing;
+    }
+
+    public Targeting getTargeting() {
+        return targeting;
+    }
 }

@@ -16,7 +16,7 @@ public class FluidsJava implements GigeresqueInitializerJava {
     }
 
     public static final BlackFluidJava BLACK_FLUID_STILL = new BlackFluidJava.Still();
-    static final BlackFluidJava BLACK_FLUID_FLOWING = new BlackFluidJava.Flowing();
+    public static final BlackFluidJava BLACK_FLUID_FLOWING = new BlackFluidJava.Flowing();
 
     @Override
     public void initialize() {

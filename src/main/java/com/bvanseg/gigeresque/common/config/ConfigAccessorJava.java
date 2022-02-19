@@ -1,7 +1,6 @@
 package com.bvanseg.gigeresque.common.config;
 
 import com.bvanseg.gigeresque.common.GigeresqueJava;
-import com.bvanseg.gigeresque.common.entity.EntityIdentifiers;
 import com.bvanseg.gigeresque.common.entity.EntityIdentifiersJava;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -9,7 +8,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class ConfigAccessorJava {
     private static Map<String, HashSet<String>> mappedAcidResistantBlocks;

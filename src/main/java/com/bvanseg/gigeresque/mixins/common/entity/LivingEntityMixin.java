@@ -1,14 +1,14 @@
 package com.bvanseg.gigeresque.mixins.common.entity;
 
-import com.bvanseg.gigeresque.Constants;
-import com.bvanseg.gigeresque.client.particle.Particles;
-import com.bvanseg.gigeresque.common.Gigeresque;
-import com.bvanseg.gigeresque.common.block.Blocks;
-import com.bvanseg.gigeresque.common.config.ConfigAccessor;
-import com.bvanseg.gigeresque.common.entity.Entities;
-import com.bvanseg.gigeresque.common.entity.EntityIdentifiers;
+import com.bvanseg.gigeresque.ConstantsJava;
+import com.bvanseg.gigeresque.client.particle.ParticlesJava;
+import com.bvanseg.gigeresque.common.GigeresqueJava;
+import com.bvanseg.gigeresque.common.block.BlocksJava;
+import com.bvanseg.gigeresque.common.config.ConfigAccessorJava;
+import com.bvanseg.gigeresque.common.entity.EntitiesJava;
+import com.bvanseg.gigeresque.common.entity.EntityIdentifiersJava;
 import com.bvanseg.gigeresque.common.entity.impl.*;
-import com.bvanseg.gigeresque.common.source.DamageSources;
+import com.bvanseg.gigeresque.common.source.DamageSourcesJava;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.bvanseg.gigeresque.interfacing.Host;
 import net.minecraft.block.Block;
@@ -79,7 +79,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     private void handleStatusEffect(long offset, StatusEffect statusEffect, Boolean checkStatusEffect) {
         if (ticksUntilImpregnation < offset && (!checkStatusEffect || !hasStatusEffect(statusEffect))) {
-            int amplifier = (int) (((Constants.TPD - (Constants.TPM * 8L)) - ticksUntilImpregnation) / (Constants.TPS * 30));
+            int amplifier = (int) (((ConstantsJava.TPD - (ConstantsJava.TPM * 8L)) - ticksUntilImpregnation) / (ConstantsJava.TPS * 30));
             this.addStatusEffect(new StatusEffectInstance(statusEffect, (int) ticksUntilImpregnation, amplifier));
         }
     }
@@ -93,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
             for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++) {
                 this.getEntityWorld().addImportantParticle(
-                        Particles.INSTANCE.getBLOOD(), d, yOffset, f, 0.0, -0.15, 0.0);
+                        ParticlesJava.BLOOD, d, yOffset, f, 0.0, -0.15, 0.0);
             }
         }
 
@@ -113,50 +113,50 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     private void handleEggmorphingLogic() {
         if (isEggmorphing()) {
-            setTicksUntilEggmorphed(Math.max(getTicksUntilEggmorphed() - Gigeresque.config.getMiscellaneous().getEggmorphTickMultiplier(), 0f));
+            setTicksUntilEggmorphed(Math.max(getTicksUntilEggmorphed() - GigeresqueJava.config.getMiscellaneous().getEggmorphTickMultiplier(), 0f));
         } else {
             // Reset eggmorphing counter if the entity is no longer eggmorphing at any point.
             resetEggmorphing();
         }
 
         if (getTicksUntilEggmorphed() == 0L && !hasEggSpawned && !this.isDead()) {
-            AlienEggEntity egg = new AlienEggEntity(Entities.INSTANCE.getEGG(), world);
+            AlienEggEntityJava egg = new AlienEggEntityJava(EntitiesJava.EGG, world);
             egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
             world.spawnEntity(egg);
             this.hasEggSpawned = true;
-            this.damage(DamageSources.INSTANCE.getEGGMORPHING(), Float.MAX_VALUE);
+            this.damage(DamageSourcesJava.EGGMORPHING, Float.MAX_VALUE);
         }
     }
 
     private void handleHostLogic() {
         if (hasParasite()) {
-            ticksUntilImpregnation = Math.max(ticksUntilImpregnation - Gigeresque.config.getMiscellaneous().getImpregnationTickMultiplier(), 0f);
+            ticksUntilImpregnation = Math.max(ticksUntilImpregnation - GigeresqueJava.config.getMiscellaneous().getImpregnationTickMultiplier(), 0f);
 
             if (Boolean.TRUE.equals(!isBleeding()) &&
                     ticksUntilImpregnation >= 0 &&
-                    ticksUntilImpregnation < Constants.TPS * 30L) {
+                    ticksUntilImpregnation < ConstantsJava.TPS * 30L) {
                 setBleeding(true);
             }
 
-            handleStatusEffect(Constants.TPM * 12L, StatusEffects.HUNGER, false);
-            handleStatusEffect(Constants.TPM * 7L, StatusEffects.WEAKNESS, true);
-            handleStatusEffect(Constants.TPM * 2L, StatusEffects.MINING_FATIGUE, true);
+            handleStatusEffect(ConstantsJava.TPM * 12L, StatusEffects.HUNGER, false);
+            handleStatusEffect(ConstantsJava.TPM * 7L, StatusEffects.WEAKNESS, true);
+            handleStatusEffect(ConstantsJava.TPM * 2L, StatusEffects.MINING_FATIGUE, true);
         }
 
         if (ticksUntilImpregnation == 0L) {
-            if (age % Constants.TPS == 0L) {
-                this.damage(DamageSources.INSTANCE.getCHESTBURSTING(), this.getMaxHealth() / 8f);
+            if (age % ConstantsJava.TPS == 0L) {
+                this.damage(DamageSourcesJava.CHESTBURSTING, this.getMaxHealth() / 8f);
             }
 
             if (this.isDead() && !hasParasiteSpawned) {
                 Identifier identifier = Registry.ENTITY_TYPE.getId(this.getType());
-                Map<String, String> morphMappings = ConfigAccessor.INSTANCE.getReversedMorphMappings();
-                String producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.INSTANCE.getALIEN().toString());
+                Map<String, String> morphMappings = ConfigAccessorJava.getReversedMorphMappings();
+                String producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiersJava.ALIEN.toString());
 
-                ChestbursterEntity burster = switch (producedVariant) {
-                    case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.INSTANCE.getRUNNERBURSTER(), this.world);
-                    case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.INSTANCE.getAQUATIC_CHESTBURSTER(), this.world);
-                    default -> new ChestbursterEntity(Entities.INSTANCE.getCHESTBURSTER(), this.world);
+                ChestbursterEntityJava burster = switch (producedVariant) {
+                    case GigeresqueJava.MOD_ID + ":runner_alien" -> new RunnerbursterEntityJava(EntitiesJava.RUNNERBURSTER, this.world);
+                    case GigeresqueJava.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntityJava(EntitiesJava.AQUATIC_CHESTBURSTER, this.world);
+                    default -> new ChestbursterEntityJava(EntitiesJava.CHESTBURSTER, this.world);
                 };
 
                 burster.setHostId(identifier.toString());
@@ -175,7 +175,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     @Inject(method = {"isImmobile"}, at = {@At("RETURN")})
     protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (
-                this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance) ||
+                this.getPassengerList().stream().anyMatch(FacehuggerEntityJava.class::isInstance) ||
                         this.isEggmorphing()
         ) {
             return true;
@@ -211,7 +211,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"damage"}, at = {@At("HEAD")}, cancellable = true)
     public void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance) &&
+        if (this.getPassengerList().stream().anyMatch(FacehuggerEntityJava.class::isInstance) &&
                 (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
             callbackInfo.setReturnValue(false);
             callbackInfo.cancel();
@@ -237,13 +237,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     public boolean isEggmorphing() {
         Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
         Block pos = this.getBlockStateAtPos().getBlock();
-        boolean isCoveredInResin = cameraBlock == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS() || pos == Blocks.INSTANCE.getNEST_RESIN_WEB_CROSS();
+        boolean isCoveredInResin = cameraBlock == BlocksJava.NEST_RESIN_WEB_CROSS || pos == BlocksJava.NEST_RESIN_WEB_CROSS;
         return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
     }
 
     @Override
     public float getTicksUntilEggmorphed() {
-        return dataTracker.get(EGGMORPH_TICKS).floatValue();
+        return dataTracker.get(EGGMORPH_TICKS);
     }
 
     @Override

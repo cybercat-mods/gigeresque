@@ -2,7 +2,6 @@ package com.bvanseg.gigeresque.common.entity.impl;
 
 import com.bvanseg.gigeresque.ConstantsJava;
 import com.bvanseg.gigeresque.common.GigeresqueJava;
-import com.bvanseg.gigeresque.common.entity.AlienEntity;
 import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
 import com.bvanseg.gigeresque.common.entity.GrowableJava;
 import com.bvanseg.gigeresque.common.entity.ai.brain.AdultAlienBrainJava;
@@ -37,8 +36,8 @@ import static java.lang.Math.max;
 
 public abstract class AdultAlienEntityJava extends AlienEntityJava implements IAnimatable, GrowableJava {
 
-    private static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class, TrackedDataHandlerRegistry.FLOAT);
-    private static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntityJava.class, TrackedDataHandlerRegistry.FLOAT);
+    private static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntityJava.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
             SensorTypesJava.NEAREST_ALIEN_WEBBING,

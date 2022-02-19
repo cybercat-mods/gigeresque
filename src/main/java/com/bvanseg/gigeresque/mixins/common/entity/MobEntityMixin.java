@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.common.entity;
 
-import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntity;
+import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.bvanseg.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityType;
@@ -29,7 +29,7 @@ public abstract class MobEntityMixin extends LivingEntity {
             callbackInfo.cancel();
         }
 
-        if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+        if (this.getPassengerList().stream().anyMatch(FacehuggerEntityJava.class::isInstance)) {
             callbackInfo.cancel();
         }
     }

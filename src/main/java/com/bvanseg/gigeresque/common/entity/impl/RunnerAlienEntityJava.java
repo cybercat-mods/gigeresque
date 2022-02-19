@@ -40,7 +40,7 @@ public class RunnerAlienEntityJava extends AdultAlienEntityJava {
                 .add(AlienEntityAttributesJava.INTELLIGENCE_ATTRIBUTE, 0.5);
     }
 
-    private static final TrackedData<AlienAttackTypeJava> CURRENT_ATTACK_TYPE = DataTracker.registerData(RunnerAlienEntity.class, TrackedDataHandlersJava.ALIEN_ATTACK_TYPE);
+    private static final TrackedData<AlienAttackTypeJava> CURRENT_ATTACK_TYPE = DataTracker.registerData(RunnerAlienEntityJava.class, TrackedDataHandlersJava.ALIEN_ATTACK_TYPE);
 
     private final AnimationFactory animationFactory = new AnimationFactory(this);
 

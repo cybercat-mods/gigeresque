@@ -1,6 +1,5 @@
 package com.bvanseg.gigeresque.client.block;
 
-import com.bvanseg.gigeresque.common.block.Blocks;
 import com.bvanseg.gigeresque.common.block.BlocksJava;
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializerJava;
 import com.bvanseg.gigeresque.common.util.InitializationTimer;

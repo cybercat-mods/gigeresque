@@ -51,9 +51,9 @@ public class AlienEggEntityJava extends AlienEntityJava implements IAnimatable {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
     }
 
-    private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntityJava.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntityJava.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntityJava.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     private static final long MAX_HATCH_PROGRESS = 50L;
 
@@ -131,8 +131,8 @@ public class AlienEggEntityJava extends AlienEntityJava implements IAnimatable {
     }
 
     @Override
-    public Brain<AlienEggEntity> getBrain() {
-        return (Brain<AlienEggEntity>) super.getBrain();
+    public Brain<AlienEggEntityJava> getBrain() {
+        return (Brain<AlienEggEntityJava>) super.getBrain();
     }
 
     @Override

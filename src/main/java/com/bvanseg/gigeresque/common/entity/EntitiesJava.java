@@ -17,7 +17,7 @@ public class EntitiesJava implements GigeresqueInitializerJava {
     private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory, float width, float height) {
         return Registry.register(
                 Registry.ENTITY_TYPE,
-                new Identifier(GigeresqueJava.MOD_ID),
+                new Identifier(GigeresqueJava.MOD_ID, name),
                 FabricEntityTypeBuilder.create(CustomSpawnGroupJava.ALIEN, factory).dimensions(EntityDimensions.fixed(width, height)).build());
     }
 
