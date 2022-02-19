@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.client.entity.render;
 
-import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRendererJava;
+import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -27,6 +27,6 @@ public abstract class GeoEntityRendererMixin<T extends LivingEntity & IAnimatabl
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(EntityRendererFactory.Context ctx, AnimatedGeoModel<T> modelProvider, CallbackInfo ci) {
-        this.addLayer(new EggmorphGeoFeatureRendererJava<>((IGeoRenderer<T>) this));
+        this.addLayer(new EggmorphGeoFeatureRenderer<>((IGeoRenderer<T>) this));
     }
 }

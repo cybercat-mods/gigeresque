@@ -21,16 +21,16 @@
   "entrypoints": {
     "main": [
       {
-        "value": "com.bvanseg.gigeresque.common.GigeresqueJava"
+        "value": "com.bvanseg.gigeresque.common.Gigeresque"
       }
     ],
     "client": [
       {
-        "value": "com.bvanseg.gigeresque.client.GigeresqueClientJava"
+        "value": "com.bvanseg.gigeresque.client.GigeresqueClient"
       }
     ],
     "modmenu": [
-      "com.bvanseg.gigeresque.client.config.ModMenuGigeresqueJava"
+      "com.bvanseg.gigeresque.client.config.ModMenuGigeresque"
     ]
   },
   "mixins": [

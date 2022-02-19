@@ -1,7 +1,7 @@
 package com.bvanseg.gigeresque.mixins.common.recipe;
 
 
-import com.bvanseg.gigeresque.common.GigeresqueJava;
+import com.bvanseg.gigeresque.common.Gigeresque;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,7 +20,7 @@ public class RecipesJava {
                     new Pair<>("item", new Identifier("minecraft", "golden_apple")),
                     new Pair<>("tag", new Identifier("minecraft", "wool"))
             ),
-            new Pair<>("item", new Identifier(GigeresqueJava.MOD_ID, "surgery_kit"))
+            new Pair<>("item", new Identifier(Gigeresque.MOD_ID, "surgery_kit"))
     );
 
     private static JsonObject createShapelessRecipeJson(

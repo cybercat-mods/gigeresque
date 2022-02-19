@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.common.util;
 
-import com.bvanseg.gigeresque.common.config.ConfigAccessorJava;
+import com.bvanseg.gigeresque.common.config.ConfigAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -15,6 +15,6 @@ public class BlockUtils {
         Identifier id = Registry.BLOCK.getId(block);
         String path = id.getPath();
         String namespace = id.getNamespace();
-        return ConfigAccessorJava.getMappedAcidResistantBlocks().getOrDefault(namespace, new HashSet<>()).contains(path);
+        return ConfigAccessor.getMappedAcidResistantBlocks().getOrDefault(namespace, new HashSet<>()).contains(path);
     }
 }

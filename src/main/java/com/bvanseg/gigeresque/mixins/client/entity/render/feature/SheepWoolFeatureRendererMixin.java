@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.client.entity.render.feature;
 
-import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRendererJava;
+import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,7 +44,7 @@ public abstract class SheepWoolFeatureRendererMixin extends FeatureRenderer<Shee
                         CallbackInfo ci) {
         if (!sheepEntity.isSheared() && sheepEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
             this.getContextModel().copyStateTo(this.model);
-            EggmorphFeatureRendererJava.renderEggmorphedModel(this.model, SKIN, matrixStack, vertexConsumerProvider, light,
+            EggmorphFeatureRenderer.renderEggmorphedModel(this.model, SKIN, matrixStack, vertexConsumerProvider, light,
                     sheepEntity, f, g, h, j, k, l);
         }
     }

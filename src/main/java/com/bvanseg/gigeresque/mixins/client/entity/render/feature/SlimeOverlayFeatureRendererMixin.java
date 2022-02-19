@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.client.entity.render.feature;
 
-import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRendererJava;
+import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,7 +41,7 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
             this.model.animateModel(entity, f, g, h);
             this.model.setAngles(entity, f, g, j, k, l);
             this.getContextModel().copyStateTo(this.model);
-            EggmorphFeatureRendererJava.renderEggmorphedModel(this.model, getTexture(entity), matrixStack,
+            EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTexture(entity), matrixStack,
                     vertexConsumerProvider, light, entity, f, g, h, j, k, l);
         }
     }

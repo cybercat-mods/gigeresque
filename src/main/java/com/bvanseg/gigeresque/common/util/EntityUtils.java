@@ -1,9 +1,9 @@
 package com.bvanseg.gigeresque.common.util;
 
-import com.bvanseg.gigeresque.common.config.ConfigAccessorJava;
-import com.bvanseg.gigeresque.common.entity.AlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntityJava;
-import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntityJava;
+import com.bvanseg.gigeresque.common.config.ConfigAccessor;
+import com.bvanseg.gigeresque.common.entity.AlienEntity;
+import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntity;
+import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntity;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.bvanseg.gigeresque.interfacing.Host;
 import net.minecraft.entity.Entity;
@@ -21,14 +21,14 @@ public class EntityUtils {
         if (entity == null) return false;
         boolean playerCondition = !(entity instanceof PlayerEntity) || !((PlayerEntity) entity).isCreative() && !entity.isSpectator();
 
-        if (ConfigAccessorJava.isTargetBlacklisted(FacehuggerEntityJava.class, entity)) return false;
-        if (ConfigAccessorJava.isTargetWhitelisted(FacehuggerEntityJava.class, entity)) return true;
+        if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)) return false;
+        if (ConfigAccessor.isTargetWhitelisted(FacehuggerEntity.class, entity)) return true;
 
-        boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntityJava);
+        boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
 
         return entity.isAlive() &&
                 entity instanceof LivingEntity &&
-                !(entity instanceof AlienEntityJava) &&
+                !(entity instanceof AlienEntity) &&
                 entity.getPassengerList().isEmpty() &&
                 ((Host) entity).doesNotHaveParasite() &&
                 ((Eggmorphable) entity).isNotEggmorphing() &&
@@ -41,8 +41,8 @@ public class EntityUtils {
         if (entity == null) return false;
         boolean playerCondition = !(entity instanceof PlayerEntity) || !((PlayerEntity) entity).isCreative() && !entity.isSpectator();
 
-        if (ConfigAccessorJava.isTargetBlacklisted(ClassicAlienEntityJava.class, entity)) return false;
-        if (ConfigAccessorJava.isTargetWhitelisted(ClassicAlienEntityJava.class, entity)) return true;
+        if (ConfigAccessor.isTargetBlacklisted(ClassicAlienEntity.class, entity)) return false;
+        if (ConfigAccessor.isTargetWhitelisted(ClassicAlienEntity.class, entity)) return true;
 
         boolean weakCondition = !(entity instanceof LivingEntity) || (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f) || ((LivingEntity) entity).getHealth() <= 4f;
 
@@ -50,7 +50,7 @@ public class EntityUtils {
 
         return entity.isAlive() &&
                 entity instanceof LivingEntity &&
-                !(entity instanceof AlienEntityJava) &&
+                !(entity instanceof AlienEntity) &&
                 ((Host) entity).doesNotHaveParasite() &&
                 ((Eggmorphable) entity).isNotEggmorphing() &&
                 ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD &&
@@ -60,6 +60,6 @@ public class EntityUtils {
     }
 
     public static boolean isFacehuggerAttached(Entity entity) {
-        return entity != null && entity.getPassengerList().stream().anyMatch(it -> it instanceof FacehuggerEntityJava);
+        return entity != null && entity.getPassengerList().stream().anyMatch(it -> it instanceof FacehuggerEntity);
     }
 }

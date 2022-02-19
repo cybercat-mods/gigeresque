@@ -1,8 +1,8 @@
 package com.bvanseg.gigeresque.mixins.client.render;
 
-import com.bvanseg.gigeresque.ConstantsJava;
-import com.bvanseg.gigeresque.common.GigeresqueJava;
-import com.bvanseg.gigeresque.common.block.BlocksJava;
+import com.bvanseg.gigeresque.Constants;
+import com.bvanseg.gigeresque.common.Gigeresque;
+import com.bvanseg.gigeresque.common.block.Blocks;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameOverlayRenderer.class)
 public class InGameOverlayRendererMixin {
-    private static final Identifier BLACK_FLUID_TEXTURE = new Identifier(GigeresqueJava.MOD_ID, "textures/misc/black_fluid_overlay.png");
-    private static final Identifier EGGMORPH_OVERLAY_TEXTURE = new Identifier(GigeresqueJava.MOD_ID, "textures/misc/eggmorph_overlay.png");
+    private static final Identifier BLACK_FLUID_TEXTURE = new Identifier(Gigeresque.MOD_ID, "textures/misc/black_fluid_overlay.png");
+    private static final Identifier EGGMORPH_OVERLAY_TEXTURE = new Identifier(Gigeresque.MOD_ID, "textures/misc/eggmorph_overlay.png");
 
     @Inject(method = {"renderOverlays"}, at = {@At("RETURN")})
     private static void renderOverlays(MinecraftClient client, MatrixStack matrices, CallbackInfo ci) {
@@ -36,12 +36,12 @@ public class InGameOverlayRendererMixin {
             BlockPos blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
             FluidState fluidState = client.player.world.getFluidState(blockPos);
 
-            if (fluidState.getBlockState().getBlock() == BlocksJava.BLACK_FLUID) {
+            if (fluidState.getBlockState().getBlock() == Blocks.BLACK_FLUID) {
                 renderBlackFluidOverlay(client, matrices);
             }
 
             if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-                float eggmorphingProgress = (ConstantsJava.EGGMORPH_DURATION - eggmorphable.getTicksUntilEggmorphed()) / ConstantsJava.EGGMORPH_DURATION;
+                float eggmorphingProgress = (Constants.EGGMORPH_DURATION - eggmorphable.getTicksUntilEggmorphed()) / Constants.EGGMORPH_DURATION;
                 renderEggmorphOverlay(client, matrices, eggmorphingProgress);
             }
         }

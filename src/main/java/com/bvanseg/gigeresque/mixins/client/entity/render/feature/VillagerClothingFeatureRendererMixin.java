@@ -1,6 +1,6 @@
 package com.bvanseg.gigeresque.mixins.client.entity.render.feature;
 
-import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRendererJava;
+import com.bvanseg.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import com.bvanseg.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -42,7 +42,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
                         T livingEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
         if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
             M entityModel = this.getContextModel();
-            EggmorphFeatureRendererJava.renderEggmorphedModel(entityModel, findTexture("type",
+            EggmorphFeatureRenderer.renderEggmorphedModel(entityModel, findTexture("type",
                             Registry.VILLAGER_TYPE.getId(livingEntity.getVillagerData().getType())), matrixStack,
                     vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
         }

@@ -1,8 +1,8 @@
 package com.bvanseg.gigeresque.mixins.common;
 
-import com.bvanseg.gigeresque.ConstantsJava;
+import com.bvanseg.gigeresque.Constants;
 import com.bvanseg.gigeresque.CustomSpawnGroup;
-import com.bvanseg.gigeresque.common.config.GigeresqueConfigJava;
+import com.bvanseg.gigeresque.common.config.GigeresqueConfig;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
@@ -54,12 +54,12 @@ public class SpawnGroupMixin {
 
         var configPath = FabricLoader.getInstance().getConfigDir().resolve("gigeresque.json");
         var config = configPath.toFile();
-        var alienSpawnCap = ConstantsJava.ALIEN_SPAWN_CAP;
+        var alienSpawnCap = Constants.ALIEN_SPAWN_CAP;
 
         if (config.exists()) {
             try {
                 var gson = new GsonBuilder().create();
-                var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfigJava.class);
+                var gigeresqueConfig = gson.fromJson(Files.readString(configPath, StandardCharsets.UTF_8), GigeresqueConfig.class);
                 alienSpawnCap = gigeresqueConfig.miscellaneous.getAlienSpawnCap();
             } catch (Exception e) {
                 // Do nothing
