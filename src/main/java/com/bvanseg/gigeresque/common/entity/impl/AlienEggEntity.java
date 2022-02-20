@@ -26,6 +26,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
@@ -105,6 +106,15 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	@Override
 	public boolean canImmediatelyDespawn(double distanceSquared) {
 		return this.isHatched() && !this.hasFacehugger();
+	}
+	
+	@Override
+	public void checkDespawn() {
+        PlayerEntity entity = this.world.getClosestPlayer(this, -1.0);
+        double d = entity.squaredDistanceTo(this);
+        if (this.canImmediatelyDespawn(d)) {
+            this.discard();
+        }
 	}
 
 	@Override
