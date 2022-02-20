@@ -3,53 +3,60 @@ package com.bvanseg.gigeresque.common.sound;
 import com.bvanseg.gigeresque.common.Gigeresque;
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializer;
 import com.bvanseg.gigeresque.common.util.InitializationTimer;
+
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class Sounds implements GigeresqueInitializer {
-    private Sounds() {}
-    private static Sounds instance;
+	private Sounds() {
+	}
 
-    synchronized public static Sounds getInstance() {
-        if (instance == null) {
-            instance = new Sounds();
-        }
-        return instance;
-    }
+	private static Sounds instance;
 
-    public static final SoundEvent ALIEN_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_ambient"));
-    public static final SoundEvent ALIEN_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_hurt"));
-    public static final SoundEvent ALIEN_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_death"));
+	synchronized public static Sounds getInstance() {
+		if (instance == null) {
+			instance = new Sounds();
+		}
+		return instance;
+	}
 
-    public static final SoundEvent EGG_NOTICE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_notice"));
-    public static final SoundEvent EGG_OPEN = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_open"));
+	public static final SoundEvent ALIEN_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_ambient"));
+	public static final SoundEvent ALIEN_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_hurt"));
+	public static final SoundEvent ALIEN_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_death"));
 
-    public static final SoundEvent FACEHUGGER_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "facehugger_ambient"));
-    public static final SoundEvent FACEHUGGER_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "facehugger_death"));
-    public static final SoundEvent FACEHUGGER_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "facehugger_hurt"));
-    public static final SoundEvent FACEHUGGER_IMPLANT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "facehugger_implant"));
+	public static final SoundEvent EGG_NOTICE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_notice"));
+	public static final SoundEvent EGG_OPEN = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_open"));
 
-    @Override
-    public void initialize() {
-        InitializationTimer.initializingBlock("Sounds", this::initializeImpl);
-    }
+	public static final SoundEvent FACEHUGGER_AMBIENT = new SoundEvent(
+			new Identifier(Gigeresque.MOD_ID, "facehugger_ambient"));
+	public static final SoundEvent FACEHUGGER_DEATH = new SoundEvent(
+			new Identifier(Gigeresque.MOD_ID, "facehugger_death"));
+	public static final SoundEvent FACEHUGGER_HURT = new SoundEvent(
+			new Identifier(Gigeresque.MOD_ID, "facehugger_hurt"));
+	public static final SoundEvent FACEHUGGER_IMPLANT = new SoundEvent(
+			new Identifier(Gigeresque.MOD_ID, "facehugger_implant"));
 
-    private void initializeImpl() {
-        register(ALIEN_AMBIENT);
-        register(ALIEN_HURT);
-        register(ALIEN_DEATH);
+	@Override
+	public void initialize() {
+		InitializationTimer.initializingBlock("Sounds", this::initializeImpl);
+	}
 
-        register(EGG_NOTICE);
-        register(EGG_OPEN);
+	private void initializeImpl() {
+		register(ALIEN_AMBIENT);
+		register(ALIEN_HURT);
+		register(ALIEN_DEATH);
 
-        register(FACEHUGGER_AMBIENT);
-        register(FACEHUGGER_DEATH);
-        register(FACEHUGGER_HURT);
-        register(FACEHUGGER_IMPLANT);
-    }
+		register(EGG_NOTICE);
+		register(EGG_OPEN);
 
-    private void register(SoundEvent soundEvent) {
-        Registry.register(Registry.SOUND_EVENT, soundEvent.getId(), soundEvent);
-    }
+		register(FACEHUGGER_AMBIENT);
+		register(FACEHUGGER_DEATH);
+		register(FACEHUGGER_HURT);
+		register(FACEHUGGER_IMPLANT);
+	}
+
+	private void register(SoundEvent soundEvent) {
+		Registry.register(Registry.SOUND_EVENT, soundEvent.getId(), soundEvent);
+	}
 }

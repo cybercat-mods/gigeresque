@@ -71,7 +71,7 @@ if (file('key.properties').exists()) {
 
     	project {
         	apiKey = curseProp.getProperty('curseKey')
-        	id = "TODO"
+        	id = "535416"
         	releaseType = "release"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')

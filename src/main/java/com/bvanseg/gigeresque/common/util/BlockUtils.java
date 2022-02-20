@@ -1,20 +1,21 @@
 package com.bvanseg.gigeresque.common.util;
 
+import java.util.HashSet;
+
 import com.bvanseg.gigeresque.common.config.ConfigAccessor;
+
 import net.minecraft.block.Block;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashSet;
-
 public class BlockUtils {
-    private BlockUtils() {
-    }
+	private BlockUtils() {
+	}
 
-    public static boolean isBlockAcidResistant(Block block) {
-        Identifier id = Registry.BLOCK.getId(block);
-        String path = id.getPath();
-        String namespace = id.getNamespace();
-        return ConfigAccessor.getMappedAcidResistantBlocks().getOrDefault(namespace, new HashSet<>()).contains(path);
-    }
+	public static boolean isBlockAcidResistant(Block block) {
+		Identifier id = Registry.BLOCK.getId(block);
+		String path = id.getPath();
+		String namespace = id.getNamespace();
+		return ConfigAccessor.getMappedAcidResistantBlocks().getOrDefault(namespace, new HashSet<>()).contains(path);
+	}
 }

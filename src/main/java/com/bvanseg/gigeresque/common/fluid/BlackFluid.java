@@ -2,6 +2,7 @@ package com.bvanseg.gigeresque.common.fluid;
 
 import com.bvanseg.gigeresque.common.block.Blocks;
 import com.bvanseg.gigeresque.common.item.Items;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -18,94 +19,96 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
 public abstract class BlackFluid extends FlowableFluid {
-    @Override
-    public boolean matchesType(Fluid fluid) {
-        return fluid == Fluids.BLACK_FLUID_STILL || fluid == Fluids.BLACK_FLUID_FLOWING;
-    }
+	@Override
+	public boolean matchesType(Fluid fluid) {
+		return fluid == Fluids.BLACK_FLUID_STILL || fluid == Fluids.BLACK_FLUID_FLOWING;
+	}
 
-    @Override
-    public Item getBucketItem() {
-        return Items.BLACK_FLUID_BUCKET;
-    }
+	@Override
+	public Item getBucketItem() {
+		return Items.BLACK_FLUID_BUCKET;
+	}
 
-    @Override
-    public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-        return false;
-    }
+	@Override
+	public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid,
+			Direction direction) {
+		return false;
+	}
 
-    @Override
-    public int getTickRate(WorldView world) {
-        return 20;
-    }
+	@Override
+	public int getTickRate(WorldView world) {
+		return 20;
+	}
 
-    @Override
-    protected float getBlastResistance() {
-        return 100.0f;
-    }
+	@Override
+	protected float getBlastResistance() {
+		return 100.0f;
+	}
 
-    @Override
-    protected BlockState toBlockState(FluidState state) {
-        return Blocks.BLACK_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
-    }
+	@Override
+	protected BlockState toBlockState(FluidState state) {
+		return Blocks.BLACK_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
+	}
 
-    @Override
-    public Fluid getFlowing() {
-        return Fluids.BLACK_FLUID_FLOWING;
-    }
+	@Override
+	public Fluid getFlowing() {
+		return Fluids.BLACK_FLUID_FLOWING;
+	}
 
-    @Override
-    public Fluid getStill() {
-        return Fluids.BLACK_FLUID_STILL;
-    }
+	@Override
+	public Fluid getStill() {
+		return Fluids.BLACK_FLUID_STILL;
+	}
 
-    @Override
-    protected boolean isInfinite() {
-        return false;
-    }
+	@Override
+	protected boolean isInfinite() {
+		return false;
+	}
 
-    @Override
-    protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
-        BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-        Block.dropStacks(state, world, pos, blockEntity);
-    }
+	@Override
+	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
+		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+		Block.dropStacks(state, world, pos, blockEntity);
+	}
 
-    @Override
-    protected int getFlowSpeed(WorldView world) {
-        return 2;
-    }
+	@Override
+	protected int getFlowSpeed(WorldView world) {
+		return 2;
+	}
 
-    @Override
-    protected int getLevelDecreasePerBlock(WorldView world) {
-        return 2;
-    }
+	@Override
+	protected int getLevelDecreasePerBlock(WorldView world) {
+		return 2;
+	}
 
-    static class Flowing extends BlackFluid {
-        @Override
-        public void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
-            builder.add(LEVEL);
-        }
+	static class Flowing extends BlackFluid {
+		@Override
+		public void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
+			super.appendProperties(builder);
+			builder.add(LEVEL);
+		}
 
-        @Override
-        public int getLevel(FluidState fluidState) {
-            return fluidState.get(LEVEL);
-        }
-        @Override
-        public boolean isStill(FluidState fluidState) {
-            return false;
-        }
-    }
+		@Override
+		public int getLevel(FluidState fluidState) {
+			return fluidState.get(LEVEL);
+		}
 
-    static class Still extends BlackFluid {
+		@Override
+		public boolean isStill(FluidState fluidState) {
+			return false;
+		}
+	}
 
-        @Override
-        public int getLevel(FluidState fluidState) {
-            return 8;
-        }
+	static class Still extends BlackFluid {
 
-        @Override
-        public boolean isStill(FluidState fluidState) {
-            return true;
-        }
-    }
+		@Override
+		public int getLevel(FluidState fluidState) {
+			return 8;
+		}
+
+		@Override
+		public boolean isStill(FluidState fluidState) {
+			return true;
+		}
+	}
 }

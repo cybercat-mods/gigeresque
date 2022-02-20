@@ -1,9 +1,17 @@
 package com.bvanseg.gigeresque.common.entity;
 
 import com.bvanseg.gigeresque.common.Gigeresque;
-import com.bvanseg.gigeresque.common.entity.impl.*;
+import com.bvanseg.gigeresque.common.entity.impl.AlienEggEntity;
+import com.bvanseg.gigeresque.common.entity.impl.AquaticAlienEntity;
+import com.bvanseg.gigeresque.common.entity.impl.AquaticChestbursterEntity;
+import com.bvanseg.gigeresque.common.entity.impl.ChestbursterEntity;
+import com.bvanseg.gigeresque.common.entity.impl.ClassicAlienEntity;
+import com.bvanseg.gigeresque.common.entity.impl.FacehuggerEntity;
+import com.bvanseg.gigeresque.common.entity.impl.RunnerAlienEntity;
+import com.bvanseg.gigeresque.common.entity.impl.RunnerbursterEntity;
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializer;
 import com.bvanseg.gigeresque.common.util.InitializationTimer;
+
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
@@ -13,54 +21,66 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class Entities implements GigeresqueInitializer {
-    private Entities() {}
+	private Entities() {
+	}
 
-    private static Entities instance;
+	private static Entities instance;
 
-    synchronized public static Entities getInstance() {
-        if (instance == null) {
-            instance = new Entities();
-        }
-        return instance;
-    }
+	synchronized public static Entities getInstance() {
+		if (instance == null) {
+			instance = new Entities();
+		}
+		return instance;
+	}
 
-    private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory, float width, float height) {
-        return Registry.register(
-                Registry.ENTITY_TYPE,
-                new Identifier(Gigeresque.MOD_ID, name),
-                FabricEntityTypeBuilder.create(CustomSpawnGroup.ALIEN, factory).dimensions(EntityDimensions.fixed(width, height)).build());
-    }
+	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
+			float width, float height) {
+		return Registry.register(Registry.ENTITY_TYPE, new Identifier(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
+				.create(CustomSpawnGroup.ALIEN, factory).dimensions(EntityDimensions.fixed(width, height)).build());
+	}
 
-    private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory, float width) {
-        return registerAlienType(name, factory, width, 1.0f);
-    }
+	@SuppressWarnings("unused")
+	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
+			float width) {
+		return registerAlienType(name, factory, width, 1.0f);
+	}
 
-    private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory) {
-        return registerAlienType(name, factory, 1.0f, 1.0f);
-    }
+	@SuppressWarnings("unused")
+	private static <T extends Entity> EntityType<T> registerAlienType(String name,
+			EntityType.EntityFactory<T> factory) {
+		return registerAlienType(name, factory, 1.0f, 1.0f);
+	}
 
-    public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, 1.0f, 2.85f);
-    public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, 2.0f, 2.0f);
-    public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), AquaticChestbursterEntity::new, 0.5f, 0.25f);
-    public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(), ChestbursterEntity::new, 0.5f, 0.25f);
-    public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), AlienEggEntity::new, 0.7f, 0.7f);
-    public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(), FacehuggerEntity::new, 0.5f, 0.3f);
-    public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(), RunnerAlienEntity::new, 1.25f, 1.75f);
-    public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(), RunnerbursterEntity::new, 0.5f, 0.5f);
+	public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(
+			EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, 1.0f, 2.85f);
+	public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(
+			EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, 2.0f, 2.0f);
+	public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(
+			EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), AquaticChestbursterEntity::new, 0.5f, 0.25f);
+	public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(
+			EntityIdentifiers.CHESTBURSTER.getPath(), ChestbursterEntity::new, 0.5f, 0.25f);
+	public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(),
+			AlienEggEntity::new, 0.7f, 0.7f);
+	public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(
+			EntityIdentifiers.FACEHUGGER.getPath(), FacehuggerEntity::new, 0.5f, 0.3f);
+	public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(
+			EntityIdentifiers.RUNNER_ALIEN.getPath(), RunnerAlienEntity::new, 1.25f, 1.75f);
+	public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(
+			EntityIdentifiers.RUNNERBURSTER.getPath(), RunnerbursterEntity::new, 0.5f, 0.5f);
 
-    @Override
-    public void initialize() {
-        InitializationTimer.initializingBlock("AlienTypes", this::initializeImpl);
-    }
+	@Override
+	public void initialize() {
+		InitializationTimer.initializingBlock("AlienTypes", this::initializeImpl);
+	}
 
-    private void initializeImpl() {
-        FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(CHESTBURSTER, ChestbursterEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(EGG, AlienEggEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(FACEHUGGER, FacehuggerEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(RUNNER_ALIEN, RunnerAlienEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(RUNNERBURSTER, RunnerbursterEntity.createAttributes());
-    }
+	private void initializeImpl() {
+		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(CHESTBURSTER, ChestbursterEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(EGG, AlienEggEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(FACEHUGGER, FacehuggerEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(RUNNER_ALIEN, RunnerAlienEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(RUNNERBURSTER, RunnerbursterEntity.createAttributes());
+	}
 }

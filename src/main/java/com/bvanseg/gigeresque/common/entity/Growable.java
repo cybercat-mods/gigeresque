@@ -1,42 +1,45 @@
 package com.bvanseg.gigeresque.common.entity;
 
+import static java.lang.Math.min;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 
-import static java.lang.Math.min;
-
 public interface Growable {
-    float getGrowth();
-    void setGrowth(float growth);
-    float getMaxGrowth();
+	float getGrowth();
 
-    default void grow(LivingEntity entity, float amount) {
-        setGrowth(min(getGrowth() + amount, getMaxGrowth()));
+	void setGrowth(float growth);
 
-        if (getGrowth() >= getMaxGrowth()) {
-            growUp(entity);
-        }
-    }
+	float getMaxGrowth();
 
-    LivingEntity growInto();
+	default void grow(LivingEntity entity, float amount) {
+		setGrowth(min(getGrowth() + amount, getMaxGrowth()));
 
-    default void growUp(LivingEntity entity) {
-        World world = entity.world;
-        if (!world.isClient()) {
-            var newEntity = growInto();
-            if (newEntity == null) return;
-                    newEntity.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
-            world.spawnEntity(newEntity);
-            entity.remove(Entity.RemovalReason.DISCARDED);
-        }
-    }
+		if (getGrowth() >= getMaxGrowth()) {
+			growUp(entity);
+		}
+	}
 
-    default float getGrowthNeededUntilGrowUp(){
-        return getMaxGrowth() - getGrowth();
-    }
+	LivingEntity growInto();
 
-    default float getGrowthMultiplier() {
-        return 1.0f;
-    }
+	default void growUp(LivingEntity entity) {
+		World world = entity.world;
+		if (!world.isClient()) {
+			var newEntity = growInto();
+			if (newEntity == null)
+				return;
+			newEntity.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
+			world.spawnEntity(newEntity);
+			entity.remove(Entity.RemovalReason.DISCARDED);
+		}
+	}
+
+	default float getGrowthNeededUntilGrowUp() {
+		return getMaxGrowth() - getGrowth();
+	}
+
+	default float getGrowthMultiplier() {
+		return 1.0f;
+	}
 }

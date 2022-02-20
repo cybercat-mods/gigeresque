@@ -1,46 +1,46 @@
 {
-  "schemaVersion": 1,
-  "id": "gigeresque",
-  "version": "1.0.0-alpha17",
-  "name": "Gigeresque",
-  "description": "An Alien-themed mod for Fabric.",
-  "authors": [
-    "AzureDoom",
-    "Boston Vanseghi",
-    "Cybercat5555",
-    "Ri5ux"
-  ],
-  "contact": {
-    "homepage": "https://example.com/",
-    "issues": "https://example.com/",
-    "sources": "https://example.com/"
-  },
-  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
-  "icon": "assets/gigeresque/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      {
-        "value": "com.bvanseg.gigeresque.common.Gigeresque"
-      }
-    ],
-    "client": [
-      {
-        "value": "com.bvanseg.gigeresque.client.GigeresqueClient"
-      }
-    ],
-    "modmenu": [
-      "com.bvanseg.gigeresque.client.config.ModMenuGigeresque"
-    ]
-  },
-  "mixins": [
-    "gigeresque.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.12.12",
-    "fabric": "*",
-    "minecraft": "1.18.x",
-    "geckolib3": ">=3.0.23",
-    "java": ">=17"
-  }
+	"schemaVersion": 1,
+	"id": "gigeresque",
+	"version": "${version}",
+	"name": "Gigeresque",
+	"description": "An Alien-themed mod for Fabric.",
+	"authors": [
+		"AzureDoom",
+		"Boston Vanseghi",
+		"Cybercat5555",
+		"Ri5ux"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/gigeresque",
+		"issues": "https://github.com/cybercat-mods/gigeresque/issues",
+		"sources": "https://github.com/cybercat-mods/gigeresque"
+	},
+	"license": "CC BY-NC-ND 4.0",
+	"icon": "assets/gigeresque/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "com.bvanseg.gigeresque.common.Gigeresque"
+			}
+		],
+		"client": [
+			{
+				"value": "com.bvanseg.gigeresque.client.GigeresqueClient"
+			}
+		],
+		"modmenu": [
+			"com.bvanseg.gigeresque.client.config.ModMenuGigeresque"
+		]
+	},
+	"mixins": [
+		"gigeresque.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.12.12",
+		"fabric": "*",
+		"minecraft": "1.18.x",
+		"geckolib3": ">=3.0.32",
+		"java": ">=17"
+	}
 }
