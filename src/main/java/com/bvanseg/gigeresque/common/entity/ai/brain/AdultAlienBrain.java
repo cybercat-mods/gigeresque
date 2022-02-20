@@ -72,7 +72,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
                 ((Eggmorphable) it).isEggmorphing() ||
                 it.getVehicle() != null && it.getVehicle() instanceof AlienEntity));
         tasks.add(new RangedApproachTask(3.0f * aquaticLandPenalty));
-        tasks.add(new MeleeAttackTask(20 * (int) intelligence));
+        tasks.add(new AlienMeleeAttackTask(20 * (int) intelligence));
     }
 
     private RandomTask<AdultAlienEntity> makeRandomWanderTask() {
