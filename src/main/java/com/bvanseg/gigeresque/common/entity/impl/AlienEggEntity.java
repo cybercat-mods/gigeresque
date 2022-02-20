@@ -1,5 +1,7 @@
 package com.bvanseg.gigeresque.common.entity.impl;
 
+import java.util.List;
+
 import com.bvanseg.gigeresque.Constants;
 import com.bvanseg.gigeresque.common.entity.AlienEntity;
 import com.bvanseg.gigeresque.common.entity.Entities;
@@ -10,6 +12,7 @@ import com.bvanseg.gigeresque.common.sound.Sounds;
 import com.bvanseg.gigeresque.common.util.EntityUtils;
 import com.bvanseg.gigeresque.common.util.SoundUtil;
 import com.mojang.serialization.Dynamic;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -34,271 +37,263 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.List;
-
 public class AlienEggEntity extends AlienEntity implements IAnimatable {
-    public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
-        super(type, world);
-    }
+	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
+		super(type, world);
+	}
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
-                .add(EntityAttributes.GENERIC_ARMOR, 1.0)
-                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
-    }
+	public static DefaultAttributeContainer.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
+				.add(EntityAttributes.GENERIC_ARMOR, 1.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
+	}
 
-    private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
-    private static final long MAX_HATCH_PROGRESS = 50L;
+	private static final long MAX_HATCH_PROGRESS = 50L;
 
-    private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
-            SensorType.NEAREST_LIVING_ENTITIES,
-            SensorTypes.NEAREST_EGGS,
-            SensorTypes.NEAREST_FACEHUGGER,
-            SensorTypes.NEAREST_HOSTS
-    );
+	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
+			SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_EGGS, SensorTypes.NEAREST_FACEHUGGER,
+			SensorTypes.NEAREST_HOSTS);
 
-    private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(
-            MemoryModuleType.ATTACK_TARGET,
-            MemoryModuleType.MOBS,
-            MemoryModuleType.NEAREST_ATTACKABLE,
-            MemoryModuleType.VISIBLE_MOBS,
-            MemoryModuleTypes.NEAREST_FACEHUGGERS,
-            MemoryModuleTypes.NEAREST_EGGS
-    );
+	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
+			MemoryModuleType.MOBS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.VISIBLE_MOBS,
+			MemoryModuleTypes.NEAREST_FACEHUGGERS, MemoryModuleTypes.NEAREST_EGGS);
 
-    @Override
-    protected int getAcidDiameter() {
-        return 1;
-    }
+	@Override
+	protected int getAcidDiameter() {
+		return 1;
+	}
 
-    public boolean isHatching() {
-        return dataTracker.get(IS_HATCHING);
-    }
+	public boolean isHatching() {
+		return dataTracker.get(IS_HATCHING);
+	}
 
-    public void setIsHatching(boolean value) {
-        dataTracker.set(IS_HATCHING, value);
-    }
+	public void setIsHatching(boolean value) {
+		dataTracker.set(IS_HATCHING, value);
+	}
 
-    public boolean isHatched() {
-        return dataTracker.get(IS_HATCHED);
-    }
+	public boolean isHatched() {
+		return dataTracker.get(IS_HATCHED);
+	}
 
-    public void setIsHatched(boolean value) {
-        dataTracker.set(IS_HATCHED, value);
-    }
+	public void setIsHatched(boolean value) {
+		dataTracker.set(IS_HATCHED, value);
+	}
 
-    public boolean hasFacehugger() {
-        return dataTracker.get(HAS_FACEHUGGER);
-    }
+	public boolean hasFacehugger() {
+		return dataTracker.get(HAS_FACEHUGGER);
+	}
 
-    public void setHasFacehugger(boolean value) {
-        dataTracker.set(HAS_FACEHUGGER, value);
-    }
+	public void setHasFacehugger(boolean value) {
+		dataTracker.set(HAS_FACEHUGGER, value);
+	}
 
-    private long hatchProgress = 0L;
-    private long ticksOpen = 0L;
+	private long hatchProgress = 0L;
+	private long ticksOpen = 0L;
 
-    private final AnimationFactory animationFactory = new AnimationFactory(this);
+	private final AnimationFactory animationFactory = new AnimationFactory(this);
 
-    private AlienEggBrain complexBrain;
+	private AlienEggBrain complexBrain;
 
-    @Override
-    public boolean canImmediatelyDespawn(double distanceSquared) {
-        return this.isHatched() && !this.hasFacehugger();
-    }
+	@Override
+	public boolean canImmediatelyDespawn(double distanceSquared) {
+		return this.isHatched() && !this.hasFacehugger();
+	}
 
-    @Override
-    public boolean cannotDespawn() {
-        return !this.isHatched() && this.hasFacehugger();
-    }
+	@Override
+	public boolean cannotDespawn() {
+		return !this.isHatched() && this.hasFacehugger();
+	}
 
-    @Override
-    protected Brain.Profile<? extends AlienEggEntity> createBrainProfile() {
-        return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-    }
+	@Override
+	protected Brain.Profile<? extends AlienEggEntity> createBrainProfile() {
+		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
+	}
 
-    @Override
-    protected Brain<? extends AlienEggEntity> deserializeBrain(Dynamic<?> dynamic) {
-        complexBrain = new AlienEggBrain(this);
-        return complexBrain.initialize(createBrainProfile().deserialize(dynamic));
-    }
+	@Override
+	protected Brain<? extends AlienEggEntity> deserializeBrain(Dynamic<?> dynamic) {
+		complexBrain = new AlienEggBrain(this);
+		return complexBrain.initialize(createBrainProfile().deserialize(dynamic));
+	}
 
-    @Override
-    public Brain<AlienEggEntity> getBrain() {
-        return (Brain<AlienEggEntity>) super.getBrain();
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public Brain<AlienEggEntity> getBrain() {
+		return (Brain<AlienEggEntity>) super.getBrain();
+	}
 
-    @Override
-    protected void mobTick() {
-        world.getProfiler().push("alienEggBrain");
-        complexBrain.tick();
-        world.getProfiler().pop();
-        complexBrain.tickActivities();
-        super.mobTick();
-    }
+	@Override
+	protected void mobTick() {
+		world.getProfiler().push("alienEggBrain");
+		complexBrain.tick();
+		world.getProfiler().pop();
+		complexBrain.tickActivities();
+		super.mobTick();
+	}
 
-    @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        dataTracker.startTracking(IS_HATCHING, false);
-        dataTracker.startTracking(IS_HATCHED, false);
-        dataTracker.startTracking(HAS_FACEHUGGER, true);
-    }
+	@Override
+	protected void initDataTracker() {
+		super.initDataTracker();
+		dataTracker.startTracking(IS_HATCHING, false);
+		dataTracker.startTracking(IS_HATCHED, false);
+		dataTracker.startTracking(HAS_FACEHUGGER, true);
+	}
 
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putBoolean("isHatching", isHatching());
-        nbt.putBoolean("isHatched", isHatched());
-        nbt.putBoolean("hasFacehugger", hasFacehugger());
-        nbt.putLong("hatchProgress", hatchProgress);
-        nbt.putLong("ticksOpen", ticksOpen);
-    }
+	@Override
+	public void writeCustomDataToNbt(NbtCompound nbt) {
+		super.writeCustomDataToNbt(nbt);
+		nbt.putBoolean("isHatching", isHatching());
+		nbt.putBoolean("isHatched", isHatched());
+		nbt.putBoolean("hasFacehugger", hasFacehugger());
+		nbt.putLong("hatchProgress", hatchProgress);
+		nbt.putLong("ticksOpen", ticksOpen);
+	}
 
-    @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("isHatching")) {
-            setIsHatching(nbt.getBoolean("isHatching"));
-        }
-        if (nbt.contains("isHatched")) {
-            setIsHatched(nbt.getBoolean("isHatched"));
-        }
-        if (nbt.contains("hasFacehugger")) {
-            setHasFacehugger(nbt.getBoolean("hasFacehugger"));
-        }
-        if (nbt.contains("hatchProgress")) {
-            hatchProgress = nbt.getLong("hatchProgress");
-        }
-        if (nbt.contains("ticksOpen")) {
-            ticksOpen = nbt.getLong("ticksOpen");
-        }
-    }
+	@Override
+	public void readCustomDataFromNbt(NbtCompound nbt) {
+		super.readCustomDataFromNbt(nbt);
+		if (nbt.contains("isHatching")) {
+			setIsHatching(nbt.getBoolean("isHatching"));
+		}
+		if (nbt.contains("isHatched")) {
+			setIsHatched(nbt.getBoolean("isHatched"));
+		}
+		if (nbt.contains("hasFacehugger")) {
+			setHasFacehugger(nbt.getBoolean("hasFacehugger"));
+		}
+		if (nbt.contains("hatchProgress")) {
+			hatchProgress = nbt.getLong("hatchProgress");
+		}
+		if (nbt.contains("ticksOpen")) {
+			ticksOpen = nbt.getLong("ticksOpen");
+		}
+	}
 
-    @Override
-    public void tick() {
-        super.tick();
+	@Override
+	public void tick() {
+		super.tick();
 
-        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) {
-            hatchProgress++;
-        }
+		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) {
+			hatchProgress++;
+		}
 
-        if (hatchProgress == 15L) {
-            SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.EGG_OPEN, SoundCategory.NEUTRAL, 1.0f);
-        }
+		if (hatchProgress == 15L) {
+			SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.EGG_OPEN, SoundCategory.NEUTRAL, 1.0f);
+		}
 
-        if (hatchProgress >= MAX_HATCH_PROGRESS) {
-            setIsHatching(false);
-            setIsHatched(true);
-        }
+		if (hatchProgress >= MAX_HATCH_PROGRESS) {
+			setIsHatching(false);
+			setIsHatched(true);
+		}
 
-        if (isHatched() && hasFacehugger()) {
-            ticksOpen++;
-        }
+		if (isHatched() && hasFacehugger()) {
+			ticksOpen++;
+		}
 
-        if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !world.isClient) {
-            var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, world);
-            facehugger.refreshPositionAndAngles(getBlockPos(), getYaw(), getPitch());
-            facehugger.setVelocity(0.0, 0.7, 0.0);
-            world.spawnEntity(facehugger);
-            setHasFacehugger(false);
-        }
-    }
+		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !world.isClient) {
+			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, world);
+			facehugger.refreshPositionAndAngles(getBlockPos(), getYaw(), getPitch());
+			facehugger.setVelocity(0.0, 0.7, 0.0);
+			world.spawnEntity(facehugger);
+			setHasFacehugger(false);
+		}
+	}
 
-    /**
-     * Prevents entity collisions from moving the egg.
-     */
-    @Override
-    public void pushAway(Entity entity) {
-        if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
-            setIsHatching(true);
-        }
-    }
+	/**
+	 * Prevents entity collisions from moving the egg.
+	 */
+	@Override
+	public void pushAway(Entity entity) {
+		if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
+			setIsHatching(true);
+		}
+	}
 
-    /**
-     * Prevents the egg from being pushed.
-     */
-    @Override
-    public boolean isPushable() {
-        return false;
-    }
+	/**
+	 * Prevents the egg from being pushed.
+	 */
+	@Override
+	public boolean isPushable() {
+		return false;
+	}
 
-    /**
-     * Prevents fluids from moving the egg.
-     */
-    @Override
-    public boolean isPushedByFluids() {
-        return false;
-    }
+	/**
+	 * Prevents fluids from moving the egg.
+	 */
+	@Override
+	public boolean isPushedByFluids() {
+		return false;
+	}
 
-    /**
-     * Prevents the egg from moving on its own.
-     */
-    @Override
-    public boolean movesIndependently() {
-        return false;
-    }
+	/**
+	 * Prevents the egg from moving on its own.
+	 */
+	@Override
+	public boolean movesIndependently() {
+		return false;
+	}
 
-    /**
-     * Prevents the egg moving when hit.
-     */
-    @Override
-    public void takeKnockback(double strength, double x, double z) {
-    }
+	/**
+	 * Prevents the egg moving when hit.
+	 */
+	@Override
+	public void takeKnockback(double strength, double x, double z) {
+	}
 
-    @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (source.getSource() != null) {
-            setIsHatching(true);
-        }
-        return super.damage(source, amount);
-    }
+	@Override
+	public boolean damage(DamageSource source, float amount) {
+		if (source.getSource() != null) {
+			setIsHatching(true);
+		}
+		return super.damage(source, amount);
+	}
 
-    /**
-     * Prevents the egg from drowning.
-     */
-    @Override
-    public boolean canBreatheInWater() {
-        return true;
-    }
+	/**
+	 * Prevents the egg from drowning.
+	 */
+	@Override
+	public boolean canBreatheInWater() {
+		return true;
+	}
 
-    /*
-        ANIMATIONS
-     */
+	/*
+	 * ANIMATIONS
+	 */
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (isHatched()) {
-            if (hasFacehugger()) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop_nobag", true));
-                return PlayState.CONTINUE;
-            }
+	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		if (isHatched()) {
+			if (hasFacehugger()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop_nobag", true));
+				return PlayState.CONTINUE;
+			}
 
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop", true));
-            return PlayState.CONTINUE;
-        }
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop", true));
+			return PlayState.CONTINUE;
+		}
 
-        if (isHatching()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("hatching", false).addAnimation("open_loop"));
-            return PlayState.CONTINUE;
-        }
+		if (isHatching()) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("hatching", false).addAnimation("open_loop"));
+			return PlayState.CONTINUE;
+		}
 
-        return PlayState.CONTINUE;
-    }
+		return PlayState.CONTINUE;
+	}
 
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0f, this::predicate));
-    }
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(new AnimationController<>(this, "controller", 0f, this::predicate));
+	}
 
-    @Override
-    public AnimationFactory getFactory() {
-        return animationFactory;
-    }
+	@Override
+	public AnimationFactory getFactory() {
+		return animationFactory;
+	}
 }

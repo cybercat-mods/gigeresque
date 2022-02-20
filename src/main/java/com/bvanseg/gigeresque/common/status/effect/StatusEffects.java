@@ -4,6 +4,7 @@ import com.bvanseg.gigeresque.common.Gigeresque;
 import com.bvanseg.gigeresque.common.status.effect.impl.TraumaStatusEffect;
 import com.bvanseg.gigeresque.common.util.GigeresqueInitializer;
 import com.bvanseg.gigeresque.common.util.InitializationTimer;
+
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -11,31 +12,28 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class StatusEffects implements GigeresqueInitializer {
-    private StatusEffects() {
-    }
+	private StatusEffects() {
+	}
 
-    private static StatusEffects instance;
+	private static StatusEffects instance;
 
-    synchronized public static StatusEffects getInstance() {
-        if (instance == null) {
-            instance = new StatusEffects();
-        }
-        return instance;
-    }
+	synchronized public static StatusEffects getInstance() {
+		if (instance == null) {
+			instance = new StatusEffects();
+		}
+		return instance;
+	}
 
-    public static final StatusEffect TRAUMA = new TraumaStatusEffect().addAttributeModifier(
-            EntityAttributes.GENERIC_MAX_HEALTH,
-            "5e5ac802-7542-4418-b56e-548913950563",
-            -0.5,
-            EntityAttributeModifier.Operation.MULTIPLY_BASE
-    );
+	public static final StatusEffect TRAUMA = new TraumaStatusEffect().addAttributeModifier(
+			EntityAttributes.GENERIC_MAX_HEALTH, "5e5ac802-7542-4418-b56e-548913950563", -0.5,
+			EntityAttributeModifier.Operation.MULTIPLY_BASE);
 
-    @Override
-    public void initialize() {
-        InitializationTimer.initializingBlock("StatusEffects", this::initializeImpl);
-    }
+	@Override
+	public void initialize() {
+		InitializationTimer.initializingBlock("StatusEffects", this::initializeImpl);
+	}
 
-    private void initializeImpl() {
-        Registry.register(Registry.STATUS_EFFECT, new Identifier(Gigeresque.MOD_ID, "trauma"), TRAUMA);
-    }
+	private void initializeImpl() {
+		Registry.register(Registry.STATUS_EFFECT, new Identifier(Gigeresque.MOD_ID, "trauma"), TRAUMA);
+	}
 }

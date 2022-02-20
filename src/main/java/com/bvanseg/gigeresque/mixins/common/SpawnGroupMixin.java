@@ -26,7 +26,6 @@ import java.util.Arrays;
  */
 @Mixin(SpawnGroup.class)
 public class SpawnGroupMixin {
-    @SuppressWarnings("InvokerTarget")
     @Invoker("<init>")
     private static SpawnGroup newSpawnGroup(
             String internalName,
@@ -40,14 +39,12 @@ public class SpawnGroupMixin {
         throw new AssertionError();
     }
 
-    @SuppressWarnings("ShadowTarget")
     @Shadow
     private static @Final
     @Mutable
     SpawnGroup[] field_6301;
 
-    @SuppressWarnings("UnresolvedMixinReference")
-        @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
+    @Inject(method = "<clinit>", at = @At(value = "FIELD", opcode = Opcodes.PUTSTATIC, target = "Lnet/minecraft/entity/SpawnGroup;field_6301:[Lnet/minecraft/entity/SpawnGroup;", shift = At.Shift.AFTER))
     private static void addCustomSpawnGroup(CallbackInfo ci) {
         var spawnGroups = new ArrayList<>(Arrays.asList(field_6301));
         var last = spawnGroups.get(spawnGroups.size() - 1);

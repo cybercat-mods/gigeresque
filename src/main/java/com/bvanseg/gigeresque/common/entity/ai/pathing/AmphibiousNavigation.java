@@ -8,25 +8,25 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class AmphibiousNavigation extends SwimNavigation {
-    public AmphibiousNavigation(MobEntity entity, World world) {
-        super(entity,world);
-    }
+	public AmphibiousNavigation(MobEntity entity, World world) {
+		super(entity, world);
+	}
 
-    @Override
-    protected boolean isAtValidPosition() {
-        return true;
-    }
+	@Override
+	protected boolean isAtValidPosition() {
+		return true;
+	}
 
-    @Override
-    protected PathNodeNavigator createPathNodeNavigator(int range) {
-        nodeMaker = new AmphibiousPathNodeMaker(true);
-        nodeMaker.setCanOpenDoors(false);
-        nodeMaker.setCanEnterOpenDoors(false);
-        return new PathNodeNavigator(nodeMaker, range);
-    }
+	@Override
+	protected PathNodeNavigator createPathNodeNavigator(int range) {
+		nodeMaker = new AmphibiousPathNodeMaker(true);
+		nodeMaker.setCanOpenDoors(false);
+		nodeMaker.setCanEnterOpenDoors(false);
+		return new PathNodeNavigator(nodeMaker, range);
+	}
 
-    @Override
-    public boolean isValidPosition(BlockPos pos) {
-        return !world.getBlockState(pos.down()).isAir();
-    }
+	@Override
+	public boolean isValidPosition(BlockPos pos) {
+		return !world.getBlockState(pos.down()).isAir();
+	}
 }

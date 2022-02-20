@@ -1,14 +1,18 @@
 package com.bvanseg.gigeresque.common.util;
 
 public class MathUtil {
-    private MathUtil() {}
-    public static <T extends Comparable<T>> T clamp(T value, T min, T max) {
-        if (value.compareTo(min) < 0) return min;
-        if (value.compareTo(max) > 0) return max;
-        return value;
-    }
+	private MathUtil() {
+	}
 
-    public static int coerceAtMost(int value, int maxValue) {
-        return Math.min(value, maxValue);
-    }
+	public static <T extends Comparable<T>> T clamp(T value, T min, T max) {
+		if (value.compareTo(min) < 0)
+			return min;
+		if (value.compareTo(max) > 0)
+			return max;
+		return value;
+	}
+
+	public static int coerceAtMost(int value, int maxValue) {
+		return Math.min(value, maxValue);
+	}
 }
