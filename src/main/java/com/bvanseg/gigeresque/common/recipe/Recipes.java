@@ -1,4 +1,4 @@
-package com.bvanseg.gigeresque.mixins.common.recipe;
+package com.bvanseg.gigeresque.common.recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +9,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 
-public class RecipesJava {
+public class Recipes {
 	public static final JsonElement SURGERY_KIT_RECIPE = createShapelessRecipeJson(
-			List.of(new Pair<>("item", new Identifier("minecraft", "shears")),
-					new Pair<>("item", new Identifier("minecraft", "string")),
-					new Pair<>("item", new Identifier("minecraft", "iron_ingot")),
-					new Pair<>("item", new Identifier("minecraft", "golden_apple")),
-					new Pair<>("tag", new Identifier("minecraft", "wool"))),
-			new Pair<>("item", new Identifier(Gigeresque.MOD_ID, "surgery_kit")));
+			List.of(new RecipePair("item", new Identifier("minecraft", "shears")),
+					new RecipePair("item", new Identifier("minecraft", "string")),
+					new RecipePair("item", new Identifier("minecraft", "iron_ingot")),
+					new RecipePair("item", new Identifier("minecraft", "golden_apple")),
+					new RecipePair("tag", new Identifier("minecraft", "wool"))),
+			new RecipePair("item", new Identifier(Gigeresque.MOD_ID, "surgery_kit")));
 
-	private static JsonObject createShapelessRecipeJson(List<Pair<String, Identifier>> ingredients,
-			Pair<String, Identifier> output) {
+	private static JsonObject createShapelessRecipeJson(List<RecipePair> ingredients, RecipePair output) {
 		// Specify the type
 		var json = new JsonObject();
 		json.addProperty("type", "minecraft:crafting_shapeless");
@@ -30,14 +28,14 @@ public class RecipesJava {
 		var jsonArray = new JsonArray();
 		ingredients.forEach(it -> {
 			var obj = new JsonObject();
-			obj.addProperty(it.getLeft(), it.getRight().toString());
+			obj.addProperty(it.first, it.second.toString());
 			jsonArray.add(obj);
 		});
 		json.add("ingredients", jsonArray);
 
 		// Specify result
 		var resultObject = new JsonObject();
-		resultObject.addProperty(output.getLeft(), output.getRight().toString());
+		resultObject.addProperty(output.first, output.second.toString());
 		json.add("result", resultObject);
 
 		return json;
@@ -71,5 +69,15 @@ public class RecipesJava {
 		json.add("result", result);
 
 		return json;
+	}
+
+	private static class RecipePair{
+		String first;
+		Identifier second;
+
+		public RecipePair(String first, Identifier second) {
+			this.first = first;
+			this.second = second;
+		}
 	}
 }

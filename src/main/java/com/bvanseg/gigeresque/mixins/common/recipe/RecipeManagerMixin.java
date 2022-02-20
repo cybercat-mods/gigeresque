@@ -2,6 +2,7 @@ package com.bvanseg.gigeresque.mixins.common.recipe;
 
 import java.util.Map;
 
+import com.bvanseg.gigeresque.common.recipe.Recipes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,10 +24,9 @@ import net.minecraft.util.profiler.Profiler;
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
 	@Inject(method = "apply", at = @At("HEAD"))
-	public void interceptApply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler,
-			CallbackInfo info) {
+	public void interceptApply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
 		if (Gigeresque.config.getFeatures().getSurgeryKit()) {
-			map.put(new Identifier(Gigeresque.MOD_ID, "surgery_kit"), RecipesJava.SURGERY_KIT_RECIPE);
+			map.put(new Identifier(Gigeresque.MOD_ID, "surgery_kit"), Recipes.SURGERY_KIT_RECIPE);
 		}
 	}
 }
