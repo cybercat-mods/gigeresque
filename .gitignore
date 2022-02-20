@@ -2,6 +2,7 @@
 .gradle/
 build/
 out/
+bin
 # Idea
 .idea/
 *.iml
@@ -9,3 +10,8 @@ out/
 *.iws
 # Fabric
 run/
+.classpath
+.project
+.settings/org.eclipse.buildship.core.prefs
+.settings/org.eclipse.jdt.core.prefs
+*.launch
