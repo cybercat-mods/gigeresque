@@ -31,8 +31,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.32"
-    modApi("me.shedaniel.cloth:cloth-config-fabric:6.0.42") {
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${project.geckoLibVersion}"
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.clothConfigVersion}") {
     	exclude(group: "com.terraformersmc.modmenu")
     }
 	modImplementation 'curse.maven:modmenu-308702:3472549'
