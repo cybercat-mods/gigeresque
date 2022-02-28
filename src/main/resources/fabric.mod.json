@@ -8,7 +8,8 @@
 		"AzureDoom",
 		"Boston Vanseghi",
 		"Cybercat5555",
-		"Ri5ux"
+		"Ri5ux",
+		"undermark5"
 	],
 	"contact": {
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/gigeresque",
@@ -21,16 +22,16 @@
 	"entrypoints": {
 		"main": [
 			{
-				"value": "com.bvanseg.gigeresque.common.Gigeresque"
+				"value": "mods.cybercat.gigeresque.common.Gigeresque"
 			}
 		],
 		"client": [
 			{
-				"value": "com.bvanseg.gigeresque.client.GigeresqueClient"
+				"value": "mods.cybercat.gigeresque.client.GigeresqueClient"
 			}
 		],
 		"modmenu": [
-			"com.bvanseg.gigeresque.client.config.ModMenuGigeresque"
+			"mods.cybercat.gigeresque.client.config.ModMenuGigeresque"
 		]
 	},
 	"mixins": [
