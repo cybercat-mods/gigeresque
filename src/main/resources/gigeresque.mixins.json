@@ -13,8 +13,7 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.WanderingTraderEntityMixin",
     "common.entity.ai.MemoryModuleTypeInvoker",
-    "common.entity.ai.SensorTypeInvoker",
-    "common.recipe.RecipeManagerMixin"
+    "common.entity.ai.SensorTypeInvoker"
   ],
   "client": [
     "client.entity.render.GeoEntityRendererMixin",

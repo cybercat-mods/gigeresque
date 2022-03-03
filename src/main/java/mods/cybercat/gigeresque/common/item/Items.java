@@ -6,7 +6,6 @@ import mods.cybercat.gigeresque.common.fluid.Fluids;
 import mods.cybercat.gigeresque.common.item.group.ItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
@@ -41,11 +40,7 @@ public class Items implements GigeresqueInitializer {
 
 	private void initializeImpl() {
 		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, "black_fluid_bucket"), BLACK_FLUID_BUCKET);
-
-		if (Gigeresque.config.features.surgeryKit) {
-			Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, "surgery_kit"), SURGERY_KIT);
-		}
-
+		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, "surgery_kit"), SURGERY_KIT);
 		registerSpawnEgg("alien", Entities.ALIEN, 0x2C2B27, 0x4D4B3F);
 		registerSpawnEgg("aquatic_alien", Entities.AQUATIC_ALIEN, 0x404345, 0x949597);
 		registerSpawnEgg("aquatic_chestburster", Entities.AQUATIC_CHESTBURSTER, 0xDED29D, 0x2C2B27);
