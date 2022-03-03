@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Dynamic;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -12,8 +14,6 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.sound.Sounds;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
-import com.mojang.serialization.Dynamic;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -34,7 +34,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -292,7 +292,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	}
 
 	@Override
-	protected void swimUpward(Tag<Fluid> fluid) {
+	protected void swimUpward(TagKey<Fluid> fluid) {
 		if (!this.isInfertile()) {
 			super.swimUpward(fluid);
 		}
