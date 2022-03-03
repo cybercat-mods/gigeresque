@@ -29,7 +29,7 @@ public class AquaticAlienFeatureRenderer extends GeoLayerRenderer<AquaticAlienEn
 	public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn,
 			AquaticAlienEntity aquaticAlienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
-		var waterColor = aquaticAlienEntity.world.getBiome(aquaticAlienEntity.getBlockPos()).getWaterColor();
+		var waterColor = aquaticAlienEntity.world.getBiome(aquaticAlienEntity.getBlockPos()).value().getWaterColor();
 		var wr = ((waterColor >> 16) & 0xFF) / 255.0f;
 		var wg = ((waterColor >> 8) & 0xFF) / 255.0f;
 		var wb = ((waterColor >> 0) & 0xFF) / 255.0f;
