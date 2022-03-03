@@ -18,15 +18,8 @@ public class GigeresqueConfig implements ConfigData {
 		@ConfigEntry.Gui.Tooltip(count = 3)
 		public boolean isolationMode = false;
 
-		@ConfigEntry.Gui.Tooltip(count = 3)
-		public boolean surgeryKit = false;
-
 		public boolean getIsolationMode() {
 			return isolationMode;
-		}
-
-		public boolean getSurgeryKit() {
-			return surgeryKit;
 		}
 	}
 
