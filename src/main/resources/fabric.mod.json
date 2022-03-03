@@ -43,5 +43,6 @@
 		"minecraft": "1.18.x",
 		"geckolib3": ">=3.0.32",
 		"java": ">=17"
-	}
+	},
+	"accessWidener": "gigeresque.accesswidener"
 }
