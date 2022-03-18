@@ -68,6 +68,55 @@ public class Blocks implements GigeresqueInitializer {
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
 	private static final Block SINOUS_ALIEN_BLOCK = new Block(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
+	
+	private static final Block MURAL_ALIEN_BLOCK_1 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_2 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_3 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_4 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_5 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_6 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_7 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_8 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_9 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_10 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_11 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_12 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_13 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_14 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_15 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_16 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_17 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_18 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_19 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_20 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_21 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_22 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_23 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_24 = new Block(FabricBlockSettings.of(Material.METAL)
+			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
 
 	/*
 	 * PILLARS
@@ -146,6 +195,31 @@ public class Blocks implements GigeresqueInitializer {
 		registerItemBlock("ribbed_alien_block", RIBBED_ALIEN_BLOCK);
 		registerItemBlock("rough_alien_block", ROUGH_ALIEN_BLOCK);
 		registerItemBlock("sinous_alien_block", SINOUS_ALIEN_BLOCK);
+		
+		registerItemBlock("mural_block_1", MURAL_ALIEN_BLOCK_1);
+		registerItemBlock("mural_block_2", MURAL_ALIEN_BLOCK_2);
+		registerItemBlock("mural_block_3", MURAL_ALIEN_BLOCK_3);
+		registerItemBlock("mural_block_4", MURAL_ALIEN_BLOCK_4);
+		registerItemBlock("mural_block_5", MURAL_ALIEN_BLOCK_5);
+		registerItemBlock("mural_block_6", MURAL_ALIEN_BLOCK_6);
+		registerItemBlock("mural_block_7", MURAL_ALIEN_BLOCK_7);
+		registerItemBlock("mural_block_8", MURAL_ALIEN_BLOCK_8);
+		registerItemBlock("mural_block_9", MURAL_ALIEN_BLOCK_9);
+		registerItemBlock("mural_block_10", MURAL_ALIEN_BLOCK_10);
+		registerItemBlock("mural_block_11", MURAL_ALIEN_BLOCK_11);
+		registerItemBlock("mural_block_12", MURAL_ALIEN_BLOCK_12);
+		registerItemBlock("mural_block_13", MURAL_ALIEN_BLOCK_13);
+		registerItemBlock("mural_block_14", MURAL_ALIEN_BLOCK_14);
+		registerItemBlock("mural_block_15", MURAL_ALIEN_BLOCK_15);
+		registerItemBlock("mural_block_16", MURAL_ALIEN_BLOCK_16);
+		registerItemBlock("mural_block_17", MURAL_ALIEN_BLOCK_17);
+		registerItemBlock("mural_block_18", MURAL_ALIEN_BLOCK_18);
+		registerItemBlock("mural_block_19", MURAL_ALIEN_BLOCK_19);
+		registerItemBlock("mural_block_20", MURAL_ALIEN_BLOCK_20);
+		registerItemBlock("mural_block_21", MURAL_ALIEN_BLOCK_21);
+		registerItemBlock("mural_block_22", MURAL_ALIEN_BLOCK_22);
+		registerItemBlock("mural_block_23", MURAL_ALIEN_BLOCK_23);
+		registerItemBlock("mural_block_24", MURAL_ALIEN_BLOCK_24);
 
 		registerItemBlock("resinous_alien_pillar", RESINOUS_ALIEN_PILLAR);
 		registerItemBlock("ribbed_alien_pillar", RIBBED_ALIEN_PILLAR);
