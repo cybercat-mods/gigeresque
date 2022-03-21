@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.List;
 
+import com.mojang.serialization.Dynamic;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -11,8 +13,6 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.sound.Sounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
-import com.mojang.serialization.Dynamic;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -107,14 +107,16 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	public boolean canImmediatelyDespawn(double distanceSquared) {
 		return this.isHatched() && !this.hasFacehugger();
 	}
-	
+
 	@Override
 	public void checkDespawn() {
-        PlayerEntity entity = this.world.getClosestPlayer(this, -1.0);
-        double d = entity.squaredDistanceTo(this);
-        if (this.canImmediatelyDespawn(d)) {
-            this.discard();
-        }
+		PlayerEntity entity = this.world.getClosestPlayer(this, -1.0);
+		if (entity != null) {
+			double d = entity.squaredDistanceTo(this);
+			if (this.canImmediatelyDespawn(d)) {
+				this.discard();
+			}
+		}
 	}
 
 	@Override
