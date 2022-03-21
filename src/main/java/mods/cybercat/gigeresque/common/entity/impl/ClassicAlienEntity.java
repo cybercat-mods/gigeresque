@@ -200,7 +200,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
-				event.getController().setAnimationSpeed(1);
+				event.getController().setAnimationSpeed(1 + this.getMovementSpeed());
 				return PlayState.CONTINUE;
 			}
 		} else {
