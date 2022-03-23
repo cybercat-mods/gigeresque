@@ -21,8 +21,6 @@ public class EntityUtils {
 	public static boolean isPotentialHost(Entity entity) {
 		if (entity == null)
 			return false;
-		boolean playerCondition = !(entity instanceof PlayerEntity)
-				|| !((PlayerEntity) entity).isCreative() && !entity.isSpectator();
 
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))
 			return false;
@@ -30,11 +28,19 @@ public class EntityUtils {
 			return true;
 
 		boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
+		
+		if ((entity instanceof PlayerEntity)
+				&& (((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
+			return false;
+		
+		if ((entity instanceof PlayerEntity)
+				&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
+			return true;
 
 		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity)
 				&& entity.getPassengerList().isEmpty() && ((Host) entity).doesNotHaveParasite()
 				&& ((Eggmorphable) entity).isNotEggmorphing()
-				&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD && vehicleCondition && playerCondition;
+				&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD && vehicleCondition;
 	}
 
 	public static boolean isEggmorphable(Entity entity) {

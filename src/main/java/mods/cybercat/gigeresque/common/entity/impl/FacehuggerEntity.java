@@ -28,9 +28,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -69,19 +73,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS,
 			MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
 			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
-	
-//	@Override
-//	public void checkDespawn() {
-//        if (this.isInfertile()) {
-//            this.discard();
-//        }
-//	}
-//
-//	@Override
-//	public boolean cannotDespawn() {
-//		return !this.isInfertile();
-//	}
-	
+
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
@@ -168,6 +160,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	}
 
 	private void attachToHost(LivingEntity validHost) {
+		this.grabTarget(validHost);
 		this.startRiding(validHost);
 		validHost.setMovementSpeed(0.0f);
 	}
@@ -184,6 +177,15 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		return 12;
 	}
 
+	public void grabTarget(Entity entity) {
+		if (!entity.hasPassenger(this)) {
+			this.startRiding(entity, true);
+			if (entity instanceof ServerPlayerEntity) {
+				((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
+			}
+		}
+	}
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -194,6 +196,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			var host = (Host) this.getVehicle();
 
 			if (host != null) {
+				((LivingEntity)getVehicle()).addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
 				if (ticksAttachedToHost > 4800 && host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(9600);
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
