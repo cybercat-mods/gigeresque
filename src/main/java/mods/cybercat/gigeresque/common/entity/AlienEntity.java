@@ -77,6 +77,10 @@ public abstract class AlienEntity extends HostileEntity {
 			super.onDeath(source);
 			return;
 		}
+		if (source == DamageSource.OUT_OF_WORLD) {
+			super.onDeath(source);
+			return;
+		}
 
 		if (!this.world.isClient) {
 			if (getAcidDiameter() == 1) {
