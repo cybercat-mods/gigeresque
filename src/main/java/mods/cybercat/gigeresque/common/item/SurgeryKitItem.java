@@ -35,7 +35,7 @@ public class SurgeryKitItem extends Item {
 		var host = (Host) entity;
 		if (host.hasParasite()) {
 			if (!entity.world.isClient) {
-				if (host.getTicksUntilImpregnation() < Constants.TPS * 30) {
+				if (host.getTicksUntilImpregnation() < 9600) {
 					spawnParasite(entity);
 				}
 

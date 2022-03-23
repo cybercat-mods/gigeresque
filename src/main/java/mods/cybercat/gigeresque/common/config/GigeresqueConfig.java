@@ -159,7 +159,7 @@ public class GigeresqueConfig implements ConfigData {
 	public static class Targeting {
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> alienWhitelist = List.of("");
+		public List<String> alienWhitelist = List.of(Registry.ENTITY_TYPE.getId(EntityType.PLAYER).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> alienBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BAT).toString(),
@@ -179,7 +179,7 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.PARROT).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> facehuggerWhitelist = List.of("");
+		public List<String> facehuggerWhitelist = List.of(Registry.ENTITY_TYPE.getId(EntityType.PLAYER).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> facehuggerBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BLAZE).toString(),

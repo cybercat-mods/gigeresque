@@ -28,9 +28,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -71,13 +75,14 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
 
 	@Override
-	public boolean canImmediatelyDespawn(double distanceSquared) {
-		return this.isInfertile();
-	}
-
-	@Override
-	public boolean cannotDespawn() {
-		return !this.isInfertile();
+	protected void updatePostDeath() {
+		++this.deathTime;
+		if (this.deathTime == 4800 && this.isInfertile()) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
+		} else {
+			this.remove(Entity.RemovalReason.KILLED);
+		}
 	}
 
 	@Override
@@ -155,6 +160,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	}
 
 	private void attachToHost(LivingEntity validHost) {
+		this.grabTarget(validHost);
 		this.startRiding(validHost);
 		validHost.setMovementSpeed(0.0f);
 	}
@@ -171,6 +177,15 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		return 12;
 	}
 
+	public void grabTarget(Entity entity) {
+		if (!entity.hasPassenger(this)) {
+			this.startRiding(entity, true);
+			if (entity instanceof ServerPlayerEntity) {
+				((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
+			}
+		}
+	}
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -181,11 +196,13 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			var host = (Host) this.getVehicle();
 
 			if (host != null) {
-				if (ticksAttachedToHost > Constants.TPS * 3 && host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(Constants.TPD);
+				((LivingEntity)getVehicle()).addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
+				if (ticksAttachedToHost > 4800 && host.doesNotHaveParasite()) {
+					host.setTicksUntilImpregnation(9600);
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
+					this.kill();
 				}
 			}
 		} else {
@@ -203,7 +220,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			return;
 		}
 
-		if (vehicle == null && isInfertile()) {
+		if (vehicle == null && !isInfertile()) {
 			var target = this.getTarget();
 			if (target == null) {
 				target = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);

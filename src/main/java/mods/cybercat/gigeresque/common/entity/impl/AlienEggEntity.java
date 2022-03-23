@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AlienEggBrain;
@@ -13,7 +14,10 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.sound.Sounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -26,9 +30,13 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -265,6 +273,37 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			setIsHatching(true);
 		}
 		return super.damage(source, amount);
+	}
+
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		float q = 6.0F;
+		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
+		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
+		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
+		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
+		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
+		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
+		List<Entity> list = this.world.getOtherEntities(this,
+				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		Vec3d vec3d1 = new Vec3d(this.getX(), this.getY(), this.getZ());
+
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
+			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity)) {
+				if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)
+						&& !(entity instanceof AlienEntity) && ((Host) entity).doesNotHaveParasite()
+						&& ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientEntity)
+						&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD) {
+					setIsHatching(true);
+				}
+				if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative()) {
+					setIsHatching(true);
+				}
+			}
+		}
 	}
 
 	/**
