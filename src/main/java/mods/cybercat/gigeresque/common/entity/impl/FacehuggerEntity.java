@@ -69,15 +69,28 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS,
 			MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
 			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
-
+	
+//	@Override
+//	public void checkDespawn() {
+//        if (this.isInfertile()) {
+//            this.discard();
+//        }
+//	}
+//
+//	@Override
+//	public boolean cannotDespawn() {
+//		return !this.isInfertile();
+//	}
+	
 	@Override
-	public boolean canImmediatelyDespawn(double distanceSquared) {
-		return this.isInfertile();
-	}
-
-	@Override
-	public boolean cannotDespawn() {
-		return !this.isInfertile();
+	protected void updatePostDeath() {
+		++this.deathTime;
+		if (this.deathTime == 4800 && this.isInfertile()) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
+		} else {
+			this.remove(Entity.RemovalReason.KILLED);
+		}
 	}
 
 	@Override
@@ -181,11 +194,12 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			var host = (Host) this.getVehicle();
 
 			if (host != null) {
-				if (ticksAttachedToHost > Constants.TPS * 3 && host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(Constants.TPD);
+				if (ticksAttachedToHost > 4800 && host.doesNotHaveParasite()) {
+					host.setTicksUntilImpregnation(9600);
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
+					this.kill();
 				}
 			}
 		} else {
@@ -203,7 +217,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			return;
 		}
 
-		if (vehicle == null && isInfertile()) {
+		if (vehicle == null && !isInfertile()) {
 			var target = this.getTarget();
 			if (target == null) {
 				target = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
