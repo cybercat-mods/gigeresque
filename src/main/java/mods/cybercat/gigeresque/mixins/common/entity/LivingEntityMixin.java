@@ -140,7 +140,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	private void handleHostLogic() {
 		if (hasParasite()) {
 			ticksUntilImpregnation = Math.max(
-					ticksUntilImpregnation - Gigeresque.config.getMiscellaneous().getImpregnationTickMultiplier(), 0f);
+					ticksUntilImpregnation - 1.0F, 0f);
 
 			if (Boolean.TRUE.equals(!isBleeding()) && ticksUntilImpregnation >= 0
 					&& ticksUntilImpregnation < Constants.TPS * 30L) {

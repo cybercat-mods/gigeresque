@@ -67,10 +67,10 @@ public class GigeresqueConfig implements ConfigData {
 		public float eggmorphTickMultiplier = 1.0f;
 
 		@ConfigEntry.Gui.Tooltip(count = 2)
-		public float facehuggerAttachTickMultiplier = 1.0f;
+		public float facehuggerAttachTickTimer = 4800.0f;
 
 		@ConfigEntry.Gui.Tooltip(count = 2)
-		public float impregnationTickMultiplier = 1.0f;
+		public float impregnationTickTimer = 9600.0f;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float runnerAlienGrowthMultiplier = 1.0f;
@@ -106,12 +106,12 @@ public class GigeresqueConfig implements ConfigData {
 			return eggmorphTickMultiplier;
 		}
 
-		public float getFacehuggerAttachTickMultiplier() {
-			return facehuggerAttachTickMultiplier;
+		public float getFacehuggerAttachTickTimer() {
+			return facehuggerAttachTickTimer;
 		}
 
-		public float getImpregnationTickMultiplier() {
-			return impregnationTickMultiplier;
+		public float getImpregnationTickTimer() {
+			return impregnationTickTimer;
 		}
 
 		public float getRunnerAlienGrowthMultiplier() {

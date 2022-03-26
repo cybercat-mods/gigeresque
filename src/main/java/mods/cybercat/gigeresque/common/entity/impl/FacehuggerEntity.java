@@ -216,15 +216,17 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		super.tick();
 
 		if (isAttachedToHost()) {
-			ticksAttachedToHost += Gigeresque.config.miscellaneous.facehuggerAttachTickMultiplier;
+			ticksAttachedToHost += Gigeresque.config.miscellaneous.facehuggerAttachTickTimer;
 
 			var host = (Host) this.getVehicle();
 
 			if (host != null) {
 				((LivingEntity) getVehicle())
 						.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
-				if (ticksAttachedToHost > 4800 && host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(9600);
+				if (ticksAttachedToHost > Gigeresque.config.getMiscellaneous().getFacehuggerAttachTickTimer()
+						&& host.doesNotHaveParasite()) {
+					host.setTicksUntilImpregnation(
+							Gigeresque.config.getMiscellaneous().getImpregnationTickTimer());
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
