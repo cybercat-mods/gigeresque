@@ -216,7 +216,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		super.tick();
 
 		if (isAttachedToHost()) {
-			ticksAttachedToHost += Gigeresque.config.miscellaneous.facehuggerAttachTickTimer;
+			ticksAttachedToHost += 1;
 
 			var host = (Host) this.getVehicle();
 
