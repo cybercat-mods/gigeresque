@@ -10,6 +10,15 @@
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:aliendungeon_long_hall",
+				"processors": "gigeresque:randomize_stonebrick",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
 		}
 	]
 }
