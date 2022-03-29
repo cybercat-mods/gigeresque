@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.mojang.serialization.Dynamic;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -15,9 +17,9 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.sound.Sounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
-import com.mojang.serialization.Dynamic;
-
 import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -45,6 +47,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			TrackedDataHandlerRegistry.FLOAT);
 	private static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
 			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
@@ -68,6 +72,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	public void setIsHissing(boolean isHissing) {
 		dataTracker.set(IS_HISSING, isHissing);
+	}
+
+	public boolean isCrawling() {
+		return dataTracker.get(IS_CLIMBING);
+	}
+
+	public void setIsCrawling(boolean isHissing) {
+		dataTracker.set(IS_CLIMBING, isHissing);
 	}
 
 	private long hissingCooldown = 0L;
@@ -114,6 +126,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
 		dataTracker.startTracking(IS_HISSING, false);
+		dataTracker.startTracking(IS_CLIMBING, false);
 	}
 
 	@Override
@@ -121,6 +134,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		super.writeCustomDataToNbt(nbt);
 		nbt.putFloat("growth", getGrowth());
 		nbt.putBoolean("isHissing", isHissing());
+		nbt.putBoolean("isCrawling", isCrawling());
 	}
 
 	@Override
@@ -132,11 +146,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (nbt.contains("isHissing")) {
 			setIsHissing(nbt.getBoolean("isHissing"));
 		}
+		if (nbt.contains("isCrawling")) {
+			setIsCrawling(nbt.getBoolean("isCrawling"));
+		}
 	}
 
 	@Override
 	public int computeFallDamage(float fallDistance, float damageMultiplier) {
-		if (fallDistance <= 9)
+		if (fallDistance <= 15)
 			return 0;
 		return super.computeFallDamage(fallDistance, damageMultiplier);
 	}
@@ -190,9 +207,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public boolean isClimbing() {
-		LivingEntity target = this.getTarget();
-		boolean isTargetAbove = target != null && target.getBlockY() > this.getBlockY();
-		return this.horizontalCollision && isTargetAbove;
+		boolean isAttacking = this.isAttacking();
+		setIsCrawling(isAttacking && this.horizontalCollision);
+		return isAttacking && this.horizontalCollision;
 	}
 
 	@Override
@@ -252,5 +269,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			hissingCooldown = 80L;
 		}
 		super.playAmbientSound();
+	}
+
+	@Override
+	public EntityDimensions getDimensions(EntityPose pose) {
+		return this.submergedInWater || this.isCrawling() ? EntityDimensions.changing(0.5f, 0.5f) : super.getDimensions(pose);
 	}
 }

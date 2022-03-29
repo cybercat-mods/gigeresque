@@ -6,7 +6,6 @@ import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -64,7 +63,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		super.tick();
 
 		// Attack logic
-
+		
 		if (attackProgress > 0) {
 			attackProgress--;
 
@@ -83,7 +82,6 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			case 1 -> AlienAttackType.CLAW_RIGHT;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			case 4 -> AlienAttackType.TAIL_OVER;
 			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
@@ -102,18 +100,19 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (velocityLength > 0.0 && !this.isTouchingWater()) {
+		if (velocityLength > 0.0 && !this.isTouchingWater() && !this.isCrawling()) {
 			if (this.isAttacking()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_aggro", true)
-//                        .addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true)
-				);
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 				return PlayState.CONTINUE;
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true)
-//                        .addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true)
-				);
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 				return PlayState.CONTINUE;
 			}
+		} else if (this.isCrawling()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl2", true));
+			return PlayState.CONTINUE;
 		} else {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 			return PlayState.CONTINUE;
@@ -123,8 +122,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
 			event.getController().setAnimation(new AnimationBuilder()
-//                        .addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true)
-			);
+					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 			return PlayState.CONTINUE;
 		}
 
