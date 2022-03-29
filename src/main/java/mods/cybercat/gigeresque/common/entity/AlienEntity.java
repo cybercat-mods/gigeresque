@@ -4,7 +4,6 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.Blocks;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -44,16 +43,6 @@ public abstract class AlienEntity extends HostileEntity {
 		}
 	}
 
-	@Override
-	public boolean canImmediatelyDespawn(double distanceSquared) {
-		return false;
-	}
-
-	@Override
-	public boolean cannotDespawn() {
-		return true;
-	}
-
 	private void generateAcidPool(int xOffset, int zOffset) {
 		BlockPos pos = this.getBlockPos().add(xOffset, 0, zOffset);
 		BlockState posState = world.getBlockState(pos);
@@ -83,14 +72,16 @@ public abstract class AlienEntity extends HostileEntity {
 		}
 
 		if (!this.world.isClient) {
-			if (getAcidDiameter() == 1) {
-				generateAcidPool(0, 0);
-			} else {
-				int radius = (getAcidDiameter() - 1) / 2;
+			if (source != DamageSource.OUT_OF_WORLD) {
+				if (getAcidDiameter() == 1) {
+					generateAcidPool(0, 0);
+				} else {
+					int radius = (getAcidDiameter() - 1) / 2;
 
-				for (int x = -radius; x <= radius; x++) {
-					for (int z = -radius; z <= radius; z++) {
-						generateAcidPool(x, z);
+					for (int x = -radius; x <= radius; x++) {
+						for (int z = -radius; z <= radius; z++) {
+							generateAcidPool(x, z);
+						}
 					}
 				}
 			}
@@ -112,7 +103,7 @@ public abstract class AlienEntity extends HostileEntity {
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source))
 			return super.damage(source, amount);
 
-		if (!this.world.isClient) {
+		if (!this.world.isClient && source != DamageSource.OUT_OF_WORLD) {
 			int acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4)) {
