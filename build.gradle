@@ -38,7 +38,8 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:6.2.57") {
     	exclude(group: "net.fabricmc.fabric-api")
     }
-	modImplementation "curse.maven:hwg-448106:3706634"
+	modImplementation "curse.maven:hwg-448106:3714117"
+	modImplementation "curse.maven:stfu-401978:3677546"
 }
 
 processResources {
