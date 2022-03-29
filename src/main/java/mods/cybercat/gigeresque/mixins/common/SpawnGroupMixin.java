@@ -65,7 +65,7 @@ public class SpawnGroupMixin {
 
         // This means our code will still work if other mods or Mojang add more spawn groups!
         var alien = newSpawnGroup(
-                "ALIEN",
+                "alien",
                 last.ordinal() + 1,
                 "alien",
                 alienSpawnCap,

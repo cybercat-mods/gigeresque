@@ -14,7 +14,6 @@ import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -62,7 +61,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 	private int attackProgress = 0;
 	private boolean isSearching = false;
-	private boolean searchingLeft = false;
 	private long searchingProgress = 0L;
 	private long searchingCooldown = 0L;
 
@@ -100,7 +98,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			case 1 -> AlienAttackType.CLAW_RIGHT;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			case 4 -> AlienAttackType.TAIL_OVER;
 			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
@@ -124,10 +121,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					int next = random.nextInt(10);
 
 					isSearching = next == 0 || next == 1;
-
-					if (isSearching) {
-						searchingLeft = next == 0;
-					}
 				}
 			}
 		}
@@ -191,22 +184,24 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (velocityLength > 0.0 && !this.isTouchingWater()) {
+		if (velocityLength > 0.0 && !this.isTouchingWater() && !this.isCrawling()) {
 			if (this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_aggro", true)
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 				event.getController().setAnimationSpeed(1 + this.getMovementSpeed());
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true)
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
-				event.getController().setAnimationSpeed(1 + this.getMovementSpeed());
+				event.getController().setAnimationSpeed(1);
 				return PlayState.CONTINUE;
 			}
+		} else if (this.isCrawling()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("climb", true));
+			return PlayState.CONTINUE;
 		} else {
 			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
-				event.getController().setAnimation(
-						new AnimationBuilder().addAnimation(searchingLeft ? "search_left" : "search_right", false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
 			}
 
@@ -227,11 +222,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
 		if (isHissing()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", true));
 			return PlayState.CONTINUE;
 		}
 
-		return PlayState.STOP;
+		return PlayState.CONTINUE;
 	}
 
 	@Override

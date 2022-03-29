@@ -90,6 +90,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	private static final TrackedData<Boolean> IS_INFERTILE = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
 	private static final List<SensorType<? extends Sensor<? super FacehuggerEntity>>> SENSOR_TYPES = List
 			.of(SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_HOST, SensorTypes.ALIEN_REPELLENT);
@@ -127,6 +129,15 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		dataTracker.set(IS_INFERTILE, value);
 	}
 
+	public boolean isCrawling() {
+		return dataTracker.get(IS_CLIMBING);
+	}
+
+	public void setIsCrawling(boolean isHissing) {
+		dataTracker.set(IS_CLIMBING, isHissing);
+	}
+
+
 	public float ticksAttachedToHost = -1.0f;
 
 	@Override
@@ -159,6 +170,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	protected void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(IS_INFERTILE, false);
+		dataTracker.startTracking(IS_CLIMBING, false);
 	}
 
 	private void detachFromHost(boolean removesParasite) {
@@ -216,7 +228,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		super.tick();
 
 		if (isAttachedToHost()) {
-			ticksAttachedToHost += Gigeresque.config.miscellaneous.facehuggerAttachTickTimer;
+			ticksAttachedToHost += 1;
 
 			var host = (Host) this.getVehicle();
 
@@ -267,6 +279,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		super.writeCustomDataToNbt(nbt);
 		nbt.putBoolean("isInfertile", isInfertile());
 		nbt.putFloat("ticksAttachedToHost", ticksAttachedToHost);
+		nbt.putBoolean("isCrawling", isCrawling());
 	}
 
 	@Override
@@ -277,6 +290,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		}
 		if (nbt.contains("ticksAttachedToHost")) {
 			ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
+		}
+		if (nbt.contains("isCrawling")) {
+			setIsCrawling(nbt.getBoolean("isCrawling"));
 		}
 	}
 
@@ -389,7 +405,14 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater ? super.getDimensions(pose).scaled(1.0f, 0.5f) : super.getDimensions(pose);
+		return this.submergedInWater || this.isCrawling() ? super.getDimensions(pose).scaled(1.0f, 0.5f) : super.getDimensions(pose);
+	}
+
+	@Override
+	public boolean isClimbing() {
+		boolean isAttacking = this.isAttacking();
+		setIsCrawling(isAttacking && this.horizontalCollision);
+		return isAttacking && this.horizontalCollision;
 	}
 
 	/*
@@ -419,7 +442,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			}
 		}
 
-		if (velocityLength > 0.0 && !this.isSubmergedInWater()) {
+		if (velocityLength > 0.0 && !this.isSubmergedInWater() && !this.isCrawling()) {
 			if (this.isAttacking()) {
 				if (!this.isOnGround()) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("midair_loop", true));
@@ -432,6 +455,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
 				return PlayState.CONTINUE;
 			}
+		} else if (this.isCrawling()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl2", true));
+			return PlayState.CONTINUE;
 		} else {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 			return PlayState.CONTINUE;

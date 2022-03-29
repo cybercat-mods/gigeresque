@@ -112,27 +112,6 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	private AlienEggBrain complexBrain;
 
 	@Override
-	public boolean canImmediatelyDespawn(double distanceSquared) {
-		return this.isHatched() && !this.hasFacehugger();
-	}
-
-	@Override
-	public void checkDespawn() {
-		PlayerEntity entity = this.world.getClosestPlayer(this, -1.0);
-		if (entity != null) {
-			double d = entity.squaredDistanceTo(this);
-			if (this.canImmediatelyDespawn(d)) {
-				this.discard();
-			}
-		}
-	}
-
-	@Override
-	public boolean cannotDespawn() {
-		return !this.isHatched() && this.hasFacehugger();
-	}
-
-	@Override
 	protected Brain.Profile<? extends AlienEggEntity> createBrainProfile() {
 		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
 	}
@@ -223,6 +202,9 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			facehugger.setVelocity(0.0, 0.7, 0.0);
 			world.spawnEntity(facehugger);
 			setHasFacehugger(false);
+		}
+		if (this.isHatched() && !this.hasFacehugger()) {
+			this.discard();
 		}
 	}
 

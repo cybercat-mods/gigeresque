@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -36,7 +37,7 @@ public class Entities implements GigeresqueInitializer {
 	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
 			float width, float height) {
 		return Registry.register(Registry.ENTITY_TYPE, new Identifier(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
-				.create(CustomSpawnGroup.ALIEN, factory).dimensions(EntityDimensions.fixed(width, height)).build());
+				.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).build());
 	}
 
 	@SuppressWarnings("unused")
