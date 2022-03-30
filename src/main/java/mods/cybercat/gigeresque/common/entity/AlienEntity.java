@@ -42,15 +42,6 @@ public abstract class AlienEntity extends HostileEntity {
 			this.heal(0.0833f);
 		}
 	}
-	
-	@Override
-	public boolean cannotDespawn() {
-		return true;
-	}
-
-    @Override
-    public void checkDespawn() {
-    }
 
 	private void generateAcidPool(int xOffset, int zOffset) {
 		BlockPos pos = this.getBlockPos().add(xOffset, 0, zOffset);
