@@ -1,10 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
@@ -60,6 +62,17 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 		} else {
 			super.travel(movementInput);
 		}
+	}
+
+	@Override
+	public LivingEntity growInto() {
+		var entity = new AquaticAlienEntity(Entities.AQUATIC_ALIEN, world);
+
+		if (hasCustomName()) {
+			entity.setCustomName(this.getCustomName());
+		}
+
+		return entity;
 	}
 
 	@Override
