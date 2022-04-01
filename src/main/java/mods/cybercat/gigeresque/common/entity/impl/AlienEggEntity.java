@@ -47,6 +47,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class AlienEggEntity extends AlienEntity implements IAnimatable {
+
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
 		super(type, world);
 	}
@@ -203,9 +204,6 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			world.spawnEntity(facehugger);
 			setHasFacehugger(false);
 		}
-		if (this.isHatched() && !this.hasFacehugger()) {
-			this.discard();
-		}
 	}
 
 	/**
@@ -296,13 +294,24 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		return true;
 	}
 
+	@Override
+	public boolean cannotDespawn() {
+		return (this.isHatched() && !this.hasFacehugger()) ? false : super.cannotDespawn();
+	}
+
+	@Override
+	public void checkDespawn() {
+		if (this.isHatched() && !this.hasFacehugger())
+			super.checkDespawn();
+	}
+
 	/*
 	 * ANIMATIONS
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (isHatched()) {
-			if (hasFacehugger()) {
+			if (!hasFacehugger()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop_nobag", true));
 				return PlayState.CONTINUE;
 			}
