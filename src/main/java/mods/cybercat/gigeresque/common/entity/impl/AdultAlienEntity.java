@@ -34,6 +34,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
@@ -206,6 +207,13 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
+	public void onKilledOther(ServerWorld world, LivingEntity other) {
+		super.onKilledOther(world, other);
+		if (!world.isClient)
+			this.heal(1.0833f);
+	}
+
+	@Override
 	public boolean isClimbing() {
 		boolean isAttacking = this.isAttacking();
 		setIsCrawling(isAttacking && this.horizontalCollision);
@@ -273,6 +281,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isCrawling() ? EntityDimensions.changing(0.5f, 0.5f) : super.getDimensions(pose);
+		return this.submergedInWater || this.isCrawling() ? EntityDimensions.changing(0.5f, 0.5f)
+				: super.getDimensions(pose);
 	}
 }

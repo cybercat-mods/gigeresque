@@ -40,6 +40,7 @@ dependencies {
     }
 	modImplementation "curse.maven:hwg-448106:3714117"
 	modImplementation "curse.maven:stfu-401978:3677546"
+	modImplementation "curse.maven:tdi-245733:3556912"
 }
 
 processResources {
