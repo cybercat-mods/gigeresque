@@ -2,13 +2,13 @@ package mods.cybercat.gigeresque.common.entity.ai.brain;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;

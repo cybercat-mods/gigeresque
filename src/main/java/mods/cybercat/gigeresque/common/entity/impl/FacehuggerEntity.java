@@ -11,8 +11,10 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.ChaseGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.Sounds;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.block.BlockState;
@@ -30,9 +32,9 @@ import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeType;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -63,7 +65,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
-	private final MobNavigation landNavigation = new MobNavigation(this, world);
+	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 
 	private final MoveControl landMoveControl = new MoveControl(this);
@@ -77,13 +79,13 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		navigation = swimNavigation;
 		moveControl = swimMoveControl;
 		lookControl = swimLookControl;
-		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
 	}
 
 	public static DefaultAttributeContainer.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
 				.add(EntityAttributes.GENERIC_ARMOR, 1.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
+				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0)
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251);
 	}
@@ -97,9 +99,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			.of(SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_HOST, SensorTypes.ALIEN_REPELLENT);
 
 	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS,
-			MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
-			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
+			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+			MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS, MemoryModuleType.NEAREST_ATTACKABLE,
+			MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH, MemoryModuleType.VISIBLE_MOBS,
+			MemoryModuleType.WALK_TARGET);
 
 	@Override
 	protected void updatePostDeath() {
@@ -136,7 +139,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	public void setIsCrawling(boolean isHissing) {
 		dataTracker.set(IS_CLIMBING, isHissing);
 	}
-
 
 	public float ticksAttachedToHost = -1.0f;
 
@@ -237,39 +239,39 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 						.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
 				if (ticksAttachedToHost > Gigeresque.config.getMiscellaneous().getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(
-							Gigeresque.config.getMiscellaneous().getImpregnationTickTimer());
+					host.setTicksUntilImpregnation(Gigeresque.config.getMiscellaneous().getImpregnationTickTimer());
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
 					this.kill();
 				}
 			}
+
+			var vehicle = this.getVehicle();
+			if (vehicle != null && ((Host) vehicle).isBleeding()) {
+				this.stopRiding();
+				detachFromHost(vehicle instanceof PlayerEntity && ((PlayerEntity) vehicle).isCreative());
+			}
 		} else {
 			ticksAttachedToHost = -1.0f;
 		}
 
 		var vehicle = this.getVehicle();
-		if (vehicle != null && ((vehicle instanceof PlayerEntity && ((PlayerEntity) vehicle).isCreative())
-				|| ticksAttachedToHost >= Constants.TPM * 5)) {
-			detachFromHost(vehicle instanceof PlayerEntity && ((PlayerEntity) vehicle).isCreative());
-		}
 
 		if (isInfertile()) {
 			this.clearGoalsAndTasks();
 			return;
 		}
 
-		if (vehicle == null && !isInfertile()) {
-			var target = this.getTarget();
-			if (target == null) {
-				target = brain.getOptionalMemory(MemoryModuleType.ATTACK_TARGET).orElse(null);
-			}
-			if (target == null)
-				return;
+		var target = this.getTarget();
+		if (vehicle == null && !isInfertile() && target != null) {
+			if (EntityUtils.isPotentialHost(this.getTarget()) || ((Host) this.getTarget()).isBleeding()
+					|| !(EntityUtils.isFacehuggerAttached(this.getTarget()))
+							&& !(this.getTarget() instanceof AlienEntity)) {
 
-			if (this.distanceTo(target) < target.getWidth() * 2 && canStartRiding(target)) {
-				attachToHost(target);
+				if (this.distanceTo(target) < 3 && canStartRiding(target)) {
+					attachToHost(target);
+				}
 			}
 		}
 	}
@@ -298,7 +300,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public boolean tryAttack(Entity target) {
-		return true;
+		return super.tryAttack(target);
 	}
 
 	@Override
@@ -372,10 +374,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
-		if (this.age % 10 == 0) {
-			this.calculateDimensions();
-		}
-
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
 			updateVelocity(getMovementSpeed(), movementInput);
 			move(MovementType.SELF, getVelocity());
@@ -395,7 +393,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return swimNavigation;
+		return this.isTouchingWater() ? swimNavigation : landNavigation;
 	}
 
 	@Override
@@ -405,7 +403,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isCrawling() ? super.getDimensions(pose).scaled(1.0f, 0.5f) : super.getDimensions(pose);
+		return this.submergedInWater || this.isCrawling() ? super.getDimensions(pose).scaled(1.0f, 0.5f)
+				: super.getDimensions(pose);
 	}
 
 	@Override
@@ -413,6 +412,12 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		boolean isAttacking = this.isAttacking();
 		setIsCrawling(isAttacking && this.horizontalCollision);
 		return isAttacking && this.horizontalCollision;
+	}
+
+	@Override
+	protected void initGoals() {
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true));
+		this.goalSelector.add(5, new ChaseGoal(this, 0.6D, false));
 	}
 
 	/*
@@ -432,7 +437,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 
-		if (this.isSubmergedInWater()) {
+		if (this.isSubmergedInWater() && !this.isCrawling()) {
 			if (event.isMoving()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
 				return PlayState.CONTINUE;
@@ -443,18 +448,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		}
 
 		if (velocityLength > 0.0 && !this.isSubmergedInWater() && !this.isCrawling()) {
-			if (this.isAttacking()) {
-				if (!this.isOnGround()) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("midair_loop", true));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_aggro", true));
-					return PlayState.CONTINUE;
-				}
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
-				return PlayState.CONTINUE;
-			}
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
+			return PlayState.CONTINUE;
 		} else if (this.isCrawling()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl2", true));
 			return PlayState.CONTINUE;
