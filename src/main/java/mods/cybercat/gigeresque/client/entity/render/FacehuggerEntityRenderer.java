@@ -4,14 +4,15 @@ import java.util.HashMap;
 
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
@@ -48,6 +49,30 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				(facehugger, host) -> new TransformData(0.0, 0.0, 0.0, 0.36, calcStandardOffsetY(facehugger)));
 		headDistances.put(EntityType.PLAYER,
 				(facehugger, host) -> new TransformData(0.0, 0.25, 0.0, 0.36, calcStandardOffsetY(facehugger)));
+	}
+
+	@Override
+	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, MatrixStack stack,
+			VertexConsumerProvider bufferIn, int packedLightIn) {
+		if (entity.isCrawling()) {
+			if (entity.getHorizontalFacing() == Direction.WEST) {
+				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+				stack.translate(0, -0.2, 0);
+			}
+			if (entity.getHorizontalFacing() == Direction.NORTH) {
+				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+				stack.translate(0, -0.2, 0);
+			}
+			if (entity.getHorizontalFacing() == Direction.SOUTH) {
+				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+				stack.translate(0, -0.2, 0);
+			}
+			if (entity.getHorizontalFacing() == Direction.EAST) {
+				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+				stack.translate(0, -0.2, 0);
+			}
+		}
+		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 
 	@Override
