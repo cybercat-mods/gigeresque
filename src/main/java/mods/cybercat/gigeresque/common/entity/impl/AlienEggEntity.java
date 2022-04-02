@@ -16,9 +16,9 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -32,10 +32,12 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.AmbientEntity;
+import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -176,19 +178,22 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			ticksOpen = nbt.getLong("ticksOpen");
 		}
 	}
-	
+
 	@Override
-	protected void updatePostDeath() {
-		this.world.setBlockState(this.getBlockPos(), Blocks.AIR.getDefaultState());
-		super.updatePostDeath();
+	protected Box calculateBoundingBox() {
+		float g = this.getType().getWidth() / 2.0f;
+		return ShulkerEntity.calculateBoundingBox(Direction.UP, 0).offset(this.getX() - (double) g, this.getY(),
+				this.getZ() - (double) g);
+	}
+
+	@Override
+	public Box getBoundingBox(EntityPose pose) {
+		return this.getBoundingBox().expand(1);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.isAlive()) {
-			this.world.setBlockState(this.getBlockPos(), Blocks.BARRIER.getDefaultState());
-		}
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) {
 			hatchProgress++;
 		}
@@ -223,6 +228,11 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
 			setIsHatching(true);
 		}
+	}
+
+	@Override
+	public boolean isCollidable() {
+		return this.isAlive();
 	}
 
 	/**
