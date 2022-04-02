@@ -290,12 +290,16 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
 			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity)) {
 				if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)
-						&& !(entity instanceof AlienEntity) && ((Host) entity).doesNotHaveParasite()
-						&& ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientEntity)
-						&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD) {
-					setIsHatching(true);
+						&& !(entity instanceof AlienEntity)) {
+					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
+							&& !(entity instanceof AmbientEntity)
+							&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD) {
+						if (EntityUtils.isPotentialHost(entity))
+							setIsHatching(true);
+					}
 				}
-				if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative()) {
+				if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative()
+						&& !((PlayerEntity) entity).isSpectator()) {
 					setIsHatching(true);
 				}
 			}
