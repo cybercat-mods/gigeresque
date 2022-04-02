@@ -6,7 +6,6 @@ import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
@@ -28,18 +27,17 @@ public class EntityUtils {
 			return true;
 
 		boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
-		
+
 		if ((entity instanceof PlayerEntity)
 				&& (((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
 			return false;
-		
+
 		if ((entity instanceof PlayerEntity)
 				&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
 			return true;
 
-		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity)
-				&& entity.getPassengerList().isEmpty() && ((Host) entity).doesNotHaveParasite()
-				&& ((Eggmorphable) entity).isNotEggmorphing()
+		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengerList().isEmpty()
+				&& ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
 				&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD && vehicleCondition;
 	}
 
