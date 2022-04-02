@@ -448,6 +448,11 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 				return PlayState.CONTINUE;
 			}
 		}
+		
+		if (this.age >= 1 && velocityLength <= 0.0) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("leap_egg", false));
+			return PlayState.CONTINUE;
+		}
 
 		if (velocityLength > 0.0 && !this.isSubmergedInWater() && !this.isCrawling()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
