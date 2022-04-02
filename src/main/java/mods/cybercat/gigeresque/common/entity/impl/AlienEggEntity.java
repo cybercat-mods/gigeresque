@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
@@ -175,11 +176,19 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			ticksOpen = nbt.getLong("ticksOpen");
 		}
 	}
+	
+	@Override
+	protected void updatePostDeath() {
+		this.world.setBlockState(this.getBlockPos(), Blocks.AIR.getDefaultState());
+		super.updatePostDeath();
+	}
 
 	@Override
 	public void tick() {
 		super.tick();
-
+		if (this.isAlive()) {
+			this.world.setBlockState(this.getBlockPos(), Blocks.BARRIER.getDefaultState());
+		}
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) {
 			hatchProgress++;
 		}
@@ -252,7 +261,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		if (source.getSource() != null) {
 			setIsHatching(true);
 		}
-		return super.damage(source, amount);
+		return source == DamageSource.IN_WALL ? false : super.damage(source, amount);
 	}
 
 	@Override
