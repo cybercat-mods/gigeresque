@@ -199,7 +199,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 
 		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !world.isClient) {
 			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, world);
-			facehugger.refreshPositionAndAngles(getBlockPos(), getYaw(), getPitch());
+			facehugger.refreshPositionAndAngles(getBlockPos().up(), getYaw(), getPitch());
 			facehugger.setVelocity(0.0, 0.7, 0.0);
 			world.spawnEntity(facehugger);
 			setHasFacehugger(false);
