@@ -32,12 +32,10 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.mob.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -181,9 +179,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	protected Box calculateBoundingBox() {
-		float g = this.getType().getWidth() / 2.0f;
-		return ShulkerEntity.calculateBoundingBox(Direction.UP, 0).offset(this.getX() - (double) g, this.getY(),
-				this.getZ() - (double) g);
+		return super.calculateBoundingBox();
 	}
 
 	@Override
@@ -228,6 +224,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
 			setIsHatching(true);
 		}
+		this.pushAway(entity);
 	}
 
 	@Override
