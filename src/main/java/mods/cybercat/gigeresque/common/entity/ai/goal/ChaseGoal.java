@@ -39,6 +39,18 @@ public class ChaseGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		if ((livingEntity instanceof AlienEntity)) {
+			return false;
+		}
+		if (((Host) livingEntity).isBleeding()) {
+			return false;
+		}
+		if ( EntityUtils.isFacehuggerAttached(livingEntity)) {
+			return false;
+		}
+		if (!((Host) livingEntity).doesNotHaveParasite()) {
+			return false;
+		}
 		if (!livingEntity.isAlive()) {
 			return false;
 		}
@@ -57,6 +69,9 @@ public class ChaseGoal extends Goal {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
+			return false;
+		}
+		if ((livingEntity instanceof AlienEntity)) {
 			return false;
 		}
 		if (!this.pauseWhenMobIdle) {
@@ -95,10 +110,11 @@ public class ChaseGoal extends Goal {
 	@Override
 	public void tick() {
 		LivingEntity livingEntity = this.mob.getTarget();
-		if (livingEntity == null || ((Host) livingEntity).isBleeding()
-				|| EntityUtils.isFacehuggerAttached(livingEntity) && !(livingEntity instanceof AlienEntity)) {
+		if (livingEntity == null) {
 			return;
 		}
+		if (livingEntity instanceof AlienEntity)
+			return;
 		this.mob.getLookControl().lookAt(livingEntity, 30.0f, 30.0f);
 		double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);

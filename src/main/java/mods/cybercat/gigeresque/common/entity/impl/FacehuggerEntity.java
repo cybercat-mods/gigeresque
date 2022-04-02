@@ -198,7 +198,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity;
 	}
 
-	private void attachToHost(LivingEntity validHost) {
+	public void attachToHost(LivingEntity validHost) {
 		this.grabTarget(validHost);
 		this.startRiding(validHost);
 		validHost.setMovementSpeed(0.0f);
@@ -265,15 +265,17 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 		var target = this.getTarget();
 		if (vehicle == null && !isInfertile() && target != null) {
-			if (EntityUtils.isPotentialHost(this.getTarget()) || ((Host) this.getTarget()).isBleeding()
-					|| !(EntityUtils.isFacehuggerAttached(this.getTarget()))
-							&& !(this.getTarget() instanceof AlienEntity)) {
+			if (EntityUtils.isPotentialHost(this.getTarget())) {
+				if (((Host) this.getTarget()).isBleeding() || !(EntityUtils.isFacehuggerAttached(this.getTarget()))
+						&& !(this.getTarget() instanceof AlienEntity)) {
 
-				if (this.distanceTo(target) < 3 && canStartRiding(target)) {
-					attachToHost(target);
+					if (this.distanceTo(target) < 3 && canStartRiding(target)) {
+						attachToHost(target);
+					}
 				}
 			}
 		}
+
 	}
 
 	@Override
