@@ -210,6 +210,250 @@
 					}
 				}
 			}
+		},
+		"hatch": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 2,
+			"bones": {
+				"frontLobe01": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.92": {
+							"vector": [10, 0, 0],
+							"easing": "easeOutQuad"
+						}
+					}
+				},
+				"frontLobe02": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.92": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutQuad"
+						},
+						"1.84": {
+							"vector": [100, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"backLobe01": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.92": {
+							"vector": [10, 0, 0],
+							"easing": "easeOutQuad"
+						}
+					}
+				},
+				"backLobe02": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.92": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutQuad"
+						},
+						"1.84": {
+							"vector": [100, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"rightLobe01": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [10, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"rightLobe02": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"2.0": {
+							"vector": [100, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"lobeSeal": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"0.2": {
+							"vector": [0, 0, 0],
+							"easing": "linear"
+						}
+					}
+				},
+				"leftLobe01": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [10, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"leftLobe02": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"2.0": {
+							"vector": [100, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"hatched": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"frontLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutQuad"
+					}
+				},
+				"frontLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"backLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutQuad"
+					}
+				},
+				"backLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"rightLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutSine"
+					}
+				},
+				"rightLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutSine"
+					}
+				},
+				"lobeSeal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"leftLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutSine"
+					}
+				},
+				"leftLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutSine"
+					}
+				}
+			}
+		},
+		"hatched_empty": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"frontLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutQuad"
+					}
+				},
+				"frontLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"backLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutQuad"
+					}
+				},
+				"backLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"rightLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutSine"
+					}
+				},
+				"rightLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutSine"
+					}
+				},
+				"lobeSeal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"leftLobe01": {
+					"rotation": {
+						"vector": [10, 0, 0],
+						"easing": "easeOutSine"
+					}
+				},
+				"leftLobe02": {
+					"rotation": {
+						"vector": [100, 0, 0],
+						"easing": "easeInOutSine"
+					}
+				},
+				"fleshSac": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
 		}
 	}
 }

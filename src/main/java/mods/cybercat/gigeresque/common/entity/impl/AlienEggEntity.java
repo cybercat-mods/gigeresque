@@ -312,17 +312,17 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (isHatched()) {
 			if (!hasFacehugger()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop_nobag", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", true));
 				return PlayState.CONTINUE;
 			}
 
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("open_loop", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", true));
 			return PlayState.CONTINUE;
 		}
 
 		if (isHatching()) {
 			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("hatching", false).addAnimation("open_loop"));
+					.setAnimation(new AnimationBuilder().addAnimation("hatch", false).addAnimation("hatched"));
 			return PlayState.CONTINUE;
 		}
 
