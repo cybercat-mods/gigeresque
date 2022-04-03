@@ -42,7 +42,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 		return entity instanceof AquaticAlienEntity;
 	}
 
-	private float aquaticLandPenalty = (isAquatic() && entity.isTouchingWater()) ? 0.5f : 1.0f;
+	private float aquaticLandPenalty = (isAquatic() && !entity.isTouchingWater()) ? 2.0f : (isAquatic() && entity.isTouchingWater()) ? 2.0f :0.0f;
 
 	@Override
 	protected void addCoreActivities(List<Task<? super AdultAlienEntity>> tasks) {
@@ -53,7 +53,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 			tasks.add(new PickUpEggmorphableTargetTask(3.0));
 			tasks.add(new EggmorphTargetTask(3.0));
 		}
-		tasks.add(new WalkTask(3.0f * aquaticLandPenalty));
+		tasks.add(new WalkTask(3.0f - aquaticLandPenalty));
 		tasks.add(new LookAroundTask(45, 90));
 		tasks.add(new WanderAroundTask());
 	}
@@ -85,7 +85,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 				|| (entity.getBrain().hasMemoryModule(MemoryModuleType.HOME) && EntityUtils.isEggmorphable(it))
 				|| ((Eggmorphable) it).isEggmorphing()
 				|| it.getVehicle() != null && it.getVehicle() instanceof AlienEntity));
-		tasks.add(new RangedApproachTask(3.0f * aquaticLandPenalty));
+		tasks.add(new RangedApproachTask(3.0f - aquaticLandPenalty));
 		tasks.add(new AlienMeleeAttackTask(20 * (int) intelligence));
 	}
 
