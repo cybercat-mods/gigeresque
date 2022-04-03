@@ -266,7 +266,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		var target = this.getTarget();
 		if (vehicle == null && !isInfertile() && target != null) {
 			if (EntityUtils.isPotentialHost(this.getTarget())) {
-				if (((Host) this.getTarget()).isBleeding() || !(EntityUtils.isFacehuggerAttached(this.getTarget()))
+				if (!((Host) this.getTarget()).isBleeding() && !(EntityUtils.isFacehuggerAttached(this.getTarget()))
 						&& !(this.getTarget() instanceof AlienEntity)) {
 
 					if (this.distanceTo(target) < 3 && canStartRiding(target)) {
@@ -418,7 +418,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	protected void initGoals() {
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true, entity -> EntityUtils.isPotentialHost(entity)));
 		this.goalSelector.add(5, new ChaseGoal(this, 0.6D, false));
 	}
 
