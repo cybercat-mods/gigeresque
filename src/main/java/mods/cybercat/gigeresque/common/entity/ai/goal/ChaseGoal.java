@@ -45,13 +45,16 @@ public class ChaseGoal extends Goal {
 		if (((Host) livingEntity).isBleeding()) {
 			return false;
 		}
-		if ( EntityUtils.isFacehuggerAttached(livingEntity)) {
+		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
 			return false;
 		}
-		if (!((Host) livingEntity).doesNotHaveParasite()) {
+		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
+			return false;
+		}
+		if (livingEntity instanceof PlayerEntity && !livingEntity.isSpectator() && !((PlayerEntity) livingEntity).isCreative()) {
 			return false;
 		}
 		this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
@@ -71,7 +74,19 @@ public class ChaseGoal extends Goal {
 		if (!livingEntity.isAlive()) {
 			return false;
 		}
+		if (((Host) livingEntity).isBleeding()) {
+			return false;
+		}
+		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
+			return false;
+		}
+		if (((Host) livingEntity).hasParasite()) {
+			return false;
+		}
 		if ((livingEntity instanceof AlienEntity)) {
+			return false;
+		}
+		if (livingEntity instanceof PlayerEntity && !livingEntity.isSpectator() && !((PlayerEntity) livingEntity).isCreative()) {
 			return false;
 		}
 		if (!this.pauseWhenMobIdle) {
@@ -80,8 +95,7 @@ public class ChaseGoal extends Goal {
 		if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
 			return false;
 		}
-		return !(livingEntity instanceof PlayerEntity)
-				|| !livingEntity.isSpectator() && !((PlayerEntity) livingEntity).isCreative();
+		return true;
 	}
 
 	@Override
