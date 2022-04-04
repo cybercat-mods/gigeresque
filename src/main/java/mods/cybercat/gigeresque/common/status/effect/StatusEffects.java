@@ -27,6 +27,8 @@ public class StatusEffects implements GigeresqueInitializer {
 	public static final StatusEffect TRAUMA = new TraumaStatusEffect().addAttributeModifier(
 			EntityAttributes.GENERIC_MAX_HEALTH, "5e5ac802-7542-4418-b56e-548913950563", -0.5,
 			EntityAttributeModifier.Operation.MULTIPLY_BASE);
+	
+	public static final StatusEffect ACID = new AcidStatusEffect();
 
 	@Override
 	public void initialize() {
@@ -35,5 +37,6 @@ public class StatusEffects implements GigeresqueInitializer {
 
 	private void initializeImpl() {
 		Registry.register(Registry.STATUS_EFFECT, new Identifier(Gigeresque.MOD_ID, "trauma"), TRAUMA);
+		Registry.register(Registry.STATUS_EFFECT, new Identifier(Gigeresque.MOD_ID, "acid"), ACID);
 	}
 }

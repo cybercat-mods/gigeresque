@@ -4,10 +4,9 @@ import java.util.Random;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.source.DamageSources;
+import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
 import mods.cybercat.gigeresque.common.util.BlockUtils;
 import mods.cybercat.gigeresque.common.util.MathUtil;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -17,8 +16,10 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
@@ -32,7 +33,6 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -183,17 +183,20 @@ public class AcidBlock extends CustomFallingBlock implements Waterloggable {
 		Material material = state.getMaterial();
 		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid();
 	}
-
+	
+	private void dealAcidDamage(BlockState state, Entity entity) {
+		if (entity instanceof LivingEntity && !(entity instanceof AlienEntity) && !(entity instanceof WitherEntity)) 
+			((LivingEntity)entity).addStatusEffect(new StatusEffectInstance(StatusEffects.ACID, 60, 0));
+	}
+	
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.empty();
+	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
+		this.dealAcidDamage(state, entity);
+		super.onSteppedOn(world, pos, state, entity);
 	}
 
-	@SuppressWarnings("unused")
-	private void dealAcidDamage(BlockState state, Entity entity) {
-
-		if (!(entity instanceof AlienEntity) && !(entity instanceof WitherEntity)) {
-			entity.damage(DamageSources.ACID, getThickness(state));
-		}
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0);
 	}
 }
