@@ -42,10 +42,10 @@ public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
 		var target = alien.getBrain().getOptionalMemory(MemoryModuleTypes.EGGMORPH_TARGET).orElse(null);
 		if (target == null)
 			return;
-		
 
-		if (target instanceof PlayerEntity && ((PlayerEntity)target).isCreative() || ((PlayerEntity)target).isSpectator())
-			return;
+		if (target instanceof PlayerEntity)
+			if (((PlayerEntity) target).isCreative() || ((PlayerEntity) target).isSpectator())
+				return;
 
 		if (alien.distanceTo(target) < 4.0) {
 			if (target.getVehicle() == null) {
