@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.StairsBlock;
@@ -38,7 +39,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class AcidBlock extends CustomFallingBlock implements Waterloggable {
+public class AcidBlock extends FallingBlock implements Waterloggable {
 	private static final int MAX_THICKNESS = 4;
 	public static final IntProperty THICKNESS = IntProperty.of("thickness", 0, MAX_THICKNESS);
 	private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
@@ -178,8 +179,7 @@ public class AcidBlock extends CustomFallingBlock implements Waterloggable {
 		}
 	}
 
-	@Override
-	boolean canFallThrough(BlockState state) {
+	public static boolean canFallThrough(BlockState state) {
 		Material material = state.getMaterial();
 		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid();
 	}
