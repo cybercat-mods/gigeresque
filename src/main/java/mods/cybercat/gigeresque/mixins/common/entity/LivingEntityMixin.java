@@ -21,6 +21,7 @@ import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.fluid.Fluids;
 import mods.cybercat.gigeresque.common.source.DamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -103,6 +104,12 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++) {
 				this.getEntityWorld().addImportantParticle(Particles.BLOOD, d, yOffset, f, 0.0, -0.15, 0.0);
 			}
+		}
+		if (!this.world.isClient) {
+			if (this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_STILL
+					|| this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_FLOWING)
+				if (!this.hasStatusEffect(GigStatusEffects.DNA))
+					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
 		}
 
 		if (!this.world.isClient) {
