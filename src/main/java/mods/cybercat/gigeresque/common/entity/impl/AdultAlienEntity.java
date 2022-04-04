@@ -281,7 +281,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isCrawling() ? EntityDimensions.changing(0.5f, 0.5f)
+		return this.submergedInWater || this.isInSneakingPose() ? EntityDimensions.changing(1.0f, 1.0f)
 				: super.getDimensions(pose);
 	}
 }

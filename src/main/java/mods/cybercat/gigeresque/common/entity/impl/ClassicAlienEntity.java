@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -25,6 +26,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -124,6 +126,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				}
 			}
 		}
+		if (this.isAttacking()) {
+			this.setPose(EntityPose.CROUCHING);
+		} else {
+			this.setPose(EntityPose.STANDING);
+		}
 	}
 
 	@Override
@@ -175,6 +182,16 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		target.damage(DamageSource.mob(this), additionalDamage);
 
 		return super.tryAttack(target);
+	}
+
+	@Override
+	protected Box calculateBoundingBox() {
+		return super.calculateBoundingBox();
+	}
+
+	@Override
+	public Box getBoundingBox(EntityPose pose) {
+		return this.getBoundingBox().shrink(0, -1, 0);
 	}
 
 	/*
