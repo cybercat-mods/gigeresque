@@ -12,15 +12,15 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class StatusEffects implements GigeresqueInitializer {
-	private StatusEffects() {
+public class GigStatusEffects implements GigeresqueInitializer {
+	private GigStatusEffects() {
 	}
 
-	private static StatusEffects instance;
+	private static GigStatusEffects instance;
 
-	synchronized public static StatusEffects getInstance() {
+	synchronized public static GigStatusEffects getInstance() {
 		if (instance == null) {
-			instance = new StatusEffects();
+			instance = new GigStatusEffects();
 		}
 		return instance;
 	}

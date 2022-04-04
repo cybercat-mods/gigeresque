@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import java.awt.Color;
 
-import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
@@ -21,7 +21,7 @@ public class AcidStatusEffect extends StatusEffect {
 	@Override
 	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
 		super.applyUpdateEffect(entity, amplifier);
-		if (this == StatusEffects.ACID)
+		if (this == GigStatusEffects.ACID)
 			entity.damage(DamageSource.MAGIC, 2.0F);
 	}
 }

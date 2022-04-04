@@ -7,7 +7,7 @@ import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Host;
 
 import net.minecraft.entity.LivingEntity;
@@ -43,7 +43,7 @@ public class SurgeryKitItem extends Item {
 				stack.damage(1, user, p -> p.sendToolBreakStatus(hand));
 				entity.removeStatusEffect(net.minecraft.entity.effect.StatusEffects.HUNGER);
 				entity.removeStatusEffect(net.minecraft.entity.effect.StatusEffects.MINING_FATIGUE);
-				entity.addStatusEffect(new StatusEffectInstance(StatusEffects.TRAUMA, Constants.TPD));
+				entity.addStatusEffect(new StatusEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
 				host.setBleeding(false);
 			}
 		}

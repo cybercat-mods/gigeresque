@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import java.awt.Color;
 
-import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -25,7 +25,7 @@ public class DNAStatusEffect extends StatusEffect {
 	@Override
 	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
 		super.applyUpdateEffect(entity, amplifier);
-		if (this == StatusEffects.DNA)
+		if (this == GigStatusEffects.DNA)
 			entity.heal(0);
 	}
 }

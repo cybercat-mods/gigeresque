@@ -12,7 +12,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.fluid.Fluids;
 import mods.cybercat.gigeresque.common.item.Items;
 import mods.cybercat.gigeresque.common.sound.Sounds;
-import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.Structures;
 import net.fabricmc.api.ModInitializer;
 import software.bernie.geckolib3.GeckoLib;
@@ -33,7 +33,7 @@ public class Gigeresque implements ModInitializer {
 		Blocks.getInstance().initialize();
 		Fluids.getInstance().initialize();
 		Sounds.getInstance().initialize();
-		StatusEffects.getInstance().initialize();
+		GigStatusEffects.getInstance().initialize();
 		TrackedDataHandlers.getInstance().initialize();
 		Entities.getInstance().initialize();
 		Structures.setupAndRegisterStructureFeatures();

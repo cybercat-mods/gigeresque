@@ -4,7 +4,7 @@ import java.util.Random;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.status.effect.StatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.BlockUtils;
 import mods.cybercat.gigeresque.common.util.MathUtil;
 import net.minecraft.block.Block;
@@ -186,7 +186,7 @@ public class AcidBlock extends CustomFallingBlock implements Waterloggable {
 	
 	private void dealAcidDamage(BlockState state, Entity entity) {
 		if (entity instanceof LivingEntity && !(entity instanceof AlienEntity) && !(entity instanceof WitherEntity)) 
-			((LivingEntity)entity).addStatusEffect(new StatusEffectInstance(StatusEffects.ACID, 60, 0));
+			((LivingEntity)entity).addStatusEffect(new StatusEffectInstance(GigStatusEffects.ACID, 60, 0));
 	}
 	
 	@Override

@@ -22,9 +22,9 @@ import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.source.DamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -139,8 +139,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	private void handleHostLogic() {
 		if (hasParasite()) {
-			ticksUntilImpregnation = Math.max(
-					ticksUntilImpregnation - 1.0F, 0f);
+			ticksUntilImpregnation = Math.max(ticksUntilImpregnation - 1.0F, 0f);
 
 			if (Boolean.TRUE.equals(!isBleeding()) && ticksUntilImpregnation >= 0
 					&& ticksUntilImpregnation < Constants.TPS * 30L) {
@@ -224,6 +223,12 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			callbackInfo.setReturnValue(false);
 			callbackInfo.cancel();
 		}
+	}
+
+	@Inject(method = { "clearStatusEffects" }, at = { @At("HEAD") }, cancellable = true)
+	public void noMilking(CallbackInfoReturnable<Boolean> callbackInfo) {
+		if (this.hasStatusEffect(GigStatusEffects.ACID) || this.hasStatusEffect(GigStatusEffects.DNA))
+			callbackInfo.setReturnValue(false);
 	}
 
 	@Override
