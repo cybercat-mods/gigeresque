@@ -224,7 +224,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
 			setIsHatching(true);
 		}
-		this.pushAway(entity);
+		//this.pushAway(entity);
 	}
 
 	@Override
