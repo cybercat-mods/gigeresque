@@ -288,7 +288,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
-			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity)) {
+			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
 				if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)
 						&& !(entity instanceof AlienEntity)) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
