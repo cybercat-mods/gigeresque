@@ -6,7 +6,6 @@ import mods.cybercat.gigeresque.common.fluid.Fluids;
 import mods.cybercat.gigeresque.common.item.group.ItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -46,7 +45,7 @@ public class Blocks implements GigeresqueInitializer {
 	 * NORMAL BLOCKS
 	 */
 
-	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).noCollision());
+	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque());
 
 	public static final NestResinBlock NEST_RESIN = new NestResinBlock(
 			FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).strength(5.0f, 8.0f));
@@ -68,55 +67,55 @@ public class Blocks implements GigeresqueInitializer {
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
 	private static final Block SINOUS_ALIEN_BLOCK = new Block(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
-	
-	private static final Block MURAL_ALIEN_BLOCK_1 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_2 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_3 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_4 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_5 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_6 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_7 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_8 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_9 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_10 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_11 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_12 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_13 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_14 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_15 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_16 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_17 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_18 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_19 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_20 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_21 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_22 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_23 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_24 = new Block(FabricBlockSettings.of(Material.METAL)
-			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+
+	private static final Block MURAL_ALIEN_BLOCK_1 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_2 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_3 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_4 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_5 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_6 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_7 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_8 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_9 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_10 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_11 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_12 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_13 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_14 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_15 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_16 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_17 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_18 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_19 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_20 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_21 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_22 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_23 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
+	private static final Block MURAL_ALIEN_BLOCK_24 = new Block(
+			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
 
 	/*
 	 * PILLARS
@@ -188,6 +187,7 @@ public class Blocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
+		registerItemBlock("acid_block", ACID_BLOCK);
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "acid_block"), ACID_BLOCK);
 
 		registerItemBlock("organic_alien_block", ORGANIC_ALIEN_BLOCK);
@@ -195,7 +195,7 @@ public class Blocks implements GigeresqueInitializer {
 		registerItemBlock("ribbed_alien_block", RIBBED_ALIEN_BLOCK);
 		registerItemBlock("rough_alien_block", ROUGH_ALIEN_BLOCK);
 		registerItemBlock("sinous_alien_block", SINOUS_ALIEN_BLOCK);
-		
+
 		registerItemBlock("mural_block_1", MURAL_ALIEN_BLOCK_1);
 		registerItemBlock("mural_block_2", MURAL_ALIEN_BLOCK_2);
 		registerItemBlock("mural_block_3", MURAL_ALIEN_BLOCK_3);
