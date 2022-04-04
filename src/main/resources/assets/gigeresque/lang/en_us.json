@@ -56,6 +56,7 @@
   "death.attack.eggmorph": "%s was forcibly morphed into an egg.",
   "effect.gigeresque.trauma": "Trauma",
   "effect.gigeresque.acid": "Acid Burn",
+  "effect.gigeresque.dna_disintegration": "Trauma",
   "entity.gigeresque.alien": "Alien",
   "entity.gigeresque.aquatic_alien": "Aquatic Alien",
   "entity.gigeresque.aquatic_chestburster": "Aquatic Chestburster",
