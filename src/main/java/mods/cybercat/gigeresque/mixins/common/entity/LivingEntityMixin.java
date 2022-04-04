@@ -107,9 +107,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 		if (!this.world.isClient) {
 			if (this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_STILL
-					|| this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_FLOWING)
-				if (!this.hasStatusEffect(GigStatusEffects.DNA))
+					|| this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_FLOWING) {
+				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
+						&& !(playerEntity.isCreative() || this.isSpectator())))
+					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+			}
 		}
 
 		if (!this.world.isClient) {

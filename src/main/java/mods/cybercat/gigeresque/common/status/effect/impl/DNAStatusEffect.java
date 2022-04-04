@@ -5,8 +5,9 @@ import java.util.SplittableRandom;
 
 import mods.cybercat.gigeresque.common.block.Blocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -43,38 +44,38 @@ public class DNAStatusEffect extends StatusEffect {
 	@Override
 	public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
 		SplittableRandom random = new SplittableRandom();
-		int randomRangedPhaseOne = random.nextInt(0, 50);
+		int randomPhase = random.nextInt(0, 50);
 		if (!(entity instanceof AlienEntity))
-			if (randomRangedPhaseOne > 25) {
-				if (entity instanceof Eggmorphable) {
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
-					spawnResin(entity, isInsideWaterBlock);
-					((Eggmorphable) entity).setTicksUntilEggmorphed(600);
+			if (randomPhase > 25) {
+				if (entity instanceof PlayerEntity && !(((PlayerEntity) entity).isCreative()
+						|| ((PlayerEntity) entity).isSpectator())) {
+					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
+					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
+					entity.world.spawnEntity(egg);
+					entity.kill();
+					return;
+				} else if (!(entity instanceof PlayerEntity)) {
+					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
+					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
+					entity.world.spawnEntity(egg);
+					entity.kill();
+					return;
 				}
 			} else {
-				if (entity instanceof PlayerEntity) {
-					if (!((PlayerEntity) entity).isCreative() || !((PlayerEntity) entity).isSpectator()) {
-						entity.kill();
-						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
-						spawnGoo(entity, isInsideWaterBlock);
-					}
-				} else {
+				if (entity instanceof PlayerEntity && !(((PlayerEntity) entity).isCreative()
+						|| ((PlayerEntity) entity).isSpectator())) {
 					entity.kill();
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
+					return;
+				} else if (!(entity instanceof PlayerEntity)) {
+					entity.kill();
+					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+					spawnGoo(entity, isInsideWaterBlock);
+					return;
 				}
 			}
 		super.onRemoved(entity, attributes, amplifier);
-	}
-
-	private void spawnResin(LivingEntity entity, boolean isInWaterBlock) {
-		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 1);
-			if (lightBlockPos == null)
-				return;
-			entity.world.setBlockState(lightBlockPos, Blocks.NEST_RESIN_WEB_CROSS.getDefaultState());
-		} else
-			lightBlockPos = null;
 	}
 
 	private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
