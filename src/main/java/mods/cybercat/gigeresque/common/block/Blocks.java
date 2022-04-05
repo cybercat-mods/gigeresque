@@ -46,6 +46,8 @@ public class Blocks implements GigeresqueInitializer {
 	 */
 
 	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque());
+	
+	public static final AlienChestBlock ALIEN_STORAGE_BLOCK = new AlienChestBlock();
 
 	public static final NestResinBlock NEST_RESIN = new NestResinBlock(
 			FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).strength(5.0f, 8.0f));
@@ -188,6 +190,7 @@ public class Blocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
 		registerItemBlock("acid_block", ACID_BLOCK);
+		registerItemBlock("alien_storage_block", ALIEN_STORAGE_BLOCK);
 
 		registerItemBlock("organic_alien_block", ORGANIC_ALIEN_BLOCK);
 		registerItemBlock("resinous_alien_block", RESINOUS_ALIEN_BLOCK);
