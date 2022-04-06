@@ -195,6 +195,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0);
+		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 2.0, 16.0);
 	}
 }
