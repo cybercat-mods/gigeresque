@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
@@ -67,7 +67,7 @@ public class Entities implements GigeresqueInitializer {
 		InitializationTimer.initializingBlock("AlienTypes", this::initializeImpl);
 		ALIEN_STORAGE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
 				Gigeresque.MOD_ID + ":alien_storage_block_entity",
-				FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, Blocks.ALIEN_STORAGE_BLOCK_1).build(null));
+				FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
 	}
 
 	private void initializeImpl() {

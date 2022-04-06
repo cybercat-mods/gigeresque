@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.material.Materials;
-import mods.cybercat.gigeresque.common.fluid.Fluids;
-import mods.cybercat.gigeresque.common.item.group.ItemGroups;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -22,22 +22,22 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Blocks implements GigeresqueInitializer {
-	private Blocks() {
+public class GIgBlocks implements GigeresqueInitializer {
+	private GIgBlocks() {
 	}
 
-	private static Blocks instance;
+	private static GIgBlocks instance;
 
-	synchronized public static Blocks getInstance() {
+	synchronized public static GIgBlocks getInstance() {
 		if (instance == null)
-			instance = new Blocks();
+			instance = new GIgBlocks();
 		return instance;
 	}
 
 	/*
 	 * FLUID BLOCKS
 	 */
-	public static final FluidBlock BLACK_FLUID = new FluidBlock(Fluids.BLACK_FLUID_STILL,
+	public static final FluidBlock BLACK_FLUID = new FluidBlock(GigFluids.BLACK_FLUID_STILL,
 			AbstractBlock.Settings.of(Material.WATER).noCollision().strength(100.0F).dropsNothing()) {
 	};
 
@@ -166,7 +166,7 @@ public class Blocks implements GigeresqueInitializer {
 	private void registerItemBlock(String path, Block block, FabricItemSettings settings) {
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, path), block);
 		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, path),
-				new BlockItem(block, settings.group(ItemGroups.GENERAL)));
+				new BlockItem(block, settings.group(GigItemGroups.GENERAL)));
 	}
 
 	private void registerItemBlock(String path, Block block) {

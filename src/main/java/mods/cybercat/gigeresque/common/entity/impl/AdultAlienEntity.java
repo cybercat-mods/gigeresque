@@ -15,7 +15,7 @@ import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import mods.cybercat.gigeresque.common.sound.Sounds;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
@@ -257,17 +257,17 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public SoundEvent getAmbientSound() {
-		return Sounds.ALIEN_AMBIENT;
+		return GigSounds.ALIEN_AMBIENT;
 	}
 
 	@Override
 	public SoundEvent getHurtSound(DamageSource source) {
-		return Sounds.ALIEN_HURT;
+		return GigSounds.ALIEN_HURT;
 	}
 
 	@Override
 	public SoundEvent getDeathSound() {
-		return Sounds.ALIEN_DEATH;
+		return GigSounds.ALIEN_DEATH;
 	}
 
 	@Override

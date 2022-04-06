@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.fluid;
 
-import mods.cybercat.gigeresque.common.block.Blocks;
-import mods.cybercat.gigeresque.common.item.Items;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.item.GigItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,12 +21,12 @@ import net.minecraft.world.WorldView;
 public abstract class BlackFluid extends FlowableFluid {
 	@Override
 	public boolean matchesType(Fluid fluid) {
-		return fluid == Fluids.BLACK_FLUID_STILL || fluid == Fluids.BLACK_FLUID_FLOWING;
+		return fluid == GigFluids.BLACK_FLUID_STILL || fluid == GigFluids.BLACK_FLUID_FLOWING;
 	}
 
 	@Override
 	public Item getBucketItem() {
-		return Items.BLACK_FLUID_BUCKET;
+		return GigItems.BLACK_FLUID_BUCKET;
 	}
 
 	@Override
@@ -47,17 +47,17 @@ public abstract class BlackFluid extends FlowableFluid {
 
 	@Override
 	protected BlockState toBlockState(FluidState state) {
-		return Blocks.BLACK_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
+		return GIgBlocks.BLACK_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
 	}
 
 	@Override
 	public Fluid getFlowing() {
-		return Fluids.BLACK_FLUID_FLOWING;
+		return GigFluids.BLACK_FLUID_FLOWING;
 	}
 
 	@Override
 	public Fluid getStill() {
-		return Fluids.BLACK_FLUID_STILL;
+		return GigFluids.BLACK_FLUID_STILL;
 	}
 
 	@Override

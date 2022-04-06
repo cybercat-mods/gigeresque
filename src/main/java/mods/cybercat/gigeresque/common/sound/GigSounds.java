@@ -8,15 +8,15 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Sounds implements GigeresqueInitializer {
-	private Sounds() {
+public class GigSounds implements GigeresqueInitializer {
+	private GigSounds() {
 	}
 
-	private static Sounds instance;
+	private static GigSounds instance;
 
-	synchronized public static Sounds getInstance() {
+	synchronized public static GigSounds getInstance() {
 		if (instance == null) {
-			instance = new Sounds();
+			instance = new GigSounds();
 		}
 		return instance;
 	}

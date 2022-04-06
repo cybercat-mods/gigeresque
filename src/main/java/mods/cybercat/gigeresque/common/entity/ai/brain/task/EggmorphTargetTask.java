@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -73,8 +73,8 @@ public class EggmorphTargetTask extends Task<AdultAlienEntity> {
 					for (int i = 0; i < 20; i++) {
 						var state = alien.world.getBlockState(up);
 
-						if (state.isAir() || state.getBlock() == Blocks.NEST_RESIN_WEB) {
-							alien.world.setBlockState(up, Blocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+						if (state.isAir() || state.getBlock() == GIgBlocks.NEST_RESIN_WEB) {
+							alien.world.setBlockState(up, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
 						} else {
 							break;
 						}

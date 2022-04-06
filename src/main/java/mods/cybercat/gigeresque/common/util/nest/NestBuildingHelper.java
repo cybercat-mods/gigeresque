@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -28,15 +28,15 @@ public class NestBuildingHelper {
 						continue;
 
 					if (nestBlockData.isFloor()) {
-						alien.world.setBlockState(blockPos, Blocks.NEST_RESIN.getDefaultState());
+						alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
 					}
 
 					if (nestBlockData.isCorner()) {
-						alien.world.setBlockState(blockPos, Blocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+						alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
 					}
 
 					if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
-						var nestResinWebState = Blocks.NEST_RESIN_WEB.getDefaultState()
+						var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.getDefaultState()
 								.with(NestResinWebBlock.UP, nestBlockData.hasUpCoverage())
 								.with(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage())
 								.with(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage())
@@ -52,8 +52,8 @@ public class NestBuildingHelper {
 	}
 
 	public static boolean isResinBlock(Block block) {
-		return block == Blocks.NEST_RESIN || block == Blocks.NEST_RESIN_WEB || block == Blocks.NEST_RESIN_WEB_CROSS
-				|| block == Blocks.NEST_RESIN_BLOCK;
+		return block == GIgBlocks.NEST_RESIN || block == GIgBlocks.NEST_RESIN_WEB || block == GIgBlocks.NEST_RESIN_WEB_CROSS
+				|| block == GIgBlocks.NEST_RESIN_BLOCK;
 	}
 
 	private static NestBlockData getNestBlockData(World world, BlockPos blockPos) {

@@ -8,15 +8,15 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Fluids implements GigeresqueInitializer {
-	private Fluids() {
+public class GigFluids implements GigeresqueInitializer {
+	private GigFluids() {
 	}
 
-	private static Fluids instance;
+	private static GigFluids instance;
 
-	synchronized public static Fluids getInstance() {
+	synchronized public static GigFluids getInstance() {
 		if (instance == null) {
-			instance = new Fluids();
+			instance = new GigFluids();
 		}
 		return instance;
 	}

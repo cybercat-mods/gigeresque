@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.entity;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
@@ -37,7 +37,7 @@ public abstract class AlienEntity extends HostileEntity {
 	public void tick() {
 		super.tick();
 
-		if (!world.isClient && world.getBlockState(getBlockPos()).getBlock() == Blocks.NEST_RESIN
+		if (!world.isClient && world.getBlockState(getBlockPos()).getBlock() == GIgBlocks.NEST_RESIN
 				&& this.age % Constants.TPS == 0) {
 			this.heal(0.0833f);
 		}
@@ -56,7 +56,7 @@ public abstract class AlienEntity extends HostileEntity {
 		BlockPos pos = this.getBlockPos().add(xOffset, 0, zOffset);
 		BlockState posState = world.getBlockState(pos);
 
-		BlockState newState = Blocks.ACID_BLOCK.getDefaultState();
+		BlockState newState = GIgBlocks.ACID_BLOCK.getDefaultState();
 
 		if (posState.getBlock() == net.minecraft.block.Blocks.WATER) {
 			newState = newState.with(Properties.WATERLOGGED, true);
@@ -130,7 +130,7 @@ public abstract class AlienEntity extends HostileEntity {
 			if (acidThickness == 0)
 				return super.damage(source, amount);
 
-			BlockState newState = Blocks.ACID_BLOCK.getDefaultState().with(AcidBlock.THICKNESS, acidThickness);
+			BlockState newState = GIgBlocks.ACID_BLOCK.getDefaultState().with(AcidBlock.THICKNESS, acidThickness);
 
 			if (this.getBlockStateAtPos().getBlock() == net.minecraft.block.Blocks.WATER) {
 				newState = newState.with(Properties.WATERLOGGED, true);

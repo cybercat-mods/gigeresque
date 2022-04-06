@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
@@ -21,7 +21,7 @@ import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.fluid.Fluids;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.DamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -106,8 +106,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			}
 		}
 		if (!this.world.isClient) {
-			if (this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_STILL
-					|| this.world.getFluidState(this.getBlockPos()).getFluid() == Fluids.BLACK_FLUID_FLOWING) {
+			if (this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
+					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
@@ -261,7 +261,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	public boolean isEggmorphing() {
 		Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
 		Block pos = this.getBlockStateAtPos().getBlock();
-		boolean isCoveredInResin = cameraBlock == Blocks.NEST_RESIN_WEB_CROSS || pos == Blocks.NEST_RESIN_WEB_CROSS;
+		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
 	}
 

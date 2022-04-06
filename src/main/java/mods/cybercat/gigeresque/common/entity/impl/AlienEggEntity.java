@@ -11,7 +11,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AlienEggBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import mods.cybercat.gigeresque.common.sound.Sounds;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -196,7 +196,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		}
 
 		if (hatchProgress == 15L) {
-			SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.EGG_OPEN, SoundCategory.NEUTRAL, 1.0f);
+			SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.EGG_OPEN, SoundCategory.NEUTRAL, 1.0f);
 		}
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {

@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.client.fluid.render;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.fluid.Fluids;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
 
@@ -37,10 +37,10 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 	}
 
 	private void initializeImpl() {
-		setupFluidRendering(Fluids.BLACK_FLUID_STILL, Fluids.BLACK_FLUID_FLOWING,
+		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING,
 				new Identifier(Gigeresque.MOD_ID, "black_fluid"));
-		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getSolid(), Fluids.BLACK_FLUID_STILL,
-				Fluids.BLACK_FLUID_FLOWING);
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getSolid(), GigFluids.BLACK_FLUID_STILL,
+				GigFluids.BLACK_FLUID_FLOWING);
 	}
 
 	@SuppressWarnings("deprecation")

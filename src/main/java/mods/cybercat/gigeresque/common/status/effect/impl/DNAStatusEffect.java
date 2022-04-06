@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 import java.awt.Color;
 import java.util.SplittableRandom;
 
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
@@ -83,7 +83,7 @@ public class DNAStatusEffect extends StatusEffect {
 			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 1);
 			if (lightBlockPos == null)
 				return;
-			entity.world.setBlockState(lightBlockPos, Blocks.BLACK_FLUID.getDefaultState());
+			entity.world.setBlockState(lightBlockPos, GIgBlocks.BLACK_FLUID.getDefaultState());
 		} else
 			lightBlockPos = null;
 	}
@@ -103,7 +103,7 @@ public class DNAStatusEffect extends StatusEffect {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.add(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(Blocks.NEST_RESIN_WEB_CROSS))
+					if (state.isAir() || state.getBlock().equals(GIgBlocks.NEST_RESIN_WEB_CROSS))
 						return offsetPos;
 				}
 

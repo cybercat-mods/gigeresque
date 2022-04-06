@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -45,7 +45,7 @@ public class InGameOverlayRendererMixin {
 			BlockPos blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
 			FluidState fluidState = client.player.world.getFluidState(blockPos);
 
-			if (fluidState.getBlockState().getBlock() == Blocks.BLACK_FLUID) {
+			if (fluidState.getBlockState().getBlock() == GIgBlocks.BLACK_FLUID) {
 				renderBlackFluidOverlay(client, matrices);
 			}
 

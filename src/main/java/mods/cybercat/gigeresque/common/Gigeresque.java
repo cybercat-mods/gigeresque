@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import mods.cybercat.gigeresque.common.block.Blocks;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.fluid.Fluids;
-import mods.cybercat.gigeresque.common.item.Items;
-import mods.cybercat.gigeresque.common.sound.Sounds;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.Structures;
 import net.fabricmc.api.ModInitializer;
@@ -29,10 +29,10 @@ public class Gigeresque implements ModInitializer {
 
 		GeckoLib.initialize();
 
-		Items.getInstance().initialize();
-		Blocks.getInstance().initialize();
-		Fluids.getInstance().initialize();
-		Sounds.getInstance().initialize();
+		GigItems.getInstance().initialize();
+		GIgBlocks.getInstance().initialize();
+		GigFluids.getInstance().initialize();
+		GigSounds.getInstance().initialize();
 		GigStatusEffects.getInstance().initialize();
 		TrackedDataHandlers.getInstance().initialize();
 		Entities.getInstance().initialize();

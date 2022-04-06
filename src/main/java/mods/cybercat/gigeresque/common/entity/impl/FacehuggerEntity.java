@@ -13,7 +13,7 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.ChaseGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
-import mods.cybercat.gigeresque.common.sound.Sounds;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -240,7 +240,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 				if (ticksAttachedToHost > Gigeresque.config.getMiscellaneous().getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(Gigeresque.config.getMiscellaneous().getImpregnationTickTimer());
-					SoundUtil.playServerSound(world, null, this.getBlockPos(), Sounds.FACEHUGGER_IMPLANT,
+					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
 					this.kill();
@@ -333,17 +333,17 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return (isAttachedToHost() || isInfertile()) ? null : Sounds.FACEHUGGER_AMBIENT;
+		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return (isAttachedToHost() || isInfertile()) ? null : Sounds.FACEHUGGER_HURT;
+		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return (isAttachedToHost() || isInfertile()) ? null : Sounds.FACEHUGGER_DEATH;
+		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_DEATH;
 	}
 
 	@Override

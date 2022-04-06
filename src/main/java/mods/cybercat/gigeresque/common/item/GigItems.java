@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.item;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.fluid.Fluids;
-import mods.cybercat.gigeresque.common.item.group.ItemGroups;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.minecraft.block.dispenser.DispenserBehavior;
@@ -15,23 +15,23 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Items implements GigeresqueInitializer {
-	private Items() {
+public class GigItems implements GigeresqueInitializer {
+	private GigItems() {
 	}
 
-	private static Items instance;
+	private static GigItems instance;
 
-	synchronized public static Items getInstance() {
+	synchronized public static GigItems getInstance() {
 		if (instance == null)
-			instance = new Items();
+			instance = new GigItems();
 		return instance;
 	}
 
-	public static final BucketItem BLACK_FLUID_BUCKET = new BucketItem(Fluids.BLACK_FLUID_STILL,
-			new Item.Settings().recipeRemainder(net.minecraft.item.Items.BUCKET).maxCount(1).group(ItemGroups.GENERAL));
+	public static final BucketItem BLACK_FLUID_BUCKET = new BucketItem(GigFluids.BLACK_FLUID_STILL,
+			new Item.Settings().recipeRemainder(net.minecraft.item.Items.BUCKET).maxCount(1).group(GigItemGroups.GENERAL));
 
 	public static final SurgeryKitItem SURGERY_KIT = new SurgeryKitItem(
-			new Item.Settings().maxDamage(4).group(ItemGroups.GENERAL));
+			new Item.Settings().maxDamage(4).group(GigItemGroups.GENERAL));
 
 	@Override
 	public void initialize() {
@@ -56,6 +56,6 @@ public class Items implements GigeresqueInitializer {
 			int secondaryColor) {
 		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, "%s_spawn_egg".formatted(path)),
 				new SpawnEggItem(entityType, primaryColor, secondaryColor,
-						new Item.Settings().group(ItemGroups.GENERAL)));
+						new Item.Settings().group(GigItemGroups.GENERAL)));
 	}
 }
