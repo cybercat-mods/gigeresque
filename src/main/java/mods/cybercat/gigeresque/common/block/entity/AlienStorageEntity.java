@@ -53,6 +53,12 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		return result;
 	}
 
+	public static void copyInventory(AlienStorageEntity from, AlienStorageEntity to) {
+		DefaultedList<ItemStack> defaultedList = from.getInvStackList();
+		from.setInvStackList(to.getInvStackList());
+		to.setInvStackList(defaultedList);
+	}
+
 	@Override
 	public boolean canInsert(int var1, ItemStack var2, Direction var3) {
 		return true;

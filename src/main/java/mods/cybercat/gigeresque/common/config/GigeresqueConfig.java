@@ -2,13 +2,11 @@ package mods.cybercat.gigeresque.common.config;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
-
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import net.minecraft.block.Blocks;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.registry.Registry;
 
@@ -24,30 +22,7 @@ public class GigeresqueConfig implements ConfigData {
 	}
 
 	public static class Miscellaneous {
-		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> acidResistantBlocks = List.of("gigeresque:nest_resin", "gigeresque:nest_resin_block",
-				"gigeresque:nest_resin_web", "gigeresque:nest_resin_web_cross", "gigeresque:organic_alien_block",
-				"gigeresque:organic_alien_slab", "gigeresque:organic_alien_stairs", "gigeresque:organic_alien_wall",
-				"gigeresque:resinous_alien_block", "gigeresque:resinous_alien_pillar", "gigeresque:resinous_alien_slab",
-				"gigeresque:resinous_alien_stairs", "gigeresque:resinous_alien_wall", "gigeresque:ribbed_alien_block",
-				"gigeresque:ribbed_alien_pillar", "gigeresque:ribbed_alien_slab", "gigeresque:ribbed_alien_stairs",
-				"gigeresque:ribbed_alien_wall", "gigeresque:rough_alien_block", "gigeresque:rough_alien_slab",
-				"gigeresque:rough_alien_stairs", "gigeresque:rough_alien_wall", "gigeresque:sinous_alien_block",
-				"gigeresque:sinous_alien_slab", "gigeresque:sinous_alien_stairs", "gigeresque:sinous_alien_wall",
-				"gigeresque:smooth_alien_pillar", "gigeresque:smooth_alien_stairs",
-				Registry.BLOCK.getId(Blocks.BEACON).toString(), Registry.BLOCK.getId(Blocks.BEDROCK).toString(),
-				Registry.BLOCK.getId(Blocks.COAL_BLOCK).toString(), Registry.BLOCK.getId(Blocks.CONDUIT).toString(),
-				Registry.BLOCK.getId(Blocks.CRYING_OBSIDIAN).toString(),
-				Registry.BLOCK.getId(Blocks.DIAMOND_BLOCK).toString(),
-				Registry.BLOCK.getId(Blocks.DRAGON_EGG).toString(),
-				Registry.BLOCK.getId(Blocks.EMERALD_BLOCK).toString(),
-				Registry.BLOCK.getId(Blocks.END_PORTAL).toString(),
-				Registry.BLOCK.getId(Blocks.END_PORTAL_FRAME).toString(),
-				Registry.BLOCK.getId(Blocks.GOLD_BLOCK).toString(), Registry.BLOCK.getId(Blocks.OBSIDIAN).toString(),
-				Registry.BLOCK.getId(Blocks.NETHER_PORTAL).toString(),
-				Registry.BLOCK.getId(Blocks.NETHERITE_BLOCK).toString(),
-				Registry.BLOCK.getId(Blocks.RESPAWN_ANCHOR).toString());
-
+		
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float alienGrowthMultiplier = 1.0f;
 
@@ -77,10 +52,6 @@ public class GigeresqueConfig implements ConfigData {
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float runnerbursterGrowthMultiplier = 1.0f;
-
-		public List<String> getAcidResistantBlocks() {
-			return acidResistantBlocks;
-		}
 
 		public float getAlienGrowthMultiplier() {
 			return alienGrowthMultiplier;

@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.sensor;
 import java.util.Optional;
 import java.util.Set;
 
-import mods.cybercat.gigeresque.common.block.tag.BlockTags;
+import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import com.google.common.collect.ImmutableSet;
 
@@ -22,7 +22,7 @@ public class DestructibleLightSensor<E extends LivingEntity> extends Sensor<E> {
 
 	private static boolean isDestructibleLight(ServerWorld world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		return blockState.isIn(BlockTags.DESTRUCTIBLE_LIGHT);
+		return blockState.isIn(GigBlockTags.DESTRUCTIBLE_LIGHT);
 	}
 
 	@Override

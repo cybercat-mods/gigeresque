@@ -2,21 +2,17 @@ package mods.cybercat.gigeresque.common.config;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ConfigAccessor {
-	private static Map<String, HashSet<String>> mappedAcidResistantBlocks;
 	private static Map<String, String> reversedMorphMappings;
 	private static Map<Identifier, List<String>> whitelistMappings;
 	private static Map<Identifier, List<String>> blacklistMappings;
@@ -39,28 +35,6 @@ public class ConfigAccessor {
 					EntityIdentifiers.RUNNER_ALIEN, Gigeresque.config.targeting.runnerBlacklist);
 		}
 		return blacklistMappings;
-	}
-
-	public synchronized static Map<String, HashSet<String>> getMappedAcidResistantBlocks() {
-		if (mappedAcidResistantBlocks == null) {
-			processAcidResistantBlocks();
-		}
-		return mappedAcidResistantBlocks;
-	}
-
-	private static void processAcidResistantBlocks() {
-		HashMap<String, HashSet<String>> map = new HashMap<>();
-		Gigeresque.config.miscellaneous.acidResistantBlocks.forEach((it) -> {
-			String[] parts = it.toLowerCase(Locale.US).split(":");
-
-			if (parts.length == 1) {
-				map.computeIfAbsent("minecraft", s -> new HashSet<>()).add(parts[0]);
-			} else if (parts.length == 2) {
-				map.computeIfAbsent(parts[0], s -> new HashSet<>()).add(parts[1]);
-			}
-		});
-
-		mappedAcidResistantBlocks = map;
 	}
 
 	public static boolean isTargetWhitelisted(LivingEntity entity, Entity target) {

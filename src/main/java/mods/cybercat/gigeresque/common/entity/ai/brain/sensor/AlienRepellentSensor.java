@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.sensor;
 import java.util.Optional;
 import java.util.Set;
 
-import mods.cybercat.gigeresque.common.block.tag.BlockTags;
+import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
@@ -21,7 +21,7 @@ public class AlienRepellentSensor extends Sensor<LivingEntity> {
 
 	private static boolean isAlienRepellent(ServerWorld world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		return blockState.isIn(BlockTags.ALIEN_REPELLENTS);
+		return blockState.isIn(GigBlockTags.ALIEN_REPELLENTS);
 	}
 
 	@Override

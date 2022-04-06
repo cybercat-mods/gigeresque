@@ -3,9 +3,9 @@ package mods.cybercat.gigeresque.common.block;
 import java.util.Random;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.util.BlockUtils;
 import mods.cybercat.gigeresque.common.util.MathUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -142,11 +142,9 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 1, currentThickness));
 
-				if (canGrief && !BlockUtils.isBlockAcidResistant(world.getBlockState(blockToEat).getBlock())) {
+				if (canGrief && !world.getBlockState(blockToEat).isIn(GigBlockTags.ACID_RESISTANT)) {
 					world.breakBlock(blockToEat, false);
-				} else {
-					world.breakBlock(pos, false);
-				}
+				} 
 			}
 		}
 
@@ -161,7 +159,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-		if (getThickness(state) == 0) {
+		if (getThickness(state) == 0 && !world.getBlockState(pos).isIn(GigBlockTags.ACID_RESISTANT)) {
 			world.breakBlock(pos, false);
 			return;
 		}
