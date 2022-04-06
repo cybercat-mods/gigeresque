@@ -32,6 +32,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.AmbientEntity;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
@@ -290,7 +291,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
 			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
 				if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)
-						&& !(entity instanceof AlienEntity)) {
+						&& !(entity instanceof AlienEntity) && !(entity instanceof HostileEntity)) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
 							&& !(entity instanceof AmbientEntity)
 							&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD) {
