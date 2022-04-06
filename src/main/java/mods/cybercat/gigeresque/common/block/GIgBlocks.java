@@ -63,105 +63,105 @@ public class GIgBlocks implements GigeresqueInitializer {
 			FabricBlockSettings.of(Materials.NEST_RESIN_WEB).sounds(BlockSoundGroup.HONEY).noCollision().nonOpaque()
 					.requiresTool().strength(5.0f, 8.0f));
 
-	private static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK)
+	public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK)
 			.strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
+	public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
-	private static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
+	public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
-	private static final Block ROUGH_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
+	public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
-	private static final Block SINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK)
+	public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK)
 			.requiresTool().strength(3.0F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE));
 
-	private static final Block MURAL_ALIEN_BLOCK_1 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_1 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_2 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_2 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_3 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_3 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_4 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_4 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_5 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_5 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_6 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_6 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_7 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_7 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_8 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_8 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_9 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_9 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_10 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_10 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_11 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_11 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_12 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_12 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_13 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_13 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_14 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_14 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_15 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_15 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_16 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_16 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_17 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_17 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_18 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_18 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_19 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_19 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_20 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_20 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_21 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_21 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_22 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_22 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_23 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_23 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
-	private static final Block MURAL_ALIEN_BLOCK_24 = new GigBlock(
+	public static final Block MURAL_ALIEN_BLOCK_24 = new MuralBlock(
 			FabricBlockSettings.of(Material.METAL).strength(3.0F, 6.0F).sounds(BlockSoundGroup.NETHERRACK));
 
 	/*
 	 * PILLARS
 	 */
-	private static final PillarBlock RESINOUS_ALIEN_PILLAR = new PillarBlock(
+	public static final PillarBlock RESINOUS_ALIEN_PILLAR = new PillarBlock(
 			AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
-	private static final PillarBlock RIBBED_ALIEN_PILLAR = new PillarBlock(
+	public static final PillarBlock RIBBED_ALIEN_PILLAR = new PillarBlock(
 			AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
-	private static final PillarBlock SMOOTH_ALIEN_PILLAR = new PillarBlock(
+	public static final PillarBlock SMOOTH_ALIEN_PILLAR = new PillarBlock(
 			AbstractBlock.Settings.copy(SINOUS_ALIEN_BLOCK));
 
 	/*
 	 * SLABS
 	 */
-	private static final SlabBlock ORGANIC_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(ORGANIC_ALIEN_BLOCK));
-	private static final SlabBlock RESINOUS_ALIEN_SLAB = new SlabBlock(
+	public static final SlabBlock ORGANIC_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(ORGANIC_ALIEN_BLOCK));
+	public static final SlabBlock RESINOUS_ALIEN_SLAB = new SlabBlock(
 			AbstractBlock.Settings.copy(RESINOUS_ALIEN_BLOCK));
-	private static final SlabBlock RIBBED_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(RIBBED_ALIEN_BLOCK));
-	private static final SlabBlock ROUGH_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
-	private static final SlabBlock SINOUS_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(SINOUS_ALIEN_BLOCK));
+	public static final SlabBlock RIBBED_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(RIBBED_ALIEN_BLOCK));
+	public static final SlabBlock ROUGH_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
+	public static final SlabBlock SINOUS_ALIEN_SLAB = new SlabBlock(AbstractBlock.Settings.copy(SINOUS_ALIEN_BLOCK));
 
 	/*
 	 * STAIRS
 	 */
-	private static final CustomStairsBlock ORGANIC_ALIEN_STAIRS = new CustomStairsBlock(ORGANIC_ALIEN_BLOCK);
-	private static final CustomStairsBlock RESINOUS_ALIEN_STAIRS = new CustomStairsBlock(RESINOUS_ALIEN_BLOCK);
-	private static final CustomStairsBlock RIBBED_ALIEN_STAIRS = new CustomStairsBlock(RIBBED_ALIEN_PILLAR);
-	private static final CustomStairsBlock ROUGH_ALIEN_STAIRS = new CustomStairsBlock(ROUGH_ALIEN_BLOCK);
-	private static final CustomStairsBlock SINOUS_ALIEN_STAIRS = new CustomStairsBlock(SINOUS_ALIEN_BLOCK);
-	private static final CustomStairsBlock SMOOTH_ALIEN_STAIRS = new CustomStairsBlock(SMOOTH_ALIEN_PILLAR);
+	public static final CustomStairsBlock ORGANIC_ALIEN_STAIRS = new CustomStairsBlock(ORGANIC_ALIEN_BLOCK);
+	public static final CustomStairsBlock RESINOUS_ALIEN_STAIRS = new CustomStairsBlock(RESINOUS_ALIEN_BLOCK);
+	public static final CustomStairsBlock RIBBED_ALIEN_STAIRS = new CustomStairsBlock(RIBBED_ALIEN_PILLAR);
+	public static final CustomStairsBlock ROUGH_ALIEN_STAIRS = new CustomStairsBlock(ROUGH_ALIEN_BLOCK);
+	public static final CustomStairsBlock SINOUS_ALIEN_STAIRS = new CustomStairsBlock(SINOUS_ALIEN_BLOCK);
+	public static final CustomStairsBlock SMOOTH_ALIEN_STAIRS = new CustomStairsBlock(SMOOTH_ALIEN_PILLAR);
 
 	/*
 	 * WALLS
 	 */
-	private static final WallBlock ORGANIC_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(ORGANIC_ALIEN_BLOCK));
-	private static final WallBlock RESINOUS_ALIEN_WALL = new WallBlock(
+	public static final WallBlock ORGANIC_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(ORGANIC_ALIEN_BLOCK));
+	public static final WallBlock RESINOUS_ALIEN_WALL = new WallBlock(
 			AbstractBlock.Settings.copy(RESINOUS_ALIEN_BLOCK));
-	private static final WallBlock RIBBED_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(RIBBED_ALIEN_BLOCK));
-	private static final WallBlock ROUGH_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
-	private static final WallBlock SINOUS_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(SINOUS_ALIEN_BLOCK));
+	public static final WallBlock RIBBED_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(RIBBED_ALIEN_BLOCK));
+	public static final WallBlock ROUGH_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(ROUGH_ALIEN_BLOCK));
+	public static final WallBlock SINOUS_ALIEN_WALL = new WallBlock(AbstractBlock.Settings.copy(SINOUS_ALIEN_BLOCK));
 
 	private void registerItemBlock(String path, Block block, FabricItemSettings settings) {
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, path), block);
