@@ -1,6 +1,6 @@
 {
 	"name": "gigeresque:hallway_pool",
-	"fallback": "minecraft:empty",
+	"fallback": "gigeresque:plug_pool",
 	"elements": [
 		{
 			"weight": 1,
