@@ -42,7 +42,7 @@ public class GigDungeonStructure extends StructureFeature<StructurePoolFeatureCo
 		int var = random.nextInt(-28, -24);
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), var, context.chunkPos().getStartZ());
 		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
-				.generate(context, PoolStructurePiece::new, blockpos, true, false);
+				.generate(context, PoolStructurePiece::new, blockpos, false, false);
 		return structurePiecesGenerator;
 	}
 }
