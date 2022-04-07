@@ -8,6 +8,7 @@ import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
@@ -418,7 +419,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	protected void initGoals() {
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true, entity -> EntityUtils.isPotentialHost(entity)));
+		this.targetSelector.add(2,
+				new ActiveTargetGoal<>(this, LivingEntity.class, true, entity -> !(entity instanceof AlienEntity)
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
 		this.goalSelector.add(5, new ChaseGoal(this, 0.6D, false));
 	}
 
@@ -448,7 +451,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 				return PlayState.CONTINUE;
 			}
 		}
-		
+
 		if (this.age >= 1 && velocityLength <= 0.0) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("leap_egg", false));
 			return PlayState.CONTINUE;
