@@ -46,69 +46,6 @@
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_altar",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_pillar_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_pit_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_beacon_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_drop_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_head_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		},
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_ribs_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
 		}
 	]
 }
