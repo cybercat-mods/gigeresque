@@ -14,14 +14,35 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AlienEntity extends HostileEntity {
+	
+	public static final TrackedData<Boolean> UPSIDE_DOWN = DataTracker.registerData(AlienEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+
 	protected int getAcidDiameter() {
 		return 3;
+	}
+
+    public boolean isUpsideDown() {
+        return this.dataTracker.get(UPSIDE_DOWN).booleanValue();
+    }
+
+    public void setUpsideDown(boolean upsideDown) {
+        this.dataTracker.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
+    }
+	
+	@Override
+	public void initDataTracker() {
+		super.initDataTracker();
+		dataTracker.startTracking(UPSIDE_DOWN, false);
 	}
 
 	protected AlienEntity(EntityType<? extends HostileEntity> entityType, World world) {
@@ -41,16 +62,16 @@ public abstract class AlienEntity extends HostileEntity {
 				&& this.age % Constants.TPS == 0) {
 			this.heal(0.0833f);
 		}
-	}	
-	
+	}
+
 	@Override
 	public boolean cannotDespawn() {
 		return true;
 	}
 
-    @Override
-    public void checkDespawn() {
-    }
+	@Override
+	public void checkDespawn() {
+	}
 
 	private void generateAcidPool(int xOffset, int zOffset) {
 		BlockPos pos = this.getBlockPos().add(xOffset, 0, zOffset);

@@ -140,7 +140,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	}
 
 	@Override
-	protected void initDataTracker() {
+	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(IS_HATCHING, false);
 		dataTracker.startTracking(IS_HATCHED, false);

@@ -89,7 +89,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	}
 
 	@Override
-	protected void initDataTracker() {
+	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
 	}
