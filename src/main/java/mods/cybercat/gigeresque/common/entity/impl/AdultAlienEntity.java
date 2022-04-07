@@ -15,6 +15,9 @@ import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.DirectPathNavigator;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FlightMoveController;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.entity.EntityData;
@@ -22,20 +25,27 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.control.LookControl;
+import net.minecraft.entity.ai.control.MoveControl;
+import net.minecraft.entity.ai.control.YawAdjustingLookControl;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -51,6 +61,16 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
+	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	private final DirectPathNavigator crawlNavigation = new DirectPathNavigator(this, world);
+
+	private final MoveControl landMoveControl = new MoveControl(this);
+	private final LookControl landLookControl = new LookControl(this);
+	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
+	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	private final FlightMoveController crawlControl = new FlightMoveController(this, 0.6F, true);
+
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
 			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
 			SensorTypes.ALIEN_REPELLENT, SensorTypes.DESTRUCTIBLE_LIGHT);
@@ -65,6 +85,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
 		stepHeight = 1.5f;
+
+		navigation = landNavigation;
+		moveControl = landMoveControl;
+		lookControl = landLookControl;
 	}
 
 	public boolean isHissing() {
@@ -216,13 +240,35 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public boolean isClimbing() {
 		boolean isAttacking = this.isAttacking();
-		setIsCrawling(isAttacking && this.horizontalCollision);
-		return isAttacking && this.horizontalCollision;
+		setIsCrawling(isAttacking && this.horizontalCollision && this.collides());
+		return isAttacking&& this.horizontalCollision && this.collides();
+	}
+
+	@Override
+	protected void swimUpward(TagKey<Fluid> fluid) {
+	}
+
+	@Override
+	public void travel(Vec3d movementInput) {
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation :this.isCrawling() ? landNavigation: landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : this.isCrawling() ? landMoveControl : landMoveControl;
+		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
+
+		if (canMoveVoluntarily() && this.isTouchingWater()) {
+			updateVelocity(getMovementSpeed(), movementInput);
+			move(MovementType.SELF, getVelocity());
+			setVelocity(getVelocity().multiply(0.9));
+			if (getTarget() == null) {
+				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
+			}
+		} else {
+			super.travel(movementInput);
+		}
 	}
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return new SpiderNavigation(this, world);
+		return this.isTouchingWater() ? swimNavigation :this.isCrawling() ? landNavigation: landNavigation;
 	}
 
 	public boolean isCarryingEggmorphableTarget() {
@@ -281,7 +327,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isInSneakingPose() ? EntityDimensions.changing(1.0f, 1.0f)
+		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing() ? EntityDimensions.changing(1.0f, 1.0f)
 				: super.getDimensions(pose);
 	}
 }

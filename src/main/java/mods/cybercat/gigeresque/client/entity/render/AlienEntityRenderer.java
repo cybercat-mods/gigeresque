@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
@@ -33,6 +34,25 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 //			if (entity.getHorizontalFacing() == Direction.EAST)
 //				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 //		}
+		if (entity.isCrawling()) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().west()))) {
+				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+				stack.translate(0, -0.5, 0);
+			}
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().north()))) {
+				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+				stack.translate(0, -0.5, 0);
+			}
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().south()))) {
+				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+				stack.translate(0, -0.5, 0);
+			}
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().east()))) {
+				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+				stack.translate(0, -0.5, 0);
+			}
+		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 }
