@@ -12,7 +12,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
@@ -55,19 +54,24 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider bufferIn, int packedLightIn) {
 		if (entity.isCrawling()) {
-			if (entity.getHorizontalFacing() == Direction.WEST) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().west()))) {
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.getHorizontalFacing() == Direction.NORTH) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos()))) {
+				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+				stack.translate(0, -0.2, 0);
+			}
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().north()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.getHorizontalFacing() == Direction.SOUTH) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().south()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.getHorizontalFacing() == Direction.EAST) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().east()))) {
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 				stack.translate(0, -0.2, 0);
 			}

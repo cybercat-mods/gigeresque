@@ -13,6 +13,8 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.ChaseGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.DirectPathNavigator;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -68,18 +70,20 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	private final DirectPathNavigator crawlNavigation = new DirectPathNavigator(this, world);
 
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	private final FlightMoveController crawlControl = new FlightMoveController(this, 0.6F, true);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, World world) {
 		super(type, world);
 
-		navigation = swimNavigation;
-		moveControl = swimMoveControl;
-		lookControl = swimLookControl;
+		navigation = landNavigation;
+		moveControl = landMoveControl;
+		lookControl = landLookControl;
 	}
 
 	public static DefaultAttributeContainer.Builder createAttributes() {
@@ -170,7 +174,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	}
 
 	@Override
-	protected void initDataTracker() {
+	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(IS_INFERTILE, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
@@ -271,7 +275,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 						&& !(this.getTarget() instanceof AlienEntity)) {
 
 					if (this.distanceTo(target) < 3 && canStartRiding(target)) {
-						attachToHost(target);
+						//attachToHost(target);
 					}
 				}
 			}
@@ -373,8 +377,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation :this.isCrawling() ? crawlNavigation: landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : this.isCrawling() ? crawlControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
@@ -396,7 +400,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation : landNavigation;
+		return this.isTouchingWater() ? swimNavigation :this.isCrawling() ? crawlNavigation: landNavigation;
 	}
 
 	@Override
@@ -413,8 +417,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	public boolean isClimbing() {
 		boolean isAttacking = this.isAttacking();
-		setIsCrawling(isAttacking && this.horizontalCollision);
-		return isAttacking && this.horizontalCollision;
+		setIsCrawling(this.horizontalCollision);
+		return isAttacking;
 	}
 
 	@Override
@@ -452,7 +456,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			}
 		}
 
-		if (this.age >= 1 && velocityLength <= 0.0) {
+		if (this.age <= 15) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("leap_egg", false));
 			return PlayState.CONTINUE;
 		}
