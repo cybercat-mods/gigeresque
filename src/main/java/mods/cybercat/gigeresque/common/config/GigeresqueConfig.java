@@ -52,6 +52,9 @@ public class GigeresqueConfig implements ConfigData {
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float runnerbursterGrowthMultiplier = 1.0f;
+		
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public int gooEffectTickTimer = 6000;
 
 		public float getAlienGrowthMultiplier() {
 			return alienGrowthMultiplier;
@@ -91,6 +94,10 @@ public class GigeresqueConfig implements ConfigData {
 
 		public float getRunnerbursterGrowthMultiplier() {
 			return runnerbursterGrowthMultiplier;
+		}
+
+		public int getgooEffectTickTimer() {
+			return gooEffectTickTimer;
 		}
 	}
 

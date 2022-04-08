@@ -111,13 +111,15 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity)
 						&& !(((Object) this) instanceof CreeperEntity) && !(ConfigAccessor.isTargetDNAImmune(this)))
-					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
+							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && ((Object) this) instanceof CreeperEntity
 						&& !(((Object) this) instanceof PlayerEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 60000, 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
 						&& !(playerEntity.isCreative() || this.isSpectator())))
-					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
+							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
 			}
 		}
 
