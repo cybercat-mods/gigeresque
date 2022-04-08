@@ -2,7 +2,7 @@
 	"type": "gigeresque:gig_dungeon",
 	"config": {
 		"start_pool": "gigeresque:gig_dungeon",
-		"size": 7
+		"size": 35
 	},
 	"biomes": "#gigeresque:has_structure/code_structure_gig_dungeon_biomes",
 	"adapt_noise": false,

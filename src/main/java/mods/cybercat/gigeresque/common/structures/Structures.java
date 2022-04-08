@@ -11,7 +11,7 @@ public class Structures {
 
 	public static void setupAndRegisterStructureFeatures() {
 		StructureFeatureAccessor.callRegister(Gigeresque.MOD_ID + ":gig_dungeon", GIG_DUNGEON,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
+				GenerationStep.Feature.UNDERGROUND_STRUCTURES);
 	}
 
 }

@@ -1,1 +1,24 @@
-{"name":"gigeresque:plug_pool","fallback":"minecraft:empty","elements":[{"weight":1,"element":{"location":"gigeresque:aliendungeon_left_plug","processors":"minecraft:empty","projection":"rigid","element_type":"minecraft:single_pool_element"}},{"weight":1,"element":{"location":"gigeresque:aliendungeon_right_plug","processors":"minecraft:empty","projection":"rigid","element_type":"minecraft:single_pool_element"}}]}
+{
+	"name": "gigeresque:plug_pool",
+	"fallback": "minecraft:empty",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:aliendungeon_left_plug",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:aliendungeon_right_plug",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}
