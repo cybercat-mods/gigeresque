@@ -117,6 +117,8 @@
   "text.autoconfig.gigeresque.option.miscellaneous.runnerAlienGrowthMultiplier.@Tooltip": "The rate at which runner aliens mature.",
   "text.autoconfig.gigeresque.option.miscellaneous.runnerbursterGrowthMultiplier": "Runnerburster Growth Multiplier",
   "text.autoconfig.gigeresque.option.miscellaneous.runnerbursterGrowthMultiplier.@Tooltip": "The rate at which runnerbursters mature.",
+  "text.autoconfig.gigeresque.option.miscellaneous.gooEffectTickTimer": "Goo Effect Tick Tmer",
+  "text.autoconfig.gigeresque.option.miscellaneous.gooEffectTickTimer.@Tooltip": "The ticks it takes for the goo to kill you and either spawn goo or an egg.",
   "text.autoconfig.gigeresque.option.morphing": "Morphing",
   "text.autoconfig.gigeresque.option.morphing.alienHosts": "Alien Hosts",
   "text.autoconfig.gigeresque.option.morphing.alienHosts.@Tooltip": "Hosts that will produce aliens.",
