@@ -128,7 +128,6 @@ public class GigeresqueConfig implements ConfigData {
 		
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> dnaBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BLAZE).toString(),
-				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDER_DRAGON).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDERMAN).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDERMITE).toString(),

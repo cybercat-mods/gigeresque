@@ -14,6 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -55,6 +56,8 @@ public class DNAStatusEffect extends StatusEffect {
 					entity.world.spawnEntity(egg);
 					entity.kill();
 					return;
+				} else if (entity instanceof CreeperEntity) {
+					return;
 				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
@@ -68,6 +71,8 @@ public class DNAStatusEffect extends StatusEffect {
 					entity.kill();
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
+					return;
+				} else if (entity instanceof CreeperEntity) {
 					return;
 				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					entity.kill();

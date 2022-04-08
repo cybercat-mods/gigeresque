@@ -8,6 +8,7 @@
   "mixins": [
     "common.SpawnGroupMixin",
     "common.StructureFeatureAccessor",
+    "common.entity.CreeperMixin",
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
     "common.entity.VillagerEntityMixin",

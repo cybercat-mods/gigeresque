@@ -37,6 +37,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -109,8 +110,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			if (this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
 					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity)
-						&& !(ConfigAccessor.isTargetDNAImmune(this)))
+						&& !(((Object) this) instanceof CreeperEntity) && !(ConfigAccessor.isTargetDNAImmune(this)))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+				if (!this.hasStatusEffect(GigStatusEffects.DNA) && ((Object) this) instanceof CreeperEntity
+						&& !(((Object) this) instanceof PlayerEntity))
+					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 60000, 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
 						&& !(playerEntity.isCreative() || this.isSpectator())))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
