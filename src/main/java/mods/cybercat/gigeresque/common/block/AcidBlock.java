@@ -143,7 +143,10 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 1, currentThickness));
 
 				if (canGrief && !world.getBlockState(blockToEat).isIn(GigBlockTags.ACID_RESISTANT)) {
-					world.breakBlock(blockToEat, false);
+					//world.breakBlock(blockToEat, false);
+					world.setBlockState(blockToEat, Blocks.AIR.getDefaultState());
+					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS,
+							0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 				} 
 			}
 		}
@@ -161,6 +164,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
 		if (getThickness(state) == 0 && !world.getBlockState(pos).isIn(GigBlockTags.ACID_RESISTANT)) {
 			world.breakBlock(pos, false);
+			world.setBlockState(pos, Blocks.AIR.getDefaultState());
 			return;
 		}
 
