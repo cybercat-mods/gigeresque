@@ -15,8 +15,6 @@ import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import mods.cybercat.gigeresque.common.entity.ai.goal.DirectPathNavigator;
-import mods.cybercat.gigeresque.common.entity.ai.goal.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -63,13 +61,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
-	private final DirectPathNavigator crawlNavigation = new DirectPathNavigator(this, world);
 
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-	private final FlightMoveController crawlControl = new FlightMoveController(this, 0.6F, true);
 
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
 			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
@@ -241,7 +237,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public boolean isClimbing() {
 		boolean isAttacking = this.isAttacking();
 		setIsCrawling(isAttacking && this.horizontalCollision && this.collides());
-		return isAttacking&& this.horizontalCollision && this.collides();
+		return isAttacking && this.horizontalCollision && this.collides();
 	}
 
 	@Override
@@ -250,8 +246,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation :this.isCrawling() ? landNavigation: landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : this.isCrawling() ? landMoveControl : landMoveControl;
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
+				: this.isCrawling() ? landNavigation : landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
+				: this.isCrawling() ? landMoveControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
@@ -268,7 +266,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation :this.isCrawling() ? landNavigation: landNavigation;
+		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : landNavigation;
 	}
 
 	public boolean isCarryingEggmorphableTarget() {
@@ -327,7 +325,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing() ? EntityDimensions.changing(1.0f, 1.0f)
+		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing()
+				? EntityDimensions.changing(1.0f, 1.0f)
 				: super.getDimensions(pose);
 	}
 }
