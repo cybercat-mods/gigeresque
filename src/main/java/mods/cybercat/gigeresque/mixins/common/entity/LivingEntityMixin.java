@@ -108,7 +108,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (!this.world.isClient) {
 			if (this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
 					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
-				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity))
+				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity)
+						&& !(ConfigAccessor.isTargetDNAImmune(this)))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
 						&& !(playerEntity.isCreative() || this.isSpectator())))
@@ -261,7 +262,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	public boolean isEggmorphing() {
 		Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
 		Block pos = this.getBlockStateAtPos().getBlock();
-		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
+		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
+				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
 	}
 

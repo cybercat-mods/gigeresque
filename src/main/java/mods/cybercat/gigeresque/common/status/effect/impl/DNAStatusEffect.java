@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.SplittableRandom;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
@@ -31,7 +32,7 @@ public class DNAStatusEffect extends StatusEffect {
 
 	@Override
 	public boolean isInstant() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -47,14 +48,14 @@ public class DNAStatusEffect extends StatusEffect {
 		int randomPhase = random.nextInt(0, 50);
 		if (!(entity instanceof AlienEntity))
 			if (randomPhase > 25) {
-				if (entity instanceof PlayerEntity && !(((PlayerEntity) entity).isCreative()
-						|| ((PlayerEntity) entity).isSpectator())) {
+				if (entity instanceof PlayerEntity
+						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
 					entity.kill();
 					return;
-				} else if (!(entity instanceof PlayerEntity)) {
+				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
@@ -62,13 +63,13 @@ public class DNAStatusEffect extends StatusEffect {
 					return;
 				}
 			} else {
-				if (entity instanceof PlayerEntity && !(((PlayerEntity) entity).isCreative()
-						|| ((PlayerEntity) entity).isSpectator())) {
+				if (entity instanceof PlayerEntity
+						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
 					entity.kill();
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
-				} else if (!(entity instanceof PlayerEntity)) {
+				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					entity.kill();
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);

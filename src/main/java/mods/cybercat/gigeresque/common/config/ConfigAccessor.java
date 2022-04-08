@@ -54,6 +54,12 @@ public class ConfigAccessor {
 		return isTargetBlacklisted(entity.getClass(), target);
 	}
 
+	public static boolean isTargetDNAImmune(Entity target) {
+		List<? extends String> waveEntries = Gigeresque.config.morphing.dnaBlacklist;
+		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		return waveEntries.contains(targetIdentifier.toString());
+	}
+
 	public static boolean isTargetBlacklisted(Class<? extends Entity> entityClass, Entity target) {
 		if (target == null)
 			return false;

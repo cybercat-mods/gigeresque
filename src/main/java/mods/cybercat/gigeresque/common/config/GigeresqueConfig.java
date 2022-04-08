@@ -125,6 +125,22 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.RAVAGER).toString(), // TODO: Remove when ubermorphs added
 				Registry.ENTITY_TYPE.getId(EntityType.SHEEP).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.WOLF).toString());
+		
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> dnaBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BLAZE).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.ENDER_DRAGON).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.ENDERMAN).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.ENDERMITE).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.GHAST).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SHULKER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.IRON_GOLEM).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.MAGMA_CUBE).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SLIME).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SILVERFISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SNOW_GOLEM).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.VEX).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.WITHER).toString());
 	}
 
 	public static class Targeting {
@@ -157,6 +173,10 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.CAVE_SPIDER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CHICKEN).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.COD).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.BEE).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.BAT).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SHULKER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDER_DRAGON).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDERMAN).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDERMITE).toString(),

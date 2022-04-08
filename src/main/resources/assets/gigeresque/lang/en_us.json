@@ -124,6 +124,8 @@
   "text.autoconfig.gigeresque.option.morphing.aquaticAlienHosts.@Tooltip": "Hosts that will produce aquatic aliens.",
   "text.autoconfig.gigeresque.option.morphing.runnerHosts": "Runner Hosts",
   "text.autoconfig.gigeresque.option.morphing.runnerHosts.@Tooltip": "Hosts that will produce runner aliens.",
+  "text.autoconfig.gigeresque.option.morphing.dnaBlacklist": "DNA Disintegration Blacklist",
+  "text.autoconfig.gigeresque.option.morphing.dnaBlacklist.@Tooltip": "Hosts that will not be affected by Black Goos effects.",
   "text.autoconfig.gigeresque.option.targeting": "Targeting",
   "text.autoconfig.gigeresque.option.targeting.alienWhitelist": "Alien Whitelist",
   "text.autoconfig.gigeresque.option.targeting.alienWhitelist.@Tooltip": "Targets that aliens will attack no matter what.",
