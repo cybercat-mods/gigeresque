@@ -26,6 +26,7 @@ repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://maven.gegy.dev' }
 }
 
 dependencies {
@@ -34,13 +35,19 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
     modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${project.geckoLibVersion}"
-	modImplementation "curse.maven:modmenu-308702:3472549"
+	modImplementation "curse.maven:modmenu-308702:3668801"
     modApi("me.shedaniel.cloth:cloth-config-fabric:6.2.57") {
     	exclude(group: "net.fabricmc.fabric-api")
     }
 	modImplementation "curse.maven:hwg-448106:3714117"
 	modImplementation "curse.maven:stfu-401978:3677546"
 	modImplementation "curse.maven:tdi-245733:3556912"
+	modImplementation "curse.maven:drip-448311:3543360"
+	modImplementation "curse.maven:sounds-535489:3680801"
+	modImplementation "curse.maven:hud-412349:3657409"
+	modImplementation "curse.maven:lambdynamiclights-393442:3541670"
+	modImplementation("dev.lambdaurora:spruceui:3.3.0+1.17")
+	
 }
 
 processResources {
