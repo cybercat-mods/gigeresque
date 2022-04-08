@@ -37,7 +37,7 @@ public class GigDungeonStructure extends StructureFeature<GigStructurePoolFeatur
 			return Optional.empty();
 		}
 		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(-28, -24);
+		int var = random.nextInt(-28, 0);
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), var, context.chunkPos().getStartZ());
 		Optional<StructurePiecesGenerator<GigStructurePoolFeatureConfig>> structurePiecesGenerator = GigStructurePoolBasedGenerator
 				.generate(context, PoolStructurePiece::new, blockpos, false, false);

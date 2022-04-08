@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
@@ -36,13 +35,10 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
@@ -61,15 +57,14 @@ public class GigStructurePoolBasedGenerator {
 		ChunkGenerator chunkGenerator = context2.chunkGenerator();
 		StructureManager structureManager = context2.structureManager();
 		HeightLimitView heightLimitView = context2.world();
-		Predicate<RegistryEntry<Biome>> predicate = context2.validBiome();
 		StructureFeature.init();
 		Registry<StructurePool> registry = dynamicRegistryManager.get(Registry.STRUCTURE_POOL_KEY);
 		BlockRotation blockRotation = BlockRotation.random(chunkRandom);
 		StructurePool structurePool = structurePoolFeatureConfig.getStartPool().value();
 		StructurePoolElement structurePoolElement = structurePool.getRandomElement(chunkRandom);
-//		if (structurePoolElement == EmptyPoolElement.INSTANCE) {
-//			return Optional.empty();
-//		}
+		if (structurePoolElement == EmptyPoolElement.INSTANCE) {
+			return Optional.empty();
+		}
 		PoolStructurePiece poolStructurePiece = pieceFactory.create(structureManager, structurePoolElement, pos,
 				structurePoolElement.getGroundLevelDelta(), blockRotation,
 				structurePoolElement.getBoundingBox(structureManager, pos, blockRotation));
