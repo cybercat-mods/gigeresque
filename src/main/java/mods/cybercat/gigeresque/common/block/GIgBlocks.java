@@ -45,7 +45,7 @@ public class GIgBlocks implements GigeresqueInitializer {
 	 * NORMAL BLOCKS
 	 */
 
-	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque());
+	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque().dropsNothing());
 	
 	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_1 = new AlienChestBlock();
 	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_2 = new AlienChestBlock();
