@@ -274,8 +274,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 				if (!((Host) this.getTarget()).isBleeding() && !(EntityUtils.isFacehuggerAttached(this.getTarget()))
 						&& !(this.getTarget() instanceof AlienEntity)) {
 
-					if (this.distanceTo(target) < 3 && canStartRiding(target)) {
-						//attachToHost(target);
+					if (this.distanceTo(target) < 2 && canStartRiding(target)) {
+						attachToHost(target);
 					}
 				}
 			}
