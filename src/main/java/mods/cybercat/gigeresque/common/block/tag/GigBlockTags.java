@@ -16,4 +16,6 @@ public class GigBlockTags {
 			new Identifier(Gigeresque.MOD_ID, "destructible_light"));
 	public static final TagKey<Block> ACID_RESISTANT = TagKey.of(Registry.BLOCK_KEY,
 			new Identifier(Gigeresque.MOD_ID, "acid_resistant"));
+	public static final TagKey<Block> DUNGEON_BLOCKS = TagKey.of(Registry.BLOCK_KEY,
+			new Identifier(Gigeresque.MOD_ID, "dungeon_blocks"));
 }

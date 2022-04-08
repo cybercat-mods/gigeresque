@@ -9,6 +9,7 @@
     "common.SpawnGroupMixin",
     "common.StructureFeatureAccessor",
     "common.entity.CreeperMixin",
+    "common.entity.HostileEntityMixin",
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
     "common.entity.VillagerEntityMixin",
