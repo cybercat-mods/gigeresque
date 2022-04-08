@@ -77,6 +77,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 	private final FlightMoveController crawlControl = new FlightMoveController(this, 0.6F, true);
+	
+	public static final TrackedData<Boolean> EGGSPAWN = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, World world) {
 		super(type, world);
@@ -119,6 +122,14 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			this.remove(Entity.RemovalReason.KILLED);
 		}
 	}
+
+    public boolean isEggSpawn() {
+        return this.dataTracker.get(EGGSPAWN).booleanValue();
+    }
+
+    public void setEggSpawnState(boolean state) {
+        this.dataTracker.set(EGGSPAWN, Boolean.valueOf(state));
+    }
 
 	@Override
 	protected int getAcidDiameter() {
@@ -178,6 +189,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		super.initDataTracker();
 		dataTracker.startTracking(IS_INFERTILE, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
+		dataTracker.startTracking(EGGSPAWN, false);
 	}
 
 	private void detachFromHost(boolean removesParasite) {
@@ -456,7 +468,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			}
 		}
 
-		if (this.age <= 15) {
+		if (this.age <= 15 && this.dataTracker.get(EGGSPAWN) == true) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("leap_egg", false));
 			return PlayState.CONTINUE;
 		}

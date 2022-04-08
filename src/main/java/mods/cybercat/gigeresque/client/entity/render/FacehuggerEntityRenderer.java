@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -54,7 +55,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider bufferIn, int packedLightIn) {
 		if (entity.isCrawling()) {
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().west()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().west()))) {
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 				stack.translate(0, -0.2, 0);
 			}
@@ -62,11 +64,13 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().north()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().north()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().south()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().south()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 				stack.translate(0, -0.2, 0);
 			}
@@ -77,6 +81,16 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 			}
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	public void renderEarly(FacehuggerEntity animatable, MatrixStack stackIn, float ticks,
+			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
+			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
+		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
+				red, green, blue, partialTicks);
+		if (animatable.getDataTracker().get(FacehuggerEntity.EGGSPAWN) == true)
+		stackIn.scale(animatable.age < 5 ? 0 : 1F, animatable.age < 5 ? 0 : 1F, animatable.age < 5 ? 0 : 1F);
 	}
 
 	@Override

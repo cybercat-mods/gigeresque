@@ -211,6 +211,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, world);
 			facehugger.refreshPositionAndAngles(getBlockPos().up(), getYaw(), getPitch());
 			facehugger.setVelocity(0.0, 0.7, 0.0);
+			facehugger.setEggSpawnState(true);
 			world.spawnEntity(facehugger);
 			setHasFacehugger(false);
 		}
