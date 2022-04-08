@@ -10,7 +10,7 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class AcidStatusEffect extends StatusEffect {
 	public AcidStatusEffect() {
-		super(StatusEffectCategory.HARMFUL, Color.red.getRGB());
+		super(StatusEffectCategory.HARMFUL, Color.green.getRGB());
 	}
 
 	@Override

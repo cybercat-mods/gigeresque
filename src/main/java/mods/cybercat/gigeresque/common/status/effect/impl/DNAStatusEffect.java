@@ -22,7 +22,7 @@ public class DNAStatusEffect extends StatusEffect {
 	private BlockPos lightBlockPos = null;
 
 	public DNAStatusEffect() {
-		super(StatusEffectCategory.HARMFUL, Color.black.getRGB());
+		super(StatusEffectCategory.HARMFUL, Color.darkGray.getRGB());
 	}
 
 	@Override
