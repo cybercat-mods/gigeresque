@@ -22,7 +22,7 @@ import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
-import mods.cybercat.gigeresque.common.source.DamageSources;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -151,7 +151,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
 			world.spawnEntity(egg);
 			this.hasEggSpawned = true;
-			this.damage(DamageSources.EGGMORPHING, Float.MAX_VALUE);
+			this.damage(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
 		}
 	}
 
@@ -171,7 +171,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 		if (ticksUntilImpregnation == 0L) {
 			if (age % Constants.TPS == 0L) {
-				this.damage(DamageSources.CHESTBURSTING, this.getMaxHealth() / 8f);
+				this.damage(GigDamageSources.CHESTBURSTING, this.getMaxHealth() / 8f);
 			}
 
 			if (this.isDead() && !hasParasiteSpawned) {

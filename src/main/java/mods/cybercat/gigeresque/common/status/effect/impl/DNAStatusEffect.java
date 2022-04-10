@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -54,7 +55,7 @@ public class DNAStatusEffect extends StatusEffect {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
-					entity.kill();
+					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
 					return;
 				} else if (entity instanceof CreeperEntity) {
 					return;
@@ -62,20 +63,20 @@ public class DNAStatusEffect extends StatusEffect {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
-					entity.kill();
+					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
 					return;
 				}
 			} else {
 				if (entity instanceof PlayerEntity
 						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
-					entity.kill();
+					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof CreeperEntity) {
 					return;
 				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					entity.kill();
+					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
@@ -89,7 +90,7 @@ public class DNAStatusEffect extends StatusEffect {
 			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 1);
 			if (lightBlockPos == null)
 				return;
-			entity.world.setBlockState(lightBlockPos, GIgBlocks.BLACK_FLUID.getDefaultState());
+			entity.world.setBlockState(lightBlockPos, GIgBlocks.GOO_BLOCK.getDefaultState());
 		} else
 			lightBlockPos = null;
 	}
