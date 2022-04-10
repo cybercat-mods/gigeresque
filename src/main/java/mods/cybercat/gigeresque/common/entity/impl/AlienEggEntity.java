@@ -266,7 +266,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public boolean damage(DamageSource source, float amount) {
-		if (source.getSource() != null || source != DamageSource.IN_WALL) {
+		if (source.getSource() != null || source != DamageSource.IN_WALL && !this.isHatched()) {
 			setIsHatching(true);
 		}
 		return source == DamageSource.IN_WALL ? false : super.damage(source, amount);
