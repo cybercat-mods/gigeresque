@@ -45,8 +45,13 @@ public class GIgBlocks implements GigeresqueInitializer {
 	 * NORMAL BLOCKS
 	 */
 
-	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque().dropsNothing());
-	
+	public static final AcidBlock ACID_BLOCK = new AcidBlock(
+			FabricBlockSettings.of(Materials.ACID).nonOpaque().dropsNothing());
+	public static final GooBlock GOO_BLOCK = new GooBlock(
+			FabricBlockSettings.of(Materials.ACID).nonOpaque().dropsNothing());
+
+	public static final InvisAlienChestBlock ALIEN_STORAGE_BLOCK_INVIS = new InvisAlienChestBlock();
+
 	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_1 = new AlienChestBlock();
 	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_2 = new AlienChestBlock();
 	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_3 = new AlienChestBlock();
@@ -169,8 +174,18 @@ public class GIgBlocks implements GigeresqueInitializer {
 				new BlockItem(block, settings.group(GigItemGroups.GENERAL)));
 	}
 
+	private void registerItemBlockAnimated(String path, Block block, FabricItemSettings settings) {
+		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, path), block);
+		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, path),
+				new GigBlockItem(block, settings.group(GigItemGroups.GENERAL)));
+	}
+
 	private void registerItemBlock(String path, Block block) {
 		registerItemBlock(path, block, new FabricItemSettings().group(ItemGroup.MISC));
+	}
+
+	private void registerItemBlockAnimated(String path, Block block) {
+		registerItemBlockAnimated(path, block, new FabricItemSettings().group(ItemGroup.MISC));
 	}
 
 	@Override
@@ -180,6 +195,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 	private void initializeImpl() {
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "black_fluid"), BLACK_FLUID);
+		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "alien_storage_invis"),
+				ALIEN_STORAGE_BLOCK_INVIS);
 
 		registerItemBlock("nest_resin", NEST_RESIN);
 		registerItemBlock("nest_resin_block", NEST_RESIN_BLOCK);
@@ -194,6 +211,7 @@ public class GIgBlocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
 		registerItemBlock("acid_block", ACID_BLOCK);
+		registerItemBlock("goo_block", GOO_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);
