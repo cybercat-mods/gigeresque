@@ -21,6 +21,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
@@ -107,6 +108,10 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	private int getThickness(BlockState state) {
 		return state.get(THICKNESS);
+	}
+	
+	@Override
+	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
 	}
 
 	@SuppressWarnings("unused")
@@ -199,6 +204,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 2.0, 16.0);
+		return Block.createCuboidShape(0, 0, 0, 16, 2, 16);
 	}
 }

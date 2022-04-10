@@ -267,7 +267,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			var vehicle = this.getVehicle();
 			if (vehicle != null && ((Host) vehicle).isBleeding()) {
 				this.stopRiding();
-				detachFromHost(vehicle instanceof PlayerEntity && ((PlayerEntity) vehicle).isCreative());
+				detachFromHost(vehicle instanceof PlayerEntity && (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator()));
 			}
 		} else {
 			ticksAttachedToHost = -1.0f;
@@ -285,7 +285,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			if (EntityUtils.isPotentialHost(this.getTarget())) {
 				if (!((Host) this.getTarget()).isBleeding() && !(EntityUtils.isFacehuggerAttached(this.getTarget()))
 						&& !(this.getTarget() instanceof AlienEntity)) {
-
 					if (this.distanceTo(target) < 2 && canStartRiding(target)) {
 						attachToHost(target);
 					}
