@@ -113,6 +113,8 @@ if (file('key.properties').exists()) {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
             	requiredDependency 'cloth-config'  
+            	optionalDependency 'dripsounds-fabric'
+            	optionalDependency 'sound-physics-remastered'
         	}
         	mainArtifact(remapJar)
 
