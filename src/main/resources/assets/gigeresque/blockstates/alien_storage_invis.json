@@ -1,0 +1,17 @@
+{
+	"variants": {
+		"facing=north": {
+			"model": "gigeresque:block/alien_storage_invis",
+			"y": 180
+		},
+		"facing=south": {
+			"model": "gigeresque:block/alien_storage_invis"
+		},
+		"facing=west": {
+			"model": "gigeresque:block/alien_storage_invis"
+		},
+		"facing=east": {
+			"model": "gigeresque:block/alien_storage_invis"
+		}
+	}
+}
