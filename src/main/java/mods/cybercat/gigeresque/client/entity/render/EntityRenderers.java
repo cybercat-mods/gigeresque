@@ -1,12 +1,14 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
+import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
 @Environment(EnvType.CLIENT)
 public class EntityRenderers implements GigeresqueInitializer {
@@ -15,6 +17,7 @@ public class EntityRenderers implements GigeresqueInitializer {
 		InitializationTimer.initializingBlock("EntityRenderers", this::initializeImpl);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeImpl() {
 		EntityRendererRegistry.register(Entities.ALIEN, AlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.AQUATIC_ALIEN, AquaticAlienEntityRenderer::new);
@@ -24,5 +27,7 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.FACEHUGGER, FacehuggerEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNER_ALIEN, RunnerAlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNERBURSTER, RunnerbursterEntityRenderer::new);
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY,
+				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SarcophagusRender());
 	}
 }
