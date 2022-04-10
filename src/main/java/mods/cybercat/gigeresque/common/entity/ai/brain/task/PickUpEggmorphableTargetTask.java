@@ -9,6 +9,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
 public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
@@ -49,7 +51,10 @@ public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
 
 		if (alien.distanceTo(target) < 4.0) {
 			if (target.getVehicle() == null) {
-				target.startRiding(alien);
+				target.startRiding(alien, true);
+				if (target instanceof ServerPlayerEntity) {
+					((ServerPlayerEntity) target).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(alien));
+				}
 			}
 		} else {
 			alien.getNavigation().startMovingTo(target.getX(), target.getY(), target.getZ(), speed);
