@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.material.Materials;
+import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
@@ -52,11 +54,11 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 	public static final InvisAlienChestBlock ALIEN_STORAGE_BLOCK_INVIS = new InvisAlienChestBlock();
 
-	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_1 = new AlienChestBlock();
-	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_2 = new AlienChestBlock();
-	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_3 = new AlienChestBlock();
-	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_4 = new AlienChestBlock();
-	public static final AlienChestBlock ALIEN_STORAGE_BLOCK_5 = new AlienChestBlock();
+	public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock();
+	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
+	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_3 = new AlienJarBlock();
+	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
+	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_5 = new AlienJarBlock();
 
 	public static final NestResinBlock NEST_RESIN = new NestResinBlock(
 			FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).strength(5.0f, 8.0f));
@@ -174,18 +176,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 				new BlockItem(block, settings.group(GigItemGroups.GENERAL)));
 	}
 
-	private void registerItemBlockAnimated(String path, Block block, FabricItemSettings settings) {
-		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, path), block);
-		Registry.register(Registry.ITEM, new Identifier(Gigeresque.MOD_ID, path),
-				new GigBlockItem(block, settings.group(GigItemGroups.GENERAL)));
-	}
-
 	private void registerItemBlock(String path, Block block) {
 		registerItemBlock(path, block, new FabricItemSettings().group(ItemGroup.MISC));
-	}
-
-	private void registerItemBlockAnimated(String path, Block block) {
-		registerItemBlockAnimated(path, block, new FabricItemSettings().group(ItemGroup.MISC));
 	}
 
 	@Override
