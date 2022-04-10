@@ -2,7 +2,9 @@ package mods.cybercat.gigeresque.common.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.LivingEntity;
@@ -39,6 +41,9 @@ public class ChaseGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
+			return false;
+		}
 		if ((livingEntity instanceof AlienEntity)) {
 			return false;
 		}
@@ -72,6 +77,9 @@ public class ChaseGoal extends Goal {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
+			return false;
+		}
+		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
 			return false;
 		}
 		if (((Host) livingEntity).isBleeding()) {
