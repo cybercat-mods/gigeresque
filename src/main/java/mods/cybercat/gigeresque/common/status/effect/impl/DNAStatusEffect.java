@@ -48,7 +48,7 @@ public class DNAStatusEffect extends StatusEffect {
 	public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
 		SplittableRandom random = new SplittableRandom();
 		int randomPhase = random.nextInt(0, 50);
-		if (!(entity instanceof AlienEntity))
+		if (!(entity instanceof AlienEntity)) {
 			if (randomPhase > 25) {
 				if (entity instanceof PlayerEntity
 						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
@@ -82,6 +82,7 @@ public class DNAStatusEffect extends StatusEffect {
 					return;
 				}
 			}
+		}
 		super.onRemoved(entity, attributes, amplifier);
 	}
 

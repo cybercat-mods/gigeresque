@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
@@ -110,14 +111,17 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			if (this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
 					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity)
-						&& !(((Object) this) instanceof CreeperEntity) && !(ConfigAccessor.isTargetDNAImmune(this)))
+						&& !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof CreeperEntity)
+						&& !(ConfigAccessor.isTargetDNAImmune(this)))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
 							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && ((Object) this) instanceof CreeperEntity
-						&& !(((Object) this) instanceof PlayerEntity))
+						&& !(((Object) this) instanceof PlayerEntity) && !(((Object) this) instanceof AlienEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 60000, 0));
-				if (!this.hasStatusEffect(GigStatusEffects.DNA) && (((Object) this)instanceof PlayerEntity playerEntity
-						&& !(playerEntity.isCreative() || this.isSpectator())))
+				if (!this.hasStatusEffect(GigStatusEffects.DNA)
+						&& (((Object) this)instanceof PlayerEntity playerEntity
+								&& !(playerEntity.isCreative() || this.isSpectator()))
+						&& !(((Object) this) instanceof AlienEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
 							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
 			}
