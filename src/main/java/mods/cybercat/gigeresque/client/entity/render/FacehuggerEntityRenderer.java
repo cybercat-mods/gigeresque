@@ -47,6 +47,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				calcStandardOffsetY(facehugger) - 0.15));
 		headDistances.put(EntityType.VILLAGER,
 				(facehugger, host) -> new TransformData(0.0, 0.0, 0.0, 0.36, calcStandardOffsetY(facehugger)));
+		headDistances.put(EntityType.DOLPHIN,
+				(facehugger, host) -> new TransformData(0.0, -0.23, 0.0, 0.80, calcStandardOffsetY(facehugger)));
 		headDistances.put(EntityType.PLAYER,
 				(facehugger, host) -> new TransformData(0.0, 0.25, 0.0, 0.36, calcStandardOffsetY(facehugger)));
 	}
@@ -151,5 +153,10 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
 	private interface TransformDataGenerator {
 		public TransformData invoke(FacehuggerEntity facehugger, Entity host);
+	}
+	
+	@Override
+	protected float getDeathMaxRotation(FacehuggerEntity entityLivingBaseIn) {
+		return 0;
 	}
 }

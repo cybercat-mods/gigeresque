@@ -12,12 +12,9 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import mods.cybercat.gigeresque.common.entity.ai.goal.ChaseGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.DirectPathNavigator;
-import mods.cybercat.gigeresque.common.entity.ai.goal.FlightMoveController;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FacehugGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.block.BlockState;
@@ -70,20 +67,25 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
-	private final DirectPathNavigator crawlNavigation = new DirectPathNavigator(this, world);
 
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-	private final FlightMoveController crawlControl = new FlightMoveController(this, 0.6F, true);
-	
+
 	public static final TrackedData<Boolean> EGGSPAWN = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+
+	public static final TrackedData<Boolean> ATTACKING = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+
+	public static final TrackedData<Boolean> JUMPING = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, World world) {
 		super(type, world);
 
+		stepHeight = 1.5f;
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -115,21 +117,20 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 4800 && this.isInfertile()) {
+		if (this.deathTime == 200 || this.isInfertile()) {
 			this.remove(Entity.RemovalReason.KILLED);
+			super.updatePostDeath();
 			this.dropXp();
-		} else {
-			this.remove(Entity.RemovalReason.KILLED);
 		}
 	}
 
-    public boolean isEggSpawn() {
-        return this.dataTracker.get(EGGSPAWN).booleanValue();
-    }
+	public boolean isEggSpawn() {
+		return this.dataTracker.get(EGGSPAWN).booleanValue();
+	}
 
-    public void setEggSpawnState(boolean state) {
-        this.dataTracker.set(EGGSPAWN, Boolean.valueOf(state));
-    }
+	public void setEggSpawnState(boolean state) {
+		this.dataTracker.set(EGGSPAWN, Boolean.valueOf(state));
+	}
 
 	@Override
 	protected int getAcidDiameter() {
@@ -154,6 +155,22 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	public void setIsCrawling(boolean isHissing) {
 		dataTracker.set(IS_CLIMBING, isHissing);
+	}
+
+	public boolean isAttacking() {
+		return dataTracker.get(ATTACKING);
+	}
+
+	public void setIsAttakcing(boolean isHissing) {
+		dataTracker.set(ATTACKING, isHissing);
+	}
+
+	public boolean isJumping() {
+		return dataTracker.get(JUMPING);
+	}
+
+	public void setIsJumping(boolean isHissing) {
+		dataTracker.set(JUMPING, isHissing);
 	}
 
 	public float ticksAttachedToHost = -1.0f;
@@ -190,6 +207,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		dataTracker.startTracking(IS_INFERTILE, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
 		dataTracker.startTracking(EGGSPAWN, false);
+		dataTracker.startTracking(ATTACKING, false);
+		dataTracker.startTracking(JUMPING, false);
 	}
 
 	private void detachFromHost(boolean removesParasite) {
@@ -267,31 +286,20 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			var vehicle = this.getVehicle();
 			if (vehicle != null && ((Host) vehicle).isBleeding()) {
 				this.stopRiding();
-				detachFromHost(vehicle instanceof PlayerEntity && (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator()));
+				detachFromHost(vehicle instanceof PlayerEntity
+						&& (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator()));
 			}
 		} else {
 			ticksAttachedToHost = -1.0f;
 		}
 
-		var vehicle = this.getVehicle();
-
 		if (isInfertile()) {
 			this.clearGoalsAndTasks();
 			return;
 		}
-
-		var target = this.getTarget();
-		if (vehicle == null && !isInfertile() && target != null) {
-			if (EntityUtils.isPotentialHost(this.getTarget())) {
-				if (!((Host) this.getTarget()).isBleeding() && !(EntityUtils.isFacehuggerAttached(this.getTarget()))
-						&& !(this.getTarget() instanceof AlienEntity)) {
-					if (this.distanceTo(target) < 2 && canStartRiding(target)) {
-						attachToHost(target);
-					}
-				}
-			}
+		if (this.isEggSpawn() == true && this.age > 30) {
+			this.setEggSpawnState(false);
 		}
-
 	}
 
 	@Override
@@ -388,8 +396,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation :this.isCrawling() ? crawlNavigation: landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : this.isCrawling() ? crawlControl : landMoveControl;
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
+				: this.isCrawling() ? landNavigation : landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
+				: this.isCrawling() ? landMoveControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
@@ -411,7 +421,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation :this.isCrawling() ? crawlNavigation: landNavigation;
+		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : landNavigation;
 	}
 
 	@Override
@@ -421,23 +431,22 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isCrawling() ? super.getDimensions(pose).scaled(1.0f, 0.5f)
-				: super.getDimensions(pose);
+		return super.getDimensions(pose);
 	}
 
 	@Override
 	public boolean isClimbing() {
-		boolean isAttacking = this.isAttacking();
 		setIsCrawling(this.horizontalCollision);
-		return isAttacking;
+		return this.horizontalCollision;
 	}
 
 	@Override
 	protected void initGoals() {
 		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true, entity -> !(entity instanceof AlienEntity)
+				new ActiveTargetGoal<>(this, LivingEntity.class, false, entity -> !(entity instanceof AlienEntity)
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
-		this.goalSelector.add(5, new ChaseGoal(this, 0.6D, false));
+		// this.goalSelector.add(5, new ChaseGoal(this, 0.9D, false));
+		this.goalSelector.add(5, new FacehugGoal(this, 0.9D));
 	}
 
 	/*
@@ -445,43 +454,55 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getVelocity().horizontalLength();
-
-		if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hugging_loop", true));
+		if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("impregnate", true));
 			return PlayState.CONTINUE;
 		}
-
-		if (isInfertile()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead_loop", true));
+		if (this.dataTracker.get(UPSIDE_DOWN) == false && this.dataTracker.get(JUMPING) == false
+				&& this.dataTracker.get(ATTACKING) == false && isInfertile() || this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
 			return PlayState.CONTINUE;
 		}
-
-		if (this.isSubmergedInWater() && !this.isCrawling()) {
-			if (event.isMoving()) {
+		if (this.dataTracker.get(UPSIDE_DOWN) == false && this.dataTracker.get(JUMPING) == false
+				&& this.isSubmergedInWater() && !this.isCrawling() && !this.isDead()) {
+			if (this.dataTracker.get(ATTACKING) == false && event.isMoving()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
 				return PlayState.CONTINUE;
+			} else if (this.dataTracker.get(ATTACKING) == true && event.isMoving()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 				return PlayState.CONTINUE;
 			}
 		}
-
-		if (this.age <= 15 && this.dataTracker.get(EGGSPAWN) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("leap_egg", false));
+		if (this.dataTracker.get(JUMPING) == true) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("charge", true));
+			event.getController().setAnimationSpeed(0.5);
 			return PlayState.CONTINUE;
 		}
-
-		if (velocityLength > 0.0 && !this.isSubmergedInWater() && !this.isCrawling()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
-			return PlayState.CONTINUE;
-		} else if (this.isCrawling()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl2", true));
-			return PlayState.CONTINUE;
-		} else {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		if (this.dataTracker.get(EGGSPAWN) == true && !this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatch_leap", false));
 			return PlayState.CONTINUE;
 		}
+		if (this.dataTracker.get(UPSIDE_DOWN) == false && this.dataTracker.get(JUMPING) == false
+				&& this.dataTracker.get(ATTACKING) == true && !this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_crawl", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.dataTracker.get(UPSIDE_DOWN) == false && this.dataTracker.get(JUMPING) == false
+				&& this.dataTracker.get(ATTACKING) == false && this.dataTracker.get(EGGSPAWN) == false
+				&& (lastLimbDistance > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.dataTracker.get(UPSIDE_DOWN) == false && this.dataTracker.get(JUMPING) == false && this.isCrawling()
+				&& !this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			return PlayState.CONTINUE;
+		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+		return PlayState.CONTINUE;
 	}
 
 	@Override
