@@ -32,7 +32,7 @@ public abstract class AlienEntity extends HostileEntity {
 	}
 
     public boolean isUpsideDown() {
-        return this.dataTracker.get(UPSIDE_DOWN).booleanValue();
+        return this.dataTracker.get(UPSIDE_DOWN);
     }
 
     public void setUpsideDown(boolean upsideDown) {
