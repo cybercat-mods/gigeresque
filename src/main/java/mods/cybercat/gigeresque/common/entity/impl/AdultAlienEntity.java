@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -312,6 +313,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public SoundEvent getDeathSound() {
 		return GigSounds.ALIEN_DEATH;
+	}
+
+	@Override
+	protected void initGoals() {
+		this.goalSelector.add(5, new FleeFireGoal<AdultAlienEntity>(this));
 	}
 
 	@Override
