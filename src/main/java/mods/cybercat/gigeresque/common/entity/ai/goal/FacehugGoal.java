@@ -136,7 +136,7 @@ public class FacehugGoal extends Goal {
 					}
 					if (this.attackTime == 25) {
 						if (y <= 2) {
-							//mob.attachToHost(livingEntity);
+							mob.attachToHost(livingEntity);
 						}
 					}
 					if (this.attackTime == 40) {
