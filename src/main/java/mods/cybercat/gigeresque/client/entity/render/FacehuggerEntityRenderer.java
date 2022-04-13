@@ -82,7 +82,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				stack.translate(0, -0.2, 0);
 			}
 		}
-		if (entity.hasNoGravity() && !entity.isCrawling()) {
+		if (entity.hasNoGravity() && !entity.isCrawling() && !entity.isSubmergedInWater()) {
 			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
 			stack.translate(0, -0.6, 0);
 		}
