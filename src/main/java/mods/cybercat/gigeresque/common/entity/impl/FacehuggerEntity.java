@@ -71,7 +71,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, world);
 
-	private final FlightMoveController roofMoveControl = new FlightMoveController(this, this.speed);
+	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
@@ -121,10 +121,12 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 200 || this.isInfertile()) {
+		if (this.deathTime == 200 && this.isInfertile()) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.updatePostDeath();
 			this.dropXp();
+		} else if (!isInfertile()) {
+			super.updatePostDeath();
 		}
 	}
 
@@ -283,7 +285,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
-					this.kill();
+					this.detach();
+					this.damage(DamageSource.MAGIC, this.getMaxHealth());
 				}
 			}
 
