@@ -56,7 +56,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	@Override
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider bufferIn, int packedLightIn) {
-		if (entity.isCrawling()) {
+		if (entity.isCrawling() && !entity.hasNoGravity()) {
 			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
 					entity.world.getBlockState(entity.getBlockPos().west()))) {
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
@@ -81,6 +81,10 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 				stack.translate(0, -0.2, 0);
 			}
+		}
+		if (entity.hasNoGravity() && !entity.isCrawling()) {
+			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
+			stack.translate(0, -0.6, 0);
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}

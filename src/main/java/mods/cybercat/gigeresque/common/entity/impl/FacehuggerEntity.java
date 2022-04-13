@@ -14,6 +14,8 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FacehugGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -67,7 +69,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, world);
 
+	private final FlightMoveController roofMoveControl = new FlightMoveController(this, this.speed);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
@@ -300,6 +304,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 		if (this.isEggSpawn() == true && this.age > 30) {
 			this.setEggSpawnState(false);
 		}
+		this.setNoGravity(!this.getWorld().getBlockState(this.getBlockPos().up()).isAir() && !this.verticalCollision);
+		this.setMovementSpeed(this.hasNoGravity() ? 0.7F : this.speed);
 	}
 
 	@Override
@@ -397,9 +403,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	public void travel(Vec3d movementInput) {
 		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
-				: this.isCrawling() ? landNavigation : landNavigation;
+				: this.isCrawling() ? landNavigation : this.hasNoGravity() ? roofNavigation : landNavigation;
 		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
-				: this.isCrawling() ? landMoveControl : landMoveControl;
+				: this.hasNoGravity() ? roofMoveControl : this.isCrawling() ? landMoveControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
@@ -421,7 +427,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : landNavigation;
+		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : this.hasNoGravity() ? roofNavigation :  landNavigation;
 	}
 
 	@Override
