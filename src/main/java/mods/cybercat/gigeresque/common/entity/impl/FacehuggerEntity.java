@@ -291,10 +291,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 			}
 
 			var vehicle = this.getVehicle();
-			if (vehicle != null && ((Host) vehicle).isBleeding()) {
+			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof PlayerEntity
+					&& (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator())) {
 				this.stopRiding();
-				detachFromHost(vehicle instanceof PlayerEntity
-						&& (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator()));
+				detachFromHost(true);
 			}
 		} else {
 			ticksAttachedToHost = -1.0f;
@@ -430,7 +430,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : this.hasNoGravity() ? roofNavigation :  landNavigation;
+		return this.isTouchingWater() ? swimNavigation
+				: this.isCrawling() ? landNavigation : this.hasNoGravity() ? roofNavigation : landNavigation;
 	}
 
 	@Override
