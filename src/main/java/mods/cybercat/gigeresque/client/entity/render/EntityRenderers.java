@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
+import mods.cybercat.gigeresque.client.entity.render.blocks.JarRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
@@ -27,7 +28,9 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.FACEHUGGER, FacehuggerEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNER_ALIEN, RunnerAlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNERBURSTER, RunnerbursterEntityRenderer::new);
-		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY,
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SarcophagusRender());
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,
+				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new JarRender());
 	}
 }

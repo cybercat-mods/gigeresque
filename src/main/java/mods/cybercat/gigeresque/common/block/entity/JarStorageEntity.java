@@ -33,7 +33,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class AlienStorageEntity extends LootableContainerBlockEntity
+public class JarStorageEntity extends LootableContainerBlockEntity
 		implements ImplementedInventory, SidedInventory, NamedScreenHandlerFactory, IAnimatable {
 
 	private DefaultedList<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
@@ -45,32 +45,32 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 		@Override
 		protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.setState(true);
+			JarStorageEntity.setState(true);
 		}
 
 		@Override
 		protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.setState(false);
+			JarStorageEntity.setState(false);
 		}
 
 		@Override
 		protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount,
 				int newViewerCount) {
-			AlienStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
+			JarStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
 		@Override
 		protected boolean isPlayerViewing(PlayerEntity player) {
 			if (player.currentScreenHandler instanceof GenericContainerScreenHandler) {
 				Inventory inventory = ((GenericContainerScreenHandler) player.currentScreenHandler).getInventory();
-				return inventory == AlienStorageEntity.this;
+				return inventory == JarStorageEntity.this;
 			}
 			return false;
 		}
 	};
 
-	public AlienStorageEntity(BlockPos pos, BlockState state) {
-		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, pos, state);
+	public JarStorageEntity(BlockPos pos, BlockState state) {
+		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2, pos, state);
 	}
 
 	public boolean getState() {
@@ -78,7 +78,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	}
 
 	public static boolean setState(boolean state1) {
-		return state1 == true ? AlienStorageEntity.state == true : AlienStorageEntity.state == false;
+		return state1 == true ? JarStorageEntity.state == true : JarStorageEntity.state == false;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		return result;
 	}
 
-	public static void copyInventory(AlienStorageEntity from, AlienStorageEntity to) {
+	public static void copyInventory(JarStorageEntity from, JarStorageEntity to) {
 		DefaultedList<ItemStack> defaultedList = from.getInvStackList();
 		from.setInvStackList(to.getInvStackList());
 		to.setInvStackList(defaultedList);
@@ -125,7 +125,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	protected ScreenHandler createScreenHandler(int syncId, PlayerInventory inventory) {
-		return GenericContainerScreenHandler.createGeneric9x4(syncId, inventory);
+		return GenericContainerScreenHandler.createGeneric9x2(syncId, inventory);
 	}
 
 	@Override
@@ -150,16 +150,24 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<AlienStorageEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(new AnimationController<JarStorageEntity>(this, "controller", 0, this::predicate));
 	}
 
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (this.getState() == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("open", true));
+			if (randomPhase > 25) {
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("open2", false).addAnimation("open_loop"));
+			} else {
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("open", false).addAnimation("open_loop"));
+			}
+			return PlayState.CONTINUE;
+		} else {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("closing", false).addAnimation("closed", true));
 			return PlayState.CONTINUE;
 		}
-		return PlayState.CONTINUE;
 	}
 
 	@Override
@@ -171,7 +179,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	public void onOpen(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			AlienStorageEntity.state = true;
+			JarStorageEntity.state = true;
 		}
 	}
 
@@ -179,7 +187,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	public void onClose(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			AlienStorageEntity.state = false;
+			JarStorageEntity.state = false;
 		}
 	}
 
