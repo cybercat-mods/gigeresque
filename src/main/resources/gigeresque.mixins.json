@@ -12,6 +12,7 @@
     "common.entity.HostileEntityMixin",
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
+    "common.entity.PlayerEntityMixin",
     "common.entity.VillagerEntityMixin",
     "common.entity.WanderingTraderEntityMixin",
     "common.entity.ai.MemoryModuleTypeInvoker",

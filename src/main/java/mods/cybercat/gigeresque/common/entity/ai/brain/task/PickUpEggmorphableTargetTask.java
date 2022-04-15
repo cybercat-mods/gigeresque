@@ -5,12 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
 public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
@@ -52,9 +53,9 @@ public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
 		if (alien.distanceTo(target) < 4.0) {
 			if (target.getVehicle() == null) {
 				target.startRiding(alien, true);
-				if (target instanceof ServerPlayerEntity) {
-					((ServerPlayerEntity) target).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(alien));
-				}
+				((LivingEntity) target)
+						.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
+				target.setMovementSpeed(0.0f);
 			}
 		} else {
 			alien.getNavigation().startMovingTo(target.getX(), target.getY(), target.getZ(), speed);
