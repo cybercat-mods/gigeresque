@@ -121,12 +121,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 200 && this.isInfertile()) {
+		if (this.deathTime == 200) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.updatePostDeath();
 			this.dropXp();
-		} else if (!isInfertile()) {
-			super.updatePostDeath();
 		}
 	}
 
