@@ -1,12 +1,10 @@
-package mods.cybercat.gigeresque.client.entity.render;
+package mods.cybercat.gigeresque.client.entity.model;
 
 import java.util.List;
 
 import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
-import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
