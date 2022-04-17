@@ -341,6 +341,11 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", true));
 			return PlayState.CONTINUE;
 		}
+		
+		if (this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			return PlayState.CONTINUE;
+		}
 
 		if (isHatching()) {
 			event.getController()
