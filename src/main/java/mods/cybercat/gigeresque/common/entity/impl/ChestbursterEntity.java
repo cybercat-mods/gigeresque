@@ -42,7 +42,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 				.add(EntityAttributes.GENERIC_ARMOR, 2.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.43000000417232515)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3);
 	}
 
@@ -181,11 +181,23 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (velocityLength > 0.0) {
+		if (velocityLength > 0.0 && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
-		} else {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		} 
+		if (velocityLength > 0.0 && this.isAttacking()){
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
+			return PlayState.CONTINUE;
+		} 
+		if (this.getTarget() != null && this.tryAttack(getTarget())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
+			return PlayState.CONTINUE;
 		}
+		if (this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			return PlayState.CONTINUE;
+		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 

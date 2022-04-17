@@ -20,6 +20,11 @@ import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable {
 
@@ -97,5 +102,50 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 	@Override
 	public EntityDimensions getDimensions(EntityPose pose) {
 		return this.submergedInWater ? super.getDimensions(pose).scaled(1.0f, 0.5f) : super.getDimensions(pose);
+	}
+
+	/*
+	 * ANIMATIONS
+	 */
+
+	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		var velocityLength = this.getVelocity().horizontalLength();
+
+		if (velocityLength > 0.0 && !this.isAttacking() && !this.isSubmergedInWater()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
+			return PlayState.CONTINUE;
+		} 
+		if (velocityLength > 0.0 && this.isAttacking() && !this.isSubmergedInWater()){
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
+			return PlayState.CONTINUE;
+		} 
+		if (this.getTarget() != null && this.tryAttack(getTarget())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			return PlayState.CONTINUE;
+		}
+
+		if (velocityLength > 0.0 && !this.isAttacking() && this.isSubmergedInWater()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
+			return PlayState.CONTINUE;
+		} 
+		if (velocityLength > 0.0 && this.isAttacking() && this.isSubmergedInWater()){
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+			return PlayState.CONTINUE;
+		} 
+		if (velocityLength == 0.0 && this.isSubmergedInWater()){
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+			return PlayState.CONTINUE;
+		} 
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+		return PlayState.CONTINUE;
+	}
+
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
 	}
 }
