@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 import mods.cybercat.gigeresque.client.entity.model.RunnerAlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.RunnerAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -26,5 +25,10 @@ public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEnti
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		stack.translate(0.0, 0.1, 0.0);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	protected float getDeathMaxRotation(RunnerAlienEntity entityLivingBaseIn) {
+		return 0;
 	}
 }

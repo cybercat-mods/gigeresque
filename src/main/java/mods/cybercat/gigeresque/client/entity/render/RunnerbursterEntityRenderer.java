@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.RunnerbursterEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -23,5 +22,10 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
 		float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	protected float getDeathMaxRotation(RunnerbursterEntity entityLivingBaseIn) {
+		return 0;
 	}
 }

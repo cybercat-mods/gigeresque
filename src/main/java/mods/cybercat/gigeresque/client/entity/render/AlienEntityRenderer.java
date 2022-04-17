@@ -35,15 +35,18 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 //				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 //		}
 		if (entity.isCrawling()) {
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().west()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().west()))) {
 				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 				stack.translate(0, -0.5, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().north()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().north()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 				stack.translate(0, -0.5, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos().south()))) {
+			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
+					entity.world.getBlockState(entity.getBlockPos().south()))) {
 				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 				stack.translate(0, -0.5, 0);
 			}
@@ -54,5 +57,10 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 			}
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	protected float getDeathMaxRotation(ClassicAlienEntity entityLivingBaseIn) {
+		return 0;
 	}
 }

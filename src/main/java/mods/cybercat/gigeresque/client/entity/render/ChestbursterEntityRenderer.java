@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
+import mods.cybercat.gigeresque.client.entity.model.ChestbursterEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -22,5 +22,10 @@ public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEn
 		float scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 4.0f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	protected float getDeathMaxRotation(ChestbursterEntity entityLivingBaseIn) {
+		return 0;
 	}
 }

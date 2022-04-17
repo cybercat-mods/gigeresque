@@ -26,6 +26,16 @@ public abstract class AlienEntity extends HostileEntity {
 	
 	public static final TrackedData<Boolean> UPSIDE_DOWN = DataTracker.registerData(AlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	
+	@Override
+	protected void updatePostDeath() {
+		++this.deathTime;
+		if (this.deathTime == 200) {
+			this.remove(Entity.RemovalReason.KILLED);
+			super.updatePostDeath();
+			this.dropXp();
+		}
+	}
 
 	protected int getAcidDiameter() {
 		return 3;

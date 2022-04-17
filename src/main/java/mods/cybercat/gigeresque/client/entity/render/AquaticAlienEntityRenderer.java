@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 import mods.cybercat.gigeresque.client.entity.model.AquaticAlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.AquaticAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -25,5 +24,10 @@ public class AquaticAlienEntityRenderer extends GeoEntityRenderer<AquaticAlienEn
 		float scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
+	}
+	
+	@Override
+	protected float getDeathMaxRotation(AquaticAlienEntity entityLivingBaseIn) {
+		return 0;
 	}
 }
