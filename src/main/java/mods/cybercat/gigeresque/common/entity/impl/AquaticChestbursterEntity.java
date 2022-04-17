@@ -124,7 +124,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 			return PlayState.CONTINUE;
 		}
 		if (this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
 
@@ -140,6 +140,10 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 			return PlayState.CONTINUE;
 		} 
+		if (this.age < 5) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 		return PlayState.CONTINUE;
 	}

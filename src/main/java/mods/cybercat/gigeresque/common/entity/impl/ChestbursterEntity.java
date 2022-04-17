@@ -194,7 +194,11 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			return PlayState.CONTINUE;
 		}
 		if (this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.age < 5) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));

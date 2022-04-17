@@ -89,18 +89,28 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (velocityLength > 0.0 && !this.isTouchingWater()) {
-			if (this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_aggro", true));
-				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true));
-				return PlayState.CONTINUE;
-			}
-		} else {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		if (velocityLength > 0.0 && !this.isAttacking()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
+			return PlayState.CONTINUE;
+		} 
+		if (velocityLength > 0.0 && this.isAttacking()){
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
+			return PlayState.CONTINUE;
+		} 
+		if (this.getTarget() != null && this.tryAttack(getTarget())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
 			return PlayState.CONTINUE;
 		}
+		if (this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.age < 5) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
+			return PlayState.CONTINUE;
+		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		return PlayState.CONTINUE;
 	}
 
 	@Override

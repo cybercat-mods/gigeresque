@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.sound;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -36,6 +35,9 @@ public class GigSounds implements GigeresqueInitializer {
 			new Identifier(Gigeresque.MOD_ID, "facehugger_hurt"));
 	public static final SoundEvent FACEHUGGER_IMPLANT = new SoundEvent(
 			new Identifier(Gigeresque.MOD_ID, "facehugger_implant"));
+
+	public static final SoundEvent CHESTBURSTING = new SoundEvent(
+			new Identifier(Gigeresque.MOD_ID, "gigeresque_chestbursting"));
 
 	@Override
 	public void initialize() {

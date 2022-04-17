@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.ChestbursterEntityModel;
+import mods.cybercat.gigeresque.client.entity.render.feature.BusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +15,7 @@ public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEn
 	public ChestbursterEntityRenderer(EntityRendererFactory.Context ctx) {
 		super(ctx, new ChestbursterEntityModel());
 		this.shadowRadius = 0.1f;
+		this.addLayer(new BusterBloodFeatureRenderer(this));
 	}
 
 	@Override

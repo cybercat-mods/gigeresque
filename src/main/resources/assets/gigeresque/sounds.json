@@ -1,98 +1,105 @@
 {
-  "alien_ambient": {
-    "sounds": [
-      {
-        "name": "gigeresque:alien/ambient0"
-      },
-      {
-        "name": "gigeresque:alien/ambient1"
-      },
-      {
-        "name": "gigeresque:alien/ambient2"
-      },
-      {
-        "name": "gigeresque:alien/ambient3"
-      }
-    ]
-  },
-  "alien_death": {
-    "sounds": [
-      {
-        "name": "gigeresque:alien/death0"
-      },
-      {
-        "name": "gigeresque:alien/death1"
-      }
-    ]
-  },
-  "alien_hurt": {
-    "sounds": [
-      {
-        "name": "gigeresque:alien/hurt0"
-      }
-    ]
-  },
-  "egg_notice": {
-    "sounds": [
-      {
-        "name": "gigeresque:egg/notice0"
-      },
-      {
-        "name": "gigeresque:egg/notice1"
-      }
-    ]
-  },
-  "egg_open": {
-    "sounds": [
-      {
-        "name": "gigeresque:egg/open"
-      }
-    ]
-  },
-  "facehugger_ambient": {
-    "sounds": [
-      {
-        "name": "gigeresque:facehugger/ambient0"
-      },
-      {
-        "name": "gigeresque:facehugger/ambient1"
-      },
-      {
-        "name": "gigeresque:facehugger/ambient2"
-      }
-    ]
-  },
-  "facehugger_death": {
-    "sounds": [
-      {
-        "name": "gigeresque:facehugger/death0"
-      },
-      {
-        "name": "gigeresque:facehugger/death1"
-      },
-      {
-        "name": "gigeresque:facehugger/death2"
-      }
-    ]
-  },
-  "facehugger_hurt": {
-    "sounds": [
-      {
-        "name": "gigeresque:facehugger/hurt0"
-      }
-    ]
-  },
-  "facehugger_implant": {
-    "sounds": [
-      {
-        "name": "gigeresque:facehugger/implant0"
-      },
-      {
-        "name": "gigeresque:facehugger/implant1"
-      },
-      {
-        "name": "gigeresque:facehugger/implant2"
-      }
-    ]
-  }
+	"alien_ambient": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/ambient0"
+			},
+			{
+				"name": "gigeresque:alien/ambient1"
+			},
+			{
+				"name": "gigeresque:alien/ambient2"
+			},
+			{
+				"name": "gigeresque:alien/ambient3"
+			}
+		]
+	},
+	"alien_death": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/death0"
+			},
+			{
+				"name": "gigeresque:alien/death1"
+			}
+		]
+	},
+	"alien_hurt": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/hurt0"
+			}
+		]
+	},
+	"egg_notice": {
+		"sounds": [
+			{
+				"name": "gigeresque:egg/notice0"
+			},
+			{
+				"name": "gigeresque:egg/notice1"
+			}
+		]
+	},
+	"egg_open": {
+		"sounds": [
+			{
+				"name": "gigeresque:egg/open"
+			}
+		]
+	},
+	"facehugger_ambient": {
+		"sounds": [
+			{
+				"name": "gigeresque:facehugger/ambient0"
+			},
+			{
+				"name": "gigeresque:facehugger/ambient1"
+			},
+			{
+				"name": "gigeresque:facehugger/ambient2"
+			}
+		]
+	},
+	"facehugger_death": {
+		"sounds": [
+			{
+				"name": "gigeresque:facehugger/death0"
+			},
+			{
+				"name": "gigeresque:facehugger/death1"
+			},
+			{
+				"name": "gigeresque:facehugger/death2"
+			}
+		]
+	},
+	"facehugger_hurt": {
+		"sounds": [
+			{
+				"name": "gigeresque:facehugger/hurt0"
+			}
+		]
+	},
+	"facehugger_implant": {
+		"sounds": [
+			{
+				"name": "gigeresque:facehugger/implant0"
+			},
+			{
+				"name": "gigeresque:facehugger/implant1"
+			},
+			{
+				"name": "gigeresque:facehugger/implant2"
+			}
+		]
+	},
+	"gigeresque_chestbursting": {
+		"sounds": [
+			{
+				"name": "gigeresque:chestbursting"
+			}
+		]
+	}
 }

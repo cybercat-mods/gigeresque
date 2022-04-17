@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.AquaticChestbursterEntityModel;
+import mods.cybercat.gigeresque.client.entity.render.feature.AquaBusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +15,7 @@ public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<Aquatic
 	public AquaticChestbursterEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new AquaticChestbursterEntityModel());
 		this.shadowRadius = 0.5f;
+		this.addLayer(new AquaBusterBloodFeatureRenderer(this));
 	}
 
 	@Override
@@ -23,7 +25,7 @@ public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<Aquatic
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
-	
+
 	@Override
 	protected float getDeathMaxRotation(AquaticChestbursterEntity entityLivingBaseIn) {
 		return 0;

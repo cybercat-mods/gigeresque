@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.RunnerbursterEntityModel;
+import mods.cybercat.gigeresque.client.entity.render.feature.RunnerBusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +15,7 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
 	public RunnerbursterEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new RunnerbursterEntityModel());
 		this.shadowRadius = 0.3f;
+		this.addLayer(new RunnerBusterBloodFeatureRenderer(this));
 	}
 
 	@Override

@@ -27,6 +27,8 @@ public class EntityTextures {
 			"%s/aquatic_chestburster/aquatic_chestburster.png".formatted(BASE_ENTITY_URL));
 	public static final Identifier CHESTBURSTER = new Identifier(Gigeresque.MOD_ID,
 			"%s/chestburster/chestburster.png".formatted(BASE_ENTITY_URL));
+	public static final Identifier CHESTBURSTER_BLOOD = new Identifier(Gigeresque.MOD_ID,
+			"%s/chestburster/burster_blood.png".formatted(BASE_ENTITY_URL));
 	public static final Identifier EGG = new Identifier(Gigeresque.MOD_ID, "%s/egg/egg.png".formatted(BASE_ENTITY_URL));
 	public static final Identifier FACEHUGGER = new Identifier(Gigeresque.MOD_ID,
 			"%s/facehugger/facehugger.png".formatted(BASE_ENTITY_URL));
