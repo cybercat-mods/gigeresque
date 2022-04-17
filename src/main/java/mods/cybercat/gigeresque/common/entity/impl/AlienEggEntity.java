@@ -343,7 +343,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 		}
 		
 		if (this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
 
