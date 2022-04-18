@@ -5,16 +5,15 @@ import java.util.List;
 import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 @Environment(EnvType.CLIENT)
-public class RunnerbursterEntityModel extends AnimatedGeoModel<RunnerbursterEntity> {
+public class RunnerbursterEntityModel extends AnimatedTickingGeoModel<RunnerbursterEntity> {
 	@Override
 	public Identifier getModelLocation(RunnerbursterEntity object) {
 		return EntityModels.RUNNERBURSTER;

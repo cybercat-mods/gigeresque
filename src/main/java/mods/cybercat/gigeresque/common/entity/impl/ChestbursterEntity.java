@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.List;
 
+import com.mojang.serialization.Dynamic;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -9,8 +11,6 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.ChestbursterBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import com.mojang.serialization.Dynamic;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -25,6 +25,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -32,7 +33,8 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable {
+public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
+
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, World world) {
 		super(type, world);
 	}
@@ -184,11 +186,11 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		if (velocityLength > 0.0 && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
 			return PlayState.CONTINUE;
-		} 
-		if (velocityLength > 0.0 && this.isAttacking()){
+		}
+		if (velocityLength > 0.0 && this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
 			return PlayState.CONTINUE;
-		} 
+		}
 		if (this.getTarget() != null && this.tryAttack(getTarget())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
 			return PlayState.CONTINUE;
@@ -213,5 +215,10 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	@Override
 	public AnimationFactory getFactory() {
 		return animationFactory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

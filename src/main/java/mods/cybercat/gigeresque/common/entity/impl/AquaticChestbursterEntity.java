@@ -20,13 +20,14 @@ import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
-public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable {
+public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 
 	private final MobNavigation landNavigation = new MobNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
@@ -151,5 +152,10 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

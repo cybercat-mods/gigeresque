@@ -7,10 +7,10 @@ import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
 @Environment(EnvType.CLIENT)
-public class EggEntityModel extends AnimatedGeoModel<AlienEggEntity> {
+public class EggEntityModel extends AnimatedTickingGeoModel<AlienEggEntity> {
 	@Override
 	public Identifier getModelLocation(AlienEggEntity object) {
 		return EntityModels.EGG;

@@ -5,7 +5,6 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -14,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -21,7 +21,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable {
+public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, World world) {
 		super(type, world);
 	}
@@ -92,11 +92,11 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 		if (velocityLength > 0.0 && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
 			return PlayState.CONTINUE;
-		} 
-		if (velocityLength > 0.0 && this.isAttacking()){
+		}
+		if (velocityLength > 0.0 && this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
 			return PlayState.CONTINUE;
-		} 
+		}
 		if (this.getTarget() != null && this.tryAttack(getTarget())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
 			return PlayState.CONTINUE;
@@ -105,11 +105,14 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.age < 5) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
+		if (this.age < 25) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		if (this.age >= 25) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		return PlayState.CONTINUE;
 	}
 
@@ -121,5 +124,10 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	@Override
 	public AnimationFactory getFactory() {
 		return animationFactory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

@@ -5,16 +5,15 @@ import java.util.List;
 import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 @Environment(EnvType.CLIENT)
-public class AquaticChestbursterEntityModel extends AnimatedGeoModel<AquaticChestbursterEntity> {
+public class AquaticChestbursterEntityModel extends AnimatedTickingGeoModel<AquaticChestbursterEntity> {
 	@Override
 	public Identifier getModelLocation(AquaticChestbursterEntity object) {
 		return EntityModels.AQUATIC_CHESTBURSTER;
@@ -35,7 +34,7 @@ public class AquaticChestbursterEntityModel extends AnimatedGeoModel<AquaticChes
 	public void setLivingAnimations(AquaticChestbursterEntity entity, Integer uniqueID,
 			AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		var neck = getAnimationProcessor().getBone("neck");
+		var neck = getAnimationProcessor().getBone("head");
 		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
 		if (extraDataList.isEmpty())
 			return;

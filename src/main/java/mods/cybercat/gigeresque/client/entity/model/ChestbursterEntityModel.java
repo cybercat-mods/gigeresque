@@ -9,11 +9,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 @Environment(EnvType.CLIENT)
-public class ChestbursterEntityModel extends AnimatedGeoModel<ChestbursterEntity> {
+public class ChestbursterEntityModel extends AnimatedTickingGeoModel<ChestbursterEntity> {
 	@Override
 	public Identifier getModelLocation(ChestbursterEntity object) {
 		return EntityModels.CHESTBURSTER;
@@ -33,7 +33,7 @@ public class ChestbursterEntityModel extends AnimatedGeoModel<ChestbursterEntity
 	@Override
 	public void setLivingAnimations(ChestbursterEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		var neck = getAnimationProcessor().getBone("neck");
+		var neck = getAnimationProcessor().getBone("head");
 		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
 		if (extraDataList.isEmpty())
 			return;

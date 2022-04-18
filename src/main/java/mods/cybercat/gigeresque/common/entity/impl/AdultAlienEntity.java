@@ -50,8 +50,9 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 
-public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable {
+public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
 
 	private static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
@@ -334,5 +335,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing()
 				? EntityDimensions.changing(1.0f, 1.0f)
 				: super.getDimensions(pose);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

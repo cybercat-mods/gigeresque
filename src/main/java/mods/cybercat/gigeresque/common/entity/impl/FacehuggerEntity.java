@@ -58,6 +58,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -65,7 +66,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class FacehuggerEntity extends AlienEntity implements IAnimatable {
+public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
 	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
@@ -521,5 +522,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable {
 	@Override
 	public AnimationFactory getFactory() {
 		return animationFactory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

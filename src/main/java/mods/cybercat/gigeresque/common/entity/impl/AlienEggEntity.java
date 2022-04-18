@@ -40,6 +40,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -47,7 +48,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class AlienEggEntity extends AlienEntity implements IAnimatable {
+public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
 		super(type, world);
@@ -332,7 +333,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (isHatched()) {
+		if (isHatched() && !this.isDead()) {
 			if (!hasFacehugger()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", true));
 				return PlayState.CONTINUE;
@@ -347,7 +348,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 
-		if (isHatching()) {
+		if (isHatching() && !this.isDead()) {
 			event.getController()
 					.setAnimation(new AnimationBuilder().addAnimation("hatch", false).addAnimation("hatched"));
 			return PlayState.CONTINUE;
@@ -364,5 +365,10 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable {
 	@Override
 	public AnimationFactory getFactory() {
 		return animationFactory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }
