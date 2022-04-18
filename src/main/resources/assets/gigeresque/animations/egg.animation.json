@@ -785,7 +785,7 @@
 				},
 				"backLobe02": {
 					"rotation": {
-						"vector": [207.5, 0, 0],
+						"vector": [195, 0, 0],
 						"easing": "easeInOutSine"
 					}
 				},
