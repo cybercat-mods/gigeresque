@@ -761,47 +761,47 @@
 			"bones": {
 				"frontLobe01": {
 					"rotation": {
-						"vector": [50, 0, 0],
-						"easing": "easeOutSine"
-					},
-					"position": {
-						"vector": [0, -3, -0.5]
+						"vector": [55, 0, 0],
+						"easing": "easeOutQuad"
 					}
 				},
 				"frontLobe02": {
 					"rotation": {
-						"vector": [195, 0, 0],
-						"easing": "easeInOutSine"
+						"vector": [145, 0, 0],
+						"easing": "easeInOutQuad"
+					},
+					"position": {
+						"vector": [0, -0.3, 0]
 					}
 				},
 				"backLobe01": {
 					"rotation": {
-						"vector": [50, 0, 0],
-						"easing": "easeOutSine"
-					},
-					"position": {
-						"vector": [0, -3, 0.5]
+						"vector": [55, 0, 0],
+						"easing": "easeOutQuad"
 					}
 				},
 				"backLobe02": {
 					"rotation": {
-						"vector": [195, 0, 0],
-						"easing": "easeInOutSine"
+						"vector": [145, 0, 0],
+						"easing": "easeInOutQuad"
+					},
+					"position": {
+						"vector": [0, -0.3, 0]
 					}
 				},
 				"rightLobe01": {
 					"rotation": {
-						"vector": [0, 0, 50],
+						"vector": [0, 0, 55],
 						"easing": "easeOutSine"
-					},
-					"position": {
-						"vector": [0.5, -3, 0]
 					}
 				},
 				"rightLobe02": {
 					"rotation": {
-						"vector": [195, 0, 0],
+						"vector": [145, 0, 0],
 						"easing": "easeInOutSine"
+					},
+					"position": {
+						"vector": [0, -0.3, 0]
 					}
 				},
 				"lobeSeal": {
@@ -811,17 +811,17 @@
 				},
 				"leftLobe01": {
 					"rotation": {
-						"vector": [0, 0, -50],
+						"vector": [0, 0, -55],
 						"easing": "easeOutSine"
-					},
-					"position": {
-						"vector": [-0.5, -3, 0]
 					}
 				},
 				"leftLobe02": {
 					"rotation": {
-						"vector": [195, 0, 0],
+						"vector": [145, 0, 0],
 						"easing": "easeInOutSine"
+					},
+					"position": {
+						"vector": [0, -0.3, 0]
 					}
 				},
 				"fleshSac": {
@@ -834,24 +834,9 @@
 						"vector": [0, 0, 0]
 					}
 				},
-				"frontBody": {
+				"body": {
 					"scale": {
-						"vector": [1, 0.8, 1]
-					}
-				},
-				"backBody": {
-					"scale": {
-						"vector": [1, 0.8, 1]
-					}
-				},
-				"rightBody": {
-					"scale": {
-						"vector": [1, 0.8, 1]
-					}
-				},
-				"leftBody": {
-					"scale": {
-						"vector": [1, 0.8, 1]
+						"vector": [1, 0.7, 1]
 					}
 				}
 			}
