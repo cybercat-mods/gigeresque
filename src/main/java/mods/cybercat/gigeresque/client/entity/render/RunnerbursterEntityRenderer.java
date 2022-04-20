@@ -5,6 +5,7 @@ import mods.cybercat.gigeresque.client.entity.render.feature.RunnerBusterBloodFe
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,5 +30,14 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
 	@Override
 	protected float getDeathMaxRotation(RunnerbursterEntity entityLivingBaseIn) {
 		return 0;
+	}
+
+	@Override
+	public void renderEarly(RunnerbursterEntity animatable, MatrixStack stackIn, float ticks,
+			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
+			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
+		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
+				red, green, blue, partialTicks);
+		stackIn.scale(animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F);
 	}
 }
