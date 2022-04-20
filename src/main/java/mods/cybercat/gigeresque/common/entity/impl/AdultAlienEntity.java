@@ -10,6 +10,7 @@ import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
@@ -238,8 +239,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public boolean isClimbing() {
 		boolean isAttacking = this.isAttacking();
-		setIsCrawling(isAttacking && this.horizontalCollision && this.collides());
-		return isAttacking && this.horizontalCollision && this.collides();
+		setIsCrawling(isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
+				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigBlockTags.DUNGEON_STAIRS));
+		return isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
+				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigBlockTags.DUNGEON_STAIRS);
 	}
 
 	@Override
