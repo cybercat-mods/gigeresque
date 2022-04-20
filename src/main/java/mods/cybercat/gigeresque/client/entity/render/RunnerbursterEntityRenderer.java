@@ -38,6 +38,6 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
 			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
-		stackIn.scale(animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F);
+		//stackIn.scale(animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F, animatable.age < 10 ? 0 : 1F);
 	}
 }

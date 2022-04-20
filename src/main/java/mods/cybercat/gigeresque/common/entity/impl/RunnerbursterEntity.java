@@ -113,6 +113,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 			return PlayState.CONTINUE;
 		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
 		return PlayState.CONTINUE;
 	}
 
