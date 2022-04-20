@@ -38,19 +38,19 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 	private DefaultedList<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
 	private final AnimationFactory factory = new AnimationFactory(this);
-	public static boolean state;
+	private boolean state;
 	SplittableRandom random = new SplittableRandom();
 	int randomPhase = random.nextInt(0, 50);
 	private final ViewerCountManager stateManager = new ViewerCountManager() {
 
 		@Override
 		protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.setState(true);
+			AlienStorageEntity.this.setOpen(true);
 		}
 
 		@Override
 		protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.setState(false);
+			AlienStorageEntity.this.setOpen(false);
 		}
 
 		@Override
@@ -73,28 +73,30 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, pos, state);
 	}
 
-	public boolean getState() {
-		return state;
-	}
-
-	public static boolean setState(boolean state1) {
-		return state1 == true ? AlienStorageEntity.state == true : AlienStorageEntity.state == false;
-	}
-
 	@Override
 	public DefaultedList<ItemStack> getItems() {
 		return items;
 	}
 
+	public boolean isOpening() {
+		return state;
+	}
+
+	public void setOpen(boolean state) {
+		this.state = state;
+	}
+
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
+		setOpen(nbt.getBoolean("state"));
 		Inventories.readNbt(nbt, items);
 	}
 
 	@Override
 	public void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
+		nbt.putBoolean("state", isOpening());
 		Inventories.writeNbt(nbt, items);
 	}
 
@@ -153,13 +155,19 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		data.addAnimationController(
 				new AnimationController<AlienStorageEntity>(this, "controller", 0, this::predicate));
 	}
-
+	
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.getState() == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("open", true));
+		if (((AlienStorageEntity) event.getAnimatable()).isOpening()) {
+			if (randomPhase > 25) {
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("open2", false).addAnimation("open_loop"));
+			} else {
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("open", false).addAnimation("open_loop"));
+			}
 			return PlayState.CONTINUE;
-		}
-		return PlayState.CONTINUE;
+		} 
+			return PlayState.CONTINUE;
 	}
 
 	@Override
@@ -171,7 +179,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	public void onOpen(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			AlienStorageEntity.state = true;
+			this.setOpen(true);
 		}
 	}
 
@@ -179,7 +187,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	public void onClose(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			AlienStorageEntity.state = false;
+			this.setOpen(false);
 		}
 	}
 
