@@ -34,7 +34,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
-
+	
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, World world) {
 		super(type, world);
 	}
@@ -61,6 +61,9 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	private static final TrackedData<Float> GROWTH = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
+
+	public static final TrackedData<Boolean> BIRTHED = DataTracker.registerData(ChestbursterEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 
@@ -90,10 +93,19 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		this.hostId = hostId;
 	}
 
+    public boolean isBirthed() {
+        return this.dataTracker.get(BIRTHED);
+    }
+
+    public void setBirthStatus(boolean birth) {
+        this.dataTracker.set(BIRTHED, Boolean.valueOf(birth));
+    }
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
+		dataTracker.startTracking(BIRTHED, false);
 	}
 
 	@Override
@@ -199,7 +211,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.age < 5) {
+		if (this.age < 5 && this.dataTracker.get(BIRTHED) == true) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
 			return PlayState.CONTINUE;
 		}
