@@ -55,7 +55,7 @@ public class DNAStatusEffect extends StatusEffect {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
-					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
+					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
 				} else if (entity instanceof CreeperEntity) {
 					return;
@@ -63,20 +63,20 @@ public class DNAStatusEffect extends StatusEffect {
 					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
 					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 					entity.world.spawnEntity(egg);
-					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
+					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
 				}
 			} else {
 				if (entity instanceof PlayerEntity
 						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
-					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
+					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof CreeperEntity) {
 					return;
 				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					entity.damage(GigDamageSources.DNA, entity.getMaxHealth());
+					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
 					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
