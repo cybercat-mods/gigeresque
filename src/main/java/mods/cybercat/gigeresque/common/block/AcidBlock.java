@@ -44,6 +44,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	private static final int MAX_THICKNESS = 4;
 	public static final IntProperty THICKNESS = IntProperty.of("thickness", 0, MAX_THICKNESS);
 	private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+	private int age = 0;
 
 	AcidBlock(Settings settings) {
 		super(settings);
@@ -52,6 +53,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	private void scheduleTickIfNotScheduled(World world, BlockPos pos) {
 		if (!world.isClient && !world.getBlockTickScheduler().isQueued(pos, this)) {
+			age++;
 			world.createAndScheduleBlockTick(pos, this, 40);
 		}
 	}
@@ -63,6 +65,10 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+		if (age > MathUtil.clamp(world.random.nextInt(2) + 1, 1, 52)) {
+			world.breakBlock(pos, false);
+			age = -1;
+		}
 		scheduleTickIfNotScheduled(world, pos);
 	}
 
@@ -135,7 +141,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 		int currentThickness = getThickness(state);
 		if (currentThickness <= 0) {
 			world.breakBlock(pos, false);
-			return;
 		}
 
 		if (random.nextInt(8 - currentThickness) == 0) {
@@ -143,14 +148,18 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 			BlockPos blockToEat = pos.down();
 
 			if (currentThickness >= 1) {
-				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 1, currentThickness));
+				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
 
 				if (canGrief && !world.getBlockState(blockToEat).isIn(GigBlockTags.ACID_RESISTANT)) {
 					world.setBlockState(blockToEat, Blocks.AIR.getDefaultState());
 					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH,
 							SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,
 							false);
+				} else {
+					world.breakBlock(pos, false);
 				}
+			} else {
+				world.breakBlock(pos, false);
 			}
 		}
 		super.scheduledTick(state, world, pos, random);
@@ -164,12 +173,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-		if (getThickness(state) == 0 && !world.getBlockState(pos).isIn(GigBlockTags.ACID_RESISTANT)) {
-			world.breakBlock(pos, false);
-			world.setBlockState(pos, Blocks.AIR.getDefaultState());
-			return;
-		}
-
 		for (int i = 0; i < (getThickness(state) * 2) + 1; i++) {
 			double yOffset = state.get(WATERLOGGED) ? random.nextDouble() : 0.01;
 			double d = pos.getX() + random.nextDouble();
