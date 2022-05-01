@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.mojang.datafixers.util.Pair;
+
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,24 +27,26 @@ public class NestBuildingHelper {
 					if (nestBlockData == null)
 						continue;
 
-					if (nestBlockData.isFloor()) {
-						alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
-					}
+					if (alien.getWorld().getLightLevel(alien.getBlockPos()) < 8) {
+						if (nestBlockData.isFloor()) {
+							alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
+						}
 
-					if (nestBlockData.isCorner()) {
-						alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
-					}
+						if (nestBlockData.isCorner()) {
+							alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+						}
 
-					if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
-						var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.getDefaultState()
-								.with(NestResinWebBlock.UP, nestBlockData.hasUpCoverage())
-								.with(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage())
-								.with(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage())
-								.with(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage())
-								.with(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage())
-								.with(NestResinWebBlock.VARIANTS, NestResinWebVariant.values()[new Random()
-										.nextInt(NestResinWebVariant.values().length)]);
-						alien.world.setBlockState(blockPos, nestResinWebState);
+						if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
+							var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.getDefaultState()
+									.with(NestResinWebBlock.UP, nestBlockData.hasUpCoverage())
+									.with(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage())
+									.with(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage())
+									.with(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage())
+									.with(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage())
+									.with(NestResinWebBlock.VARIANTS, NestResinWebVariant.values()[new Random()
+											.nextInt(NestResinWebVariant.values().length)]);
+							alien.world.setBlockState(blockPos, nestResinWebState);
+						}
 					}
 				}
 			}
@@ -52,8 +54,8 @@ public class NestBuildingHelper {
 	}
 
 	public static boolean isResinBlock(Block block) {
-		return block == GIgBlocks.NEST_RESIN || block == GIgBlocks.NEST_RESIN_WEB || block == GIgBlocks.NEST_RESIN_WEB_CROSS
-				|| block == GIgBlocks.NEST_RESIN_BLOCK;
+		return block == GIgBlocks.NEST_RESIN || block == GIgBlocks.NEST_RESIN_WEB
+				|| block == GIgBlocks.NEST_RESIN_WEB_CROSS || block == GIgBlocks.NEST_RESIN_BLOCK;
 	}
 
 	private static NestBlockData getNestBlockData(World world, BlockPos blockPos) {
@@ -104,12 +106,14 @@ public class NestBuildingHelper {
 		});
 
 		var isFloor = actualState.isAir() && upState.isAir() && !isResinBlock(downState.getBlock())
-				&& downState.isOpaqueFullCube(world, downPos);
+				&& downState.isOpaqueFullCube(world, downPos) && world.getLightLevel(blockPos) < 10;
 		var isWall = !isFloor && actualState.isAir() && (upState.isAir() || isResinBlock(upState.getBlock()))
-				&& (1 <= horizontalCoverage.get() && horizontalCoverage.get() <= 2);
-		var isCorner = actualState.isAir() && (3 <= fullCoverage.get() && fullCoverage.get() <= 5);
+				&& (1 <= horizontalCoverage.get() && horizontalCoverage.get() <= 2)
+				&& world.getLightLevel(blockPos) < 10;
+		var isCorner = actualState.isAir() && (3 <= fullCoverage.get() && fullCoverage.get() <= 5)
+				&& world.getLightLevel(blockPos) < 10;
 		var isCeiling = actualState.isAir() && (downState.isAir() || isResinBlock(downState.getBlock()))
-				&& upState.isOpaqueFullCube(world, downPos) && !isCorner;
+				&& upState.isOpaqueFullCube(world, downPos) && !isCorner && world.getLightLevel(blockPos) < 10;
 
 		return new NestBlockData(fullCoverage.get(), isCorner, isFloor, isCeiling, isWall,
 				/* upCoverage */ upState.isOpaqueFullCube(world, upPos),

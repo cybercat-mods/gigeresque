@@ -2,12 +2,12 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 
 import java.util.Random;
 
+import com.google.common.collect.ImmutableMap;
+
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
-import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -93,19 +93,20 @@ public class FindNestingGroundTask extends Task<AdultAlienEntity> {
 						}
 
 						BlockState topState = world.getBlockState(resinPos);
-						if (topState.isAir()) {
-							BlockState downState = world.getBlockState(downPos);
-							if (downState.getBlock() == GIgBlocks.NEST_RESIN) {
-								world.setBlockState(downPos, downState.with(NestResinBlock.LAYERS,
-										downState.get(NestResinBlock.LAYERS) + 1));
-							} else if (downState.isOpaqueFullCube(world, downPos)) {
-								world.setBlockState(resinPos, GIgBlocks.NEST_RESIN.getDefaultState());
+						if (world.getLightLevel(alien.getBlockPos()) < 8)
+							if (topState.isAir()) {
+								BlockState downState = world.getBlockState(downPos);
+								if (downState.getBlock() == GIgBlocks.NEST_RESIN) {
+									world.setBlockState(downPos, downState.with(NestResinBlock.LAYERS,
+											downState.get(NestResinBlock.LAYERS) + 1));
+								} else if (downState.isOpaqueFullCube(world, downPos)) {
+									world.setBlockState(resinPos, GIgBlocks.NEST_RESIN.getDefaultState());
+								}
+							} else if (world.getBlockState(resinPos) == GIgBlocks.NEST_RESIN.getDefaultState()
+									&& topState.isOpaqueFullCube(world, resinPos)) {
+								world.setBlockState(resinPos,
+										topState.with(NestResinBlock.LAYERS, topState.get(NestResinBlock.LAYERS) + 1));
 							}
-						} else if (world.getBlockState(resinPos) == GIgBlocks.NEST_RESIN.getDefaultState()
-								&& topState.isOpaqueFullCube(world, resinPos)) {
-							world.setBlockState(resinPos,
-									topState.with(NestResinBlock.LAYERS, topState.get(NestResinBlock.LAYERS) + 1));
-						}
 					}
 				}
 			}

@@ -29,7 +29,7 @@ public class BuildNestTask extends Task<AdultAlienEntity> {
 		var isWithinNestRange = homePos.getPos().getManhattanDistance(alien.getBlockPos()) < 50;
 		cooldown = max(cooldown - 1, 0);
 		return alien.getGrowth() == alien.getMaxGrowth() && cooldown <= 0 && isWithinNestRange
-				&& !alien.world.isSkyVisible(alien.getBlockPos());
+				&& !alien.world.isSkyVisible(alien.getBlockPos()) && alien.world.getAmbientDarkness() <= 9;
 	}
 
 	@Override
