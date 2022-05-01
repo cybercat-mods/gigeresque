@@ -82,7 +82,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		if (canMoveVoluntarily() && this.isTouchingWater()) {
 			updateVelocity(getMovementSpeed(), movementInput);
 			move(MovementType.SELF, getVelocity());
-			setVelocity(getVelocity().multiply(0.9));
+			setVelocity(getVelocity().multiply(0.75));
 			if (getTarget() == null) {
 				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
 			}
