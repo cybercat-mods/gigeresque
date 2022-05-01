@@ -131,6 +131,7 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.MULE).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PANDA).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PIG).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.OCELOT).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.POLAR_BEAR).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.RAVAGER).toString(), // TODO: Remove when ubermorphs added
 				Registry.ENTITY_TYPE.getId(EntityType.SHEEP).toString(),
