@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FacehugGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
@@ -454,7 +455,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, false, entity -> !(entity instanceof AlienEntity)
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
-		// this.goalSelector.add(5, new ChaseGoal(this, 0.9D, false));
+		this.goalSelector.add(5, new FleeFireGoal<FacehuggerEntity>(this));
 		this.goalSelector.add(5, new FacehugGoal(this, 0.9D));
 	}
 

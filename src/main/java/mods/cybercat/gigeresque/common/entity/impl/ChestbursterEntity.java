@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.ChestbursterBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -160,6 +161,11 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		if (nbt.contains("hostId")) {
 			hostId = nbt.getString("hostId");
 		}
+	}
+
+	@Override
+	protected void initGoals() {
+		this.goalSelector.add(5, new FleeFireGoal<ChestbursterEntity>(this));
 	}
 
 	/*
