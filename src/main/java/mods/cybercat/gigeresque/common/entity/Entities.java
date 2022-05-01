@@ -13,7 +13,6 @@ import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -60,22 +59,18 @@ public class Entities implements GigeresqueInitializer {
 			EntityIdentifiers.RUNNER_ALIEN.getPath(), RunnerAlienEntity::new, 1.25f, 1.75f);
 	public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(
 			EntityIdentifiers.RUNNERBURSTER.getPath(), RunnerbursterEntity::new, 0.5f, 0.5f);
-	
+
 	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1;
 	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2;
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("AlienTypes", this::initializeImpl);
 		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-				Gigeresque.MOD_ID + ":alien_storage_block_entity",
-				FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
+				Gigeresque.MOD_ID + ":alien_storage_block_entity", FabricBlockEntityTypeBuilder
+						.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
 		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-				Gigeresque.MOD_ID + ":alien_storage_jar_entity",
-				FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
-	}
-
-	private void initializeImpl() {
+				Gigeresque.MOD_ID + ":alien_storage_jar_entity", FabricBlockEntityTypeBuilder
+						.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
 		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());

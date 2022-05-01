@@ -4,7 +4,6 @@ import mods.cybercat.gigeresque.client.entity.render.blocks.JarRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
@@ -13,13 +12,10 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
 @Environment(EnvType.CLIENT)
 public class EntityRenderers implements GigeresqueInitializer {
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("EntityRenderers", this::initializeImpl);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initializeImpl() {
 		EntityRendererRegistry.register(Entities.ALIEN, AlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.AQUATIC_ALIEN, AquaticAlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.AQUATIC_CHESTBURSTER, AquaticChestbursterEntityRenderer::new);

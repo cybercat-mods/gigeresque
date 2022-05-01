@@ -7,7 +7,6 @@ import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -180,10 +179,6 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("Blocks", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "black_fluid"), BLACK_FLUID);
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "alien_storage_invis"),
 				ALIEN_STORAGE_BLOCK_INVIS);
@@ -200,8 +195,7 @@ public class GIgBlocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
-		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "acid_block"),
-				ACID_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "acid_block"), ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);

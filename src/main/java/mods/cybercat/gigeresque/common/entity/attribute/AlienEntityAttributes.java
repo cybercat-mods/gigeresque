@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.entity.attribute;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.minecraft.entity.attribute.ClampedEntityAttribute;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -17,10 +15,6 @@ public class AlienEntityAttributes implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("EntityAttributes", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		Registry.register(Registry.ATTRIBUTE, new Identifier(Gigeresque.MOD_ID, "attribute.intelligence"),
 				INTELLIGENCE_ATTRIBUTE);
 	}

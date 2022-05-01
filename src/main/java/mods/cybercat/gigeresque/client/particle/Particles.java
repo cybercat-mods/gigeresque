@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.particle;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.particle.DefaultParticleType;
@@ -16,10 +15,6 @@ public class Particles implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("Particles", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		registerParticle("acid", ACID, AcidParticleFactory::new);
 		registerParticle("goo", GOO, GooParticleFactory::new);
 		registerParticle("blood", BLOOD, BloodParticleFactory::new);

@@ -5,8 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -33,10 +31,6 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("FluidRenderHandlers", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING,
 				new Identifier(Gigeresque.MOD_ID, "black_fluid"));
 		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getSolid(), GigFluids.BLACK_FLUID_STILL,

@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
@@ -19,7 +16,6 @@ import software.bernie.geckolib3.GeckoLib;
 
 public class Gigeresque implements ModInitializer {
 	public static GigeresqueConfig config;
-	public static final Logger LOGGER = LoggerFactory.getLogger(Gigeresque.class);
 	public static final String MOD_ID = "gigeresque";
 
 	@Override

@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.sound;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -41,10 +40,6 @@ public class GigSounds implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("Sounds", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		register(ALIEN_AMBIENT);
 		register(ALIEN_HURT);
 		register(ALIEN_DEATH);

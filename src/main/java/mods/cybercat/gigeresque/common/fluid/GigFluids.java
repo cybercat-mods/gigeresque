@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.fluid;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -30,10 +28,6 @@ public class GigFluids implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("Fluids", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		registerFluid("black_fluid_still", BLACK_FLUID_STILL);
 		registerFluid("black_fluid_flowing", BLACK_FLUID_FLOWING);
 	}

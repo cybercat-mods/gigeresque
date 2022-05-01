@@ -44,7 +44,6 @@ public class EggmorphLayerTexture implements AutoCloseable {
 					texture.upload();
 					baseImage.close();
 				} catch (Exception e) {
-					Gigeresque.LOGGER.error("Could not generate eggmorph texture for $base.", e);
 				}
 			}
 		});

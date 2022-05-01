@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.data.handler;
 
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import mods.cybercat.gigeresque.common.util.InitializationTimer;
-
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.network.PacketByteBuf;
@@ -40,10 +38,6 @@ public class TrackedDataHandlers implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		InitializationTimer.initializingBlock("TrackedDataHandlers", this::initializeImpl);
-	}
-
-	private void initializeImpl() {
 		TrackedDataHandlerRegistry.register(ALIEN_ATTACK_TYPE);
 	}
 }
