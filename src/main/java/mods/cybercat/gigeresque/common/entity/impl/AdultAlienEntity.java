@@ -25,7 +25,6 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -62,13 +61,13 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
-	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	protected final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
+	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 
-	private final MoveControl landMoveControl = new MoveControl(this);
-	private final LookControl landLookControl = new LookControl(this);
-	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
-	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	protected final MoveControl landMoveControl = new MoveControl(this);
+	protected final LookControl landLookControl = new LookControl(this);
+	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
+	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
 			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
@@ -247,26 +246,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	protected void swimUpward(TagKey<Fluid> fluid) {
-	}
-
-	@Override
-	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
-				: this.isCrawling() ? landNavigation : landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
-				: this.isCrawling() ? landMoveControl : landMoveControl;
-		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
-
-		if (canMoveVoluntarily() && this.isTouchingWater()) {
-			updateVelocity(getMovementSpeed(), movementInput);
-			move(MovementType.SELF, getVelocity());
-			setVelocity(getVelocity().multiply(0.9));
-			if (getTarget() == null) {
-				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
-			}
-		} else {
-			super.travel(movementInput);
-		}
 	}
 
 	@Override

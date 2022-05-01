@@ -2,6 +2,9 @@ package mods.cybercat.gigeresque.common.entity.ai.brain;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.AlienMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.BuildNestTask;
@@ -12,12 +15,10 @@ import mods.cybercat.gigeresque.common.entity.ai.brain.task.PickUpEggmorphableTa
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
@@ -42,7 +43,14 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 		return entity instanceof AquaticAlienEntity;
 	}
 
-	private float aquaticLandPenalty = (isAquatic() && !entity.isTouchingWater()) ? 2.0f : (isAquatic() && entity.isTouchingWater()) ? 2.0f :0.0f;
+	private boolean isRunner() {
+		return entity instanceof RunnerAlienEntity;
+	}
+
+	private float aquaticLandPenalty = (isAquatic() && !entity.isTouchingWater()) ? 2.0f
+			: (isAquatic() && entity.isTouchingWater()) ? 2.0f : 0.0f;
+
+	private float runnerWaterPenalty = (isRunner() && entity.isTouchingWater()) ? 3.0f : 0.0f;
 
 	@Override
 	protected void addCoreActivities(List<Task<? super AdultAlienEntity>> tasks) {
@@ -53,7 +61,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 			tasks.add(new PickUpEggmorphableTargetTask(3.0));
 			tasks.add(new EggmorphTargetTask(3.0));
 		}
-		tasks.add(new WalkTask(3.0f - aquaticLandPenalty));
+		tasks.add(new WalkTask(3.0f - aquaticLandPenalty - runnerWaterPenalty));
 		tasks.add(new LookAroundTask(45, 90));
 		tasks.add(new WanderAroundTask());
 	}
@@ -85,7 +93,7 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 				|| (entity.getBrain().hasMemoryModule(MemoryModuleType.HOME) && EntityUtils.isEggmorphable(it))
 				|| ((Eggmorphable) it).isEggmorphing()
 				|| it.getVehicle() != null && it.getVehicle() instanceof AlienEntity));
-		tasks.add(new RangedApproachTask(3.0f - aquaticLandPenalty));
+		tasks.add(new RangedApproachTask(4.0f - aquaticLandPenalty - runnerWaterPenalty));
 		tasks.add(new AlienMeleeAttackTask(20 * (int) intelligence));
 	}
 

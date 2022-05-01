@@ -27,6 +27,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -68,6 +69,17 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
+	}
+
+	@Override
+	public void travel(Vec3d movementInput) {
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
+				: this.isCrawling() ? landNavigation : landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
+				: this.isCrawling() ? landMoveControl : landMoveControl;
+		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
+
+		super.travel(movementInput);
 	}
 
 	@Override

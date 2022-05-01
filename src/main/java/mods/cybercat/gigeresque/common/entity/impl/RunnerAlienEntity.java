@@ -31,7 +31,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 				.add(EntityAttributes.GENERIC_ARMOR, 4.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23000000417232513)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
