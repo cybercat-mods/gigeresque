@@ -158,6 +158,8 @@ public class GigeresqueConfig implements ConfigData {
 		public List<String> alienBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BAT).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.BEE).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CAT).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SPIDER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.CAVE_SPIDER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PARROT).toString());
 
