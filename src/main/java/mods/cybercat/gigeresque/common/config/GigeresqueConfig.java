@@ -22,7 +22,7 @@ public class GigeresqueConfig implements ConfigData {
 	}
 
 	public static class Miscellaneous {
-		
+
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float alienGrowthMultiplier = 1.0f;
 
@@ -52,7 +52,7 @@ public class GigeresqueConfig implements ConfigData {
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public float runnerbursterGrowthMultiplier = 1.0f;
-		
+
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public int gooEffectTickTimer = 6000;
 
@@ -114,7 +114,10 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.VINDICATOR).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> aquaticAlienHosts = List.of(Registry.ENTITY_TYPE.getId(EntityType.DOLPHIN).toString());
+		public List<String> aquaticAlienHosts = List.of(Registry.ENTITY_TYPE.getId(EntityType.DOLPHIN).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.TURTLE).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.GUARDIAN).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.ELDER_GUARDIAN).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> runnerHosts = List.of(Registry.ENTITY_TYPE.getId(EntityType.COW).toString(),
@@ -132,7 +135,7 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.RAVAGER).toString(), // TODO: Remove when ubermorphs added
 				Registry.ENTITY_TYPE.getId(EntityType.SHEEP).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.WOLF).toString());
-		
+
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> dnaBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BLAZE).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.ENDER_DRAGON).toString(),
