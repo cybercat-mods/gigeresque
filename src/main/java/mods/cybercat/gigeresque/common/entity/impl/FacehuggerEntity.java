@@ -295,6 +295,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 					&& (((PlayerEntity) vehicle).isCreative() || ((PlayerEntity) vehicle).isSpectator())) {
 				this.stopRiding();
 				detachFromHost(true);
+				setIsInfertile(true);
+				this.damage(DamageSource.MAGIC, this.getMaxHealth());
 			}
 		} else {
 			ticksAttachedToHost = -1.0f;
@@ -400,6 +402,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 				&& ticksAttachedToHost < Constants.TPM * 5 && (isSubmergedInWater() || isTouchingWater())) {
 			return;
 		}
+		setIsInfertile(true);
+		this.damage(DamageSource.MAGIC, this.getMaxHealth());
 		super.stopRiding();
 	}
 
