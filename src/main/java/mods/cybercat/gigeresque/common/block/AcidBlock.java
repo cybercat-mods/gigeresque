@@ -16,6 +16,7 @@ import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
@@ -24,6 +25,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -39,6 +41,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 
 public class AcidBlock extends FallingBlock implements Waterloggable {
 	private static final int MAX_THICKNESS = 4;
@@ -137,6 +140,15 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	}
 
 	@Override
+	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity,
+			ItemStack stack) {
+	}
+
+	@Override
+	public void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack) {
+	}
+
+	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int currentThickness = getThickness(state);
 		if (currentThickness <= 0) {
@@ -188,7 +200,8 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 	public static boolean canFallThrough(BlockState state) {
 		Material material = state.getMaterial();
-		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid();
+		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid()
+				&& state != GIgBlocks.ACID_BLOCK.getDefaultState();
 	}
 
 	private void dealAcidDamage(BlockState state, Entity entity) {
@@ -205,5 +218,14 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
 		return Block.createCuboidShape(0, 0, 0, 16, 2, 16);
+	}
+
+	@Override
+	public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+	}
+
+	@Override
+	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+		return world.getBlockState(pos).isAir();
 	}
 }

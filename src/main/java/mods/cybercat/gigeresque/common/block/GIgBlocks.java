@@ -200,7 +200,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
-		registerItemBlock("acid_block", ACID_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "acid_block"),
+				ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);
