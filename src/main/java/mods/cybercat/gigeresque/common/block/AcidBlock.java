@@ -109,7 +109,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	private int getThickness(BlockState state) {
 		return state.get(THICKNESS);
 	}
-	
+
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
 	}
@@ -133,7 +133,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int currentThickness = getThickness(state);
-
 		if (currentThickness <= 0) {
 			world.breakBlock(pos, false);
 			return;
@@ -141,21 +140,19 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 
 		if (random.nextInt(8 - currentThickness) == 0) {
 			boolean canGrief = world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING);
-
 			BlockPos blockToEat = pos.down();
 
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 1, currentThickness));
 
 				if (canGrief && !world.getBlockState(blockToEat).isIn(GigBlockTags.ACID_RESISTANT)) {
-					//world.breakBlock(blockToEat, false);
 					world.setBlockState(blockToEat, Blocks.AIR.getDefaultState());
-					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS,
-							0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-				} 
+					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH,
+							SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,
+							false);
+				}
 			}
 		}
-
 		super.scheduledTick(state, world, pos, random);
 		scheduleTickIfNotScheduled(world, pos);
 	}
@@ -190,12 +187,12 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 		Material material = state.getMaterial();
 		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid();
 	}
-	
+
 	private void dealAcidDamage(BlockState state, Entity entity) {
-		if (entity instanceof LivingEntity && !(entity instanceof AlienEntity) && !(entity instanceof WitherEntity)) 
-			((LivingEntity)entity).addStatusEffect(new StatusEffectInstance(GigStatusEffects.ACID, 60, 0));
+		if (entity instanceof LivingEntity && !(entity instanceof AlienEntity) && !(entity instanceof WitherEntity))
+			((LivingEntity) entity).addStatusEffect(new StatusEffectInstance(GigStatusEffects.ACID, 60, 0));
 	}
-	
+
 	@Override
 	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
 		this.dealAcidDamage(state, entity);

@@ -11,10 +11,12 @@ import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -91,7 +93,12 @@ public class DNAStatusEffect extends StatusEffect {
 			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 1);
 			if (lightBlockPos == null)
 				return;
-			entity.world.setBlockState(lightBlockPos, GIgBlocks.GOO_BLOCK.getDefaultState());
+            AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
+            areaEffectCloudEntity.setRadius(2.0F);
+            areaEffectCloudEntity.setDuration(300);
+            areaEffectCloudEntity.setRadiusGrowth(0);
+            areaEffectCloudEntity.addEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
+            entity.world.spawnEntity(areaEffectCloudEntity);
 		} else
 			lightBlockPos = null;
 	}

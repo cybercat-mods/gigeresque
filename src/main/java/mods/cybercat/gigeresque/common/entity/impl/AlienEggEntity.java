@@ -202,6 +202,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {
 			setIsHatching(false);
 			setIsHatched(true);
+			ticksOpen++;
 		}
 
 		if (isHatched() && hasFacehugger()) {
