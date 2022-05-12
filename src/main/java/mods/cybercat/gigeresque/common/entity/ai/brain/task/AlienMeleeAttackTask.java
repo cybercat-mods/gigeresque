@@ -1,8 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import com.google.common.collect.ImmutableMap;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -26,16 +27,19 @@ public class AlienMeleeAttackTask extends Task<AlienEntity> {
 	protected boolean shouldRun(ServerWorld serverWorld, AlienEntity mobEntity) {
 		LivingEntity livingEntity = this.getAttackTarget(mobEntity);
 		return LookTargetUtil.isVisibleInMemory(mobEntity, livingEntity)
-				&& LookTargetUtil.isTargetWithinMeleeRange(mobEntity, livingEntity);
+				&& LookTargetUtil.isTargetWithinMeleeRange(mobEntity, livingEntity)
+				&& !(livingEntity.world.getBlockState(livingEntity.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override
 	protected void run(ServerWorld serverWorld, AlienEntity mobEntity, long l) {
 		LivingEntity livingEntity = this.getAttackTarget(mobEntity);
 		LookTargetUtil.lookAt(mobEntity, livingEntity);
-		mobEntity.swingHand(Hand.MAIN_HAND);
-		mobEntity.tryAttack(livingEntity);
-		mobEntity.getBrain().remember(MemoryModuleType.ATTACK_COOLING_DOWN, true, this.interval);
+		if (!livingEntity.world.getBlockState(livingEntity.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)) {
+			mobEntity.swingHand(Hand.MAIN_HAND);
+			mobEntity.tryAttack(livingEntity);
+			mobEntity.getBrain().remember(MemoryModuleType.ATTACK_COOLING_DOWN, true, this.interval);
+		}
 	}
 
 	private LivingEntity getAttackTarget(MobEntity entity) {

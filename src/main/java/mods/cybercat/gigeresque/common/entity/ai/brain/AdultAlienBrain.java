@@ -5,8 +5,10 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.AlienMeleeAttackTask;
+import mods.cybercat.gigeresque.common.entity.ai.brain.task.AlienRangedApproachTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.DestroyLightTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.EggmorphTargetTask;
@@ -23,7 +25,6 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
 import net.minecraft.entity.ai.brain.task.RandomTask;
-import net.minecraft.entity.ai.brain.task.RangedApproachTask;
 import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
 import net.minecraft.entity.ai.brain.task.StrollTask;
 import net.minecraft.entity.ai.brain.task.Task;
@@ -92,8 +93,9 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 				|| EntityUtils.isFacehuggerAttached(it)
 				|| (entity.getBrain().hasMemoryModule(MemoryModuleType.HOME) && EntityUtils.isEggmorphable(it))
 				|| ((Eggmorphable) it).isEggmorphing()
+				|| it.world.getBlockState(it.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
 				|| it.getVehicle() != null && it.getVehicle() instanceof AlienEntity));
-		tasks.add(new RangedApproachTask(4.0f - aquaticLandPenalty - runnerWaterPenalty));
+		tasks.add(new AlienRangedApproachTask(4.0f - aquaticLandPenalty - runnerWaterPenalty));
 		tasks.add(new AlienMeleeAttackTask(20 * (int) intelligence));
 	}
 
