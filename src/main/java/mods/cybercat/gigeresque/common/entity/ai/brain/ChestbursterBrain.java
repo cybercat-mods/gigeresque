@@ -2,19 +2,19 @@ package mods.cybercat.gigeresque.common.entity.ai.brain;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.common.entity.ai.brain.task.ConsumeFoodItemTask;
-import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
+import mods.cybercat.gigeresque.common.entity.ai.brain.task.ConsumeFoodItemTask;
+import mods.cybercat.gigeresque.common.entity.ai.brain.task.RunnerBusterMeleeAttackTask;
+import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.ForgetAttackTargetTask;
 import net.minecraft.entity.ai.brain.task.ForgetTask;
 import net.minecraft.entity.ai.brain.task.GoToRememberedPositionTask;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
-import net.minecraft.entity.ai.brain.task.MeleeAttackTask;
 import net.minecraft.entity.ai.brain.task.RandomTask;
 import net.minecraft.entity.ai.brain.task.RangedApproachTask;
 import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
@@ -77,7 +77,7 @@ public class ChestbursterBrain extends ComplexBrain<ChestbursterEntity> {
 					|| brain.hasMemoryModule(MemoryModuleType.AVOID_TARGET);
 		}));
 		tasks.add(new RangedApproachTask((entity instanceof RunnerbursterEntity) ? 1.5f : 1.0f));
-		tasks.add(new MeleeAttackTask(20));
+		tasks.add(new RunnerBusterMeleeAttackTask(20));
 	}
 
 	private RandomTask<ChestbursterEntity> makeRandomWanderTask() {
