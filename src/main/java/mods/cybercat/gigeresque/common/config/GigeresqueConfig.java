@@ -165,6 +165,10 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.SPIDER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CAVE_SPIDER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.TROPICAL_FISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.PUFFERFISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.COD).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SALMON).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PARROT).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
@@ -175,6 +179,10 @@ public class GigeresqueConfig implements ConfigData {
 				Registry.ENTITY_TYPE.getId(EntityType.BEE).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CAT).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.TROPICAL_FISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.PUFFERFISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.COD).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SALMON).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PARROT).toString());
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
@@ -216,6 +224,10 @@ public class GigeresqueConfig implements ConfigData {
 		public List<String> runnerBlacklist = List.of(Registry.ENTITY_TYPE.getId(EntityType.BAT).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.BEE).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CAT).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.TROPICAL_FISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.PUFFERFISH).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.COD).toString(),
+				Registry.ENTITY_TYPE.getId(EntityType.SALMON).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.CREEPER).toString(),
 				Registry.ENTITY_TYPE.getId(EntityType.PARROT).toString());
 	}
