@@ -34,6 +34,9 @@ public class FacehugGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+			return false;
+		}
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
 			return false;
 		}
