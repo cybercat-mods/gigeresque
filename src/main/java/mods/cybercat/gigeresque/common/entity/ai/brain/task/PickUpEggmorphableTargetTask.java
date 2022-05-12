@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 
 import com.google.common.collect.ImmutableMap;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
@@ -33,7 +34,7 @@ public class PickUpEggmorphableTargetTask extends Task<AdultAlienEntity> {
 				return false;
 			if (EntityUtils.isEggmorphable(target) && !EntityUtils.isFacehuggerAttached(target)) {
 				return !alien.isCarryingEggmorphableTarget();
-			} else if (target.world.getBlockState(target.getBlockPos()).isIn(GigBlockTags.RESIN)) {
+			} else if (target.world.getBlockState(target.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)) {
 				return false;
 			} else {
 				return false;
