@@ -304,6 +304,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 
 		if (isInfertile()) {
 			this.clearGoalsAndTasks();
+			this.kill();
 			return;
 		}
 		if (this.isEggSpawn() == true && this.age > 30) {
@@ -403,7 +404,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 			return;
 		}
 		setIsInfertile(true);
-		this.damage(DamageSource.MAGIC, this.getMaxHealth());
+//		this.kill();
 		super.stopRiding();
 	}
 
