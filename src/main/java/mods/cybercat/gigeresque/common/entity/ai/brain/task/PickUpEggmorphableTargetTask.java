@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 import com.google.common.collect.ImmutableMap;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
