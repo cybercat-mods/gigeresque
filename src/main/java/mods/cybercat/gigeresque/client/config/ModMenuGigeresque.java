@@ -1,18 +1,28 @@
 package mods.cybercat.gigeresque.client.config;
 
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
-import me.shedaniel.autoconfig.AutoConfig;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.CustomMidnightConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.Screen;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuGigeresque implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return (ConfigScreenFactory<Screen>) parent -> AutoConfig.getConfigScreen(GigeresqueConfig.class, parent).get();
+		return parent -> CustomMidnightConfig.getScreen(parent, Gigeresque.MOD_ID);
+	}
+
+	@Override
+	public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
+		HashMap<String, ConfigScreenFactory<?>> map = new HashMap<>();
+		CustomMidnightConfig.configClass
+				.forEach((modid, cClass) -> map.put(modid, parent -> CustomMidnightConfig.getScreen(parent, modid)));
+		return map;
 	}
 }

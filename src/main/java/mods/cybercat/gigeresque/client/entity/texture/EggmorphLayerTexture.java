@@ -21,8 +21,8 @@ public class EggmorphLayerTexture implements AutoCloseable {
 			@Override
 			public void run() {
 				try {
-					var baseImage = NativeImage.read(resourceManager.getResource(base).getInputStream());
-					var layerImage = NativeImage.read(resourceManager.getResource(layerTexture).getInputStream());
+					var baseImage = NativeImage.read(resourceManager.getResourceOrThrow(base).getInputStream());
+					var layerImage = NativeImage.read(resourceManager.getResourceOrThrow(layerTexture).getInputStream());
 					texture = new NativeImageBackedTexture(
 							new NativeImage(layerImage.getWidth(), layerImage.getHeight(), true));
 					var height = layerImage.getHeight();

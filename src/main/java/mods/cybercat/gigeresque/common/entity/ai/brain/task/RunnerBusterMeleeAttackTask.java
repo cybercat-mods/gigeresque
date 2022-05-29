@@ -26,7 +26,7 @@ public class RunnerBusterMeleeAttackTask extends Task<MobEntity> {
 	protected boolean shouldRun(ServerWorld serverWorld, MobEntity mobEntity) {
 		LivingEntity livingEntity = this.getAttackTarget(mobEntity);
 		return LookTargetUtil.isVisibleInMemory(mobEntity, livingEntity)
-				&& LookTargetUtil.isTargetWithinMeleeRange(mobEntity, livingEntity)
+				&& LookTargetUtil.isTargetWithinAttackRange(mobEntity, livingEntity, 0)
 				&& !((Host) livingEntity).hasParasite();
 	}
 

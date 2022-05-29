@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import java.util.Random;
-
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -36,6 +34,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.GameRules;
@@ -145,7 +144,24 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	}
 
 	@Override
-	public void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack) {
+	public void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack,
+			boolean dropExperience) {
+	}
+
+	@Override
+	public void randomDisplayTick(BlockState state, World world, BlockPos pos,
+			Random random) {
+		for (int i = 0; i < (getThickness(state) * 2) + 1; i++) {
+			double yOffset = state.get(WATERLOGGED) ? random.nextDouble() : 0.01;
+			double d = pos.getX() + random.nextDouble();
+			double e = pos.getY() + yOffset;
+			double f = pos.getZ() + random.nextDouble();
+			world.addImportantParticle(Particles.ACID, d, e, f, 0.0, 0.0, 0.0);
+		}
+		if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0) {
+			world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS,
+					0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+		}
 	}
 
 	@Override
@@ -181,21 +197,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	@Override
 	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		scheduleTickIfNotScheduled(world, pos);
-	}
-
-	@Override
-	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-		for (int i = 0; i < (getThickness(state) * 2) + 1; i++) {
-			double yOffset = state.get(WATERLOGGED) ? random.nextDouble() : 0.01;
-			double d = pos.getX() + random.nextDouble();
-			double e = pos.getY() + yOffset;
-			double f = pos.getZ() + random.nextDouble();
-			world.addImportantParticle(Particles.ACID, d, e, f, 0.0, 0.0, 0.0);
-		}
-		if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0) {
-			world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS,
-					0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-		}
 	}
 
 	public static boolean canFallThrough(BlockState state) {

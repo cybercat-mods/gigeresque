@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -63,7 +63,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		super.tick();
 
 		// Attack logic
-		
+
 		if (attackProgress > 0) {
 			attackProgress--;
 
@@ -90,7 +90,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 	@Override
 	public float getGrowthMultiplier() {
-		return Gigeresque.config.miscellaneous.runnerAlienGrowthMultiplier;
+		return GigeresqueConfig.runnerAlienGrowthMultiplier;
 	}
 
 	/*

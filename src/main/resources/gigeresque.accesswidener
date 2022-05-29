@@ -1,3 +1,5 @@
 accessWidener v1 named
 
 accessible class net/minecraft/entity/FallingBlockEntity
+accessible class net/minecraft/world/gen/structure/JigsawStructure
+accessible method net/minecraft/world/gen/structure/JigsawStructure createValidator ()Ljava/util/function/Function;

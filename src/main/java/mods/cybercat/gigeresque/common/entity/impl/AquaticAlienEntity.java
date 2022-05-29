@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -66,7 +66,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 	@Override
 	public float getGrowthMultiplier() {
-		return Gigeresque.config.miscellaneous.aquaticAlienGrowthMultiplier;
+		return GigeresqueConfig.aquaticAlienGrowthMultiplier;
 	}
 
 	@Override

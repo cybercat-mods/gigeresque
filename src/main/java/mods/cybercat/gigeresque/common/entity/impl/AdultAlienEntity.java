@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
@@ -223,16 +223,16 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			multiplier = 0.5f;
 		}
 
-		var isolationModeMultiplier = Gigeresque.config.features.isolationMode ? 0.05f : 1.0f;
+		var isolationModeMultiplier = GigeresqueConfig.isolationMode ? 0.05f : 1.0f;
 
 		return super.damage(source, amount * multiplier * isolationModeMultiplier);
 	}
 
 	@Override
-	public void onKilledOther(ServerWorld world, LivingEntity other) {
-		super.onKilledOther(world, other);
+	public boolean onKilledOther(ServerWorld world, LivingEntity other) {
 		if (!world.isClient)
 			this.heal(1.0833f);
+		return super.onKilledOther(world, other);
 	}
 
 	@Override

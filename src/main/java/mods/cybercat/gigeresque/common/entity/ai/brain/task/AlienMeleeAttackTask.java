@@ -27,7 +27,7 @@ public class AlienMeleeAttackTask extends Task<AlienEntity> {
 	protected boolean shouldRun(ServerWorld serverWorld, AlienEntity mobEntity) {
 		LivingEntity livingEntity = this.getAttackTarget(mobEntity);
 		return LookTargetUtil.isVisibleInMemory(mobEntity, livingEntity)
-				&& LookTargetUtil.isTargetWithinMeleeRange(mobEntity, livingEntity)
+				&& LookTargetUtil.isTargetWithinAttackRange(mobEntity, livingEntity, 0)
 				&& !(livingEntity.world.getBlockState(livingEntity.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS));
 	}
 

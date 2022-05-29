@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 
-import java.util.Random;
-
 import com.google.common.collect.ImmutableMap;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
@@ -13,9 +11,10 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.dynamic.GlobalPos;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 

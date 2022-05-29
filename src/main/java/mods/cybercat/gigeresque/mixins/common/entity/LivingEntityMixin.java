@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
@@ -114,7 +115,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 						&& !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof CreeperEntity)
 						&& !(ConfigAccessor.isTargetDNAImmune(this)))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
-							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
+							GigeresqueConfig.getgooEffectTickTimer(), 0));
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && ((Object) this) instanceof CreeperEntity
 						&& !(((Object) this) instanceof PlayerEntity) && !(((Object) this) instanceof AlienEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA, 60000, 0));
@@ -123,7 +124,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 								&& !(playerEntity.isCreative() || this.isSpectator()))
 						&& !(((Object) this) instanceof AlienEntity))
 					this.addStatusEffect(new StatusEffectInstance(GigStatusEffects.DNA,
-							Gigeresque.config.miscellaneous.getgooEffectTickTimer(), 0));
+							GigeresqueConfig.getgooEffectTickTimer(), 0));
 			}
 		}
 
@@ -143,7 +144,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	private void handleEggmorphingLogic() {
 		if (isEggmorphing()) {
 			setTicksUntilEggmorphed(Math.max(
-					getTicksUntilEggmorphed() - Gigeresque.config.getMiscellaneous().getEggmorphTickMultiplier(), 0f));
+					getTicksUntilEggmorphed() - GigeresqueConfig.getEggmorphTickMultiplier(), 0f));
 		} else {
 			// Reset eggmorphing counter if the entity is no longer eggmorphing at any
 			// point.
@@ -270,7 +271,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Override
 	public boolean isEggmorphing() {
-		Block cameraBlock = this.world.getBlockState(this.getCameraBlockPos()).getBlock();
+		Block cameraBlock = this.world.getBlockState(this.getBlockPos()).getBlock();
 		Block pos = this.getBlockStateAtPos().getBlock();
 		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
 				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;

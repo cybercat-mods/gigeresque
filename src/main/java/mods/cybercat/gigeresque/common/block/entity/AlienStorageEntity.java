@@ -20,7 +20,6 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -132,7 +131,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+		return Text.translatable(getCachedState().getBlock().getTranslationKey());
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	protected Text getContainerName() {
-		return new TranslatableText("container.chest");
+		return Text.translatable("container.chest");
 	}
 
 	@Override
@@ -155,7 +154,7 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		data.addAnimationController(
 				new AnimationController<AlienStorageEntity>(this, "controller", 0, this::predicate));
 	}
-	
+
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (((AlienStorageEntity) event.getAnimatable()).isOpening()) {
 			if (randomPhase > 25) {
@@ -165,9 +164,8 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 				event.getController()
 						.setAnimation(new AnimationBuilder().addAnimation("open", false).addAnimation("open_loop"));
 			}
-			return PlayState.CONTINUE;
-		} 
-			return PlayState.CONTINUE;
+		}
+		return PlayState.CONTINUE;
 	}
 
 	@Override

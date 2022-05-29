@@ -15,17 +15,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 @Environment(EnvType.CLIENT)
 public class AquaticChestbursterEntityModel extends AnimatedTickingGeoModel<AquaticChestbursterEntity> {
 	@Override
-	public Identifier getModelLocation(AquaticChestbursterEntity object) {
+	public Identifier getModelResource(AquaticChestbursterEntity object) {
 		return EntityModels.AQUATIC_CHESTBURSTER;
 	}
 
 	@Override
-	public Identifier getTextureLocation(AquaticChestbursterEntity object) {
+	public Identifier getTextureResource(AquaticChestbursterEntity object) {
 		return EntityTextures.AQUATIC_CHESTBURSTER;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(AquaticChestbursterEntity animatable) {
+	public Identifier getAnimationResource(AquaticChestbursterEntity animatable) {
 		return EntityAnimations.AQUATIC_CHESTBURSTER;
 	}
 

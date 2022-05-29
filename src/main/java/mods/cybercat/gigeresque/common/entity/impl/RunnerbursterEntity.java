@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import net.minecraft.entity.EntityType;
@@ -48,7 +48,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 
 	@Override
 	public float getGrowthMultiplier() {
-		return Gigeresque.config.miscellaneous.runnerbursterGrowthMultiplier;
+		return GigeresqueConfig.runnerbursterGrowthMultiplier;
 	}
 
 	@Override

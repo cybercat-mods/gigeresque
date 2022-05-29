@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public class JarModel extends AnimatedGeoModel<JarStorageEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(JarStorageEntity animatable) {
+	public Identifier getAnimationResource(JarStorageEntity animatable) {
 		return new Identifier(Gigeresque.MOD_ID, "animations/jar.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(JarStorageEntity object) {
+	public Identifier getModelResource(JarStorageEntity object) {
 		return new Identifier(Gigeresque.MOD_ID, "geo/jar.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(JarStorageEntity object) {
+	public Identifier getTextureResource(JarStorageEntity object) {
 		return new Identifier(Gigeresque.MOD_ID, "textures/block/jar.png");
 	}
 

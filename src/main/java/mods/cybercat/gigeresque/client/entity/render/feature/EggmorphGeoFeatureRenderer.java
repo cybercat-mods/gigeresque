@@ -40,7 +40,7 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & IAnimatable> ex
 		if (entity instanceof Eggmorphable && ((Eggmorphable) entity).isEggmorphing()) {
 			renderEggmorphedModel(entityRenderer,
 					entityRenderer.getGeoModelProvider()
-							.getModel(entityRenderer.getGeoModelProvider().getModelLocation(entity)),
+							.getModel(entityRenderer.getGeoModelProvider().getModelResource(entity)),
 					getEntityTexture(entity), matrices, vertexConsumers, light, entity, tickDelta);
 		}
 	}

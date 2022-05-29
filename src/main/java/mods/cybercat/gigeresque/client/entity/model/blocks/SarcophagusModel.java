@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public class SarcophagusModel extends AnimatedGeoModel<AlienStorageEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(AlienStorageEntity animatable) {
+	public Identifier getAnimationResource(AlienStorageEntity animatable) {
 		return new Identifier(Gigeresque.MOD_ID, "animations/sarcophagus.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(AlienStorageEntity object) {
+	public Identifier getModelResource(AlienStorageEntity object) {
 		return new Identifier(Gigeresque.MOD_ID, "geo/sarcophagus.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(AlienStorageEntity object) {
+	public Identifier getTextureResource(AlienStorageEntity object) {
 		return new Identifier(Gigeresque.MOD_ID, "textures/block/sarcophagus.png");
 	}
 

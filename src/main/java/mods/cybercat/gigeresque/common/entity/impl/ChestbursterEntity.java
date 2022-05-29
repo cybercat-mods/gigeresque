@@ -5,7 +5,7 @@ import java.util.List;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
@@ -174,7 +174,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	@Override
 	public float getGrowthMultiplier() {
-		return Gigeresque.config.miscellaneous.chestbursterGrowthMultiplier;
+		return GigeresqueConfig.chestbursterGrowthMultiplier;
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -130,7 +129,7 @@ public class JarStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+		return Text.translatable(getCachedState().getBlock().getTranslationKey());
 	}
 
 	@Override
@@ -145,7 +144,7 @@ public class JarStorageEntity extends LootableContainerBlockEntity
 
 	@Override
 	protected Text getContainerName() {
-		return new TranslatableText("container.chest");
+		return Text.translatable("container.chest");
 	}
 
 	@Override

@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
@@ -279,9 +279,9 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 			if (host != null) {
 				((LivingEntity) getVehicle())
 						.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 1000, 10, false, false));
-				if (ticksAttachedToHost > Gigeresque.config.getMiscellaneous().getFacehuggerAttachTickTimer()
+				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(Gigeresque.config.getMiscellaneous().getImpregnationTickTimer());
+					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
 					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.FACEHUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);

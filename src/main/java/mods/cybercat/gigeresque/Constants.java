@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 
 public class Constants {
 	private Constants() {
@@ -21,6 +21,6 @@ public class Constants {
 			Locale.US);
 
 	public static float getIsolationModeDamageBase() {
-		return Gigeresque.config.features.isolationMode ? 10_000.0f : 1.0f;
+		return GigeresqueConfig.isolationMode ? 10_000.0f : 1.0f;
 	}
 }

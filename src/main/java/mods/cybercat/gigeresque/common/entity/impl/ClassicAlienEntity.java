@@ -9,7 +9,7 @@ import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -147,7 +147,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 	@Override
 	public float getGrowthMultiplier() {
-		return Gigeresque.config.miscellaneous.alienGrowthMultiplier;
+		return GigeresqueConfig.alienGrowthMultiplier;
 	}
 
 	@Override

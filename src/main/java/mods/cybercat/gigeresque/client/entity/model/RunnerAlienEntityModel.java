@@ -15,17 +15,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 @Environment(EnvType.CLIENT)
 public class RunnerAlienEntityModel extends AnimatedTickingGeoModel<RunnerAlienEntity> {
 	@Override
-	public Identifier getModelLocation(RunnerAlienEntity object) {
+	public Identifier getModelResource(RunnerAlienEntity object) {
 		return EntityModels.RUNNER_ALIEN;
 	}
 
 	@Override
-	public Identifier getTextureLocation(RunnerAlienEntity object) {
+	public Identifier getTextureResource(RunnerAlienEntity object) {
 		return EntityTextures.RUNNER_ALIEN;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(RunnerAlienEntity animatable) {
+	public Identifier getAnimationResource(RunnerAlienEntity animatable) {
 		return EntityAnimations.RUNNER_ALIEN;
 	}
 

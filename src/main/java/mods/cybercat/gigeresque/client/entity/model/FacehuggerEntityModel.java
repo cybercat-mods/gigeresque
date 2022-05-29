@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 @Environment(EnvType.CLIENT)
 public class FacehuggerEntityModel extends AnimatedTickingGeoModel<FacehuggerEntity> {
 	@Override
-	public Identifier getModelLocation(FacehuggerEntity object) {
+	public Identifier getModelResource(FacehuggerEntity object) {
 		return EntityModels.FACEHUGGER;
 	}
 
 	@Override
-	public Identifier getTextureLocation(FacehuggerEntity object) {
+	public Identifier getTextureResource(FacehuggerEntity object) {
 		return EntityTextures.FACEHUGGER;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(FacehuggerEntity animatable) {
+	public Identifier getAnimationResource(FacehuggerEntity animatable) {
 		return EntityAnimations.FACEHUGGER;
 	}
 }
