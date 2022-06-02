@@ -255,11 +255,6 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	}
 
 	@Override
-	public boolean isPushable() {
-		return super.isPushable() && isNotEggmorphing();
-	}
-
-	@Override
 	public float getTicksUntilImpregnation() {
 		return ticksUntilImpregnation;
 	}
