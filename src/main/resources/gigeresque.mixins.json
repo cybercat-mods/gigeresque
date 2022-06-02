@@ -6,7 +6,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "common.SpawnGroupMixin",
     "common.entity.CreeperMixin",
     "common.entity.HostileEntityMixin",
     "common.entity.LivingEntityMixin",
