@@ -1,7 +1,7 @@
 {
 	"structures": [
 		{
-			"structure": "gigeresque:code_structure_gig_dungeon",
+			"structure": "gigeresque:gig_dungeon",
 			"weight": 1
 		}
 	],

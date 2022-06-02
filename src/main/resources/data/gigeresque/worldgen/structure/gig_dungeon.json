@@ -1,0 +1,14 @@
+{
+	"type": "gigeresque:gig_dungeon",
+	"start_pool": "gigeresque:gig_dungeon",
+	"size": 100,
+	"max_distance_from_center": 128,
+	"biomes": "#gigeresque:has_structure/gig_dungeon_biomes",
+	"step": "surface_structures",
+	"start_height": {
+		"absolute": -63
+	},
+	"project_start_to_heightmap": "WORLD_SURFACE_WG",
+	"spawn_overrides": {
+	}
+}
