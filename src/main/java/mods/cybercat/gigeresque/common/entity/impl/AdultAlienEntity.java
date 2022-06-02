@@ -25,6 +25,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -34,7 +35,9 @@ import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
+import net.minecraft.entity.ai.goal.SwimAroundGoal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -66,7 +69,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final LookControl landLookControl = new LookControl(this);
-	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
+	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
@@ -87,6 +90,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
+		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
 	}
 
 	public boolean isHissing() {
@@ -133,6 +137,36 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public Brain<AdultAlienEntity> getBrain() {
 		return (Brain<AdultAlienEntity>) super.getBrain();
+	}
+	
+
+
+	@Override
+	public void travel(Vec3d movementInput) {
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
+
+		if (canMoveVoluntarily() && this.isTouchingWater()) {
+			updateVelocity(getMovementSpeed(), movementInput);
+			move(MovementType.SELF, getVelocity());
+			setVelocity(getVelocity().multiply(0.9));
+			if (getTarget() == null) {
+				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
+			}
+		} else {
+			super.travel(movementInput);
+		}
+	}
+
+	@Override
+	public boolean canBreatheInWater() {
+		return true;
+	}
+
+	@Override
+	public boolean isPushedByFluids() {
+		return false;
 	}
 
 	@Override
@@ -243,14 +277,15 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		return isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
 				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigBlockTags.DUNGEON_STAIRS);
 	}
-
+	
 	@Override
 	protected void swimUpward(TagKey<Fluid> fluid) {
+		super.swimUpward(fluid);
 	}
 
 	@Override
 	public EntityNavigation createNavigation(World world) {
-		return this.isTouchingWater() ? swimNavigation : this.isCrawling() ? landNavigation : landNavigation;
+		return (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
 	}
 
 	public boolean isCarryingEggmorphableTarget() {
@@ -301,6 +336,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(5, new FleeFireGoal<AdultAlienEntity>(this));
+		this.goalSelector.add(1, new SwimAroundGoal(this, 1.0D, 10));
 	}
 
 	@Override

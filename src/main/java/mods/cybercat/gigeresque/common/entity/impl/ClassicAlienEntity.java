@@ -19,6 +19,7 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -73,13 +74,20 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 	@Override
 	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation
-				: this.isCrawling() ? landNavigation : landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl
-				: this.isCrawling() ? landMoveControl : landMoveControl;
+		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
+		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
 
-		super.travel(movementInput);
+		if (canMoveVoluntarily() && this.isTouchingWater()) {
+			updateVelocity(getMovementSpeed(), movementInput);
+			move(MovementType.SELF, getVelocity());
+			setVelocity(getVelocity().multiply(0.5));
+			if (getTarget() == null) {
+				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
+			}
+		} else {
+			super.travel(movementInput);
+		}
 	}
 
 	@Override
@@ -225,7 +233,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				event.getController().setAnimationSpeed(1);
 				return PlayState.CONTINUE;
 			}
-		} else if (this.isCrawling()) {
+		} else if (this.isCrawling() || (this.isSubmergedInWater() && event.isMoving())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 			return PlayState.CONTINUE;
 		} else {
