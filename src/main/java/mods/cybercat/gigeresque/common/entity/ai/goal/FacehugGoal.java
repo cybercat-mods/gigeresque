@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.goal;
 import java.util.EnumSet;
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
@@ -32,6 +33,9 @@ public class FacehugGoal extends Goal {
 	public boolean canStart() {
 		LivingEntity livingEntity = this.mob.getTarget();
 		if (livingEntity == null) {
+			return false;
+		}
+		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
 		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {

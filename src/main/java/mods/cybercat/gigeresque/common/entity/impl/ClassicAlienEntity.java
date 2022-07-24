@@ -2,17 +2,24 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import static java.lang.Math.max;
 
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.mojang.serialization.Dynamic;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
+import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
+import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.ClassicAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
@@ -20,6 +27,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.Sensor;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -39,30 +50,22 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ClassicAlienEntity extends AdultAlienEntity {
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 6.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
-				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
-	}
+
+	private AdultAlienBrain complexBrain;
+	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
+			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
+			SensorTypes.ALIEN_REPELLENT, SensorTypes.DESTRUCTIBLE_LIGHT);
+
+	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
+			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+			MemoryModuleTypes.EGGMORPH_TARGET, MemoryModuleType.HOME, MemoryModuleType.LOOK_TARGET,
+			MemoryModuleType.MOBS, MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleType.NEAREST_ATTACKABLE,
+			MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
+			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
 
 	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
 			.registerData(ClassicAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-
 	private AnimationFactory animationFactory = new AnimationFactory(this);
-
-	private AlienAttackType getCurrentAttackType() {
-		return dataTracker.get(CURRENT_ATTACK_TYPE);
-	}
-
-	private void setCurrentAttackType(AlienAttackType value) {
-		dataTracker.set(CURRENT_ATTACK_TYPE, value);
-	}
-
 	private int attackProgress = 0;
 	private boolean isSearching = false;
 	private long searchingProgress = 0L;
@@ -90,10 +93,56 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 	}
 
+	public static DefaultAttributeContainer.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0)
+				.add(EntityAttributes.GENERIC_ARMOR, 6.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
+				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
+				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
+	}
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
+	}
+
+	private AlienAttackType getCurrentAttackType() {
+		return dataTracker.get(CURRENT_ATTACK_TYPE);
+	}
+
+	private void setCurrentAttackType(AlienAttackType value) {
+		dataTracker.set(CURRENT_ATTACK_TYPE, value);
+	}
+
+	@Override
+	public Brain.Profile<? extends AdultAlienEntity> createBrainProfile() {
+		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
+	}
+
+	@Override
+	public Brain<? extends AdultAlienEntity> deserializeBrain(Dynamic<?> dynamic) {
+		complexBrain = new AdultAlienBrain(this);
+		Brain<? extends AdultAlienEntity> deserialize = createBrainProfile().deserialize(dynamic);
+		return complexBrain.initialize(deserialize);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Brain<ClassicAlienEntity> getBrain() {
+		return (Brain<ClassicAlienEntity>) super.getBrain();
+	}
+
+	@Override
+	public void mobTick() {
+		world.getProfiler().push("adultAlienBrain");
+		complexBrain.tick();
+		world.getProfiler().pop();
+		complexBrain.tickActivities();
+		super.mobTick();
 	}
 
 	@Override
@@ -214,6 +263,12 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		return this.getBoundingBox().shrink(0, -1, 0);
 	}
 
+	@Override
+	protected void initGoals() {
+		super.initGoals();
+		this.goalSelector.add(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
+	}
+
 	/*
 	 * ANIMATIONS
 	 */
@@ -233,17 +288,29 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				event.getController().setAnimationSpeed(1);
 				return PlayState.CONTINUE;
 			}
-		} else if (this.isCrawling() || (this.isSubmergedInWater() && event.isMoving())) {
+		} else if (this.isCrawling() && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			return PlayState.CONTINUE;
+		} else if (this.isDead()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
 			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
 			}
-
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-			return PlayState.CONTINUE;
+			if (this.submergedInWater) {
+				if (this.isAttacking()) {
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+					return PlayState.CONTINUE;
+				}
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+				return PlayState.CONTINUE;
+			}
 		}
 	}
 
@@ -251,6 +318,10 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
 			event.getController().setAnimation(new AnimationBuilder()
 					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
+			return PlayState.CONTINUE;
+		}
+		if (this.dataTracker.get(IS_BREAKING) == true) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", true));
 			return PlayState.CONTINUE;
 		}
 
@@ -269,7 +340,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
-		data.addAnimationController(new AnimationController<>(this, "attackController", 0f, this::attackPredicate));
+		data.addAnimationController(new AnimationController<>(this, "attackController", 5f, this::attackPredicate));
 		data.addAnimationController(new AnimationController<>(this, "hissController", 10f, this::hissPredicate));
 	}
 

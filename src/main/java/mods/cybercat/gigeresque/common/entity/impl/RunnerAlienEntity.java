@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
@@ -91,6 +92,12 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	@Override
 	public float getGrowthMultiplier() {
 		return GigeresqueConfig.runnerAlienGrowthMultiplier;
+	}
+
+	@Override
+	protected void initGoals() {
+		super.initGoals();
+		this.goalSelector.add(2, new MeleeAttackGoal(this, 3.0, false));
 	}
 
 	/*

@@ -35,19 +35,16 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
-	
-	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, World world) {
-		super(type, world);
-	}
 
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 2.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3);
-	}
+	private static final TrackedData<Float> GROWTH = DataTracker.registerData(ChestbursterEntity.class,
+			TrackedDataHandlerRegistry.FLOAT);
+
+	public static final TrackedData<Boolean> BIRTHED = DataTracker.registerData(ChestbursterEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+
+	private final AnimationFactory animationFactory = new AnimationFactory(this);
+	protected String hostId = null;
+	private ChestbursterBrain complexBrain;
 
 	private static final List<SensorType<? extends Sensor<? super ChestbursterEntity>>> SENSOR_TYPES = List.of(
 			SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.ALIEN_REPELLENT, SensorTypes.NEAREST_FOOD_ITEM,
@@ -60,13 +57,18 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH, MemoryModuleType.VISIBLE_MOBS,
 			MemoryModuleType.WALK_TARGET);
 
-	private static final TrackedData<Float> GROWTH = DataTracker.registerData(ChestbursterEntity.class,
-			TrackedDataHandlerRegistry.FLOAT);
+	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, World world) {
+		super(type, world);
+	}
 
-	public static final TrackedData<Boolean> BIRTHED = DataTracker.registerData(ChestbursterEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
+	public static DefaultAttributeContainer.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
+				.add(EntityAttributes.GENERIC_ARMOR, 2.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3);
+	}
 
 	@Override
 	public float getGrowth() {
@@ -83,9 +85,6 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		return 1;
 	}
 
-	private ChestbursterBrain complexBrain;
-	protected String hostId = null;
-
 	public String getHostId() {
 		return hostId;
 	}
@@ -94,13 +93,13 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		this.hostId = hostId;
 	}
 
-    public boolean isBirthed() {
-        return this.dataTracker.get(BIRTHED);
-    }
+	public boolean isBirthed() {
+		return this.dataTracker.get(BIRTHED);
+	}
 
-    public void setBirthStatus(boolean birth) {
-        this.dataTracker.set(BIRTHED, Boolean.valueOf(birth));
-    }
+	public void setBirthStatus(boolean birth) {
+		this.dataTracker.set(BIRTHED, Boolean.valueOf(birth));
+	}
 
 	@Override
 	public void initDataTracker() {

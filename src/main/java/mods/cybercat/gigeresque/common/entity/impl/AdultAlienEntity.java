@@ -2,22 +2,17 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import static java.lang.Math.max;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
-
-import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Growable;
-import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
-import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
-import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.entity.EntityData;
@@ -27,22 +22,23 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.SwimAroundGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -63,25 +59,16 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	protected static final TrackedData<Boolean> IS_BREAKING = DataTracker.registerData(AdultAlienEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 
-	protected final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
+	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final LookControl landLookControl = new LookControl(this);
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-
-	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
-			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
-			SensorTypes.ALIEN_REPELLENT, SensorTypes.DESTRUCTIBLE_LIGHT);
-
-	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-			MemoryModuleTypes.EGGMORPH_TARGET, MemoryModuleType.HOME, MemoryModuleType.LOOK_TARGET,
-			MemoryModuleType.MOBS, MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleType.NEAREST_ATTACKABLE,
-			MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
-			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -91,6 +78,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
 		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+	}
+
+	public boolean isBreaking() {
+		return dataTracker.get(IS_BREAKING);
+	}
+
+	public void setIsBreaking(boolean isHissing) {
+		dataTracker.set(IS_BREAKING, isHissing);
 	}
 
 	public boolean isHissing() {
@@ -118,28 +113,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public void setGrowth(float growth) {
 		dataTracker.set(GROWTH, growth);
 	}
-
-	private AdultAlienBrain complexBrain;
-
-	@Override
-	public Brain.Profile<? extends AdultAlienEntity> createBrainProfile() {
-		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-	}
-
-	@Override
-	public Brain<? extends AdultAlienEntity> deserializeBrain(Dynamic<?> dynamic) {
-		complexBrain = new AdultAlienBrain(this);
-		Brain<? extends AdultAlienEntity> deserialize = createBrainProfile().deserialize(dynamic);
-		return complexBrain.initialize(deserialize);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Brain<AdultAlienEntity> getBrain() {
-		return (Brain<AdultAlienEntity>) super.getBrain();
-	}
-	
-
 
 	@Override
 	public void travel(Vec3d movementInput) {
@@ -170,20 +143,12 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public void mobTick() {
-		world.getProfiler().push("adultAlienBrain");
-		complexBrain.tick();
-		world.getProfiler().pop();
-		complexBrain.tickActivities();
-		super.mobTick();
-	}
-
-	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
 		dataTracker.startTracking(IS_HISSING, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
+		dataTracker.startTracking(IS_BREAKING, false);
 	}
 
 	@Override
@@ -192,6 +157,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		nbt.putFloat("growth", getGrowth());
 		nbt.putBoolean("isHissing", isHissing());
 		nbt.putBoolean("isCrawling", isCrawling());
+		nbt.putBoolean("isBreaking", isBreaking());
 	}
 
 	@Override
@@ -205,6 +171,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		}
 		if (nbt.contains("isCrawling")) {
 			setIsCrawling(nbt.getBoolean("isCrawling"));
+		}
+		if (nbt.contains("isBreaking")) {
+			setIsCrawling(nbt.getBoolean("isBreaking"));
 		}
 	}
 
@@ -277,7 +246,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		return isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
 				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigBlockTags.DUNGEON_STAIRS);
 	}
-	
+
 	@Override
 	protected void swimUpward(TagKey<Fluid> fluid) {
 		super.swimUpward(fluid);
@@ -295,7 +264,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		if (!this.world.isClient) {
-			complexBrain.stun(Constants.TPS * 3);
+			// complexBrain.stun(Constants.TPS * 3);
 		}
 		return super.updatePassengerForDismount(passenger);
 	}
@@ -336,7 +305,13 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(5, new FleeFireGoal<AdultAlienEntity>(this));
+		this.goalSelector.add(5, new KillLightsGoal(this));
 		this.goalSelector.add(1, new SwimAroundGoal(this, 1.0D, 10));
+		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F, 0));
+		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
+				entity -> !(entity instanceof AlienEntity || entity instanceof WardenEntity)));
+		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 	}
 
 	@Override

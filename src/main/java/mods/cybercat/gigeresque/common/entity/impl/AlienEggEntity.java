@@ -2,15 +2,10 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.List;
 
-import com.mojang.serialization.Dynamic;
-
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.ai.brain.AlienEggBrain;
-import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
-import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
@@ -21,10 +16,6 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -50,17 +41,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
-	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
-		super(type, world);
-	}
-
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 1.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
-	}
-
 	private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntity.class,
@@ -68,19 +48,26 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
+	private long hatchProgress = 0L;
+	private long ticksOpen = 0L;
+	private final AnimationFactory animationFactory = new AnimationFactory(this);
+
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
-	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
-			SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_EGGS, SensorTypes.NEAREST_FACEHUGGER,
-			SensorTypes.NEAREST_HOSTS);
-
-	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.MOBS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.VISIBLE_MOBS,
-			MemoryModuleTypes.NEAREST_FACEHUGGERS, MemoryModuleTypes.NEAREST_EGGS);
+	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
+		super(type, world);
+	}
 
 	@Override
 	protected int getAcidDiameter() {
 		return 1;
+	}
+
+	public static DefaultAttributeContainer.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
+				.add(EntityAttributes.GENERIC_ARMOR, 1.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
 	}
 
 	public boolean isHatching() {
@@ -105,39 +92,6 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 
 	public void setHasFacehugger(boolean value) {
 		dataTracker.set(HAS_FACEHUGGER, value);
-	}
-
-	private long hatchProgress = 0L;
-	private long ticksOpen = 0L;
-
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
-	private AlienEggBrain complexBrain;
-
-	@Override
-	protected Brain.Profile<? extends AlienEggEntity> createBrainProfile() {
-		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-	}
-
-	@Override
-	protected Brain<? extends AlienEggEntity> deserializeBrain(Dynamic<?> dynamic) {
-		complexBrain = new AlienEggBrain(this);
-		return complexBrain.initialize(createBrainProfile().deserialize(dynamic));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Brain<AlienEggEntity> getBrain() {
-		return (Brain<AlienEggEntity>) super.getBrain();
-	}
-
-	@Override
-	protected void mobTick() {
-		world.getProfiler().push("alienEggBrain");
-		complexBrain.tick();
-		world.getProfiler().pop();
-		complexBrain.tickActivities();
-		super.mobTick();
 	}
 
 	@Override
@@ -343,7 +297,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", true));
 			return PlayState.CONTINUE;
 		}
-		
+
 		if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
@@ -360,7 +314,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 0f, this::predicate));
+		data.addAnimationController(new AnimationController<>(this, "controller", 5f, this::predicate));
 	}
 
 	@Override

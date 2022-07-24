@@ -53,7 +53,7 @@ public class EggmorphTargetTask extends Task<AdultAlienEntity> {
 				return;
 
 			if (alien.getBlockPos().getManhattanDistance(nearestWebbing) < 4) {
-				((Eggmorphable) target).setTicksUntilEggmorphed(Constants.EGGMORPH_DURATION);
+				((Eggmorphable) target).setTicksUntilEggmorphed(6000);
 				target.stopRiding();
 				target.setPosition(Vec3d.ofBottomCenter(nearestWebbing));
 

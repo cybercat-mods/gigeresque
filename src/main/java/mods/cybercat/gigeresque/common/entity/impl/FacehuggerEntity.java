@@ -1,24 +1,21 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.serialization.Dynamic;
-
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.brain.FacehuggerBrain;
-import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FacehugGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -27,17 +24,14 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -69,7 +63,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
-	private final SpiderNavigation landNavigation = new SpiderNavigation(this, world);
+	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, world);
 
@@ -78,6 +72,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+
+	public float ticksAttachedToHost = -1.0f;
+
+	private final AnimationFactory animationFactory = new AnimationFactory(this);
 
 	public static final TrackedData<Boolean> EGGSPAWN = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
@@ -111,15 +109,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
-	private static final List<SensorType<? extends Sensor<? super FacehuggerEntity>>> SENSOR_TYPES = List
-			.of(SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_HOST, SensorTypes.ALIEN_REPELLENT);
-
-	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-			MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS, MemoryModuleType.NEAREST_ATTACKABLE,
-			MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH, MemoryModuleType.VISIBLE_MOBS,
-			MemoryModuleType.WALK_TARGET);
-
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
@@ -142,10 +131,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	protected int getAcidDiameter() {
 		return 1;
 	}
-
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
-	private FacehuggerBrain complexBrain;
 
 	public boolean isInfertile() {
 		return dataTracker.get(IS_INFERTILE);
@@ -179,34 +164,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		dataTracker.set(JUMPING, isHissing);
 	}
 
-	public float ticksAttachedToHost = -1.0f;
-
-	@Override
-	protected Brain.Profile<? extends FacehuggerEntity> createBrainProfile() {
-		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-	}
-
-	@Override
-	protected Brain<? extends FacehuggerEntity> deserializeBrain(Dynamic<?> dynamic) {
-		complexBrain = new FacehuggerBrain(this);
-		return complexBrain.initialize(createBrainProfile().deserialize(dynamic));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Brain<FacehuggerEntity> getBrain() {
-		return (Brain<FacehuggerEntity>) super.getBrain();
-	}
-
-	@Override
-	protected void mobTick() {
-		world.getProfiler().push("facehuggerBrain");
-		complexBrain.tick();
-		world.getProfiler().pop();
-		complexBrain.tickActivities();
-		super.mobTick();
-	}
-
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
@@ -231,7 +188,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		if (this.world.isClient) {
-			complexBrain.stun(Constants.TPS * 5);
+			// complexBrain.stun(Constants.TPS * 5);
 		}
 		return super.updatePassengerForDismount(passenger);
 	}
@@ -429,6 +386,11 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	}
 
 	@Override
+	public boolean isNavigating() {
+		return false;
+	}
+
+	@Override
 	public boolean canBreatheInWater() {
 		return true;
 	}
@@ -458,10 +420,15 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	@Override
 	protected void initGoals() {
 		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, false, entity -> !(entity instanceof AlienEntity)
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
+				new ActiveTargetGoal<>(this, LivingEntity.class, true,
+						entity -> !(entity instanceof AlienEntity) && !((Host) entity).isBleeding()
+								|| !((Eggmorphable) entity).isEggmorphing()
+								|| !(entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+								&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
 		this.goalSelector.add(5, new FleeFireGoal<FacehuggerEntity>(this));
 		this.goalSelector.add(5, new FacehugGoal(this, 0.9D));
+		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F, 0));
+		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6D));
 	}
 
 	/*
