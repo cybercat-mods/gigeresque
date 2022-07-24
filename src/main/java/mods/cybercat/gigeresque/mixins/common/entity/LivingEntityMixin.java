@@ -58,6 +58,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	private static final TrackedData<Float> EGGMORPH_TICKS = DataTracker.registerData(LivingEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
 	public float ticksUntilImpregnation = -1.0f;
+	public float ticksUntilEggmorpth = -1.0f;
 	public boolean hasParasiteSpawned = false;
 	public boolean hasEggSpawned = false;
 
@@ -136,27 +137,22 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				setBleeding(false);
 			}
 
-			handleEggmorphingLogic();
+			if (isEggmorphing()) {
+				setTicksUntilEggmorphed(ticksUntilEggmorpth++);
+			} else {
+				// Reset eggmorphing counter if the entity is no longer eggmorphing at any
+				// point.
+				resetEggmorphing();
+			}
+			if (getTicksUntilEggmorphed() == 6000 && !this.isDead()) {
+				AlienEggEntity egg = new AlienEggEntity(Entities.EGG, world);
+				egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
+				world.spawnEntity(egg);
+				world.breakBlock(this.getBlockPos(), false);
+				hasEggSpawned = true;
+				damage(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
+			}
 			handleHostLogic();
-		}
-	}
-
-	private void handleEggmorphingLogic() {
-		if (isEggmorphing()) {
-			setTicksUntilEggmorphed(Math.max(
-					getTicksUntilEggmorphed() - GigeresqueConfig.getEggmorphTickMultiplier(), 0f));
-		} else {
-			// Reset eggmorphing counter if the entity is no longer eggmorphing at any
-			// point.
-			resetEggmorphing();
-		}
-
-		if (getTicksUntilEggmorphed() == 0L && !hasEggSpawned && !this.isDead()) {
-			AlienEggEntity egg = new AlienEggEntity(Entities.EGG, world);
-			egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
-			world.spawnEntity(egg);
-			this.hasEggSpawned = true;
-			this.damage(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
 		}
 	}
 
@@ -270,7 +266,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		Block pos = this.getBlockStateAtPos().getBlock();
 		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
 				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
-		return getTicksUntilEggmorphed() >= 0 && isCoveredInResin;
+		return isCoveredInResin;
 	}
 
 	@Override
