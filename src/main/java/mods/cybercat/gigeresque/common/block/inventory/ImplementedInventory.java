@@ -68,6 +68,7 @@ public interface ImplementedInventory extends Inventory {
 	
 	@Override
 	default void markDirty() {
+		
 	}
 
 	@Override

@@ -56,11 +56,12 @@ public class AlienChestBlock extends BlockWithEntity {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
-		if (!world.isClient) {
-			NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
-			if (screenHandlerFactory != null) {
-				player.openHandledScreen(screenHandlerFactory);
-			}
+		if (world.isClient) {
+			return ActionResult.SUCCESS;
+		}
+		NamedScreenHandlerFactory namedScreenHandlerFactory = this.createScreenHandlerFactory(state, world, pos);
+		if (namedScreenHandlerFactory != null) {
+			player.openHandledScreen(namedScreenHandlerFactory);
 		}
 		return ActionResult.SUCCESS;
 	}

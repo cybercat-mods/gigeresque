@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.block.entity;
 
 import java.util.SplittableRandom;
 
-import mods.cybercat.gigeresque.common.block.inventory.ImplementedInventory;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,16 +12,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,10 +29,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class AlienStorageEntity extends LootableContainerBlockEntity
-		implements ImplementedInventory, SidedInventory, NamedScreenHandlerFactory, IAnimatable {
+public class AlienStorageEntity extends LootableContainerBlockEntity implements IAnimatable {
 
-	private DefaultedList<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
+	private DefaultedList<ItemStack> items = DefaultedList.ofSize(36, ItemStack.EMPTY);
 	private final AnimationFactory factory = new AnimationFactory(this);
 	private boolean state;
 	SplittableRandom random = new SplittableRandom();
@@ -72,11 +68,6 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, pos, state);
 	}
 
-	@Override
-	public DefaultedList<ItemStack> getItems() {
-		return items;
-	}
-
 	public boolean isOpening() {
 		return state;
 	}
@@ -88,40 +79,24 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
-		setOpen(nbt.getBoolean("state"));
-		Inventories.readNbt(nbt, items);
-	}
-
-	@Override
-	public void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
-		nbt.putBoolean("state", isOpening());
-		Inventories.writeNbt(nbt, items);
-	}
-
-	@Override
-	public int[] getAvailableSlots(Direction var1) {
-		int[] result = new int[getItems().size()];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = i;
+		this.items = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+		if (!this.deserializeLootTable(nbt)) {
+			Inventories.readNbt(nbt, this.items);
 		}
-		return result;
+	}
+
+	@Override
+	protected void writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
+		if (!this.serializeLootTable(nbt)) {
+			Inventories.writeNbt(nbt, this.items);
+		}
 	}
 
 	public static void copyInventory(AlienStorageEntity from, AlienStorageEntity to) {
 		DefaultedList<ItemStack> defaultedList = from.getInvStackList();
 		from.setInvStackList(to.getInvStackList());
 		to.setInvStackList(defaultedList);
-	}
-
-	@Override
-	public boolean canInsert(int var1, ItemStack var2, Direction var3) {
-		return true;
-	}
-
-	@Override
-	public boolean canExtract(int var1, ItemStack var2, Direction var3) {
-		return true;
 	}
 
 	@Override
@@ -132,16 +107,6 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	@Override
 	public Text getDisplayName() {
 		return Text.translatable(getCachedState().getBlock().getTranslationKey());
-	}
-
-	@Override
-	protected DefaultedList<ItemStack> getInvStackList() {
-		return this.items;
-	}
-
-	@Override
-	protected void setInvStackList(DefaultedList<ItemStack> list) {
-		this.items = list;
 	}
 
 	@Override
@@ -174,10 +139,17 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	}
 
 	@Override
+	public boolean onSyncedBlockEvent(int type, int data) {
+		if (type == 1) {
+			return true;
+		}
+		return super.onSyncedBlockEvent(type, data);
+	}
+
+	@Override
 	public void onOpen(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			this.setOpen(true);
 		}
 	}
 
@@ -185,13 +157,42 @@ public class AlienStorageEntity extends LootableContainerBlockEntity
 	public void onClose(PlayerEntity player) {
 		if (!this.removed && !player.isSpectator()) {
 			this.stateManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
-			this.setOpen(false);
 		}
+	}
+
+	@Override
+	protected DefaultedList<ItemStack> getInvStackList() {
+		return this.items;
+	}
+
+	@Override
+	protected void setInvStackList(DefaultedList<ItemStack> list) {
+		this.items = list;
 	}
 
 	protected void onInvOpenOrClose(World world, BlockPos pos, BlockState state, int oldViewerCount,
 			int newViewerCount) {
 		Block block = state.getBlock();
 		world.addSyncedBlockEvent(pos, block, 1, newViewerCount);
+	}
+
+	public void onScheduledTick() {
+		if (!this.removed) {
+			this.stateManager.updateViewerCount(this.getWorld(), this.getPos(), this.getCachedState());
+		}
+	}
+
+	public static int getPlayersLookingInChestCount(BlockView world, BlockPos pos) {
+		BlockEntity blockEntity;
+		BlockState blockState = world.getBlockState(pos);
+		if (blockState.hasBlockEntity() && (blockEntity = world.getBlockEntity(pos)) instanceof AlienStorageEntity) {
+			return ((AlienStorageEntity) blockEntity).stateManager.getViewerCount();
+		}
+		return 0;
+	}
+
+	@Override
+	public int size() {
+		return 36;
 	}
 }
