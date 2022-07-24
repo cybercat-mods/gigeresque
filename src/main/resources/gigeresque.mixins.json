@@ -13,6 +13,7 @@
     "common.entity.PlayerEntityMixin",
     "common.entity.VillagerEntityMixin",
     "common.entity.WanderingTraderEntityMixin",
+    "common.entity.WardenEntityMixin",
     "common.entity.ai.MemoryModuleTypeInvoker",
     "common.entity.ai.SensorTypeInvoker"
   ],
