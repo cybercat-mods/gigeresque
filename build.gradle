@@ -35,7 +35,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19-pre3:3.1.0"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.0"
 	modImplementation ("com.terraformersmc:modmenu:4.0.0-beta.4")
 	
 }
@@ -102,6 +102,7 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
+            	//optionalDependency 'modmenu'
             	//optionalDependency 'dripsounds-fabric'
             	//optionalDependency 'sound-physics-remastered'
         	}
