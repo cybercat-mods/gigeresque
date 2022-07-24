@@ -2,10 +2,8 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import java.util.HashMap;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -30,7 +28,7 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
 		matrices.push();
 		renderedModel.animateModel(entity, limbAngle, limbDistance, tickDelta);
 		var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
-		var progress = 1 - ((Eggmorphable) entity).getTicksUntilEggmorphed() / ((float) Constants.EGGMORPH_DURATION);
+		var progress = 0.0F + (((Eggmorphable) entity).getTicksUntilEggmorphed() / 6000);
 		renderedModel.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
 		renderedModel.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, progress);
 		matrices.pop();
