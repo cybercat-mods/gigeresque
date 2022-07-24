@@ -5,12 +5,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -58,12 +58,12 @@ public class InGameOverlayRendererMixin {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void renderBlackFluidOverlay(MinecraftClient client, MatrixStack matrices) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, BLACK_FLUID_TEXTURE);
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		@SuppressWarnings("deprecation")
 		float f = client.player.getBrightnessAtEyes();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -76,7 +76,6 @@ public class InGameOverlayRendererMixin {
 		bufferBuilder.vertex(matrix4f, 1.0F, -1.0F, -0.5F).texture(0.0F + m, 4.0F + n).next();
 		bufferBuilder.vertex(matrix4f, 1.0F, 1.0F, -0.5F).texture(0.0F + m, 0.0F + n).next();
 		bufferBuilder.vertex(matrix4f, -1.0F, 1.0F, -0.5F).texture(4.0F + m, 0.0F + n).next();
-		bufferBuilder.end();
 		BufferRenderer.drawWithShader(bufferBuilder.end());
 		RenderSystem.disableBlend();
 	}
@@ -99,7 +98,6 @@ public class InGameOverlayRendererMixin {
 		bufferBuilder.vertex(matrix4f, 1.0F, -1.0F, -0.5F).texture(0.0F + m, 4.0F + n).next();
 		bufferBuilder.vertex(matrix4f, 1.0F, 1.0F, -0.5F).texture(0.0F + m, 0.0F + n).next();
 		bufferBuilder.vertex(matrix4f, -1.0F, 1.0F, -0.5F).texture(4.0F + m, 0.0F + n).next();
-		bufferBuilder.end();
 		BufferRenderer.drawWithShader(bufferBuilder.end());
 		RenderSystem.disableBlend();
 	}
