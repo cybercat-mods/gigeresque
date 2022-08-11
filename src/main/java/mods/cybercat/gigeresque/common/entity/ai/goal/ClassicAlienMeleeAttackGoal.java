@@ -2,8 +2,12 @@ package mods.cybercat.gigeresque.common.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
@@ -54,6 +58,24 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (this.path != null) {
 			return true;
 		}
+		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+			return false;
+		}
+		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+			return false;
+		}
+		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
+			return false;
+		}
+		if (livingEntity instanceof AlienEntity) {
+			return false;
+		}
+		if (((Host) livingEntity).isBleeding()) {
+			return false;
+		}
+		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
+			return false;
+		}
 		return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.squaredDistanceTo(livingEntity.getX(),
 				livingEntity.getY(), livingEntity.getZ());
 	}
@@ -77,6 +99,24 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			return !this.mob.getNavigation().isIdle();
 		}
 		if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
+			return false;
+		}
+		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+			return false;
+		}
+		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+			return false;
+		}
+		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
+			return false;
+		}
+		if (livingEntity instanceof AlienEntity) {
+			return false;
+		}
+		if (((Host) livingEntity).isBleeding()) {
+			return false;
+		}
+		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
 			return false;
 		}
 		return !(livingEntity instanceof PlayerEntity)

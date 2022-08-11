@@ -47,7 +47,7 @@ public class FacehugGoal extends Goal {
 		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
 			return false;
 		}
-		if ((livingEntity instanceof AlienEntity)) {
+		if (livingEntity instanceof AlienEntity) {
 			return false;
 		}
 		if (((Host) livingEntity).isBleeding()) {
@@ -97,8 +97,6 @@ public class FacehugGoal extends Goal {
 		if (livingEntity == null) {
 			return;
 		}
-		if (livingEntity instanceof AlienEntity)
-			return;
 		float q = 2.0F;
 		int k = MathHelper.floor(mob.getX() - (double) q - 1.0D);
 		int l = MathHelper.floor(mob.getX() + (double) q + 1.0D);

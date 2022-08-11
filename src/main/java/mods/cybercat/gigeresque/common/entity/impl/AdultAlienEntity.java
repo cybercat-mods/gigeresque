@@ -5,6 +5,7 @@ import static java.lang.Math.max;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -15,6 +16,8 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -309,8 +312,12 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.goalSelector.add(1, new SwimAroundGoal(this, 1.0D, 10));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F, 0));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !(entity instanceof AlienEntity || entity instanceof WardenEntity)));
+		this.targetSelector.add(2,
+				new ActiveTargetGoal<>(this, LivingEntity.class, true,
+						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 	}
 

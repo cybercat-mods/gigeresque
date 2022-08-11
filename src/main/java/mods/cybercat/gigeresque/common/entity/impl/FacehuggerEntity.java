@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -40,6 +41,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
@@ -260,8 +262,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		}
 
 		if (isInfertile()) {
-			this.clearGoalsAndTasks();
 			this.kill();
+			this.clearGoalsAndTasks();
 			return;
 		}
 		if (this.isEggSpawn() == true && this.age > 30) {
@@ -421,9 +423,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	protected void initGoals() {
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !(entity instanceof AlienEntity) && !((Host) entity).isBleeding()
-								|| !((Eggmorphable) entity).isEggmorphing()
-								|| !(entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 								&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
 		this.goalSelector.add(5, new FleeFireGoal<FacehuggerEntity>(this));
 		this.goalSelector.add(5, new FacehugGoal(this, 0.9D));
