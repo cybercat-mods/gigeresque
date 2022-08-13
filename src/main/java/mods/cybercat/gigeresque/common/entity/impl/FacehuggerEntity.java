@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import org.jetbrains.annotations.Nullable;
-
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
@@ -323,12 +321,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	@Override
 	public double squaredAttackRange(LivingEntity target) {
 		return 0.0;
-	}
-
-	@Nullable
-	@Override
-	protected SoundEvent getAmbientSound() {
-		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_AMBIENT;
 	}
 
 	@Override

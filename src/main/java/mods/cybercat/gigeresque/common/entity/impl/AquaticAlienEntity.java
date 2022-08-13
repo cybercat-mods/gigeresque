@@ -263,7 +263,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (this.isSubmergedInWater()) {
+		if (this.isSubmergedInWater() && this.touchingWater) {
 			if (this.isAttacking() && velocityLength > 0.0) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
 				return PlayState.CONTINUE;
@@ -285,7 +285,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("land_idle", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land2", true));
 				return PlayState.CONTINUE;
 			}
 		}
