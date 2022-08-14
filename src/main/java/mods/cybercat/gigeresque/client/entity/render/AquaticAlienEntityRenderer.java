@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.AquaticAlienEntityModel;
-import mods.cybercat.gigeresque.client.entity.render.feature.AquaticAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,7 +14,6 @@ public class AquaticAlienEntityRenderer extends GeoEntityRenderer<AquaticAlienEn
 	public AquaticAlienEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new AquaticAlienEntityModel());
 		this.shadowRadius = 0.5f;
-		this.addLayer(new AquaticAlienFeatureRenderer(this));
 	}
 
 	@Override
@@ -25,7 +23,7 @@ public class AquaticAlienEntityRenderer extends GeoEntityRenderer<AquaticAlienEn
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
-	
+
 	@Override
 	protected float getDeathMaxRotation(AquaticAlienEntity entityLivingBaseIn) {
 		return 0;
