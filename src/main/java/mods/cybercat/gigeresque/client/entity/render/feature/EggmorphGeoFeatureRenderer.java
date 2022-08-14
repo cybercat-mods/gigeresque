@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,7 +24,7 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & IAnimatable> ex
 	public static <T extends Entity, M extends GeoModel> void renderEggmorphedModel(IGeoRenderer<T> entityRenderer,
 			M renderedModel, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers,
 			int light, T entity, float tickDelta) {
-		var progress = 1 - ((Eggmorphable) entity).getTicksUntilEggmorphed() / ((float) Constants.EGGMORPH_DURATION);
+		var progress = 0.0F + (((Eggmorphable) entity).getTicksUntilEggmorphed() / 6000);
 		var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(texture).renderLayer;
 		entityRenderer.render(renderedModel, entity, tickDelta, renderLayer, matrices, vertexConsumers,
 				vertexConsumers.getBuffer(renderLayer), light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, progress);
