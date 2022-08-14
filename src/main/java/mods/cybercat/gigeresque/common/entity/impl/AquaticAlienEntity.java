@@ -270,9 +270,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 			} else if (!this.isAttacking() && velocityLength > 0.0) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
 				return PlayState.CONTINUE;
-			} else if (isSearching && !this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
-				return PlayState.CONTINUE;
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 				return PlayState.CONTINUE;
@@ -283,6 +280,9 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 				return PlayState.CONTINUE;
 			} else if (!this.isAttacking() && velocityLength > 0.0) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+				return PlayState.CONTINUE;
+			} else if (isSearching && !this.isAttacking()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land2", true));
