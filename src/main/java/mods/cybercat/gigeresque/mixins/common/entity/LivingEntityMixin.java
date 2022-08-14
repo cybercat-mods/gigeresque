@@ -131,7 +131,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 		if (!this.world.isClient) {
 			if (((((Object) this)instanceof PlayerEntity playerEntity && playerEntity.isCreative())
-					|| this.isSpectator() || world.getDifficulty() == Difficulty.PEACEFUL)) {
+					|| this.isSpectator() || world.getDifficulty() == Difficulty.PEACEFUL)
+					|| !(((Object) this) instanceof AlienEntity)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
@@ -266,7 +267,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		Block pos = this.getBlockStateAtPos().getBlock();
 		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
 				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
-		return isCoveredInResin;
+		boolean notAlien = !(((Object) this) instanceof AlienEntity);
+		return notAlien && isCoveredInResin;
 	}
 
 	@Override
