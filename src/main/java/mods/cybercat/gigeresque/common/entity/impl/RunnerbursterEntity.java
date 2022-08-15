@@ -28,7 +28,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 
 	public static final TrackedData<Boolean> SPAWN = DataTracker.registerData(RunnerbursterEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-	
+
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, World world) {
 		super(type, world);
 	}
@@ -70,13 +70,13 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	public void setSpawnState(boolean state) {
 		this.dataTracker.set(SPAWN, Boolean.valueOf(state));
 	}
-	
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(SPAWN, true);
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -130,11 +130,15 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
 			return PlayState.CONTINUE;
 		}
+		if (this.dataTracker.get(EAT) == true) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
+			return PlayState.CONTINUE;
+		}
 		if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.age < 25 && !this.isDead()) {
+		if (this.dataTracker.get(SPAWN) == true && !this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
 			return PlayState.CONTINUE;
 		}

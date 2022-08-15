@@ -34,7 +34,7 @@ public class ConsumeFoodItemTask extends Task<ChestbursterEntity> {
 		var foodItemEntity = chestburster.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)
 				.orElse(null);
 		if (foodItemEntity == null) {
-			chestburster.setEatingStatus(true);
+			chestburster.setEatingStatus(false);
 			return;
 		}
 		if (foodItemEntity.distanceTo(chestburster) <= getDesiredDistanceToTarget()) {
@@ -46,14 +46,14 @@ public class ConsumeFoodItemTask extends Task<ChestbursterEntity> {
 				int amountToEat = min(foodItemEntity.getStack().getCount(), growthLeft);
 
 				foodItemEntity.getStack().decrement(amountToEat);
-				chestburster.setEatingStatus(false);
+				chestburster.setEatingStatus(true);
 				chestburster.playSound(chestburster.getEatSound(foodItemEntity.getStack()), 1.0f, 1.0f);
 
 				chestburster.grow(chestburster, amountToEat * Constants.TPM * 2.0f);
 				chestburster.getBrain().forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
 			}
 		} else {
-			chestburster.setEatingStatus(true);
+			chestburster.setEatingStatus(false);
 			startMovingToTarget(chestburster, foodItemEntity);
 		}
 	}

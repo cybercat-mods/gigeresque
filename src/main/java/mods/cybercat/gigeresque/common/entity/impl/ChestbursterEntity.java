@@ -43,6 +43,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
 
+	private static final TrackedData<Float> BLOOD = DataTracker.registerData(ChestbursterEntity.class,
+			TrackedDataHandlerRegistry.FLOAT);
+
 	private static final TrackedData<Float> GROWTH = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
 
@@ -80,13 +83,11 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3);
 	}
 
-	@Override
-	public float getGrowth() {
+	public float getBlood() {
 		return dataTracker.get(GROWTH);
 	}
 
-	@Override
-	public void setGrowth(float growth) {
+	public void setBlood(float growth) {
 		dataTracker.set(GROWTH, growth);
 	}
 
@@ -119,10 +120,19 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		this.dataTracker.set(EAT, Boolean.valueOf(birth));
 	}
 
+	public float getGrowth() {
+		return dataTracker.get(BLOOD);
+	}
+
+	public void setGrowth(float growth) {
+		dataTracker.set(BLOOD, growth);
+	}
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
+		dataTracker.startTracking(BLOOD, 0.0f);
 		dataTracker.startTracking(BIRTHED, false);
 		dataTracker.startTracking(EAT, false);
 	}
@@ -235,13 +245,13 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			return PlayState.CONTINUE;
 		}
 		if (this.getTarget() != null && this.tryAttack(getTarget())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
 		}
-//		if (this.dataTracker.get(EAT) == true) {
-//			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
-//			return PlayState.CONTINUE;
-//		}
+		if (this.dataTracker.get(EAT) == true) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
+			return PlayState.CONTINUE;
+		}
 		if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
