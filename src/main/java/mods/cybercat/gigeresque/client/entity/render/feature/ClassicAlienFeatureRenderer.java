@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;
@@ -32,7 +31,7 @@ public class ClassicAlienFeatureRenderer extends GeoLayerRenderer<ClassicAlienEn
 		entityRenderer.render(getEntityModel().getModel(EntityModels.ALIEN), alienEntity, partialTicks,
 				RenderLayer.getEntityTranslucent(EntityTextures.ALIEN_YOUNG), matrixStackIn, bufferIn,
 				bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.ALIEN_YOUNG)), packedLightIn, uv, 1.0f,
-				1.0f, 1.0f, ((alienEntity.getMaxGrowth() - alienEntity.getGrowth()) / alienEntity.getMaxGrowth()));
+				1.0f, 1.0f, ((1200 - alienEntity.getGrowth()) / 1200));
 	}
 
 	@Override
