@@ -49,6 +49,9 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	public static final TrackedData<Boolean> BIRTHED = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
+	public static final TrackedData<Boolean> EAT = DataTracker.registerData(ChestbursterEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 	protected String hostId = null;
 	private ChestbursterBrain complexBrain;
@@ -108,11 +111,20 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		this.dataTracker.set(BIRTHED, Boolean.valueOf(birth));
 	}
 
+	public boolean isEating() {
+		return this.dataTracker.get(EAT);
+	}
+
+	public void setEatingStatus(boolean birth) {
+		this.dataTracker.set(EAT, Boolean.valueOf(birth));
+	}
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
 		dataTracker.startTracking(BIRTHED, false);
+		dataTracker.startTracking(EAT, false);
 	}
 
 	@Override
@@ -226,6 +238,10 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
 			return PlayState.CONTINUE;
 		}
+//		if (this.dataTracker.get(EAT) == true) {
+//			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
+//			return PlayState.CONTINUE;
+//		}
 		if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;

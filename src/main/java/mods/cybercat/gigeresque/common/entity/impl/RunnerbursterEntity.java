@@ -9,6 +9,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -22,6 +25,10 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
+
+	public static final TrackedData<Boolean> SPAWN = DataTracker.registerData(RunnerbursterEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, World world) {
 		super(type, world);
 	}
@@ -54,6 +61,28 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	@Override
 	public float getMaxGrowth() {
 		return Constants.TPD / 2.0f;
+	}
+
+	public boolean isSpawn() {
+		return this.dataTracker.get(SPAWN).booleanValue();
+	}
+
+	public void setSpawnState(boolean state) {
+		this.dataTracker.set(SPAWN, Boolean.valueOf(state));
+	}
+	
+	@Override
+	public void initDataTracker() {
+		super.initDataTracker();
+		dataTracker.startTracking(SPAWN, true);
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.isSpawn() == true && this.age > 30) {
+			this.setSpawnState(false);
+		}
 	}
 
 	@Override

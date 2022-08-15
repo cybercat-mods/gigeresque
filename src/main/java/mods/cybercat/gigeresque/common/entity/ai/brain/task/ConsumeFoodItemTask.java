@@ -3,11 +3,11 @@ package mods.cybercat.gigeresque.common.entity.ai.brain.task;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 
+import com.google.common.collect.ImmutableMap;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
-import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -33,8 +33,10 @@ public class ConsumeFoodItemTask extends Task<ChestbursterEntity> {
 	protected void run(ServerWorld serverWorld, ChestbursterEntity chestburster, long l) {
 		var foodItemEntity = chestburster.getBrain().getOptionalMemory(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM)
 				.orElse(null);
-		if (foodItemEntity == null)
+		if (foodItemEntity == null) {
+			chestburster.setEatingStatus(true);
 			return;
+		}
 		if (foodItemEntity.distanceTo(chestburster) <= getDesiredDistanceToTarget()) {
 			var world = chestburster.world;
 
@@ -44,12 +46,14 @@ public class ConsumeFoodItemTask extends Task<ChestbursterEntity> {
 				int amountToEat = min(foodItemEntity.getStack().getCount(), growthLeft);
 
 				foodItemEntity.getStack().decrement(amountToEat);
+				chestburster.setEatingStatus(false);
 				chestburster.playSound(chestburster.getEatSound(foodItemEntity.getStack()), 1.0f, 1.0f);
 
 				chestburster.grow(chestburster, amountToEat * Constants.TPM * 2.0f);
 				chestburster.getBrain().forget(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
 			}
 		} else {
+			chestburster.setEatingStatus(true);
 			startMovingToTarget(chestburster, foodItemEntity);
 		}
 	}

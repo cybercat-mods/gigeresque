@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity;
 
 import static java.lang.Math.min;
 
+import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
@@ -30,6 +31,8 @@ public interface Growable {
 			if (newEntity == null)
 				return;
 			newEntity.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
+			if (newEntity instanceof RunnerbursterEntity)
+				((RunnerbursterEntity)newEntity).setSpawnState(false);
 			world.spawnEntity(newEntity);
 			entity.remove(Entity.RemovalReason.DISCARDED);
 		}
