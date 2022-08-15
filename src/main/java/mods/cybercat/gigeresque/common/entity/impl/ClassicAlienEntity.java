@@ -294,7 +294,10 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		} else if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
-		} else {
+		} else if (this.hasPassengers()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", true));
+			return PlayState.CONTINUE;
+		}  else {
 			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
