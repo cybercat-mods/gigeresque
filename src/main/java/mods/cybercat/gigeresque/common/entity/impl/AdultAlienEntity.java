@@ -292,7 +292,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public SoundEvent getAmbientSound() {
-		return GigSounds.ALIEN_AMBIENT;
+		return this.isHissing() ? GigSounds.ALIEN_AMBIENT : null;
 	}
 
 	@Override
@@ -325,9 +325,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public void playAmbientSound() {
 		if (!world.isClient) {
 			setIsHissing(true);
-			hissingCooldown = 80L;
+			hissingCooldown = 160L;
 		}
-		super.playAmbientSound();
+		if (hissingCooldown <= 160L)
+			super.playAmbientSound();
 	}
 
 	@Override
