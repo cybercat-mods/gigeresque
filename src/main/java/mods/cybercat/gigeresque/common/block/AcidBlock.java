@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.MathUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -178,7 +178,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
 
-				if (canGrief && !world.getBlockState(blockToEat).isIn(GigBlockTags.ACID_RESISTANT)) {
+				if (canGrief && !world.getBlockState(blockToEat).isIn(GigTags.ACID_RESISTANT)) {
 					world.setBlockState(blockToEat, Blocks.AIR.getDefaultState());
 					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH,
 							SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,

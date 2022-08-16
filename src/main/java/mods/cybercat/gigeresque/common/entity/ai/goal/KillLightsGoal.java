@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.entity.ai.goal;
 
 import org.jetbrains.annotations.Nullable;
 
-import mods.cybercat.gigeresque.common.block.tag.GigBlockTags;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.util.math.BlockPos;
@@ -68,12 +68,12 @@ public class KillLightsGoal extends MoveToTargetPosGoal {
 	private BlockPos tweakToProperPos(BlockPos pos, BlockView world) {
 		@SuppressWarnings("unused")
 		BlockPos[] blockPoss;
-		if (world.getBlockState(pos).isIn(GigBlockTags.DESTRUCTIBLE_LIGHT)) {
+		if (world.getBlockState(pos).isIn(GigTags.DESTRUCTIBLE_LIGHT)) {
 			return pos;
 		}
 		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.west(), pos.east(), pos.north(),
 				pos.south(), pos.down().down() }) {
-			if (!world.getBlockState(blockPos).isIn(GigBlockTags.DESTRUCTIBLE_LIGHT))
+			if (!world.getBlockState(blockPos).isIn(GigTags.DESTRUCTIBLE_LIGHT))
 				continue;
 			return blockPos;
 		}
@@ -82,7 +82,7 @@ public class KillLightsGoal extends MoveToTargetPosGoal {
 
 	@Override
 	protected boolean isTargetPos(WorldView world, BlockPos pos) {
-		return world.getBlockState(pos).isIn(GigBlockTags.DESTRUCTIBLE_LIGHT)
+		return world.getBlockState(pos).isIn(GigTags.DESTRUCTIBLE_LIGHT)
 				&& world.getBlockState(pos.up()).canPathfindThrough(world, pos, NavigationType.LAND);
 	}
 }
