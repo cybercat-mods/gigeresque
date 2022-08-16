@@ -52,9 +52,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public class ClassicAlienEntity extends AdultAlienEntity {
 
 	private AdultAlienBrain complexBrain;
-	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List.of(
-			SensorTypes.NEAREST_ALIEN_WEBBING, SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.NEAREST_ALIEN_TARGET,
-			SensorTypes.ALIEN_REPELLENT, SensorTypes.DESTRUCTIBLE_LIGHT);
+	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List
+			.of(SensorTypes.NEAREST_ALIEN_WEBBING);
 
 	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
 			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
@@ -297,7 +296,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		} else if (this.hasPassengers()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", true));
 			return PlayState.CONTINUE;
-		}  else {
+		} else {
 			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
