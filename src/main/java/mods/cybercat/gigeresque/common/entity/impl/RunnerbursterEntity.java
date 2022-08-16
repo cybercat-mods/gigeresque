@@ -1,17 +1,26 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -109,6 +118,19 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 		}
 
 		return (LivingEntity) entity;
+	}
+
+	@Override
+	protected void initGoals() {
+		super.initGoals();
+		this.goalSelector.add(2, new MeleeAttackGoal(this, 1.35, false));
+		this.targetSelector.add(2,
+				new ActiveTargetGoal<>(this, LivingEntity.class, true,
+						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| (entity instanceof HostileEntity) || ((Eggmorphable) entity).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
 	}
 
 	/*

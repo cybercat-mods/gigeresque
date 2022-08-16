@@ -1,35 +1,26 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import java.util.List;
-
-import com.mojang.serialization.Dynamic;
+import java.util.function.Predicate;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
-import mods.cybercat.gigeresque.common.entity.ai.brain.ChestbursterBrain;
-import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.EatFoodGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.EscapeDangerGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -54,21 +45,13 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	public static final TrackedData<Boolean> EAT = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	public static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = item -> {
+		ItemStack itemStack = item.getStack();
+		return itemStack.isIn(GigTags.BUSTER_FOOD) && item.isAlive() && !item.cannotPickup();
+	};
 
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 	protected String hostId = null;
-	private ChestbursterBrain complexBrain;
-
-	private static final List<SensorType<? extends Sensor<? super ChestbursterEntity>>> SENSOR_TYPES = List.of(
-			SensorType.NEAREST_LIVING_ENTITIES, SensorTypes.ALIEN_REPELLENT, SensorTypes.NEAREST_FOOD_ITEM,
-			SensorTypes.NEAREST_LARGER_THREAT, SensorTypes.NEAREST_SMALLER_TARGET);
-
-	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.AVOID_TARGET,
-			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.LOOK_TARGET, MemoryModuleType.MOBS,
-			MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
-			MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH, MemoryModuleType.VISIBLE_MOBS,
-			MemoryModuleType.WALK_TARGET);
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, World world) {
 		super(type, world);
@@ -138,37 +121,11 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	}
 
 	@Override
-	protected Brain.Profile<? extends ChestbursterEntity> createBrainProfile() {
-		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-	}
-
-	@Override
-	protected Brain<? extends ChestbursterEntity> deserializeBrain(Dynamic<?> dynamic) {
-		complexBrain = new ChestbursterBrain(this);
-		return complexBrain.initialize(createBrainProfile().deserialize(dynamic));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Brain<ChestbursterEntity> getBrain() {
-		return (Brain<ChestbursterEntity>) super.getBrain();
-	}
-
-	@Override
 	public void tick() {
 		super.tick();
 		if (!world.isClient && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
-	}
-
-	@Override
-	protected void mobTick() {
-		world.getProfiler().push("chestbursterBrain");
-		complexBrain.tick();
-		world.getProfiler().pop();
-		complexBrain.tickActivities();
-		super.mobTick();
 	}
 
 	@Override
@@ -193,14 +150,10 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	@Override
 	protected void initGoals() {
+		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6D));
 		this.goalSelector.add(5, new FleeFireGoal<ChestbursterEntity>(this));
-		this.goalSelector.add(2, new MeleeAttackGoal(this, 1.35, false));
-		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
+		this.goalSelector.add(5, new EatFoodGoal(this));
+        this.goalSelector.add(1, new EscapeDangerGoal(this, 2.0));
 	}
 
 	/*
@@ -242,10 +195,6 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		}
 		if (velocityLength > 0.0 && this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.getTarget() != null && this.tryAttack(getTarget())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(EAT) == true) {
