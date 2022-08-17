@@ -1,12 +1,16 @@
 package mods.cybercat.gigeresque.common.entity.ai.goal;
 
 import java.util.EnumSet;
+import java.util.SplittableRandom;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -26,6 +30,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	private int updateCountdownTicks;
 	private int cooldown;
 	private long lastUpdateTime;
+	public static final Predicate<BlockState> NEST = state -> state.isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
 
 	public ClassicAlienMeleeAttackGoal(ClassicAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
 		this.mob = mob;
@@ -45,7 +50,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
-		if (((Host)livingEntity).hasParasite()) {
+		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (mob.hasPassengers()) {
@@ -86,7 +91,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
-		if (((Host)livingEntity).hasParasite()) {
+		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
@@ -181,9 +186,18 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	protected void attack(LivingEntity target, double squaredDistance) {
 		double d = this.getSquaredMaxAttackDistance(target);
 		if (squaredDistance <= d && this.cooldown <= 0) {
-			this.resetCooldown();
-			this.mob.swingHand(Hand.MAIN_HAND);
-			this.mob.tryAttack(target);
+			Stream<BlockState> list = this.mob.world
+					.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(8.0, 8.0, 8.0));
+			SplittableRandom random = new SplittableRandom();
+			int randomPhase = random.nextInt(0, 100);
+			if (list.anyMatch(NEST) && randomPhase <= 75) {
+				this.mob.grabTarget(target);
+				this.resetCooldown();
+			} else {
+				this.mob.tryAttack(target);
+				this.resetCooldown();
+				this.mob.swingHand(Hand.MAIN_HAND);
+			}
 		}
 	}
 

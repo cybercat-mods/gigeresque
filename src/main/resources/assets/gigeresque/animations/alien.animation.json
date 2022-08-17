@@ -6462,6 +6462,11 @@
 					"rotation": {
 						"vector": [-12.67485, -17.00191, 36.97987]
 					}
+				},
+				"body": {
+					"position": {
+						"vector": [0, 0, 27]
+					}
 				}
 			}
 		},
@@ -9746,26 +9751,26 @@
 				"body": {
 					"position": {
 						"0.0": {
-							"vector": [0, 0, 0]
+							"vector": [0, 0, 27]
 						},
 						"0.12": {
-							"vector": [0, 1, -2],
+							"vector": [0, 1, 25],
 							"easing": "linear"
 						},
 						"0.28": {
-							"vector": [0, 0, -4],
+							"vector": [0, 0, 23],
 							"easing": "linear"
 						},
 						"3.36": {
-							"vector": [0, 0, -4],
+							"vector": [0, 0, 23],
 							"easing": "linear"
 						},
 						"3.6": {
-							"vector": [0, 1, -2],
+							"vector": [0, 1, 25],
 							"easing": "linear"
 						},
 						"3.84": {
-							"vector": [0, 0, 0]
+							"vector": [0, 0, 27]
 						}
 					}
 				},

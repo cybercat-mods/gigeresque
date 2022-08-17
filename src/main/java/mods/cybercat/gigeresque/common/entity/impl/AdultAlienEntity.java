@@ -30,7 +30,6 @@ import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.SwimAroundGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
@@ -41,7 +40,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.WardenEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -64,14 +62,16 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			TrackedDataHandlerRegistry.BOOLEAN);
 	protected static final TrackedData<Boolean> IS_BREAKING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-
+	protected static final TrackedData<Boolean> IS_EXECUTION = DataTracker.registerData(AdultAlienEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
-
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final LookControl landLookControl = new LookControl(this);
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	private long hissingCooldown = 0L;
+	private int holdingCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -83,12 +83,20 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
 	}
 
+	public boolean isExecuting() {
+		return dataTracker.get(IS_EXECUTION);
+	}
+
+	public void setIsExecuting(boolean isExecuting) {
+		dataTracker.set(IS_EXECUTION, isExecuting);
+	}
+
 	public boolean isBreaking() {
 		return dataTracker.get(IS_BREAKING);
 	}
 
-	public void setIsBreaking(boolean isHissing) {
-		dataTracker.set(IS_BREAKING, isHissing);
+	public void setIsBreaking(boolean isBreaking) {
+		dataTracker.set(IS_BREAKING, isBreaking);
 	}
 
 	public boolean isHissing() {
@@ -106,8 +114,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public void setIsCrawling(boolean isHissing) {
 		dataTracker.set(IS_CLIMBING, isHissing);
 	}
-
-	private long hissingCooldown = 0L;
 
 	public float getGrowth() {
 		return dataTracker.get(GROWTH);
@@ -152,6 +158,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		dataTracker.startTracking(IS_HISSING, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
 		dataTracker.startTracking(IS_BREAKING, false);
+		dataTracker.startTracking(IS_EXECUTION, false);
 	}
 
 	@Override
@@ -161,6 +168,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		nbt.putBoolean("isHissing", isHissing());
 		nbt.putBoolean("isCrawling", isCrawling());
 		nbt.putBoolean("isBreaking", isBreaking());
+		nbt.putBoolean("isExecuting", isExecuting());
 	}
 
 	@Override
@@ -176,7 +184,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			setIsCrawling(nbt.getBoolean("isCrawling"));
 		}
 		if (nbt.contains("isBreaking")) {
-			setIsCrawling(nbt.getBoolean("isBreaking"));
+			setIsBreaking(nbt.getBoolean("isBreaking"));
+		}
+		if (nbt.contains("isExecuting")) {
+			setIsExecuting(nbt.getBoolean("isExecuting"));
 		}
 	}
 
@@ -207,6 +218,22 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		if (!world.isClient && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
+		}
+		if (!world.isClient && this.isAlive() && this.hasPassengers())
+			holdingCounter++;
+
+		if (holdingCounter == 400 && this.hasPassengers()) {
+			this.setIsExecuting(true);
+		}
+
+		if (holdingCounter == 425 && this.hasPassengers()) {
+			this.getFirstPassenger().kill();
+			this.setIsExecuting(false);
+			holdingCounter = 0;
+		}
+
+		if (holdingCounter == 0) {
+			this.setIsExecuting(false);
 		}
 
 		// Hissing Logic
@@ -310,7 +337,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.goalSelector.add(5, new FleeFireGoal<AdultAlienEntity>(this));
 		this.goalSelector.add(5, new KillLightsGoal(this));
 		this.goalSelector.add(1, new SwimAroundGoal(this, 1.0D, 10));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F, 0));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
@@ -335,7 +361,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public EntityDimensions getDimensions(EntityPose pose) {
 		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing()
 				? EntityDimensions.changing(1.0f, 1.0f)
-				: super.getDimensions(pose);
+				: this.hasPassengers() ? EntityDimensions.changing(5.0f, 2.45f) : super.getDimensions(pose);
 	}
 
 	@Override

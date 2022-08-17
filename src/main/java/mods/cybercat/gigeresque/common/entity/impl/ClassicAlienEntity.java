@@ -36,8 +36,11 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -266,6 +269,30 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	protected void initGoals() {
 		super.initGoals();
 		this.goalSelector.add(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
+		// this.goalSelector.add(2, new FindNestGoal(this));
+	}
+
+	public void grabTarget(Entity entity) {
+		if (entity == this.getTarget() && !entity.hasPassenger(this)) {
+			entity.startRiding(this, true);
+			if (entity instanceof ServerPlayerEntity) {
+				((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
+			}
+		}
+	}
+
+	@Override
+	public void updatePassengerPosition(Entity passenger) {
+		super.updatePassengerPosition(passenger);
+		if (passenger instanceof MobEntity) {
+			MobEntity mobEntity = (MobEntity) passenger;
+			this.bodyYaw = mobEntity.bodyYaw;
+		}
+		passenger.setPosition(this.getX(), this.getY() + 0.5, this.getZ());
+		passenger.speed = 0;
+		if (passenger instanceof LivingEntity) {
+			((LivingEntity) passenger).bodyYaw = this.bodyYaw;
+		}
 	}
 
 	/*
@@ -275,7 +302,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 
-		if (velocityLength > 0.0 && !this.isTouchingWater() && !this.isCrawling()) {
+		if (velocityLength >= 0.000000001 && !this.isTouchingWater() && !this.isCrawling()) {
 			if (this.isAttacking()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
@@ -287,14 +314,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				event.getController().setAnimationSpeed(1);
 				return PlayState.CONTINUE;
 			}
-		} else if (this.isCrawling() && event.isMoving()) {
+		} else if (this.isCrawling() && event.isMoving() && !this.hasPassengers()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 			return PlayState.CONTINUE;
 		} else if (this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
-			return PlayState.CONTINUE;
-		} else if (this.hasPassengers()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", true));
 			return PlayState.CONTINUE;
 		} else {
 			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
@@ -302,7 +326,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				return PlayState.CONTINUE;
 			}
 			if (this.submergedInWater) {
-				if (this.isAttacking()) {
+				if (this.isAttacking() && !this.hasPassengers()) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
 					return PlayState.CONTINUE;
 				} else {
@@ -317,13 +341,22 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
-		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
+		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.hasPassengers()
+				&& this.dataTracker.get(IS_EXECUTION) == false) {
 			event.getController().setAnimation(new AnimationBuilder()
 					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(IS_BREAKING) == true) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.hasPassengers() && this.dataTracker.get(IS_EXECUTION) == false) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", true));
+			return PlayState.CONTINUE;
+		}
+		if (this.hasPassengers() && this.dataTracker.get(IS_EXECUTION) == true) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution", true));
 			return PlayState.CONTINUE;
 		}
 

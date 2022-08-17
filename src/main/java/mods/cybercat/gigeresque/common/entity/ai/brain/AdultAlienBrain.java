@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.ai.brain;
 import java.util.List;
 
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.BuildNestTask;
-import mods.cybercat.gigeresque.common.entity.ai.brain.task.EggmorphTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.FindNestingGroundTask;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
@@ -20,7 +19,6 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 		tasks.add(new StayAboveWaterTask(0.8f));
 		tasks.add(new FindNestingGroundTask(2.0));
 		tasks.add(new BuildNestTask());
-		tasks.add(new EggmorphTargetTask(3.0));
 	}
 
 	@Override
