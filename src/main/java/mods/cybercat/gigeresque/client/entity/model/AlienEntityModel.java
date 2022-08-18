@@ -30,16 +30,17 @@ public class AlienEntityModel extends AnimatedTickingGeoModel<ClassicAlienEntity
 		return EntityAnimations.ALIEN;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void setLivingAnimations(ClassicAlienEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		var neck = getAnimationProcessor().getBone("neck");
-		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
-		if (extraDataList.isEmpty())
-			return;
-		var extraData = extraDataList.get(0);
-		neck.setRotationY(extraData.netHeadYaw * (((float) Math.PI) / 340f));
-	}
+//	@SuppressWarnings({ "unchecked", "rawtypes" })
+//	@Override
+//	public void setLivingAnimations(ClassicAlienEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
+//		super.setLivingAnimations(entity, uniqueID, customPredicate);
+//		var neck = getAnimationProcessor().getBone("neck");
+//		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
+//		if (extraDataList.isEmpty())
+//			return;
+//		var extraData = extraDataList.get(0);
+//		if (entity.isExecuting() == false)
+//		neck.setRotationY(extraData.netHeadYaw * (((float) Math.PI) / 340f));
+//	}
 
 }
