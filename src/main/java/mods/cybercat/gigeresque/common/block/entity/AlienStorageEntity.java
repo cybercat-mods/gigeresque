@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import java.util.SplittableRandom;
-
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,11 +18,9 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -33,25 +30,21 @@ public class AlienStorageEntity extends LootableContainerBlockEntity implements 
 
 	private DefaultedList<ItemStack> items = DefaultedList.ofSize(36, ItemStack.EMPTY);
 	private final AnimationFactory factory = new AnimationFactory(this);
-	private boolean state;
-	SplittableRandom random = new SplittableRandom();
-	int randomPhase = random.nextInt(0, 50);
 	private final ViewerCountManager stateManager = new ViewerCountManager() {
 
 		@Override
 		protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.this.setOpen(true);
+			AlienStorageEntity.this.setOpen(state, true);
 		}
 
 		@Override
 		protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.this.setOpen(false);
+			AlienStorageEntity.this.setOpen(state, false);
 		}
 
 		@Override
 		protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount,
 				int newViewerCount) {
-			AlienStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
 		@Override
@@ -68,12 +61,9 @@ public class AlienStorageEntity extends LootableContainerBlockEntity implements 
 		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, pos, state);
 	}
 
-	public boolean isOpening() {
-		return state;
-	}
-
-	public void setOpen(boolean state) {
-		this.state = state;
+	void setOpen(BlockState state, boolean open) {
+		this.world.setBlockState(this.getPos(), (BlockState) state.with(AlienSarcophagusBlock.OPEN, open),
+				Block.NOTIFY_ALL);
 	}
 
 	@Override
@@ -93,57 +83,29 @@ public class AlienStorageEntity extends LootableContainerBlockEntity implements 
 		}
 	}
 
-	public static void copyInventory(AlienStorageEntity from, AlienStorageEntity to) {
-		DefaultedList<ItemStack> defaultedList = from.getInvStackList();
-		from.setInvStackList(to.getInvStackList());
-		to.setInvStackList(defaultedList);
+	@Override
+	public int size() {
+		return 36;
+	}
+
+	@Override
+	protected DefaultedList<ItemStack> getInvStackList() {
+		return this.items;
+	}
+
+	@Override
+	protected void setInvStackList(DefaultedList<ItemStack> list) {
+		this.items = list;
+	}
+
+	@Override
+	protected Text getContainerName() {
+		return Text.translatable("container.barrel");
 	}
 
 	@Override
 	protected ScreenHandler createScreenHandler(int syncId, PlayerInventory inventory) {
 		return GenericContainerScreenHandler.createGeneric9x4(syncId, inventory);
-	}
-
-	@Override
-	public Text getDisplayName() {
-		return Text.translatable(getCachedState().getBlock().getTranslationKey());
-	}
-
-	@Override
-	protected Text getContainerName() {
-		return Text.translatable("container.chest");
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<AlienStorageEntity>(this, "controller", 0, this::predicate));
-	}
-
-	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (((AlienStorageEntity) event.getAnimatable()).isOpening()) {
-			if (randomPhase > 25) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("open2", false).addAnimation("open_loop"));
-			} else {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("open", false).addAnimation("open_loop"));
-			}
-		}
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return factory;
-	}
-
-	@Override
-	public boolean onSyncedBlockEvent(int type, int data) {
-		if (type == 1) {
-			return true;
-		}
-		return super.onSyncedBlockEvent(type, data);
 	}
 
 	@Override
@@ -160,39 +122,33 @@ public class AlienStorageEntity extends LootableContainerBlockEntity implements 
 		}
 	}
 
-	@Override
-	protected DefaultedList<ItemStack> getInvStackList() {
-		return this.items;
-	}
-
-	@Override
-	protected void setInvStackList(DefaultedList<ItemStack> list) {
-		this.items = list;
-	}
-
-	protected void onInvOpenOrClose(World world, BlockPos pos, BlockState state, int oldViewerCount,
-			int newViewerCount) {
-		Block block = state.getBlock();
-		world.addSyncedBlockEvent(pos, block, 1, newViewerCount);
-	}
-
-	public void onScheduledTick() {
+	public void tick() {
 		if (!this.removed) {
 			this.stateManager.updateViewerCount(this.getWorld(), this.getPos(), this.getCachedState());
 		}
 	}
 
-	public static int getPlayersLookingInChestCount(BlockView world, BlockPos pos) {
-		BlockEntity blockEntity;
-		BlockState blockState = world.getBlockState(pos);
-		if (blockState.hasBlockEntity() && (blockEntity = world.getBlockEntity(pos)) instanceof AlienStorageEntity) {
-			return ((AlienStorageEntity) blockEntity).stateManager.getViewerCount();
-		}
-		return 0;
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(
+				new AnimationController<AlienStorageEntity>(this, "controller", 0, this::predicate));
+	}
+
+	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+//		if (((AlienStorageEntity) event.getAnimatable()).isOpening()) {
+//			if (randomPhase > 25) {
+//				event.getController()
+//						.setAnimation(new AnimationBuilder().addAnimation("open2", false).addAnimation("open_loop"));
+//			} else {
+//				event.getController()
+//						.setAnimation(new AnimationBuilder().addAnimation("open", false).addAnimation("open_loop"));
+//			}
+//		}
+		return PlayState.CONTINUE;
 	}
 
 	@Override
-	public int size() {
-		return 36;
+	public AnimationFactory getFactory() {
+		return factory;
 	}
 }
