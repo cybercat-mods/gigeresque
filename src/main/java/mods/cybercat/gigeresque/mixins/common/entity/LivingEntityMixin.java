@@ -131,9 +131,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 
 		if (!this.world.isClient) {
-			if (((((Object) this)instanceof PlayerEntity playerEntity && playerEntity.isCreative())
-					|| this.isSpectator() || world.getDifficulty() == Difficulty.PEACEFUL)
-					|| !(((Object) this) instanceof AlienEntity)) {
+			if (((((Object) this)instanceof PlayerEntity playerEntity && (playerEntity.isCreative()
+					|| this.isSpectator())) || world.getDifficulty() == Difficulty.PEACEFUL)
+					|| (((Object) this) instanceof AlienEntity)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
