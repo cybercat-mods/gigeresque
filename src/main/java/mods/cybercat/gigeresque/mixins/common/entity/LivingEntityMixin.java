@@ -94,7 +94,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (ticksUntilImpregnation < offset && (!checkStatusEffect || !hasStatusEffect(statusEffect))) {
 			int amplifier = (int) (((Constants.TPD - (Constants.TPM * 8L)) - ticksUntilImpregnation)
 					/ (Constants.TPS * 30));
-			this.addStatusEffect(new StatusEffectInstance(statusEffect, (int) ticksUntilImpregnation, amplifier));
+			this.addStatusEffect(
+					new StatusEffectInstance(statusEffect, (int) ticksUntilImpregnation, amplifier, true, true));
 		}
 	}
 
