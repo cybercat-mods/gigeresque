@@ -10,7 +10,7 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.KillLightsGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;

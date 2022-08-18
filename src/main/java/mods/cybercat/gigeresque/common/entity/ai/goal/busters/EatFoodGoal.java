@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.goal;
+package mods.cybercat.gigeresque.common.entity.ai.goal.busters;
 
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;

@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.goal;
+package mods.cybercat.gigeresque.common.entity.ai.goal.hugger;
 
 import java.util.EnumSet;
 import java.util.List;

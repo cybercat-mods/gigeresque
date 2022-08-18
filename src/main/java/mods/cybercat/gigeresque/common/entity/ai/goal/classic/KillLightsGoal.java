@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.goal;
+package mods.cybercat.gigeresque.common.entity.ai.goal.classic;
 
 import org.jetbrains.annotations.Nullable;
 
