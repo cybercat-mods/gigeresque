@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.util.nest;
 
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mojang.datafixers.util.Pair;
@@ -28,8 +29,14 @@ public class NestBuildingHelper {
 						continue;
 
 					if (alien.getWorld().getLightLevel(alien.getBlockPos()) < 8) {
+						SplittableRandom random = new SplittableRandom();
+						int randomPhase = random.nextInt(0, 100);
 						if (nestBlockData.isFloor()) {
-							alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
+							if (randomPhase <= 70) {
+								alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
+							} else {
+								alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+							}
 						}
 
 						if (nestBlockData.isCorner()) {
