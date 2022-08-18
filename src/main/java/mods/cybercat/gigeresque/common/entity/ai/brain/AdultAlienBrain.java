@@ -5,7 +5,6 @@ import java.util.List;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.brain.task.FindNestingGroundTask;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
-import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
 import net.minecraft.entity.ai.brain.task.Task;
 
 public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
@@ -16,7 +15,6 @@ public class AdultAlienBrain extends ComplexBrain<AdultAlienEntity> {
 
 	@Override
 	protected void addCoreActivities(List<Task<? super AdultAlienEntity>> tasks) {
-		tasks.add(new StayAboveWaterTask(0.8f));
 		tasks.add(new FindNestingGroundTask(2.0));
 		tasks.add(new BuildNestTask());
 	}
