@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
@@ -19,12 +21,12 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
-import mods.cybercat.gigeresque.common.entity.ai.goal.ClassicAlienMeleeAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.ai.brain.Brain;
@@ -38,7 +40,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
@@ -209,10 +210,10 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		return GigeresqueConfig.alienGrowthMultiplier;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean tryAttack(Entity target) {
 		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case BITE -> 23.0f;
 		case TAIL -> 3.0f;
 		default -> 0.0f;
 		};
@@ -220,18 +221,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (target instanceof LivingEntity && !world.isClient) {
 			switch (getCurrentAttackType().genericAttackType) {
 			case NONE -> {
-			}
-			case BITE -> {
-				var helmet = StreamSupport.stream(target.getArmorItems().spliterator(), false).filter(it -> {
-					var item = it.getItem();
-					return (item instanceof ArmorItem && ((ArmorItem) item).getSlotType() == EquipmentSlot.HEAD);
-				}).findFirst().orElse(null);
-
-				if (helmet != null) {
-					helmet.damage(15, this, it -> {
-					});
-					additionalDamage -= 15;
-				}
 			}
 			case CLAW -> {
 				if (target instanceof PlayerEntity playerEntity && this.random.nextInt(7) == 0) {
@@ -269,11 +258,12 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	protected void initGoals() {
 		super.initGoals();
 		this.goalSelector.add(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
-		// this.goalSelector.add(2, new FindNestGoal(this));
+		this.goalSelector.add(2, new FindNestGoal(this));
 	}
 
 	public void grabTarget(Entity entity) {
-		if (entity == this.getTarget() && !entity.hasPassenger(this)) {
+		if (entity == this.getTarget() && !entity.hasPassenger(this)
+				&& !(entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
 			entity.startRiding(this, true);
 			if (entity instanceof ServerPlayerEntity) {
 				((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityPassengersSetS2CPacket(entity));
@@ -288,7 +278,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			MobEntity mobEntity = (MobEntity) passenger;
 			this.bodyYaw = mobEntity.bodyYaw;
 		}
-		passenger.setPosition(this.getX(), this.getY() + 0.5, this.getZ());
+		passenger.setPosition(this.getX(), this.getY() + 0.6, this.getZ());
 		passenger.speed = 0;
 		if (passenger instanceof LivingEntity) {
 			((LivingEntity) passenger).bodyYaw = this.bodyYaw;
@@ -300,49 +290,60 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getVelocity().horizontalLength();
-
-		if (velocityLength >= 0.000000001 && !this.isTouchingWater() && !this.isCrawling()) {
-			if (this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
-				event.getController().setAnimationSpeed(1 + this.getMovementSpeed());
-				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
-				event.getController().setAnimationSpeed(1);
-				return PlayState.CONTINUE;
-			}
-		} else if (this.isCrawling() && event.isMoving() && !this.hasPassengers()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
-			return PlayState.CONTINUE;
-		} else if (this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
-			return PlayState.CONTINUE;
-		} else {
-			if (!this.isTouchingWater() && isSearching && !this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
-				return PlayState.CONTINUE;
-			}
-			if (this.submergedInWater) {
-				if (this.isAttacking() && !this.hasPassengers()) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		if (!this.isTouchingWater() && !this.isCrawling() && this.isExecuting() == false && !isDead
+				&& lastLimbDistance > 0.15F) {
+			if (!this.submergedInWater && this.isExecuting() == false) {
+				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", false)
+							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+				} else if (this.isExecuting() == false && lastLimbDistance > 0.15F && lastLimbDistance < 0.35F) {
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
+							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
 				}
 			} else {
+				if (this.submergedInWater && this.isExecuting() == false) {
+					if (this.isAttacking() && !this.hasPassengers()) {
+						event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+						return PlayState.CONTINUE;
+					} else {
+						event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+						return PlayState.CONTINUE;
+					}
+				}
+			}
+		} else if (this.isCrawling() && event.isMoving() && !this.hasPassengers() && this.isExecuting() == false) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			return PlayState.CONTINUE;
+		} else if (isDead) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			return PlayState.CONTINUE;
+		} else if (this.isExecuting() == true && this.hasPassengers()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution", false));
+			return PlayState.CONTINUE;
+		} else {
+			if (this.submergedInWater && !isSearching && !this.isAttacking() && !this.hasPassengers()
+					&& this.isExecuting() == false) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+				return PlayState.CONTINUE;
+			} else if (!this.isTouchingWater() && isSearching && !this.isAttacking() && !this.hasPassengers()
+					&& this.isExecuting() == false) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
+				return PlayState.CONTINUE;
+			} else if (this.isExecuting() == false && !this.hasPassengers()) {
+				Gigeresque.LOGGER.debug("I'm Playing");
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 				return PlayState.CONTINUE;
 			}
 		}
+		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.hasPassengers()
-				&& this.dataTracker.get(IS_EXECUTION) == false) {
+				&& this.isExecuting() == false) {
 			event.getController().setAnimation(new AnimationBuilder()
 					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
 			return PlayState.CONTINUE;
@@ -351,15 +352,10 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.hasPassengers() && this.dataTracker.get(IS_EXECUTION) == false) {
+		if (this.hasPassengers() && this.isExecuting() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.hasPassengers() && this.dataTracker.get(IS_EXECUTION) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution", true));
-			return PlayState.CONTINUE;
-		}
-
 		return PlayState.STOP;
 	}
 
@@ -369,7 +365,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			return PlayState.CONTINUE;
 		}
 
-		return PlayState.CONTINUE;
+		return PlayState.STOP;
 	}
 
 	@Override

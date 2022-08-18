@@ -71,7 +71,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 	private long hissingCooldown = 0L;
-	private int holdingCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -219,26 +218,15 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (!world.isClient && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
-		if (!world.isClient && this.isAlive() && this.hasPassengers())
-			holdingCounter++;
+		
 
-		if (holdingCounter == 400 && this.hasPassengers()) {
-			this.setIsExecuting(true);
-		}
-
-		if (holdingCounter == 425 && this.hasPassengers()) {
-			this.getFirstPassenger().kill();
-			this.setIsExecuting(false);
-			holdingCounter = 0;
-		}
-
-		if (holdingCounter == 0) {
-			this.setIsExecuting(false);
+		if (!world.isClient && this.hasPassengers()) {
+			this.setAttacking(false);
 		}
 
 		// Hissing Logic
 
-		if (!world.isClient && isHissing()) {
+		if (!world.isClient && isHissing() && !this.hasPassengers()) {
 			hissingCooldown = max(hissingCooldown - 1, 0);
 
 			if (hissingCooldown <= 0) {
@@ -361,7 +349,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public EntityDimensions getDimensions(EntityPose pose) {
 		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing()
 				? EntityDimensions.changing(1.0f, 1.0f)
-				: this.hasPassengers() ? EntityDimensions.changing(5.0f, 2.45f) : super.getDimensions(pose);
+				: super.getDimensions(pose);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.goal;
+package mods.cybercat.gigeresque.common.entity.ai.goal.classic;
 
 import java.util.EnumSet;
 import java.util.SplittableRandom;
@@ -31,6 +31,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	private int cooldown;
 	private long lastUpdateTime;
 	public static final Predicate<BlockState> NEST = state -> state.isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	private int holdingCounter = 0;
+	private int meleeCounter = 0;
 
 	public ClassicAlienMeleeAttackGoal(ClassicAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
 		this.mob = mob;
@@ -50,10 +52,12 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
-		if (((Host) livingEntity).hasParasite()) {
+		Stream<BlockState> list2 = livingEntity.world
+				.getStatesInBoxIfLoaded(livingEntity.getBoundingBox().expand(2.0, 2.0, 2.0));
+		if (list2.anyMatch(NEST)) {
 			return false;
 		}
-		if (mob.hasPassengers()) {
+		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
@@ -66,6 +70,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
+		if (mob.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+			return false;
+		}
 		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
 			return false;
 		}
@@ -75,6 +82,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity instanceof AlienEntity) {
 			return false;
 		}
+		if (this.mob.hasPassengers())
+			return false;
 		if (((Host) livingEntity).isBleeding()) {
 			return false;
 		}
@@ -91,15 +100,19 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		Stream<BlockState> list2 = livingEntity.world
+				.getStatesInBoxIfLoaded(livingEntity.getBoundingBox().expand(2.0, 2.0, 2.0));
+		if (list2.anyMatch(NEST)) {
+			return false;
+		}
 		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
 			return false;
 		}
-		if (mob.hasPassengers()) {
+		if (this.mob.hasPassengers())
 			return false;
-		}
 		if (!this.pauseWhenMobIdle) {
 			return !this.mob.getNavigation().isIdle();
 		}
@@ -107,6 +120,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			return false;
 		}
 		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+			return false;
+		}
+		if (mob.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
 		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
@@ -134,6 +150,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		this.mob.setAttacking(true);
 		this.updateCountdownTicks = 0;
 		this.cooldown = 0;
+		mob.setIsExecuting(false);
 	}
 
 	@Override
@@ -144,6 +161,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		}
 		this.mob.setAttacking(false);
 		this.mob.getNavigation().stop();
+		mob.setIsExecuting(false);
 	}
 
 	@Override
@@ -180,22 +198,46 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			this.updateCountdownTicks = this.getTickCount(this.updateCountdownTicks);
 		}
 		this.cooldown = Math.max(this.cooldown - 1, 0);
+		if (!this.mob.hasPassengers()) {
+			if (meleeCounter == 1) {
+				this.attack(livingEntity, d);
+			}
+			if (meleeCounter >= 3) {
+				meleeCounter = -5;
+			}
+		}
 		this.attack(livingEntity, d);
+		if (this.mob.hasPassengers()) {
+			holdingCounter++;
+			if (holdingCounter == 120) {
+				this.mob.getNavigation().stop();
+				mob.setIsExecuting(true);
+				this.mob.setAttacking(false);
+			}
+			if (holdingCounter >= 125) {
+				mob.getFirstPassenger().kill();
+				mob.getFirstPassenger().setInvisible(false);
+				mob.setIsExecuting(false);
+				holdingCounter = 0;
+			}
+		}
 	}
 
 	protected void attack(LivingEntity target, double squaredDistance) {
 		double d = this.getSquaredMaxAttackDistance(target);
-		if (squaredDistance <= d && this.cooldown <= 0) {
+		if (squaredDistance <= d) {
 			Stream<BlockState> list = this.mob.world
 					.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(8.0, 8.0, 8.0));
+			Stream<BlockState> list2 = target.world
+					.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
 			SplittableRandom random = new SplittableRandom();
 			int randomPhase = random.nextInt(0, 100);
-			if (list.anyMatch(NEST) && randomPhase <= 75) {
+			if ((list.anyMatch(NEST) || randomPhase >= 5) && !list2.anyMatch(NEST)) {
 				this.mob.grabTarget(target);
-				this.resetCooldown();
 			} else {
-				this.mob.tryAttack(target);
-				this.resetCooldown();
+				if (!this.mob.hasPassengers())
+					this.mob.tryAttack(target);
+				meleeCounter = -5;
 				this.mob.swingHand(Hand.MAIN_HAND);
 			}
 		}
