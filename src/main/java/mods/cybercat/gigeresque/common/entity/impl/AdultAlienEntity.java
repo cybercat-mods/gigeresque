@@ -337,7 +337,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public void playAmbientSound() {
-		if (!world.isClient) {
+		if (!world.isClient && !this.hasPassengers()) {
 			setIsHissing(true);
 			hissingCooldown = 160L;
 		}

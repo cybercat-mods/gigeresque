@@ -360,7 +360,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		if (isHissing()) {
+		if (isHissing() && !this.hasPassengers() && this.isExecuting() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", true));
 			return PlayState.CONTINUE;
 		}
