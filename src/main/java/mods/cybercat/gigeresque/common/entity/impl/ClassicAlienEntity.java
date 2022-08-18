@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.Dynamic;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
@@ -333,7 +332,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
 			} else if (this.isExecuting() == false && !this.hasPassengers()) {
-				Gigeresque.LOGGER.debug("I'm Playing");
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 				return PlayState.CONTINUE;
 			}
