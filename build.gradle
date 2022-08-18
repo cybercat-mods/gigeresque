@@ -115,9 +115,9 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
-            	//optionalDependency 'modmenu'
-            	//optionalDependency 'dripsounds-fabric'
-            	//optionalDependency 'sound-physics-remastered'
+            	optionalDependency 'modmenu'
+            	optionalDependency 'dripsounds-fabric'
+            	optionalDependency 'sound-physics-remastered'
         	}
         	mainArtifact(remapJar)
 
@@ -130,4 +130,28 @@ if (file('key.properties').exists()) {
         	forgeGradleIntegration = false
     	}
     }
+}
+
+if (file('key.properties').exists()) {
+	modrinth {
+		def modrinthProp = new Properties()
+		File secretPropsFile = file("key.properties")
+		modrinthProp.load(secretPropsFile.newInputStream())
+		
+		token = modrinthProp.getProperty('modrinthKey')
+		projectId = 'QyVF9oeo' 
+		versionNumber = project.mod_version 
+		versionName = 'Fabric 1.19.2'
+		uploadFile = remapJar 
+		changelog = rootProject.file("changelog.txt").text
+		gameVersions = ['1.19.2']
+		loaders = ['fabric']
+		dependencies { 
+        	required.project "geckolib"
+        	required.project "fabric-api"
+            optional.project "modmenu"
+            optional.project "dripsounds-fabric"
+            optional.project "sound-physics-remastered"
+   		}
+	}
 }
