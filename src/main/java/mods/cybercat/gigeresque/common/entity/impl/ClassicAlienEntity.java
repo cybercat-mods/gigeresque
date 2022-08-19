@@ -20,6 +20,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
 import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
 import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -57,14 +58,12 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	private AdultAlienBrain complexBrain;
 	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List
 			.of(SensorTypes.NEAREST_ALIEN_WEBBING);
-
 	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
 			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
 			MemoryModuleTypes.EGGMORPH_TARGET, MemoryModuleType.HOME, MemoryModuleType.LOOK_TARGET,
 			MemoryModuleType.MOBS, MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleType.NEAREST_ATTACKABLE,
 			MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
 			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
-
 	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
 			.registerData(ClassicAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	private AnimationFactory animationFactory = new AnimationFactory(this);
@@ -258,6 +257,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		super.initGoals();
 		this.goalSelector.add(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
 		this.goalSelector.add(2, new FindNestGoal(this));
+		this.goalSelector.add(2, new BuildNestGoal(this));
 	}
 
 	public void grabTarget(Entity entity) {
@@ -289,15 +289,17 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		var velocityLength = this.getVelocity().horizontalLength();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
-		if (!this.isTouchingWater() && !this.isCrawling() && this.isExecuting() == false && !isDead
+		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& lastLimbDistance > 0.15F) {
 			if (!this.submergedInWater && this.isExecuting() == false) {
 				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", false)
 							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
-				} else if (this.isExecuting() == false && lastLimbDistance > 0.15F && lastLimbDistance < 0.35F) {
+				} else if (this.isExecuting() == false && lastLimbDistance < 0.35F
+						|| (!this.isCrawling() && !this.onGround)) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
 							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
@@ -327,11 +329,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					&& this.isExecuting() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 				return PlayState.CONTINUE;
-			} else if (!this.isTouchingWater() && isSearching && !this.isAttacking() && !this.hasPassengers()
+			} else if (!this.submergedInWater && isSearching && !this.isAttacking() && !this.hasPassengers()
 					&& this.isExecuting() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else if (this.isExecuting() == false && !this.hasPassengers()) {
+			} else if (!this.submergedInWater && this.isExecuting() == false && !this.hasPassengers()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 				return PlayState.CONTINUE;
 			}

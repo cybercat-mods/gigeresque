@@ -54,6 +54,13 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	private int attackProgress = 0;
 	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
 			.registerData(AquaticAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	private final AnimationFactory animationFactory = new AnimationFactory(this);
+	private final MobNavigation landNavigation = new MobNavigation(this, world);
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	private final MoveControl landMoveControl = new MoveControl(this);
+	private final LookControl landLookControl = new LookControl(this);
+	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
+	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 
 	public AquaticAlienEntity(EntityType<? extends AlienEntity> type, World world) {
 		super(type, world);
@@ -76,16 +83,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.85);
 	}
-
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
-	private final MobNavigation landNavigation = new MobNavigation(this, world);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
-
-	private final MoveControl landMoveControl = new MoveControl(this);
-	private final LookControl landLookControl = new LookControl(this);
-	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
-	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 
 	@Override
 	public float getGrowthMultiplier() {
