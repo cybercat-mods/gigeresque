@@ -5,6 +5,7 @@ import java.util.SplittableRandom;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
@@ -178,6 +179,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		this.mob.getLookControl().lookAt(livingEntity, 30.0f, 30.0f);
 		double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
+		double yOffset = mob.getEyeY() - ((mob.getEyeY() - mob.getBlockPos().getY()) / 2.0);
+		double e = mob.getX() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
+		double f = mob.getZ() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
 		if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
 				&& this.updateCountdownTicks <= 0
 				&& (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
@@ -216,6 +220,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			}
 			if (holdingCounter >= 125) {
 				mob.getFirstPassenger().kill();
+				mob.getFirstPassenger().world.addImportantParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 				mob.getFirstPassenger().setInvisible(false);
 				mob.setIsExecuting(false);
 				holdingCounter = 0;
