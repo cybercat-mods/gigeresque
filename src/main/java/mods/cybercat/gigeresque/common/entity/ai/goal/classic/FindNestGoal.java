@@ -4,8 +4,10 @@ import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
@@ -64,16 +66,14 @@ public class FindNestGoal extends MoveToTargetPosGoal {
 
 	@Nullable
 	private BlockPos tweakToProperPos(BlockPos pos, BlockView world) {
-		@SuppressWarnings("unused")
-		BlockPos[] blockPoss;
-		if (world.getBlockState(pos).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)) {
-			return pos;
-		}
-		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.west(), pos.east(), pos.north(),
-				pos.south(), pos.down().down() }) {
-			if (!world.getBlockState(blockPos).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS))
-				continue;
-			return blockPos;
+		Vec3i radius = new Vec3i(12, 12, 12);
+		for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
+			@SuppressWarnings("unused")
+			BlockState testState;
+
+			if ((testState = world.getBlockState(testPos)).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)) {
+				return testPos;
+			}
 		}
 		return null;
 	}
