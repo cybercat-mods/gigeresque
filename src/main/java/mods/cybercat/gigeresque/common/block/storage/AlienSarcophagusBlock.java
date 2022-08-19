@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
@@ -27,7 +26,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,6 +39,7 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+	private static final VoxelShape OUTLINE_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 16);
 	BlockPos[] blockPoss;
 
 	public AlienSarcophagusBlock() {
@@ -68,26 +67,9 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
-		if (!world.isClient) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof AlienStorageEntity) {
-				player.openHandledScreen((AlienStorageEntity) blockEntity);
-			}
-		}
+		if (!world.isClient && world.getBlockEntity(pos)instanceof AlienStorageEntity alienStorageEntity)
+			player.openHandledScreen(alienStorageEntity);
 		return ActionResult.SUCCESS;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof AlienStorageEntity) {
-				ItemScatterer.spawn(world, pos, (AlienStorageEntity) blockEntity);
-				world.updateComparators(pos, this);
-			}
-			super.onStateReplaced(state, world, pos, newState, moved);
-		}
 	}
 
 	@Override
@@ -107,38 +89,38 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return Block.createCuboidShape(0, 0, 0, 16, 16, 16);
+		return OUTLINE_SHAPE;
 	}
 
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.up(), pos.up().up() }) {
-			if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS)) {
-				world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-			}
-		}
+		BlockPos.iterate(pos, pos.up(2)).forEach(testPos -> {
+			if (!testPos.equals(pos))
+				world.breakBlock(testPos, false);
+		});
 		super.onBreak(world, pos, state, player);
 	}
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.up(), pos.up().up() }) {
-			if (world.getBlockState(blockPos).isAir()) {
-				world.setBlockState(blockPos, GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.getDefaultState(), Block.NOTIFY_ALL);
-			}
-		}
+		BlockPos.iterate(pos, pos.up(2)).forEach(testPos -> {
+			if (!testPos.equals(pos))
+				world.setBlockState(testPos, GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.getDefaultState(), Block.NOTIFY_ALL);
+		});
 	}
 
 	@Override
 	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		return world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir();
+		for (BlockPos testPos : BlockPos.iterate(pos, pos.up(2))) {
+			if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
+				return false;
+		}
+		return true;
 	}
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity instanceof AlienStorageEntity) {
-			((AlienStorageEntity) blockEntity).tick();
-		}
+		if (world.getBlockEntity(pos)instanceof AlienStorageEntity alienStorageEntity)
+			alienStorageEntity.tick();
 	}
 }

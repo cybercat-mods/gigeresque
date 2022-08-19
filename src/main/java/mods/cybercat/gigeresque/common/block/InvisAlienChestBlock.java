@@ -8,36 +8,38 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class InvisAlienChestBlock extends Block {
 
-	BlockPos[] blockPoss;
+	private static final VoxelShape OUTLINE_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 16);
 
 	public InvisAlienChestBlock() {
 		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.GLOW_LICHEN).strength(5.0f, 8.0f)
-				.nonOpaque());
+				.nonOpaque().dropsNothing());
 	}
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
 		if (!world.isClient) {
-			for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.down().down() }) {
-				if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-					BlockEntity blockEntity = world.getBlockEntity(blockPos);
-					if (blockEntity instanceof AlienStorageEntity) {
-						player.openHandledScreen((AlienStorageEntity) blockEntity);
+			Vec3i radius = new Vec3i(2, 2, 2);
+			for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
+				if (world.getBlockState(testPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+					if (!world.isClient
+							&& world.getBlockEntity(testPos)instanceof AlienStorageEntity idolStorageEntity) {
+						player.openHandledScreen(idolStorageEntity);
 					}
+					return ActionResult.SUCCESS;
 				}
 			}
 		}
@@ -51,20 +53,22 @@ public class InvisAlienChestBlock extends Block {
 
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.down().down(), pos.up(),
-				pos.up().up() }) {
-			if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-				world.breakBlock(blockPos, true);
-			}
-			if (world.getBlockState(blockPos).isOf(this)) {
-				world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+		if (world.isClient)
+			return;
+		Vec3i radius = new Vec3i(2, 2, 2);
+		for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
+			BlockState testState;
+			if ((testState = world.getBlockState(testPos)).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+				world.breakBlock(testPos, true);
+			} else if (testState.isOf(this)) {
+				world.setBlockState(testPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
 			}
 		}
 	}
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return Block.createCuboidShape(0, 0, 0, 16, 16, 16);
+		return OUTLINE_SHAPE;
 	}
 
 }

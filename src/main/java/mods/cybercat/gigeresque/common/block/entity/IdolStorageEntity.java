@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import java.util.SplittableRandom;
-
 import mods.cybercat.gigeresque.common.block.StorageProperties;
 import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -34,8 +32,6 @@ public class IdolStorageEntity extends LootableContainerBlockEntity implements I
 
 	private DefaultedList<ItemStack> items = DefaultedList.ofSize(9, ItemStack.EMPTY);
 	private final AnimationFactory factory = new AnimationFactory(this);
-	SplittableRandom random = new SplittableRandom();
-	int randomPhase = random.nextInt(0, 50);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 	private final ViewerCountManager stateManager = new ViewerCountManager() {
 
@@ -89,7 +85,7 @@ public class IdolStorageEntity extends LootableContainerBlockEntity implements I
 	}
 
 	@Override
-	protected DefaultedList<ItemStack> getInvStackList() {
+	public DefaultedList<ItemStack> getInvStackList() {
 		return this.items;
 	}
 
