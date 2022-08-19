@@ -194,6 +194,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 						+ ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.world);
 				default -> new ChestbursterEntity(Entities.CHESTBURSTER, this.world);
 				};
+				this.world.playSoundFromEntity(null, this, GigSounds.CHESTBURSTING, SoundCategory.NEUTRAL, 2.0f, 1.0f);
 
 				burster.setHostId(identifier.toString());
 				burster.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
