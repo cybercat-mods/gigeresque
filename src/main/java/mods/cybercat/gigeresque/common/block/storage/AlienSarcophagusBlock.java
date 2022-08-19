@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.StorageProperties;
+import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -19,8 +21,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
@@ -38,18 +40,19 @@ import net.minecraft.world.WorldView;
 public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    public static final BooleanProperty OPEN = Properties.OPEN;
-
+	public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+	BlockPos[] blockPoss;
 
 	public AlienSarcophagusBlock() {
 		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(5.0f, 8.0f)
 				.nonOpaque());
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(STORAGE_STATE,
+				StorageStates.CLOSED));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING);
+		builder.add(FACING, STORAGE_STATE);
 	}
 
 	@Override
@@ -59,18 +62,17 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext context) {
-		return this.getDefaultState().with(FACING, context.getPlayerFacing());
+		return this.getDefaultState().with(FACING, context.getPlayerFacing().getOpposite());
 	}
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
-		if (world.isClient) {
-			return ActionResult.SUCCESS;
-		}
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity instanceof AlienStorageEntity) {
-			player.openHandledScreen((AlienStorageEntity) blockEntity);
+		if (!world.isClient) {
+			BlockEntity blockEntity = world.getBlockEntity(pos);
+			if (blockEntity instanceof AlienStorageEntity) {
+				player.openHandledScreen((AlienStorageEntity) blockEntity);
+			}
 		}
 		return ActionResult.SUCCESS;
 	}
@@ -110,16 +112,20 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		world.setBlockState(pos.up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-		world.setBlockState(pos.up().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.up(), pos.up().up() }) {
+			if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS)) {
+				world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+			}
+		}
 		super.onBreak(world, pos, state, player);
 	}
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-		if (world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir()) {
-			world.setBlockState(pos.up(), GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.getDefaultState(), Block.NOTIFY_ALL);
-			world.setBlockState(pos.up().up(), GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.getDefaultState(), Block.NOTIFY_ALL);
+		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.up(), pos.up().up() }) {
+			if (world.getBlockState(blockPos).isAir()) {
+				world.setBlockState(blockPos, GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.getDefaultState(), Block.NOTIFY_ALL);
+			}
 		}
 	}
 

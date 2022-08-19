@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
+import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
@@ -50,12 +51,13 @@ public class GIgBlocks implements GigeresqueInitializer {
 			FabricBlockSettings.of(Materials.ACID).nonOpaque().dropsNothing());
 
 	public static final InvisAlienChestBlock ALIEN_STORAGE_BLOCK_INVIS = new InvisAlienChestBlock();
+	public static final InvisAlienChest2Block ALIEN_STORAGE_BLOCK_INVIS2 = new InvisAlienChest2Block();
 
 	public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock();
 	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
-	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_3 = new AlienJarBlock();
-	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
-	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_5 = new AlienJarBlock();
+	public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock();
+//	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
+//	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_5 = new AlienJarBlock();
 
 	public static final NestResinBlock NEST_RESIN = new NestResinBlock(
 			FabricBlockSettings.of(Materials.NEST_RESIN).sounds(BlockSoundGroup.HONEY).strength(5.0f, 8.0f));
@@ -182,6 +184,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "black_fluid"), BLACK_FLUID);
 		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "alien_storage_invis"),
 				ALIEN_STORAGE_BLOCK_INVIS);
+		Registry.register(Registry.BLOCK, new Identifier(Gigeresque.MOD_ID, "alien_storage_invis2"),
+				ALIEN_STORAGE_BLOCK_INVIS2);
 
 		registerItemBlock("nest_resin", NEST_RESIN);
 		registerItemBlock("nest_resin_block", NEST_RESIN_BLOCK);
@@ -199,8 +203,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);
-		registerItemBlock("alien_storage_block4", ALIEN_STORAGE_BLOCK_4);
-		registerItemBlock("alien_storage_block5", ALIEN_STORAGE_BLOCK_5);
+//		registerItemBlock("alien_storage_block4", ALIEN_STORAGE_BLOCK_4);
+//		registerItemBlock("alien_storage_block5", ALIEN_STORAGE_BLOCK_5);
 
 		registerItemBlock("organic_alien_block", ORGANIC_ALIEN_BLOCK);
 		registerItemBlock("resinous_alien_block", RESINOUS_ALIEN_BLOCK);

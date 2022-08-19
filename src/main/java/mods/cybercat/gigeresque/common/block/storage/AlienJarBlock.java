@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.block.storage;
 
 import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.common.block.StorageProperties;
+import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -17,8 +19,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
@@ -37,17 +39,18 @@ import net.minecraft.world.World;
 public class AlienJarBlock extends BlockWithEntity {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-	public static final BooleanProperty OPEN = Properties.OPEN;
+	public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
 
 	public AlienJarBlock() {
 		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(5.0f, 8.0f)
 				.nonOpaque());
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(STORAGE_STATE,
+				StorageStates.CLOSED));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING);
+		builder.add(FACING, STORAGE_STATE);
 	}
 
 	@Override
@@ -63,12 +66,11 @@ public class AlienJarBlock extends BlockWithEntity {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
-		if (world.isClient) {
-			return ActionResult.SUCCESS;
-		}
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity instanceof JarStorageEntity) {
-			player.openHandledScreen((JarStorageEntity) blockEntity);
+		if (!world.isClient) {
+			BlockEntity blockEntity = world.getBlockEntity(pos);
+			if (blockEntity instanceof JarStorageEntity) {
+				player.openHandledScreen((JarStorageEntity) blockEntity);
+			}
 		}
 		return ActionResult.SUCCESS;
 	}

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -7,8 +8,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -20,6 +21,8 @@ import net.minecraft.world.World;
 
 public class InvisAlienChestBlock extends Block {
 
+	BlockPos[] blockPoss;
+
 	public InvisAlienChestBlock() {
 		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.GLOW_LICHEN).strength(5.0f, 8.0f)
 				.nonOpaque());
@@ -29,18 +32,12 @@ public class InvisAlienChestBlock extends Block {
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {
 		if (!world.isClient) {
-			if (world.getBlockState(pos.down()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-				NamedScreenHandlerFactory screenHandlerFactory = world.getBlockState(pos.down())
-						.createScreenHandlerFactory(world, pos.down());
-				if (screenHandlerFactory != null) {
-					player.openHandledScreen(screenHandlerFactory);
-				}
-			}
-			if (world.getBlockState(pos.down().down()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-				NamedScreenHandlerFactory screenHandlerFactory = world.getBlockState(pos.down().down())
-						.createScreenHandlerFactory(world, pos.down().down());
-				if (screenHandlerFactory != null) {
-					player.openHandledScreen(screenHandlerFactory);
+			for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.down().down() }) {
+				if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+					BlockEntity blockEntity = world.getBlockEntity(blockPos);
+					if (blockEntity instanceof AlienStorageEntity) {
+						player.openHandledScreen((AlienStorageEntity) blockEntity);
+					}
 				}
 			}
 		}
@@ -54,16 +51,15 @@ public class InvisAlienChestBlock extends Block {
 
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		if (world.getBlockState(pos.down()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1))
-			world.breakBlock(pos.down(), true);
-		if (world.getBlockState(pos.down()).isOf(this))
-			world.setBlockState(pos.down(), Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-		if (world.getBlockState(pos.down().down()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1))
-			world.breakBlock(pos.down().down(), true);
-		if (world.getBlockState(pos.up()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1) || world.getBlockState(pos.up()).isOf(this))
-			world.setBlockState(pos.up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-		if (world.getBlockState(pos.up().up()).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1) || world.getBlockState(pos.up().up()).isOf(this))
-			world.setBlockState(pos.up().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+		for (BlockPos blockPos : blockPoss = new BlockPos[] { pos.down(), pos.down().down(), pos.up(),
+				pos.up().up() }) {
+			if (world.getBlockState(blockPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+				world.breakBlock(blockPos, true);
+			}
+			if (world.getBlockState(blockPos).isOf(this)) {
+				world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+			}
+		}
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.render.blocks.JarRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusRender;
+import mods.cybercat.gigeresque.client.entity.render.blocks.SittingIdolRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.api.EnvType;
@@ -28,5 +29,7 @@ public class EntityRenderers implements GigeresqueInitializer {
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SarcophagusRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new JarRender());
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3,
+				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SittingIdolRender());
 	}
 }

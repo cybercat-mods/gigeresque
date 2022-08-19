@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
@@ -62,6 +63,7 @@ public class Entities implements GigeresqueInitializer {
 
 	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1;
 	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2;
+	public static BlockEntityType<IdolStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_3;
 
 	@Override
 	public void initialize() {
@@ -71,6 +73,9 @@ public class Entities implements GigeresqueInitializer {
 		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
 				Gigeresque.MOD_ID + ":alien_storage_jar_entity", FabricBlockEntityTypeBuilder
 						.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+				Gigeresque.MOD_ID + ":sitting_idol_entity", FabricBlockEntityTypeBuilder
+						.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
 		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
