@@ -24,6 +24,7 @@ import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -42,6 +43,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
@@ -131,30 +133,33 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 
 		if (!this.world.isClient) {
-			if (((((Object) this)instanceof PlayerEntity playerEntity && (playerEntity.isCreative()
-					|| this.isSpectator())) || world.getDifficulty() == Difficulty.PEACEFUL)
-					|| (((Object) this) instanceof AlienEntity)) {
+			if (((((Object) this)instanceof PlayerEntity playerEntity
+					&& (playerEntity.isCreative() || this.isSpectator()))
+					|| world.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
 			}
-
-			if (isEggmorphing()) {
-				setTicksUntilEggmorphed(ticksUntilEggmorpth++);
-			} else {
-				// Reset eggmorphing counter if the entity is no longer eggmorphing at any
-				// point.
-				resetEggmorphing();
-			}
-			if (getTicksUntilEggmorphed() == 6000 && !this.isDead()) {
-				AlienEggEntity egg = new AlienEggEntity(Entities.EGG, world);
-				egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
-				world.spawnEntity(egg);
-				world.breakBlock(this.getBlockPos(), false);
-				hasEggSpawned = true;
-				damage(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
-			}
+			handleEggingLogic();
 			handleHostLogic();
+		}
+	}
+
+	private void handleEggingLogic() {
+		if (isEggmorphing()) {
+			setTicksUntilEggmorphed(ticksUntilEggmorpth++);
+		} else {
+			// Reset eggmorphing counter if the entity is no longer eggmorphing at any
+			// point.
+			resetEggmorphing();
+		}
+		if (getTicksUntilEggmorphed() == 6000 && !this.isDead()) {
+			AlienEggEntity egg = new AlienEggEntity(Entities.EGG, world);
+			egg.refreshPositionAndAngles(this.getBlockPos(), this.getYaw(), this.getPitch());
+			world.spawnEntity(egg);
+			world.breakBlock(this.getBlockPos(), false);
+			hasEggSpawned = true;
+			damage(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
 		}
 	}
 
