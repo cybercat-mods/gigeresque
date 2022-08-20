@@ -237,7 +237,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 					.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
 			SplittableRandom random = new SplittableRandom();
 			int randomPhase = random.nextInt(0, 100);
-			if ((list.anyMatch(NEST) || randomPhase >= 5) && !list2.anyMatch(NEST)) {
+			if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)) {
 				this.mob.grabTarget(target);
 			} else {
 				if (!this.mob.hasPassengers())
