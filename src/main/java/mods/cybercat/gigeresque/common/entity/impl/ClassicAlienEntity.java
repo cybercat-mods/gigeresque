@@ -42,7 +42,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -240,16 +239,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		target.damage(DamageSource.mob(this), additionalDamage);
 
 		return super.tryAttack(target);
-	}
-
-	@Override
-	protected Box calculateBoundingBox() {
-		return super.calculateBoundingBox();
-	}
-
-	@Override
-	public Box getBoundingBox(EntityPose pose) {
-		return this.getBoundingBox().shrink(0, -1, 0);
 	}
 
 	@Override

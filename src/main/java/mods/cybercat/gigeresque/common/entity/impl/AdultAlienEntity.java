@@ -19,8 +19,6 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
@@ -218,7 +216,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (!world.isClient && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
-		
 
 		if (!world.isClient && this.hasPassengers()) {
 			this.setAttacking(false);
@@ -280,11 +277,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
-		if (!this.world.isClient) {
-			// complexBrain.stun(Constants.TPS * 3);
-		}
-		return super.updatePassengerForDismount(passenger);
+	public boolean isPushable() {
+		return false;
 	}
 
 	/*
@@ -343,13 +337,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		}
 		if (hissingCooldown <= 160L)
 			super.playAmbientSound();
-	}
-
-	@Override
-	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater || this.isInSneakingPose() && !this.isClimbing()
-				? EntityDimensions.changing(1.0f, 1.0f)
-				: super.getDimensions(pose);
 	}
 
 	@Override

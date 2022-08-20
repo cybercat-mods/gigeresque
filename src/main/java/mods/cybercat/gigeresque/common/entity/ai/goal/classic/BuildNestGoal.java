@@ -17,17 +17,21 @@ public class BuildNestGoal extends Goal {
 
 	@Override
 	public boolean shouldContinue() {
-		return !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
+		return !mob.hasPassengers() && !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
 				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	}
 
 	@Override
 	public boolean canStart() {
 		cooldown = max(cooldown - 1, 0);
-		return !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
+		return !mob.hasPassengers() && !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
 				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	}
 
 	@Override
@@ -43,8 +47,10 @@ public class BuildNestGoal extends Goal {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS))
+		if (!mob.hasPassengers() && !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
+				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
+				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS))
 			this.cooldown++;
 		if (this.cooldown == 200)
 			NestBuildingHelper.tryBuildNestAround(mob);
