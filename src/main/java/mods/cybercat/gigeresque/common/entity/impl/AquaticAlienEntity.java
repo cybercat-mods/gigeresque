@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import static java.lang.Math.max;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -13,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -36,6 +39,8 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -43,6 +48,7 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -311,9 +317,30 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		return PlayState.STOP;
 	}
 
+	private SoundEvent makeSound() {
+		Random rand = new Random();
+		List<SoundEvent> givenList = Arrays.asList(GigSounds.AQUA_LANDMOVE_1, GigSounds.AQUA_LANDMOVE_2,
+				GigSounds.AQUA_LANDMOVE_3, GigSounds.AQUA_LANDMOVE_4);
+		int randomIndex = rand.nextInt(givenList.size());
+		SoundEvent randomElement = givenList.get(randomIndex);
+		return randomElement;
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("stepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), makeSound(),
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+		AnimationController<AquaticAlienEntity> controller = new AnimationController<AquaticAlienEntity>(this,
+				"controller", 10f, this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
 		data.addAnimationController(new AnimationController<>(this, "attackController", 5f, this::attackPredicate));
 		data.addAnimationController(new AnimationController<>(this, "hissController", 10f, this::hissPredicate));
 	}

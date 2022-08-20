@@ -1651,6 +1651,17 @@
 						"vector": [-5, "Math.sin(query.anim_time*180)*-10", 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"0.88": {
+					"effect": "stepSoundkey"
+				},
+				"2.0": {
+					"effect": "stepSoundkey"
+				}
 			}
 		},
 		"run": {
@@ -2654,6 +2665,23 @@
 					"rotation": {
 						"vector": [10, "-10+Math.sin(query.anim_time*720)*-8", 0]
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"0.48": {
+					"effect": "stepSoundkey"
+				},
+				"1.0": {
+					"effect": "stepSoundkey"
+				},
+				"1.48": {
+					"effect": "stepSoundkey"
+				},
+				"2.0": {
+					"effect": "stepSoundkey"
 				}
 			}
 		},

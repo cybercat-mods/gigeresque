@@ -101,5 +101,68 @@
 				"name": "gigeresque:chestbursting"
 			}
 		]
+	},
+	"tb_footstep": {
+		"sounds": [
+			{
+				"name": "gigeresque:tb_footstep"
+			}
+		]
+	},
+	"alien_footstep": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien_footstep"
+			}
+		]
+	},
+	"aqua_landmove_1": {
+		"sounds": [
+			{
+				"name": "gigeresque:aqua_landmove_1"
+			}
+		]
+	},
+	"aqua_landmove_2": {
+		"sounds": [
+			{
+				"name": "gigeresque:aqua_landmove_2"
+			}
+		]
+	},
+	"aqua_landmove_3": {
+		"sounds": [
+			{
+				"name": "gigeresque:aqua_landmove_3"
+			}
+		]
+	},
+	"aqua_landmove_4": {
+		"sounds": [
+			{
+				"name": "gigeresque:aqua_landmove_4"
+			}
+		]
+	},
+	"burster_crawl_1": {
+		"sounds": [
+			{
+				"name": "gigeresque:burster_crawl_1"
+			}
+		]
+	},
+	"burster_crawl_2": {
+		"sounds": [
+			{
+				"name": "gigeresque:burster_crawl_2"
+			}
+		]
+	},
+	"burster_crawl_3": {
+		"sounds": [
+			{
+				"name": "gigeresque:burster_crawl_3"
+			}
+		]
 	}
 }

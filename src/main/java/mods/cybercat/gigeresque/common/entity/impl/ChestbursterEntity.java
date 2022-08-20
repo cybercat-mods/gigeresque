@@ -1,5 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import mods.cybercat.gigeresque.Constants;
@@ -9,6 +12,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -22,12 +26,15 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -153,7 +160,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6D));
 		this.goalSelector.add(5, new FleeFireGoal<ChestbursterEntity>(this));
 		this.goalSelector.add(5, new EatFoodGoal(this));
-        this.goalSelector.add(1, new EscapeDangerGoal(this, 2.0));
+		this.goalSelector.add(1, new EscapeDangerGoal(this, 2.0));
 	}
 
 	/*
@@ -213,9 +220,30 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		return PlayState.CONTINUE;
 	}
 
+	private SoundEvent makeSound() {
+		Random rand = new Random();
+		List<SoundEvent> givenList = Arrays.asList(GigSounds.BURSTER_CRAWL_1, GigSounds.BURSTER_CRAWL_2,
+				GigSounds.BURSTER_CRAWL_3);
+		int randomIndex = rand.nextInt(givenList.size());
+		SoundEvent randomElement = givenList.get(randomIndex);
+		return randomElement;
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("stepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), makeSound(),
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+		AnimationController<ChestbursterEntity> controller = new AnimationController<ChestbursterEntity>(this,
+				"controller", 10f, this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
 	}
 
 	@Override

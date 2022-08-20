@@ -24,6 +24,7 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -42,12 +43,14 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -357,9 +360,21 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		return PlayState.STOP;
 	}
 
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("stepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+		AnimationController<ClassicAlienEntity> controller = new AnimationController<ClassicAlienEntity>(this,
+				"controller", 10f, this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
 		data.addAnimationController(new AnimationController<>(this, "attackController", 5f, this::attackPredicate));
 		data.addAnimationController(new AnimationController<>(this, "hissController", 10f, this::hissPredicate));
 	}
