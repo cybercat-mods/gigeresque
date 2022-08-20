@@ -48,6 +48,8 @@ public class FindNestGoal extends MoveToTargetPosGoal {
 	@Override
 	public void stop() {
 		super.stop();
+		this.cooldown = 0;
+		mob.getNavigation().stop();
 	}
 
 	@Override
@@ -58,10 +60,20 @@ public class FindNestGoal extends MoveToTargetPosGoal {
 		BlockPos blockPos2 = this.tweakToProperPos(blockPos, world);
 		this.mob.setAttacking(true);
 		if (this.hasReached() && blockPos2 != null && mob.hasPassengers()) {
+			this.cooldown++;
 			mob.getFirstPassenger().setInvisible(false);
-			mob.removeAllPassengers();
-			this.cooldown = 0;
+			if (this.cooldown > 10) {
+				mob.getFirstPassenger().setPos(mob.getX(), mob.getY()+0.2, mob.getZ());
+				mob.getFirstPassenger().dismountVehicle();
+			}
+			if (this.cooldown >= 13)
+				this.cooldown = 0;
 		}
+	}
+
+	@Override
+	protected boolean hasReached() {
+		return mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	}
 
 	@Nullable
