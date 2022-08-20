@@ -304,7 +304,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					}
 				}
 			}
-		} else if (this.isCrawling() && event.isMoving() && !this.hasPassengers() && this.isExecuting() == false) {
+		} else if (this.isCrawling() && this.isExecuting() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 			return PlayState.CONTINUE;
 		} else if (isDead) {

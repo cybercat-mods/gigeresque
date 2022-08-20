@@ -14,7 +14,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.classic.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -255,11 +254,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	@Override
 	public boolean isClimbing() {
-		boolean isAttacking = this.isAttacking();
-		setIsCrawling(isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
-				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigTags.DUNGEON_STAIRS));
-		return isAttacking && this.horizontalCollision && !this.getMoveControl().isMoving()
-				&& !this.getEntityWorld().getBlockState(this.getBlockPos()).isIn(GigTags.DUNGEON_STAIRS);
+		setIsCrawling(this.horizontalCollision && this.getTarget() != null);
+		return this.horizontalCollision && this.getTarget() != null;
 	}
 
 	@Override
