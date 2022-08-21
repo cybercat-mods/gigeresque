@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 
 import mods.cybercat.gigeresque.Constants;
@@ -27,7 +24,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -220,19 +216,10 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		return PlayState.CONTINUE;
 	}
 
-	private SoundEvent makeSound() {
-		Random rand = new Random();
-		List<SoundEvent> givenList = Arrays.asList(GigSounds.BURSTER_CRAWL_1, GigSounds.BURSTER_CRAWL_2,
-				GigSounds.BURSTER_CRAWL_3);
-		int randomIndex = rand.nextInt(givenList.size());
-		SoundEvent randomElement = givenList.get(randomIndex);
-		return randomElement;
-	}
-
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("stepSoundkey")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), makeSound(),
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}

@@ -239,7 +239,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
-					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.FACEHUGGER_IMPLANT,
+					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.HUGGER_IMPLANT,
 							SoundCategory.NEUTRAL, 0.5f);
 					setIsInfertile(true);
 					this.detach();
@@ -325,12 +325,12 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_HURT;
+		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.HUGGER_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.FACEHUGGER_DEATH;
+		return (isAttachedToHost() || isInfertile()) ? null : GigSounds.HUGGER_DEATH;
 	}
 
 	@Override

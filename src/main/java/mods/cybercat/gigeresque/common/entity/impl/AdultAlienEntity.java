@@ -296,11 +296,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	 */
 
 	@Override
-	public SoundEvent getAmbientSound() {
-		return this.isHissing() ? GigSounds.ALIEN_AMBIENT : null;
-	}
-
-	@Override
 	public SoundEvent getHurtSound(DamageSource source) {
 		return GigSounds.ALIEN_HURT;
 	}
@@ -323,16 +318,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-	}
-
-	@Override
-	public void playAmbientSound() {
-		if (!world.isClient && !this.hasPassengers()) {
-			setIsHissing(true);
-			hissingCooldown = 160L;
-		}
-		if (hissingCooldown <= 160L)
-			super.playAmbientSound();
 	}
 
 	@Override

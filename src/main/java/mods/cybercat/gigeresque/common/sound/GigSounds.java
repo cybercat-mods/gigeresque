@@ -19,69 +19,48 @@ public class GigSounds implements GigeresqueInitializer {
 		return instance;
 	}
 
+	public static final SoundEvent ALIEN_HISS = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_hiss"));
 	public static final SoundEvent ALIEN_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_ambient"));
 	public static final SoundEvent ALIEN_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_hurt"));
 	public static final SoundEvent ALIEN_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_death"));
+	public static final SoundEvent ALIEN_ATTACK = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_attack"));
 	public static final SoundEvent ALIEN_STEP = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_footstep"));
-
-	public static final SoundEvent TB_STEP = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "tb_footstep"));
 
 	public static final SoundEvent EGG_NOTICE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_notice"));
 	public static final SoundEvent EGG_OPEN = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_open"));
 
-	public static final SoundEvent AQUA_LANDMOVE_1 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "aqua_landmove_1"));
-	public static final SoundEvent AQUA_LANDMOVE_2 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "aqua_landmove_2"));
-	public static final SoundEvent AQUA_LANDMOVE_3 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "aqua_landmove_3"));
-	public static final SoundEvent AQUA_LANDMOVE_4 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "aqua_landmove_4"));
+	public static final SoundEvent AQUA_LANDMOVE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "aqua_landmove"));
 
-	public static final SoundEvent BURSTER_CRAWL_1 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "burster_crawl_1"));
-	public static final SoundEvent BURSTER_CRAWL_2 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "burster_crawl_2"));
-	public static final SoundEvent BURSTER_CRAWL_3 = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "burster_crawl_3"));
+	public static final SoundEvent BURSTER_CRAWL = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "burster_crawl"));
 
-	public static final SoundEvent FACEHUGGER_AMBIENT = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "facehugger_ambient"));
-	public static final SoundEvent FACEHUGGER_DEATH = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "facehugger_death"));
-	public static final SoundEvent FACEHUGGER_HURT = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "facehugger_hurt"));
-	public static final SoundEvent FACEHUGGER_IMPLANT = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "facehugger_implant"));
+	public static final SoundEvent HUGGER_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_ambient"));
+	public static final SoundEvent HUGGER_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_death"));
+	public static final SoundEvent HUGGER_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_hurt"));
+	public static final SoundEvent HUGGER_IMPLANT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_implant"));
 
 	public static final SoundEvent CHESTBURSTING = new SoundEvent(
 			new Identifier(Gigeresque.MOD_ID, "gigeresque_chestbursting"));
 
 	@Override
 	public void initialize() {
+		register(ALIEN_HISS);
 		register(ALIEN_AMBIENT);
 		register(ALIEN_HURT);
 		register(ALIEN_DEATH);
-
+		register(ALIEN_ATTACK);
 		register(ALIEN_STEP);
-		register(TB_STEP);
 
 		register(EGG_NOTICE);
 		register(EGG_OPEN);
 
-		register(AQUA_LANDMOVE_1);
-		register(AQUA_LANDMOVE_2);
-		register(AQUA_LANDMOVE_3);
-		register(AQUA_LANDMOVE_4);
+		register(AQUA_LANDMOVE);
 
-		register(BURSTER_CRAWL_1);
-		register(BURSTER_CRAWL_2);
-		register(BURSTER_CRAWL_3);
+		register(BURSTER_CRAWL);
 
-		register(FACEHUGGER_AMBIENT);
-		register(FACEHUGGER_DEATH);
-		register(FACEHUGGER_HURT);
-		register(FACEHUGGER_IMPLANT);
+		register(HUGGER_AMBIENT);
+		register(HUGGER_DEATH);
+		register(HUGGER_HURT);
+		register(HUGGER_IMPLANT);
 	}
 
 	private void register(SoundEvent soundEvent) {
