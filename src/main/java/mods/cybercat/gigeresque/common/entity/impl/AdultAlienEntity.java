@@ -296,6 +296,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	 */
 
 	@Override
+	public SoundEvent getAmbientSound() {
+		return GigSounds.ALIEN_AMBIENT;
+	}
+
+	@Override
 	public SoundEvent getHurtSound(DamageSource source) {
 		return GigSounds.ALIEN_HURT;
 	}
