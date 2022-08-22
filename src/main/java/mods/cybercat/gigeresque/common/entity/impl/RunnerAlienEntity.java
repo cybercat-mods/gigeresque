@@ -3,26 +3,19 @@ package mods.cybercat.gigeresque.common.entity.impl;
 import static java.lang.Math.max;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -149,14 +142,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	@Override
 	protected void initGoals() {
 		super.initGoals();
-		this.goalSelector.add(2, new MeleeAttackGoal(this, 3.0, false));
-		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| (entity instanceof HostileEntity) || ((Eggmorphable) entity).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
+		this.goalSelector.add(2, new AlienMeleeAttackGoal(this, 3.0, false));
 	}
 
 	/*

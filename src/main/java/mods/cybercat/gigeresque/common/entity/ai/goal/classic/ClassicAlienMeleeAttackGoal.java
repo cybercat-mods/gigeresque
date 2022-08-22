@@ -206,8 +206,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			if (meleeCounter == 1) {
 				this.attack(livingEntity, d);
 			}
-			if (meleeCounter >= 3) {
-				meleeCounter = -5;
+			if (meleeCounter >= 10) {
+				meleeCounter = -15;
 			}
 		}
 		this.attack(livingEntity, d);
@@ -240,10 +240,11 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)) {
 				this.mob.grabTarget(target);
 			} else {
-				if (!this.mob.hasPassengers())
+				if (!this.mob.hasPassengers()) {
 					this.mob.tryAttack(target);
-				meleeCounter = -5;
-				this.mob.swingHand(Hand.MAIN_HAND);
+					this.mob.swingHand(Hand.MAIN_HAND);
+					meleeCounter = -5;
+				}
 			}
 		}
 	}
