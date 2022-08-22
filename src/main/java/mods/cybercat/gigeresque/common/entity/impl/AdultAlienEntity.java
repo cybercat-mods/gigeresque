@@ -49,11 +49,11 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 
 public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
 
-	private static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class,
+	protected static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
-	private static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class,
+	protected static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
+	protected static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	protected static final TrackedData<Boolean> IS_BREAKING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);

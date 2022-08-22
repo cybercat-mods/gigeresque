@@ -2706,6 +2706,11 @@
 						"vector": [0, 0, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				}
 			}
 		},
 		"rush_crawl": {
@@ -5187,6 +5192,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "biteSoundkey"
+				}
 			}
 		},
 		"right_claw": {
@@ -5590,6 +5600,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attackSoundkey"
+				}
 			}
 		},
 		"left_claw": {
@@ -5992,6 +6007,11 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attackSoundkey"
 				}
 			}
 		},
@@ -6485,6 +6505,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attackSoundkey"
+				}
 			}
 		},
 		"left_tail": {
@@ -6977,6 +7002,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attackSoundkey"
+				}
 			}
 		},
 		"ambient": {
@@ -7401,6 +7431,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.32": {
+					"effect": "idleSoundkey"
+				}
 			}
 		},
 		"hiss": {
@@ -7485,6 +7520,11 @@
 							"easing": "easeInQuad"
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "hissSoundkey"
 				}
 			}
 		},

@@ -45,7 +45,7 @@
 			}
 		]
 	},
-	"alien_living": {
+	"alien_ambient": {
 		"sounds": [
 			{
 				"name": "gigeresque:alien/ambient"

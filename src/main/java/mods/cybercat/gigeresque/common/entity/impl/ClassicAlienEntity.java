@@ -178,17 +178,23 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && isHissing() && !isSearching && !this.hasPassengers()) {
-			hissingCooldown = max(hissingCooldown - 1, 0);
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+			hissingCooldown++;
 
-			if (hissingCooldown <= 0) {
+			if (hissingCooldown == 20) {
+				setIsHissing(true);
+			}
+
+			if (hissingCooldown > 80) {
 				setIsHissing(false);
+				hissingCooldown = -500;
 			}
 		}
 
 		// Searching Logic
 
-		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking()) {
+		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
+				&& this.isAlive()) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -296,7 +302,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				&& lastLimbDistance > 0.15F) {
 			if (!this.submergedInWater && this.isExecuting() == false) {
 				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", false)
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
 				} else if (this.isExecuting() == false && lastLimbDistance < 0.35F
@@ -361,7 +367,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		if (isHissing() && !this.hasPassengers() && this.isExecuting() == false) {
+		if (this.dataTracker.get(IS_HISSING) == true && !this.hasPassengers() && this.isExecuting() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", true));
 			return PlayState.CONTINUE;
 		}
@@ -373,13 +379,13 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (event.sound.matches("stepSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("idleSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}
@@ -388,7 +394,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (event.sound.matches("attackSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_ATTACK,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 	}
@@ -397,7 +403,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (event.sound.matches("hissSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}

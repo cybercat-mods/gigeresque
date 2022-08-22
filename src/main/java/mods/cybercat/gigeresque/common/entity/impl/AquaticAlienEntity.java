@@ -189,17 +189,23 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && isHissing() && !isSearching && !this.hasPassengers()) {
-			hissingCooldown = max(hissingCooldown - 1, 0);
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+			hissingCooldown++;
 
-			if (hissingCooldown <= 0) {
+			if (hissingCooldown == 20) {
+				setIsHissing(true);
+			}
+
+			if (hissingCooldown > 80) {
 				setIsHissing(false);
+				hissingCooldown = -500;
 			}
 		}
 
 		// Searching Logic
 
-		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking()) {
+		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
+				&& this.isAlive()) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -316,7 +322,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		if (isHissing()) {
+		if (this.dataTracker.get(IS_HISSING) == true) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", true));
 			return PlayState.CONTINUE;
 		}
