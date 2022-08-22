@@ -151,6 +151,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 	}
 
+	@Inject(method = { "isUsingItem" }, at = { @At("RETURN") })
+	public boolean isUsingItem(CallbackInfoReturnable<Boolean> callbackInfo) {
+		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing()) {
+			return false;
+		}
+		return callbackInfo.getReturnValue();
+	}
+
 	@Inject(method = { "isPushable" }, at = { @At("RETURN") })
 	public boolean noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
 		if (this.isEggmorphing()) {
@@ -289,8 +297,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
 				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		boolean notAlien = !(((Object) this) instanceof AlienEntity);
-		if (((((Object) this)instanceof PlayerEntity playerEntity
-				&& (playerEntity.isCreative() || this.isSpectator()))) && !(((Object) this) instanceof AlienEntity)) {
+		if (((((Object) this)instanceof PlayerEntity playerEntity && (playerEntity.isCreative() || this.isSpectator())))
+				&& !(((Object) this) instanceof AlienEntity)) {
 			return false;
 		}
 		return notAlien && isCoveredInResin;
