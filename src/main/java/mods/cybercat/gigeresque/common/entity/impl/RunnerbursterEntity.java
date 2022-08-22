@@ -7,6 +7,7 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.Growable;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -16,11 +17,9 @@ import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -29,14 +28,12 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
-
-	public static final TrackedData<Boolean> SPAWN = DataTracker.registerData(RunnerbursterEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
 
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, World world) {
 		super(type, world);
@@ -72,25 +69,11 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 		return Constants.TPD / 2.0f;
 	}
 
-	public boolean isSpawn() {
-		return this.dataTracker.get(SPAWN).booleanValue();
-	}
-
-	public void setSpawnState(boolean state) {
-		this.dataTracker.set(SPAWN, Boolean.valueOf(state));
-	}
-
-	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(SPAWN, true);
-	}
-
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.isSpawn() == true && this.age > 30) {
-			this.setSpawnState(false);
+		if (this.isBirthed() == true && this.age > 30) {
+			this.setBirthStatus(false);
 		}
 	}
 
@@ -139,42 +122,60 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
-
-		if (velocityLength > 0.0 && !this.isAttacking() && !this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
-			return PlayState.CONTINUE;
-		}
-		if (velocityLength > 0.0 && this.isAttacking() && !this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.getTarget() != null && this.tryAttack(getTarget()) && !this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(EAT) == true) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		if (velocityLength >= 0.000000001 && !isDead && lastLimbDistance > 0.15F) {
+			if (lastLimbDistance >= 0.35F) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
+				return PlayState.CONTINUE;
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
+				return PlayState.CONTINUE;
+			}
+		} else if (((this.getTarget() != null && this.tryAttack(getTarget())) || (this.dataTracker.get(EAT) == true))
+				&& !this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
-		}
-		if (this.isDead()) {
+		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
+		} else {
+			if (this.dataTracker.get(BIRTHED) == true) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
+				return PlayState.CONTINUE;
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+				return PlayState.CONTINUE;
+			}
 		}
-		if (this.dataTracker.get(SPAWN) == true && !this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
-			return PlayState.CONTINUE;
+	}
+
+	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("stepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			}
 		}
-		if (this.age >= 25 && !this.isDead()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-			return PlayState.CONTINUE;
+		if (event.sound.matches("idleSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
-		return PlayState.CONTINUE;
+		if (event.sound.matches("attackSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_ATTACK,
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+		AnimationController<RunnerbursterEntity> main = new AnimationController<RunnerbursterEntity>(this, "controller",
+				10f, this::predicate);
+		main.registerSoundListener(this::soundStepListener);
+		data.addAnimationController(main);
 	}
 
 	@Override

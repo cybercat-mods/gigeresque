@@ -122,6 +122,14 @@
 						"vector": [0, 0.3, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"1.0": {
+					"effect": "stepSoundkey"
+				}
 			}
 		},
 		"moving_aggro": {
@@ -252,6 +260,20 @@
 					"rotation": {
 						"vector": [7.5, 0, 0]
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"0.52": {
+					"effect": "stepSoundkey"
+				},
+				"1.04": {
+					"effect": "stepSoundkey"
+				},
+				"1.56": {
+					"effect": "stepSoundkey"
 				}
 			}
 		},

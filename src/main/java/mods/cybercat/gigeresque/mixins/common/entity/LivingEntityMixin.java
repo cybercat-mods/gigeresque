@@ -224,7 +224,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				if (this.hasCustomName()) {
 					burster.setCustomName(this.getCustomName());
 				}
-
+				burster.setBirthStatus(true);
 				this.world.spawnEntity(burster);
 				hasParasiteSpawned = true;
 			}

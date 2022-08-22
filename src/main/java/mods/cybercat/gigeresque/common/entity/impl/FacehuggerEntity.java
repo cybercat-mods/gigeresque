@@ -57,6 +57,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -66,29 +67,26 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, world);
-
 	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-
 	public float ticksAttachedToHost = -1.0f;
-
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
 	public static final TrackedData<Boolean> EGGSPAWN = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-
 	public static final TrackedData<Boolean> ATTACKING = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-
 	public static final TrackedData<Boolean> JUMPING = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_INFERTILE = DataTracker.registerData(FacehuggerEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(FacehuggerEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, World world) {
 		super(type, world);
-
 		stepHeight = 1.5f;
 		navigation = landNavigation;
 		moveControl = landMoveControl;
@@ -103,11 +101,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3300000041723251);
 	}
-
-	private static final TrackedData<Boolean> IS_INFERTILE = DataTracker.registerData(FacehuggerEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(FacehuggerEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
 
 	@Override
 	protected void updatePostDeath() {
@@ -355,7 +348,6 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 			return;
 		}
 		setIsInfertile(true);
-//		this.kill();
 		super.stopRiding();
 	}
 
@@ -482,9 +474,21 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		return PlayState.CONTINUE;
 	}
 
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("huggingSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
+		AnimationController<FacehuggerEntity> controller = new AnimationController<FacehuggerEntity>(this, "controller",
+				10f, this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
 	}
 
 	@Override

@@ -129,6 +129,9 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		if (!world.isClient && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
+		if (this.isBirthed() == true && this.age > 30) {
+			this.setBirthStatus(false);
+		}
 	}
 
 	@Override
@@ -191,29 +194,30 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
-
-		if (velocityLength > 0.0 && !this.isAttacking()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
-			return PlayState.CONTINUE;
-		}
-		if (velocityLength > 0.0 && this.isAttacking()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(EAT) == true) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		if (velocityLength >= 0.000000001 && !isDead && lastLimbDistance > 0.15F) {
+			if (lastLimbDistance >= 0.35F) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
+				return PlayState.CONTINUE;
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
+				return PlayState.CONTINUE;
+			}
+		} else if (this.dataTracker.get(EAT) == true && !this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
-		}
-		if (this.isDead()) {
+		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
+		} else {
+			if (this.age < 5 && this.dataTracker.get(BIRTHED) == true) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
+				return PlayState.CONTINUE;
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+				return PlayState.CONTINUE;
+			}
 		}
-		if (this.age < 5 && this.dataTracker.get(BIRTHED) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-		return PlayState.CONTINUE;
 	}
 
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {

@@ -48,7 +48,7 @@ public class EatFoodGoal extends Goal {
 
 				chestburster.grow(chestburster, amountToEat * 1200 * 2.0f);
 			}
-			if (this.cooldown == 17) {
+			if (this.cooldown >= 17) {
 				this.chestburster.setEatingStatus(false);
 				cooldown = -5;
 			}
@@ -63,6 +63,7 @@ public class EatFoodGoal extends Goal {
 		if (!list.isEmpty()) {
 			this.chestburster.getNavigation().startMovingTo(list.get(0), 1.2f);
 		}
+		this.chestburster.setEatingStatus(false);
 		this.cooldown = 0;
 	}
 
@@ -70,5 +71,6 @@ public class EatFoodGoal extends Goal {
 	public void stop() {
 		super.stop();
 		cooldown = 0;
+		this.chestburster.setEatingStatus(false);
 	}
 }

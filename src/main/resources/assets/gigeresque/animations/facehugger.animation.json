@@ -4864,6 +4864,11 @@
 						"vector": [-32.5, 0, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"1.36": {
+					"effect": "huggingSoundkey"
+				}
 			}
 		},
 		"dead": {

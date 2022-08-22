@@ -1,28 +1,49 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import static java.lang.Math.max;
+
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RunnerAlienEntity extends AdultAlienEntity {
+
+	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
+			.registerData(RunnerAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	private AnimationFactory animationFactory = new AnimationFactory(this);
+	private int attackProgress = 0;
+	private boolean isSearching = false;
+	private long searchingProgress = 0L;
+	private long searchingCooldown = 0L;
+
 	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, World world) {
 		super(type, world);
 	}
@@ -38,11 +59,6 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
 	}
 
-	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
-			.registerData(RunnerAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
 	private AlienAttackType getCurrentAttackType() {
 		return dataTracker.get(CURRENT_ATTACK_TYPE);
 	}
@@ -50,8 +66,6 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private void setCurrentAttackType(AlienAttackType value) {
 		dataTracker.set(CURRENT_ATTACK_TYPE, value);
 	}
-
-	private int attackProgress = 0;
 
 	@Override
 	public void initDataTracker() {
@@ -87,6 +101,44 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			default -> AlienAttackType.CLAW_LEFT;
 			});
 		}
+
+		// Hissing Logic
+
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+			hissingCooldown++;
+
+			if (hissingCooldown == 20) {
+				setIsHissing(true);
+			}
+
+			if (hissingCooldown > 80) {
+				setIsHissing(false);
+				hissingCooldown = -500;
+			}
+		}
+
+		// Searching Logic
+
+		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
+				&& this.isAlive()) {
+			if (isSearching) {
+				if (searchingProgress > Constants.TPS * 3) {
+					searchingProgress = 0;
+					searchingCooldown = Constants.TPS * 15L;
+					isSearching = false;
+				} else {
+					searchingProgress++;
+				}
+			} else {
+				searchingCooldown = max(searchingCooldown - 1, 0);
+
+				if (searchingCooldown <= 0) {
+					int next = random.nextInt(10);
+
+					isSearching = next == 0 || next == 1;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -98,6 +150,13 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	protected void initGoals() {
 		super.initGoals();
 		this.goalSelector.add(2, new MeleeAttackGoal(this, 3.0, false));
+		this.targetSelector.add(2,
+				new ActiveTargetGoal<>(this, LivingEntity.class, true,
+						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| (entity instanceof HostileEntity) || ((Eggmorphable) entity).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
 	}
 
 	/*
@@ -106,24 +165,35 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
-
-		if (velocityLength > 0.0 && !this.isTouchingWater() && !this.isCrawling()) {
-			if (this.isAttacking()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_aggro", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
+				&& lastLimbDistance > 0.15F) {
+			if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("moving_noaggro", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
+			} else if (this.isExecuting() == false && lastLimbDistance < 0.35F
+					|| (!this.isCrawling() && !this.onGround)) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 				return PlayState.CONTINUE;
 			}
-		} else if (this.isCrawling()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl2", true));
+		} else if (this.isCrawling() && this.isExecuting() == false) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			return PlayState.CONTINUE;
+		} else if (isDead) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-			return PlayState.CONTINUE;
+			if (isSearching && !this.isAttacking()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
+				return PlayState.CONTINUE;
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+				return PlayState.CONTINUE;
+			}
 		}
+		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
@@ -137,7 +207,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		if (isHissing()) {
+		if (this.dataTracker.get(IS_HISSING) == true) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", true));
 			return PlayState.CONTINUE;
 		}
@@ -145,8 +215,53 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		return PlayState.STOP;
 	}
 
+	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("stepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("idleSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+	}
+
+	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("attackSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_ATTACK,
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			}
+		}
+	}
+
+	private <ENTITY extends IAnimatable> void soundHissListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("hissSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
+		AnimationController<RunnerAlienEntity> main = new AnimationController<RunnerAlienEntity>(this, "controller",
+				10f, this::predicate);
+		main.registerSoundListener(this::soundStepListener);
+		data.addAnimationController(main);
+		AnimationController<RunnerAlienEntity> attacking = new AnimationController<RunnerAlienEntity>(this,
+				"attackController", 0f, this::attackPredicate);
+		attacking.registerSoundListener(this::soundAttackListener);
+		data.addAnimationController(attacking);
+		AnimationController<RunnerAlienEntity> hissing = new AnimationController<RunnerAlienEntity>(this,
+				"hissController", 10f, this::hissPredicate);
+		hissing.registerSoundListener(this::soundHissListener);
+		data.addAnimationController(hissing);
 		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
 		data.addAnimationController(new AnimationController<>(this, "attackController", 0f, this::attackPredicate));
 		data.addAnimationController(new AnimationController<>(this, "hissController", 10f, this::hissPredicate));
