@@ -67,7 +67,7 @@ public class InGameOverlayRendererMixin {
 		float f = client.player.getBrightnessAtEyes();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShaderColor(f, f, f, 0.95F);
+		RenderSystem.setShaderColor(f, f, f, 1.0F);
 		float m = -client.player.getYaw() / 64.0F;
 		float n = client.player.getPitch() / 64.0F;
 		Matrix4f matrix4f = matrices.peek().getPositionMatrix();
