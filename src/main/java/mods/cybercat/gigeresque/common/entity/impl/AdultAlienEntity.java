@@ -253,7 +253,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		// Statis Logic
 		
 		var velocityLength = this.getVelocity().horizontalLength();
-		if (velocityLength == 0) {
+		if (velocityLength == 0 && !this.hasPassengers()) {
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
