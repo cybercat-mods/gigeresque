@@ -27,10 +27,11 @@ public class AquaBusterBloodFeatureRenderer extends GeoLayerRenderer<AquaticChes
 			AquaticChestbursterEntity alienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.field_32953 : OverlayTexture.DEFAULT_UV;
-		entityRenderer.render(getEntityModel().getModel(EntityModels.AQUATIC_CHESTBURSTER), alienEntity, partialTicks,
-				RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn, bufferIn,
-				bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.CHESTBURSTER_BLOOD)), packedLightIn, uv,
-				1.0f, 1.0f, 1.0f, 1.0F - (alienEntity.age / 1200));
+		if (!(alienEntity.getBlood() >= 1200))
+			entityRenderer.render(getEntityModel().getModel(EntityModels.AQUATIC_CHESTBURSTER), alienEntity,
+					partialTicks, RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn,
+					bufferIn, bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.CHESTBURSTER_BLOOD)),
+					packedLightIn, uv, 1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getBlood()) / 1200));
 	}
 
 	@Override

@@ -39,19 +39,17 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 
 	private static final TrackedData<Float> BLOOD = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
-
 	private static final TrackedData<Float> GROWTH = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
-
 	public static final TrackedData<Boolean> BIRTHED = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-
 	public static final TrackedData<Boolean> EAT = DataTracker.registerData(ChestbursterEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	public static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = item -> {
 		ItemStack itemStack = item.getStack();
 		return itemStack.isIn(GigTags.BUSTER_FOOD) && item.isAlive() && !item.cannotPickup();
 	};
+	public int bloodRendering = 0;
 
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 	protected String hostId = null;
@@ -127,6 +125,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	public void tick() {
 		super.tick();
 		if (!world.isClient && this.isAlive()) {
+			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
 		if (this.isBirthed() == true && this.age > 30) {
