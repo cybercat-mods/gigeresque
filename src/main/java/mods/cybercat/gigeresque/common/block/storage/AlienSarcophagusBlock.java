@@ -111,10 +111,9 @@ public class AlienSarcophagusBlock extends BlockWithEntity {
 
 	@Override
 	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		for (BlockPos testPos : BlockPos.iterate(pos, pos.up(2))) {
+		for (BlockPos testPos : BlockPos.iterate(pos, pos.up(2)))
 			if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
 				return false;
-		}
 		return true;
 	}
 
