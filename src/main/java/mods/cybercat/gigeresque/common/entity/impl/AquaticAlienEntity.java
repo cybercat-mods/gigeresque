@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -25,7 +26,6 @@ import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.control.YawAdjustingLookControl;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -141,7 +141,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	@Override
 	protected void initGoals() {
 		super.initGoals();
-		this.goalSelector.add(2, new MeleeAttackGoal(this, 2.0, false));
+		this.goalSelector.add(2, new AlienMeleeAttackGoal(this, 1.5, false));
 	}
 
 	private AlienAttackType getCurrentAttackType() {
