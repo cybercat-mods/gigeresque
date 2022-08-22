@@ -299,7 +299,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		var velocityLength = this.getVelocity().horizontalLength();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
-				&& lastLimbDistance > 0.15F) {
+				&& lastLimbDistance > 0.15F && this.isStatis() == false) {
 			if (!this.submergedInWater && this.isExecuting() == false) {
 				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
@@ -322,23 +322,26 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					}
 				}
 			}
-		} else if (this.isCrawling() && this.isExecuting() == false) {
+		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
-		} else if (this.isExecuting() == true && this.hasPassengers()) {
+		} else if (this.isExecuting() == true && this.hasPassengers() && this.isStatis() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution", false));
 			return PlayState.CONTINUE;
 		} else {
 			if (this.submergedInWater && !isSearching && !this.isAttacking() && !this.hasPassengers()
-					&& this.isExecuting() == false) {
+					&& this.isExecuting() == false && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 				return PlayState.CONTINUE;
 			} else if (!this.submergedInWater && isSearching && !this.isAttacking() && !this.hasPassengers()
-					&& this.isExecuting() == false) {
+					&& this.isExecuting() == false && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
+				return PlayState.CONTINUE;
+			} else if (this.isStatis() == true || this.isAiDisabled()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
 				return PlayState.CONTINUE;
 			} else if (!this.submergedInWater && this.isExecuting() == false && !this.hasPassengers()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));

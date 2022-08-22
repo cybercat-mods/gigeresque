@@ -189,7 +189,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive() && this.isStatis() == false) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -205,7 +205,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		// Searching Logic
 
 		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive()) {
+				&& this.isAlive() && this.isStatis() == false) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -278,32 +278,42 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
-
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
 		if (this.isSubmergedInWater() && this.touchingWater) {
-			if (this.isAttacking() && velocityLength > 0.0) {
+			if (this.isAttacking() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
 				return PlayState.CONTINUE;
-			} else if (!this.isAttacking() && velocityLength > 0.0) {
+			} else if (!this.isAttacking() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
+				return PlayState.CONTINUE;
+			} else if (isDead) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 				return PlayState.CONTINUE;
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 				return PlayState.CONTINUE;
 			}
 		} else {
-			if (this.isAttacking() && velocityLength > 0.0) {
+			if (this.isAttacking() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_crawl", true));
 				return PlayState.CONTINUE;
-			} else if (!this.isAttacking() && velocityLength > 0.0) {
+			} else if (!this.isAttacking() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 				return PlayState.CONTINUE;
-			} else if (isSearching && !this.isAttacking()) {
+			} else if (isSearching && !this.isAttacking() && !isDead && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else {
+			} else if (isDead) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+				return PlayState.CONTINUE;
+			} else if (this.isStatis() == true || this.isAiDisabled()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
+				return PlayState.CONTINUE;
+			} else if (this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land2", true));
 				return PlayState.CONTINUE;
 			}
+			return PlayState.CONTINUE;
 		}
 	}
 

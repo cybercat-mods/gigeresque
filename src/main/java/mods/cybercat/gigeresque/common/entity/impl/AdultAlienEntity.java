@@ -53,6 +53,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			TrackedDataHandlerRegistry.FLOAT);
 	protected static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	protected static final TrackedData<Float> STATIS_TIMER = DataTracker.registerData(AdultAlienEntity.class,
+			TrackedDataHandlerRegistry.FLOAT);
+	protected static final TrackedData<Boolean> IS_STATIS = DataTracker.registerData(AdultAlienEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 	protected static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	protected static final TrackedData<Boolean> IS_BREAKING = DataTracker.registerData(AdultAlienEntity.class,
@@ -66,6 +70,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 	protected long hissingCooldown = 0L;
+	public int statisCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -75,6 +80,22 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
 		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+	}
+
+	public float getStatisTimer() {
+		return dataTracker.get(STATIS_TIMER);
+	}
+
+	public void setStatisTimer(float timer) {
+		dataTracker.set(STATIS_TIMER, timer);
+	}
+
+	public boolean isStatis() {
+		return dataTracker.get(IS_STATIS);
+	}
+
+	public void setIsStatis(boolean isExecuting) {
+		dataTracker.set(IS_STATIS, isExecuting);
 	}
 
 	public boolean isExecuting() {
@@ -149,25 +170,32 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public void initDataTracker() {
 		super.initDataTracker();
 		dataTracker.startTracking(GROWTH, 0.0f);
+		dataTracker.startTracking(STATIS_TIMER, 0.0f);
 		dataTracker.startTracking(IS_HISSING, false);
 		dataTracker.startTracking(IS_CLIMBING, false);
 		dataTracker.startTracking(IS_BREAKING, false);
 		dataTracker.startTracking(IS_EXECUTION, false);
+		dataTracker.startTracking(IS_STATIS, false);
 	}
 
 	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
 		super.writeCustomDataToNbt(nbt);
 		nbt.putFloat("growth", getGrowth());
+		nbt.putFloat("getStatisTimer", getStatisTimer());
 		nbt.putBoolean("isHissing", isHissing());
 		nbt.putBoolean("isCrawling", isCrawling());
 		nbt.putBoolean("isBreaking", isBreaking());
 		nbt.putBoolean("isExecuting", isExecuting());
+		nbt.putBoolean("isStatis", isStatis());
 	}
 
 	@Override
 	public void readCustomDataFromNbt(NbtCompound nbt) {
 		super.readCustomDataFromNbt(nbt);
+		if (nbt.contains("getStatisTimer")) {
+			setGrowth(nbt.getFloat("getStatisTimer"));
+		}
 		if (nbt.contains("growth")) {
 			setGrowth(nbt.getFloat("growth"));
 		}
@@ -183,6 +211,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (nbt.contains("isExecuting")) {
 			setIsExecuting(nbt.getBoolean("isExecuting"));
 		}
+		if (nbt.contains("isStatis")) {
+			setIsExecuting(nbt.getBoolean("isStatis"));
+		}
+        this.setIsExecuting(nbt.getBoolean("NoAI"));
 	}
 
 	@Override
@@ -216,6 +248,18 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		if (!world.isClient && this.hasPassengers()) {
 			this.setAttacking(false);
+		}
+
+		var velocityLength = this.getVelocity().horizontalLength();
+		if (velocityLength == 0) {
+			setStatisTimer(statisCounter++);
+			if (getStatisTimer() == 500 || this.isStatis() == true) {
+				setIsStatis(true);
+			}
+		} else {
+			setStatisTimer(0);
+			statisCounter = 0;
+			setIsStatis(false);
 		}
 	}
 
