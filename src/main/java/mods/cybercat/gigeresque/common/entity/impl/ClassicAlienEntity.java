@@ -178,7 +178,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive() && this.isStatis() == false) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -194,7 +194,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		// Searching Logic
 
 		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive()) {
+				&& this.isAlive() && this.isStatis() == false) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
