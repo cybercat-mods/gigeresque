@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
@@ -24,8 +24,8 @@ public class InvisAlienChestBlock extends Block {
 	private static final VoxelShape OUTLINE_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 16);
 
 	public InvisAlienChestBlock() {
-		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.GLOW_LICHEN).strength(5.0f, 8.0f)
-				.nonOpaque().dropsNothing());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(BlockSoundGroup.GLOW_LICHEN)
+				.strength(5.0f, 8.0f).nonOpaque().dropsNothing());
 	}
 
 	@Override

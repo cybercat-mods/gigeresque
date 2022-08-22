@@ -2,12 +2,12 @@ package mods.cybercat.gigeresque.common.block.storage;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
+import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -39,8 +39,8 @@ public class SittingIdolBlock extends BlockWithEntity {
 	BlockPos[] blockPoss;
 
 	public SittingIdolBlock() {
-		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(5.0f, 8.0f)
-				.nonOpaque());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(BlockSoundGroup.DRIPSTONE_BLOCK)
+				.strength(5.0f, 8.0f).nonOpaque());
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
 	}
 

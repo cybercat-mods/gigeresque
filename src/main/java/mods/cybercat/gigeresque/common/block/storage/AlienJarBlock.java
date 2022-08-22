@@ -5,12 +5,12 @@ import java.util.stream.Stream;
 import mods.cybercat.gigeresque.common.block.StorageProperties;
 import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
+import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,8 +45,8 @@ public class AlienJarBlock extends BlockWithEntity {
 			.reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, BooleanBiFunction.OR)).get();
 
 	public AlienJarBlock() {
-		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(5.0f, 8.0f)
-				.nonOpaque());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(BlockSoundGroup.DRIPSTONE_BLOCK)
+				.strength(5.0f, 8.0f).nonOpaque());
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(STORAGE_STATE,
 				StorageStates.CLOSED));
 	}
@@ -96,7 +96,7 @@ public class AlienJarBlock extends BlockWithEntity {
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
+		if (world.getBlockEntity(pos)instanceof JarStorageEntity jarStorageEntity)
 			jarStorageEntity.tick();
 	}
 }
