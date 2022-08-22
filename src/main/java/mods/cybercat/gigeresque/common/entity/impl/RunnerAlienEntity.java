@@ -97,7 +97,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()) {
+		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()
+				&& this.isStatis() == false) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -113,7 +114,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		// Searching Logic
 
 		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive()) {
+				&& this.isAlive() && this.isStatis() == false) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -153,7 +154,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		var velocityLength = this.getVelocity().horizontalLength();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
-				&& lastLimbDistance > 0.15F) {
+				&& lastLimbDistance > 0.15F && this.isStatis() == false) {
 			if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
@@ -164,17 +165,20 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 				return PlayState.CONTINUE;
 			}
-		} else if (this.isCrawling() && this.isExecuting() == false) {
+		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (isSearching && !this.isAttacking()) {
+			if (isSearching && !this.isAttacking() && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else {
+			} else if (this.isStatis() == true || this.isAiDisabled()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
+				return PlayState.CONTINUE;
+			} else if (this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 				return PlayState.CONTINUE;
 			}
