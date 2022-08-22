@@ -63,7 +63,6 @@ public class EatFoodGoal extends Goal {
 		if (!list.isEmpty()) {
 			this.chestburster.getNavigation().startMovingTo(list.get(0), 1.2f);
 		}
-		this.chestburster.setEatingStatus(false);
 		this.cooldown = 0;
 	}
 
