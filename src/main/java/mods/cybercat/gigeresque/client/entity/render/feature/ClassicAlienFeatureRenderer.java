@@ -27,11 +27,11 @@ public class ClassicAlienFeatureRenderer extends GeoLayerRenderer<ClassicAlienEn
 			ClassicAlienEntity alienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.field_32953 : OverlayTexture.DEFAULT_UV;
-
-		entityRenderer.render(getEntityModel().getModel(EntityModels.ALIEN), alienEntity, partialTicks,
-				RenderLayer.getEntityTranslucent(EntityTextures.ALIEN_YOUNG), matrixStackIn, bufferIn,
-				bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.ALIEN_YOUNG)), packedLightIn, uv, 1.0f,
-				1.0f, 1.0f, ((1200 - alienEntity.getGrowth()) / 1200));
+		if (!(alienEntity.getGrowth() >= alienEntity.getMaxGrowth()))
+			entityRenderer.render(getEntityModel().getModel(EntityModels.ALIEN), alienEntity, partialTicks,
+					RenderLayer.getEntityTranslucent(EntityTextures.ALIEN_YOUNG), matrixStackIn, bufferIn,
+					bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.ALIEN_YOUNG)), packedLightIn, uv,
+					1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getGrowth()) / 1200));
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;
@@ -28,12 +27,12 @@ public class RunnerAlienFeatureRenderer extends GeoLayerRenderer<RunnerAlienEnti
 			RunnerAlienEntity runnerAlienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		var uv = runnerAlienEntity.hurtTime > 0 ? OverlayTexture.field_32953 : OverlayTexture.DEFAULT_UV;
-
-		entityRenderer.render(getEntityModel().getModel(EntityModels.RUNNER_ALIEN), runnerAlienEntity, partialTicks,
-				RenderLayer.getEntityTranslucent(EntityTextures.RUNNER_ALIEN_YOUNG), matrixStackIn, bufferIn,
-				bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.RUNNER_ALIEN_YOUNG)), packedLightIn, uv,
-				1.0f, 1.0f, 1.0f, ((runnerAlienEntity.getMaxGrowth() - runnerAlienEntity.getGrowth())
-						/ runnerAlienEntity.getMaxGrowth()));
+		if (!(runnerAlienEntity.getGrowth() >= runnerAlienEntity.getMaxGrowth()))
+			entityRenderer.render(getEntityModel().getModel(EntityModels.RUNNER_ALIEN), runnerAlienEntity, partialTicks,
+					RenderLayer.getEntityTranslucent(EntityTextures.RUNNER_ALIEN_YOUNG), matrixStackIn, bufferIn,
+					bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.RUNNER_ALIEN_YOUNG)), packedLightIn,
+					uv, 1.0f, 1.0f, 1.0f, ((runnerAlienEntity.getMaxGrowth() - runnerAlienEntity.getGrowth())
+							/ runnerAlienEntity.getMaxGrowth()));
 	}
 
 	@Override
