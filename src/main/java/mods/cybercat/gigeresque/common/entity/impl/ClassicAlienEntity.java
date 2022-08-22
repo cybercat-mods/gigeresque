@@ -172,9 +172,18 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			case 1 -> AlienAttackType.CLAW_RIGHT;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
+		}
+
+		// Hissing Logic
+
+		if (!world.isClient && isHissing() && !isSearching && !this.hasPassengers()) {
+			hissingCooldown = max(hissingCooldown - 1, 0);
+
+			if (hissingCooldown <= 0) {
+				setIsHissing(false);
+			}
 		}
 
 		// Searching Logic
@@ -364,6 +373,12 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		if (event.sound.matches("stepSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("idleSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}

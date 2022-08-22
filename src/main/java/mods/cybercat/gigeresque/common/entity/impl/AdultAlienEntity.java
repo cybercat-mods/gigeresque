@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import static java.lang.Math.max;
-
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
@@ -67,7 +65,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final LookControl landLookControl = new LookControl(this);
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-	private long hissingCooldown = 0L;
+	protected long hissingCooldown = 0L;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -219,16 +217,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (!world.isClient && this.hasPassengers()) {
 			this.setAttacking(false);
 		}
-
-		// Hissing Logic
-
-		if (!world.isClient && isHissing() && !this.hasPassengers()) {
-			hissingCooldown = max(hissingCooldown - 1, 0);
-
-			if (hissingCooldown <= 0) {
-				setIsHissing(false);
-			}
-		}
 	}
 
 	@Override
@@ -294,11 +282,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	/*
 	 * SOUNDS
 	 */
-
-	@Override
-	public SoundEvent getAmbientSound() {
-		return GigSounds.ALIEN_AMBIENT;
-	}
 
 	@Override
 	public SoundEvent getHurtSound(DamageSource source) {

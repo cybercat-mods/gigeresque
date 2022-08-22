@@ -187,6 +187,16 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 			});
 		}
 
+		// Hissing Logic
+
+		if (!world.isClient && isHissing() && !isSearching && !this.hasPassengers()) {
+			hissingCooldown = max(hissingCooldown - 1, 0);
+
+			if (hissingCooldown <= 0) {
+				setIsHissing(false);
+			}
+		}
+
 		// Searching Logic
 
 		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking()) {
@@ -318,6 +328,12 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		if (event.sound.matches("stepSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDMOVE,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("idleSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
