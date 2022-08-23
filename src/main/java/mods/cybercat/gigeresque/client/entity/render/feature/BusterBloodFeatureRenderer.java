@@ -30,7 +30,7 @@ public class BusterBloodFeatureRenderer extends GeoLayerRenderer<ChestbursterEnt
 		if (!(alienEntity.getBlood() >= 1200))
 			entityRenderer.render(getEntityModel().getModel(EntityModels.CHESTBURSTER), alienEntity, partialTicks,
 					RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn, bufferIn,
-					bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.CHESTBURSTER_BLOOD)), packedLightIn,
+					bufferIn.getBuffer(RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)), packedLightIn,
 					uv, 1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getBlood()) / 1200));
 	}
 

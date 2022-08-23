@@ -30,7 +30,7 @@ public class RunnerAlienFeatureRenderer extends GeoLayerRenderer<RunnerAlienEnti
 		if (!(runnerAlienEntity.getGrowth() >= runnerAlienEntity.getMaxGrowth()))
 			entityRenderer.render(getEntityModel().getModel(EntityModels.RUNNER_ALIEN), runnerAlienEntity, partialTicks,
 					RenderLayer.getEntityTranslucent(EntityTextures.RUNNER_ALIEN_YOUNG), matrixStackIn, bufferIn,
-					bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.RUNNER_ALIEN_YOUNG)), packedLightIn,
+					bufferIn.getBuffer(RenderLayer.getEntityTranslucent(EntityTextures.RUNNER_ALIEN_YOUNG)), packedLightIn,
 					uv, 1.0f, 1.0f, 1.0f, ((runnerAlienEntity.getMaxGrowth() - runnerAlienEntity.getGrowth())
 							/ runnerAlienEntity.getMaxGrowth()));
 	}

@@ -30,7 +30,7 @@ public class AquaBusterBloodFeatureRenderer extends GeoLayerRenderer<AquaticChes
 		if (!(alienEntity.getBlood() >= 1200))
 			entityRenderer.render(getEntityModel().getModel(EntityModels.AQUATIC_CHESTBURSTER), alienEntity,
 					partialTicks, RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn,
-					bufferIn, bufferIn.getBuffer(RenderLayer.getEntityCutout(EntityTextures.CHESTBURSTER_BLOOD)),
+					bufferIn, bufferIn.getBuffer(RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)),
 					packedLightIn, uv, 1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getBlood()) / 1200));
 	}
 
