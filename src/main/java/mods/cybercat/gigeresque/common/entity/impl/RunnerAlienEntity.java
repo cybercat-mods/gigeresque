@@ -95,6 +95,20 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			});
 		}
 
+		// Statis Logic
+
+		var velocityLength = this.getVelocity().horizontalLength();
+		if (velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing()) {
+			setStatisTimer(statisCounter++);
+			if (getStatisTimer() == 500 || this.isStatis() == true) {
+				setIsStatis(true);
+			}
+		} else {
+			setStatisTimer(0);
+			statisCounter = 0;
+			setIsStatis(false);
+		}
+
 		// Hissing Logic
 
 		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()
