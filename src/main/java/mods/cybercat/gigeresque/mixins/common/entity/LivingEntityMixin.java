@@ -119,8 +119,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			}
 		}
 		if (!this.world.isClient) {
-			if (this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
-					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING) {
+			if ((this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_STILL
+					|| this.world.getFluidState(this.getBlockPos()).getFluid() == GigFluids.BLACK_FLUID_FLOWING)
+					&& !ConfigAccessor.isTargetDNAImmune(this)) {
 				if (!this.hasStatusEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof PlayerEntity)
 						&& !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof CreeperEntity)
 						&& !(ConfigAccessor.isTargetDNAImmune(this)))
@@ -141,7 +142,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (!this.world.isClient) {
 			if (((((Object) this)instanceof PlayerEntity playerEntity
 					&& (playerEntity.isCreative() || this.isSpectator()))
-					|| world.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity)) {
+					|| world.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity)
+					|| ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
@@ -299,6 +301,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		boolean notAlien = !(((Object) this) instanceof AlienEntity);
 		if (((((Object) this)instanceof PlayerEntity playerEntity && (playerEntity.isCreative() || this.isSpectator())))
 				&& !(((Object) this) instanceof AlienEntity)) {
+			return false;
+		}
+		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
 			return false;
 		}
 		return notAlien && isCoveredInResin;

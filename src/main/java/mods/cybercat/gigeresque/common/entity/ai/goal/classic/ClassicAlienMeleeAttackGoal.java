@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -245,7 +246,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 					.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
 			SplittableRandom random = new SplittableRandom();
 			int randomPhase = random.nextInt(0, 100);
-			if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)) {
+			if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
+					&& !ConfigAccessor.isTargetBlacklisted(this.mob, target)) {
 				this.mob.grabTarget(target);
 			} else {
 				if (!this.mob.hasPassengers()) {
