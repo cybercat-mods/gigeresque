@@ -179,7 +179,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		// Statis Logic
 
 		var velocityLength = this.getVelocity().horizontalLength();
-		if (velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing()) {
+		if ((velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
@@ -192,8 +192,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		// Hissing Logic
 
-		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()
-				&& this.isStatis() == false) {
+		if (!world.isClient && (!this.isSearching && !this.hasPassengers() && this.isAlive()
+				&& this.isStatis() == false)) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -208,8 +208,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		// Searching Logic
 
-		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive() && this.isStatis() == false) {
+		if (world.isClient && (velocityLength == 0 && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
+				&& this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
