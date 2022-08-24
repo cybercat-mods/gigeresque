@@ -408,6 +408,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
 						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))

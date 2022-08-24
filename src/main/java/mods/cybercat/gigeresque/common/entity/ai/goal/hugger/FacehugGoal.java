@@ -44,6 +44,10 @@ public class FacehugGoal extends Goal {
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
 			return false;
 		}
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+				.anyMatch(AlienEntity.class::isInstance)) {
+			return false;
+		}
 		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
 			return false;
 		}

@@ -58,6 +58,10 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (list2.anyMatch(NEST)) {
 			return false;
 		}
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+				.anyMatch(AlienEntity.class::isInstance)) {
+			return false;
+		}
 		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
@@ -104,6 +108,10 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		Stream<BlockState> list2 = livingEntity.world
 				.getStatesInBoxIfLoaded(livingEntity.getBoundingBox().expand(2.0, 2.0, 2.0));
 		if (list2.anyMatch(NEST)) {
+			return false;
+		}
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+				.anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (((Host) livingEntity).hasParasite()) {

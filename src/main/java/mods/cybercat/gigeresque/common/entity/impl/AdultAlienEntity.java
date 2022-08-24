@@ -214,7 +214,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		if (nbt.contains("isStatis")) {
 			setIsExecuting(nbt.getBoolean("isStatis"));
 		}
-        this.setIsExecuting(nbt.getBoolean("NoAI"));
 	}
 
 	@Override
@@ -334,6 +333,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
 						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));

@@ -46,6 +46,10 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+				.anyMatch(AlienEntity.class::isInstance)) {
+			return false;
+		}
 		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
@@ -99,6 +103,10 @@ public class AlienMeleeAttackGoal extends Goal {
 			return false;
 		if (!this.pauseWhenMobIdle) {
 			return !this.mob.getNavigation().isIdle();
+		}
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+				.anyMatch(AlienEntity.class::isInstance)) {
+			return false;
 		}
 		if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
 			return false;
