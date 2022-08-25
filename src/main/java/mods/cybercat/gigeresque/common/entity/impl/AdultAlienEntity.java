@@ -333,8 +333,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity)
-								|| (entity instanceof WardenEntity || entity instanceof ArmorStandEntity)
+						entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
+								|| entity instanceof ArmorStandEntity)
 								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()

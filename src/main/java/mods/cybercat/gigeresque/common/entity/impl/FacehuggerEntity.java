@@ -407,8 +407,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	@Override
 	protected void initGoals() {
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !((entity instanceof AlienEntity)
-						|| (entity instanceof WardenEntity || entity instanceof ArmorStandEntity)
+				entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
+						|| entity instanceof ArmorStandEntity)
 						|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
 								.anyMatch(AlienEntity.class::isInstance))
 						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
