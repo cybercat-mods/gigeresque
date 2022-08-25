@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Hand;
@@ -59,8 +60,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (list2.anyMatch(NEST)) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
-				.anyMatch(AlienEntity.class::isInstance)) {
+		if (livingEntity.getVehicle() != null
+				&& livingEntity.getVehicle().streamSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (((Host) livingEntity).hasParasite()) {
@@ -88,6 +89,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity instanceof AlienEntity) {
 			return false;
 		}
+		if (livingEntity instanceof ArmorStandEntity) {
+			return false;
+		}
 		if (this.mob.hasPassengers())
 			return false;
 		if (((Host) livingEntity).isBleeding()) {
@@ -111,14 +115,17 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (list2.anyMatch(NEST)) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
-				.anyMatch(AlienEntity.class::isInstance)) {
+		if (livingEntity.getVehicle() != null
+				&& livingEntity.getVehicle().streamSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (((Host) livingEntity).hasParasite()) {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
+			return false;
+		}
+		if (livingEntity instanceof ArmorStandEntity) {
 			return false;
 		}
 		if (this.mob.hasPassengers())

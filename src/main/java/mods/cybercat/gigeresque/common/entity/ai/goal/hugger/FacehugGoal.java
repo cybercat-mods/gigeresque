@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -39,6 +40,9 @@ public class FacehugGoal extends Goal {
 			return false;
 		}
 		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+			return false;
+		}
+		if (livingEntity instanceof ArmorStandEntity) {
 			return false;
 		}
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {

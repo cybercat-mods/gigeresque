@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Hand;
@@ -54,6 +55,9 @@ public class AlienMeleeAttackGoal extends Goal {
 			return false;
 		}
 		if (!livingEntity.isAlive()) {
+			return false;
+		}
+		if (livingEntity instanceof ArmorStandEntity) {
 			return false;
 		}
 		this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
@@ -103,6 +107,9 @@ public class AlienMeleeAttackGoal extends Goal {
 			return false;
 		if (!this.pauseWhenMobIdle) {
 			return !this.mob.getNavigation().isIdle();
+		}
+		if (livingEntity instanceof ArmorStandEntity) {
+			return false;
 		}
 		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
 				.anyMatch(AlienEntity.class::isInstance)) {

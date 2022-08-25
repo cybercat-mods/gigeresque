@@ -34,6 +34,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
@@ -332,12 +333,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
+						entity -> !((entity instanceof AlienEntity)
+								|| (entity instanceof WardenEntity || entity instanceof ArmorStandEntity)
 								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
+								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& entity.isAlive())));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 	}
 

@@ -37,6 +37,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.WardenEntity;
@@ -405,15 +406,15 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 
 	@Override
 	protected void initGoals() {
-		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
-								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-								&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity)));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
+				entity -> !((entity instanceof AlienEntity)
+						|| (entity instanceof WardenEntity || entity instanceof ArmorStandEntity)
+						|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
+								.anyMatch(AlienEntity.class::isInstance))
+						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+						|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
 		this.goalSelector.add(5, new FleeFireGoal<FacehuggerEntity>(this));
 		this.goalSelector.add(5, new FacehugGoal(this, 0.9D));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F, 0));
