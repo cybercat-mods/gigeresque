@@ -30,6 +30,7 @@ public class GigSounds implements GigeresqueInitializer {
 	public static final SoundEvent EGG_OPEN = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_open"));
 
 	public static final SoundEvent AQUA_LANDMOVE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "aqua_landmove"));
+	public static final SoundEvent AQUA_LANDCLAW = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "aqua_landclaw"));
 
 	public static final SoundEvent BURSTER_CRAWL = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "burster_crawl"));
 
@@ -38,8 +39,7 @@ public class GigSounds implements GigeresqueInitializer {
 	public static final SoundEvent HUGGER_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_hurt"));
 	public static final SoundEvent HUGGER_IMPLANT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "hugger_implant"));
 
-	public static final SoundEvent CHESTBURSTING = new SoundEvent(
-			new Identifier(Gigeresque.MOD_ID, "gigeresque_chestbursting"));
+	public static final SoundEvent CHESTBURSTING = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "chestbursting"));
 
 	@Override
 	public void initialize() {
@@ -54,6 +54,7 @@ public class GigSounds implements GigeresqueInitializer {
 		register(EGG_OPEN);
 
 		register(AQUA_LANDMOVE);
+		register(AQUA_LANDCLAW);
 
 		register(BURSTER_CRAWL);
 

@@ -115,7 +115,7 @@
 			}
 		]
 	},
-	"gigeresque_chestbursting": {
+	"chestbursting": {
 		"sounds": [
 			{
 				"name": "gigeresque:burster/chestbursting"
@@ -165,6 +165,16 @@
 			},
 			{
 				"name": "gigeresque:burster/burster_crawl_3"
+			}
+		]
+	},
+	"aqua_landclaw": {
+		"sounds": [
+			{
+				"name": "gigeresque:aqua/aqua_landclaw_1"
+			},
+			{
+				"name": "gigeresque:aqua/aqua_landclaw_2"
 			}
 		]
 	}

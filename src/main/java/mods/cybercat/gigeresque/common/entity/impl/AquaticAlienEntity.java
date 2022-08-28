@@ -362,6 +362,12 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
+		if (event.sound.matches("clawSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDCLAW,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
 		if (event.sound.matches("idleSoundkey")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
