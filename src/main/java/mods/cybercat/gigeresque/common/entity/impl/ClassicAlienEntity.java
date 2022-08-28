@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import static java.lang.Math.max;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,7 +12,6 @@ import com.mojang.serialization.Dynamic;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
@@ -37,8 +34,6 @@ import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
@@ -66,13 +61,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			MemoryModuleType.MOBS, MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleType.NEAREST_ATTACKABLE,
 			MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
 			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
-	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
-			.registerData(ClassicAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	private AnimationFactory animationFactory = new AnimationFactory(this);
-	private int attackProgress = 0;
-	private boolean isSearching = false;
-	private long searchingProgress = 0L;
-	private long searchingCooldown = 0L;
 
 	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
@@ -105,20 +94,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
-	}
-
-	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
-	}
-
-	private AlienAttackType getCurrentAttackType() {
-		return dataTracker.get(CURRENT_ATTACK_TYPE);
-	}
-
-	private void setCurrentAttackType(AlienAttackType value) {
-		dataTracker.set(CURRENT_ATTACK_TYPE, value);
 	}
 
 	@Override
@@ -174,59 +149,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			case 3 -> AlienAttackType.TAIL_RIGHT;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
-		}
-
-		// Statis Logic
-
-		var velocityLength = this.getVelocity().horizontalLength();
-		if ((velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing())) {
-			setStatisTimer(statisCounter++);
-			if (getStatisTimer() == 500 || this.isStatis() == true) {
-				setIsStatis(true);
-			}
-		} else {
-			setStatisTimer(0);
-			statisCounter = 0;
-			setIsStatis(false);
-		}
-
-		// Hissing Logic
-
-		if (!world.isClient && (!this.isSearching && !this.hasPassengers() && this.isAlive()
-				&& this.isStatis() == false)) {
-			hissingCooldown++;
-
-			if (hissingCooldown == 20) {
-				setIsHissing(true);
-			}
-
-			if (hissingCooldown > 80) {
-				setIsHissing(false);
-				hissingCooldown = -500;
-			}
-		}
-
-		// Searching Logic
-
-		if (world.isClient && (velocityLength == 0 && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive() && this.isStatis() == false)) {
-			if (isSearching) {
-				if (searchingProgress > Constants.TPS * 3) {
-					searchingProgress = 0;
-					searchingCooldown = Constants.TPS * 15L;
-					isSearching = false;
-				} else {
-					searchingProgress++;
-				}
-			} else {
-				searchingCooldown = max(searchingCooldown - 1, 0);
-
-				if (searchingCooldown <= 0) {
-					int next = random.nextInt(10);
-
-					isSearching = next == 0 || next == 1;
-				}
-			}
 		}
 		if (this.isAttacking()) {
 			this.setPose(EntityPose.CROUCHING);

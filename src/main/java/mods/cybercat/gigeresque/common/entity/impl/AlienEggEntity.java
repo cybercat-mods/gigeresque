@@ -47,11 +47,9 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
-
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {

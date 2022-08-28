@@ -1,14 +1,11 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import static java.lang.Math.max;
-
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
@@ -32,8 +29,6 @@ import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ArmorItem;
@@ -51,12 +46,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class AquaticAlienEntity extends AdultAlienEntity {
-	private boolean isSearching = false;
-	private long searchingProgress = 0L;
-	private long searchingCooldown = 0L;
-	private int attackProgress = 0;
-	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
-			.registerData(AquaticAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 	private final MobNavigation landNavigation = new MobNavigation(this, world);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
@@ -144,20 +134,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		this.goalSelector.add(2, new AlienMeleeAttackGoal(this, 1.5, false));
 	}
 
-	private AlienAttackType getCurrentAttackType() {
-		return dataTracker.get(CURRENT_ATTACK_TYPE);
-	}
-
-	private void setCurrentAttackType(AlienAttackType value) {
-		dataTracker.set(CURRENT_ATTACK_TYPE, value);
-	}
-
-	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
-	}
-
 	@Override
 	public void tick() {
 		super.tick();
@@ -185,59 +161,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
-		}
-
-		// Statis Logic
-
-		var velocityLength = this.getVelocity().horizontalLength();
-		if (velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing()) {
-			setStatisTimer(statisCounter++);
-			if (getStatisTimer() == 500 || this.isStatis() == true) {
-				setIsStatis(true);
-			}
-		} else {
-			setStatisTimer(0);
-			statisCounter = 0;
-			setIsStatis(false);
-		}
-
-		// Hissing Logic
-
-		if (!world.isClient && !this.isSearching && !this.hasPassengers() && this.isAlive()
-				&& this.isStatis() == false) {
-			hissingCooldown++;
-
-			if (hissingCooldown == 20) {
-				setIsHissing(true);
-			}
-
-			if (hissingCooldown > 80) {
-				setIsHissing(false);
-				hissingCooldown = -500;
-			}
-		}
-
-		// Searching Logic
-
-		if (world.isClient && this.getVelocity().horizontalLength() == 0.0 && !this.isAttacking() && !this.isHissing()
-				&& this.isAlive() && this.isStatis() == false) {
-			if (isSearching) {
-				if (searchingProgress > Constants.TPS * 3) {
-					searchingProgress = 0;
-					searchingCooldown = Constants.TPS * 15L;
-					isSearching = false;
-				} else {
-					searchingProgress++;
-				}
-			} else {
-				searchingCooldown = max(searchingCooldown - 1, 0);
-
-				if (searchingCooldown <= 0) {
-					int next = random.nextInt(10);
-
-					isSearching = next == 0 || next == 1;
-				}
-			}
 		}
 	}
 

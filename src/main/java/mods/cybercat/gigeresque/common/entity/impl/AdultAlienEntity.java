@@ -1,10 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import static java.lang.Math.max;
+
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
+import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
@@ -64,6 +68,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			TrackedDataHandlerRegistry.BOOLEAN);
 	protected static final TrackedData<Boolean> IS_EXECUTION = DataTracker.registerData(AdultAlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
+			.registerData(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
 	protected final MoveControl landMoveControl = new MoveControl(this);
@@ -72,11 +78,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
+	protected boolean isSearching = false;
+	protected long searchingProgress = 0L;
+	protected long searchingCooldown = 0L;
+	protected int attackProgress = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
 		super(type, world);
 		stepHeight = 1.5f;
-
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -167,6 +176,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		return false;
 	}
 
+	protected AlienAttackType getCurrentAttackType() {
+		return dataTracker.get(CURRENT_ATTACK_TYPE);
+	}
+
+	protected void setCurrentAttackType(AlienAttackType value) {
+		dataTracker.set(CURRENT_ATTACK_TYPE, value);
+	}
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
@@ -177,6 +194,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		dataTracker.startTracking(IS_BREAKING, false);
 		dataTracker.startTracking(IS_EXECUTION, false);
 		dataTracker.startTracking(IS_STATIS, false);
+		dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 	@Override
@@ -248,6 +266,59 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		if (!world.isClient && this.hasPassengers()) {
 			this.setAttacking(false);
+		}
+
+		// Statis Logic
+
+		var velocityLength = this.getVelocity().horizontalLength();
+		if ((velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing())) {
+			setStatisTimer(statisCounter++);
+			if (getStatisTimer() == 500 || this.isStatis() == true) {
+				setIsStatis(true);
+			}
+		} else {
+			setStatisTimer(0);
+			statisCounter = 0;
+			setIsStatis(false);
+		}
+
+		// Hissing Logic
+
+		if (!world.isClient
+				&& (!this.isSearching && !this.hasPassengers() && this.isAlive() && this.isStatis() == false)) {
+			hissingCooldown++;
+
+			if (hissingCooldown == 20) {
+				setIsHissing(true);
+			}
+
+			if (hissingCooldown > 80) {
+				setIsHissing(false);
+				hissingCooldown = -500;
+			}
+		}
+
+		// Searching Logic
+
+		if (world.isClient && (velocityLength == 0 && this.getVelocity().horizontalLength() == 0.0
+				&& !this.isAttacking() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+			if (isSearching) {
+				if (searchingProgress > Constants.TPS * 3) {
+					searchingProgress = 0;
+					searchingCooldown = Constants.TPS * 15L;
+					isSearching = false;
+				} else {
+					searchingProgress++;
+				}
+			} else {
+				searchingCooldown = max(searchingCooldown - 1, 0);
+
+				if (searchingCooldown <= 0) {
+					int next = random.nextInt(10);
+
+					isSearching = next == 0 || next == 1;
+				}
+			}
 		}
 	}
 
