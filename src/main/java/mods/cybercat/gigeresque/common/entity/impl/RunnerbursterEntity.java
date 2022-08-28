@@ -17,7 +17,7 @@ import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
@@ -107,13 +107,15 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	protected void initGoals() {
 		super.initGoals();
 		this.goalSelector.add(2, new MeleeAttackGoal(this, 1.35, false));
-		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity) || (entity instanceof WardenEntity)
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| (entity instanceof HostileEntity) || ((Eggmorphable) entity).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
+				entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
+						|| entity instanceof ArmorStandEntity)
+						|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
+								.anyMatch(AlienEntity.class::isInstance))
+						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+						|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
 	}
 
 	/*
