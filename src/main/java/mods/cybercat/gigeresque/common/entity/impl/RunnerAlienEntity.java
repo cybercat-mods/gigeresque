@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -60,12 +60,11 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!world.isClient && getCurrentAttackType() == AlienAttackType.NONE) {
-			setCurrentAttackType(switch (random.nextInt(6)) {
+			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT;
 			case 1 -> AlienAttackType.CLAW_RIGHT;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
 		}
@@ -90,7 +89,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		var velocityLength = this.getVelocity().horizontalLength();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
-				&& lastLimbDistance > 0.15F && this.isStatis() == false) {
+				&& this.isStatis() == false) {
 			if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
@@ -111,7 +110,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			if (isSearching && !this.isAttacking() && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else if (this.isStatis() == true || this.isAiDisabled()) {
+			} else if (this.isStatis() == true || this.isAiDisabled() && !isDead) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == false) {
@@ -133,7 +132,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		if (this.dataTracker.get(IS_HISSING) == true) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		if (this.dataTracker.get(IS_HISSING) == true && !isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", true));
 			return PlayState.CONTINUE;
 		}

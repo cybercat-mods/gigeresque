@@ -147,7 +147,7 @@ public abstract class CustomMidnightConfig {
 			} else if (type.isEnum()) {
 				List<?> values = Arrays.asList(field.getType().getEnumConstants());
 				Function<Object, Text> func = value -> Text.translatable(
-						modid + ".midnightconfig." + "enum." + type.getSimpleName() + "." + info.value.toString());
+						"config." + modid + "." + "enum." + type.getSimpleName() + "." + info.value.toString());
 				info.widget = new AbstractMap.SimpleEntry<ButtonWidget.PressAction, Function<Object, Text>>(button -> {
 					int index = values.indexOf(info.value) + 1;
 					info.value = values.get(index >= values.size() ? 0 : index);
@@ -229,10 +229,10 @@ public abstract class CustomMidnightConfig {
 	@Environment(EnvType.CLIENT)
 	private static class MidnightConfigScreen extends Screen {
 		protected MidnightConfigScreen(Screen parent, String modid) {
-			super(Text.translatable(modid + ".midnightconfig." + "title"));
+			super(Text.translatable("config." + modid + ".title"));
 			this.parent = parent;
 			this.modid = modid;
-			this.translationPrefix = modid + ".midnightconfig.";
+			this.translationPrefix = "config." + modid + ".";
 		}
 
 		private final String translationPrefix;

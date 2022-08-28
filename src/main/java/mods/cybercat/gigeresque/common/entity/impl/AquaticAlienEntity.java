@@ -6,8 +6,8 @@ import java.util.stream.StreamSupport;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.entity.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -16,7 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
@@ -31,7 +30,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
@@ -153,12 +151,11 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!world.isClient && getCurrentAttackType() == AlienAttackType.NONE) {
-			setCurrentAttackType(switch (random.nextInt(6)) {
+			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT;
 			case 1 -> AlienAttackType.CLAW_RIGHT;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			case 5 -> AlienAttackType.HEAD_BITE;
 			default -> AlienAttackType.CLAW_LEFT;
 			});
 		}
@@ -167,7 +164,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	@Override
 	public boolean tryAttack(Entity target) {
 		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case BITE -> 23.0f;
 		case TAIL -> 3.0f;
 		default -> 0.0f;
 		};
@@ -175,18 +171,6 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		if (target instanceof LivingEntity && !world.isClient) {
 			switch (getCurrentAttackType().genericAttackType) {
 			case NONE -> {
-			}
-			case BITE -> {
-				var helmet = StreamSupport.stream(target.getArmorItems().spliterator(), false).filter(it -> {
-					var item = it.getItem();
-					return (item instanceof ArmorItem && ((ArmorItem) item).getSlotType() == EquipmentSlot.HEAD);
-				}).findFirst().orElse(null);
-
-				if (helmet != null) {
-					helmet.damage(15, this, it -> {
-					});
-					additionalDamage -= 15;
-				}
 			}
 			case CLAW -> {
 				if (target instanceof PlayerEntity playerEntity && this.random.nextInt(7) == 0) {

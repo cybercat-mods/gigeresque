@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.data.handler;
 
-import mods.cybercat.gigeresque.common.entity.AlienAttackType;
+import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;

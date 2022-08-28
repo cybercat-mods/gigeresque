@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity;
+package mods.cybercat.gigeresque.common.entity.helper;
 
 import static java.lang.Math.min;
 

@@ -8,7 +8,6 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
-import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.Entity;
@@ -148,7 +147,10 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 		}
 
 		if (hatchProgress == 15L) {
-			SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.EGG_OPEN, SoundCategory.NEUTRAL, 1.0f);
+			if (!world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
 		}
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {

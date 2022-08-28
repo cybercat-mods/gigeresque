@@ -13,7 +13,6 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
-import mods.cybercat.gigeresque.common.util.SoundUtil;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.block.BlockState;
@@ -233,8 +232,10 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
-					SoundUtil.playServerSound(world, null, this.getBlockPos(), GigSounds.HUGGER_IMPLANT,
-							SoundCategory.NEUTRAL, 0.5f);
+					if (!world.isClient) {
+						this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT,
+								SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+					}
 					setIsInfertile(true);
 					this.detach();
 					this.damage(DamageSource.MAGIC, this.getMaxHealth());

@@ -198,6 +198,8 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		double yOffset = mob.getEyeY() - ((mob.getEyeY() - mob.getBlockPos().getY()) / 2.0);
 		double e = mob.getX() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
 		double f = mob.getZ() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
+		double d0 = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		double d1 = this.getSquaredMaxAttackDistance(livingEntity);
 		if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
 				&& this.updateCountdownTicks <= 0
 				&& (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
@@ -220,9 +222,11 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		this.cooldown = Math.max(this.cooldown - 1, 0);
 		if (!this.mob.hasPassengers()) {
 			if (meleeCounter == 1) {
-				this.attack(livingEntity, d);
+				if (d0 <= d1) {
+					this.mob.tryAttack(livingEntity);
+				}
 			}
-			if (meleeCounter >= 10) {
+			if (meleeCounter >= 20) {
 				meleeCounter = -15;
 			}
 		}

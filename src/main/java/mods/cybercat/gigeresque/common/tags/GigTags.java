@@ -8,9 +8,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class GigTags {
-	private GigTags() {
-	}
 
+	/* BLOCKS */
 	public static final TagKey<Block> ALIEN_REPELLENTS = TagKey.of(Registry.BLOCK_KEY,
 			new Identifier(Gigeresque.MOD_ID, "alien_repellents"));
 	public static final TagKey<Block> DESTRUCTIBLE_LIGHT = TagKey.of(Registry.BLOCK_KEY,
@@ -22,6 +21,7 @@ public class GigTags {
 	public static final TagKey<Block> DUNGEON_STAIRS = TagKey.of(Registry.BLOCK_KEY,
 			new Identifier(Gigeresque.MOD_ID, "dungeon_stairs"));
 
+	/* ITEMS */
 	public static final TagKey<Item> BUSTER_FOOD = TagKey.of(Registry.ITEM_KEY,
 			new Identifier(Gigeresque.MOD_ID, "buster_food"));
 }

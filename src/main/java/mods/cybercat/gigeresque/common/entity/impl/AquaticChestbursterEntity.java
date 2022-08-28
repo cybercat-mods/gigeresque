@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.Growable;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
