@@ -320,8 +320,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
-				} else if (this.isExecuting() == false && lastLimbDistance < 0.35F
-						|| (!this.isCrawling() && !this.onGround)) {
+				} else if (this.isExecuting() == false && !this.isCrawling() && this.onGround) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
 							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 					return PlayState.CONTINUE;
@@ -363,6 +362,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				return PlayState.CONTINUE;
 			}
 		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 		return PlayState.CONTINUE;
 	}
 
