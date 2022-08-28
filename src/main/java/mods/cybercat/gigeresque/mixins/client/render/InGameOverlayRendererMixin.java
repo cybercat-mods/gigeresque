@@ -53,7 +53,7 @@ public class InGameOverlayRendererMixin {
 					&& eggmorphable.isEggmorphing()) {
 				float eggmorphingProgress = (Constants.EGGMORPH_DURATION - eggmorphable.getTicksUntilEggmorphed())
 						/ Constants.EGGMORPH_DURATION;
-				renderEggmorphOverlay(client, matrices, eggmorphingProgress);
+				renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
 			}
 		}
 	}

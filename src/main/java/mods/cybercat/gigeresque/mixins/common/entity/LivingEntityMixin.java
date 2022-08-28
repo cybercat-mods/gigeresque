@@ -303,6 +303,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				&& !(((Object) this) instanceof AlienEntity)) {
 			return false;
 		}
+		if (((((Object) this)instanceof PlayerEntity playerEntity && !(playerEntity.isCreative() || this.isSpectator())))
+				&& !(((Object) this) instanceof AlienEntity)) {
+			return isCoveredInResin;
+		}
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
 			return false;
 		}
