@@ -27,7 +27,7 @@ public class RunnerBusterBloodFeatureRenderer extends GeoLayerRenderer<Runnerbur
 			RunnerbursterEntity alienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.field_32953 : OverlayTexture.DEFAULT_UV;
-		if (!(alienEntity.getBlood() >= 1200))
+		if (!(alienEntity.getBlood() >= 1200) && alienEntity.isBirthed() == true)
 			entityRenderer.render(getEntityModel().getModel(EntityModels.RUNNERBURSTER), alienEntity, partialTicks,
 					RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn, bufferIn,
 					bufferIn.getBuffer(RenderLayer.getEntityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)), packedLightIn,

@@ -23,7 +23,7 @@ public class EatFoodGoal extends Goal {
 	public boolean canStart() {
 		List<ItemEntity> list = this.chestburster.world.getEntitiesByClass(ItemEntity.class,
 				this.chestburster.getBoundingBox().expand(8.0, 8.0, 8.0), ChestbursterEntity.PICKABLE_DROP_FILTER);
-		return !list.isEmpty();
+		return !list.isEmpty() && chestburster.age > 80;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class EatFoodGoal extends Goal {
 			this.chestburster.getNavigation().startMovingTo(list.get(0), 1.2f);
 		}
 		this.chestburster.getNavigation().startMovingTo(list.get(0), 1.2f);
-		if (list.get(0).distanceTo(chestburster) >= 0.1 && list.get(0).isAlive()) {
+		if (list.get(0).distanceTo(chestburster) >= 0.1 && list.get(0).isAlive() && chestburster.age > 80) {
 			this.cooldown++;
 			if (this.cooldown == 1) {
 				this.chestburster.setEatingStatus(true);

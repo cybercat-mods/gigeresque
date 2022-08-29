@@ -32,7 +32,7 @@ public interface Growable {
 				return;
 			newEntity.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
 			if (newEntity instanceof RunnerbursterEntity)
-				((RunnerbursterEntity)newEntity).setBirthStatus(false);
+					((RunnerbursterEntity) newEntity).setBirthStatus(false);
 			world.spawnEntity(newEntity);
 			entity.remove(Entity.RemovalReason.DISCARDED);
 		}

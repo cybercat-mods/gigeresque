@@ -128,7 +128,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
-		if (this.isBirthed() == true && this.age > 30) {
+		if (this.isBirthed() == true && this.age > 1200 && this.getGrowth() > 200) {
 			this.setBirthStatus(false);
 		}
 	}
@@ -209,7 +209,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (this.age < 5 && this.dataTracker.get(BIRTHED) == true) {
+			if (this.age < 60 && this.dataTracker.get(BIRTHED) == true) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
 				return PlayState.CONTINUE;
 			} else {

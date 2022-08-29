@@ -72,7 +72,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.isBirthed() == true && this.age > 30) {
+		if (this.isBirthed() == true && this.age > 1200 && this.getGrowth() > 200) {
 			this.setBirthStatus(false);
 		}
 	}
@@ -141,7 +141,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (this.dataTracker.get(BIRTHED) == true) {
+			if (this.dataTracker.get(BIRTHED) == true && this.age < 60 && this.dataTracker.get(EAT) == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
 				return PlayState.CONTINUE;
 			} else {
