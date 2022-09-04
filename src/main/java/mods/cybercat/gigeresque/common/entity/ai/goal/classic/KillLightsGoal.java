@@ -17,7 +17,7 @@ public class KillLightsGoal extends MoveToTargetPosGoal {
 	private final AdultAlienEntity stepAndDestroyMob;
 
 	public KillLightsGoal(AdultAlienEntity strider) {
-		super(strider, 2.5D, 8, 2);
+		super(strider, 2.5D, 32, 2);
 		this.stepAndDestroyMob = strider;
 	}
 
@@ -37,13 +37,15 @@ public class KillLightsGoal extends MoveToTargetPosGoal {
 			--this.cooldown;
 			return false;
 		}
+		if (stepAndDestroyMob.isAttacking())
+			return false;
 		this.cooldown = this.getInterval(this.mob);
 		return this.findTargetPos();
 	}
 
 	@Override
 	public boolean shouldResetPath() {
-		return this.tryingTime % 20 == 0;
+		return false;
 	}
 
 	@Override
@@ -62,13 +64,13 @@ public class KillLightsGoal extends MoveToTargetPosGoal {
 		if (this.hasReached() && blockPos2 != null) {
 			world.breakBlock(blockPos2, false);
 			stepAndDestroyMob.setIsBreaking(true);
-			this.cooldown = -15;
+			this.cooldown = 0;
 		}
 	}
 
 	@Nullable
 	private BlockPos tweakToProperPos(BlockPos pos, BlockView world) {
-		Vec3i radius = new Vec3i(12, 12, 12);
+		Vec3i radius = new Vec3i(2, 2, 2);
 		for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
 			@SuppressWarnings("unused")
 			BlockState testState;
