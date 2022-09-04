@@ -1,21 +1,15 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.mojang.serialization.Dynamic;
-
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.brain.AdultAlienBrain;
-import mods.cybercat.gigeresque.common.entity.ai.brain.memory.MemoryModuleTypes;
-import mods.cybercat.gigeresque.common.entity.ai.brain.sensor.SensorTypes;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
@@ -27,10 +21,6 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.sensor.Sensor;
-import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -52,15 +42,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ClassicAlienEntity extends AdultAlienEntity {
 
-	private AdultAlienBrain complexBrain;
-	private static final List<SensorType<? extends Sensor<? super LivingEntity>>> SENSOR_TYPES = List
-			.of(SensorTypes.NEAREST_ALIEN_WEBBING);
-	private static final List<MemoryModuleType<?>> MEMORY_MODULE_TYPES = List.of(MemoryModuleType.ATTACK_TARGET,
-			MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-			MemoryModuleTypes.EGGMORPH_TARGET, MemoryModuleType.HOME, MemoryModuleType.LOOK_TARGET,
-			MemoryModuleType.MOBS, MemoryModuleTypes.NEAREST_ALIEN_WEBBING, MemoryModuleType.NEAREST_ATTACKABLE,
-			MemoryModuleTypes.NEAREST_LIGHT_SOURCE, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.PATH,
-			MemoryModuleType.VISIBLE_MOBS, MemoryModuleType.WALK_TARGET);
 	private AnimationFactory animationFactory = new AnimationFactory(this);
 
 	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
@@ -94,33 +75,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
-	}
-
-	@Override
-	public Brain.Profile<? extends AdultAlienEntity> createBrainProfile() {
-		return Brain.createProfile(MEMORY_MODULE_TYPES, SENSOR_TYPES);
-	}
-
-	@Override
-	public Brain<? extends AdultAlienEntity> deserializeBrain(Dynamic<?> dynamic) {
-		complexBrain = new AdultAlienBrain(this);
-		Brain<? extends AdultAlienEntity> deserialize = createBrainProfile().deserialize(dynamic);
-		return complexBrain.initialize(deserialize);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Brain<ClassicAlienEntity> getBrain() {
-		return (Brain<ClassicAlienEntity>) super.getBrain();
-	}
-
-	@Override
-	public void mobTick() {
-		world.getProfiler().push("adultAlienBrain");
-		complexBrain.tick();
-		world.getProfiler().pop();
-		complexBrain.tickActivities();
-		super.mobTick();
 	}
 
 	@Override
@@ -267,7 +221,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					}
 				}
 			}
-		} 
+		}
 //		else if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.hasPassengers()
 //				&& this.isExecuting() == false) {
 //			event.getController().setAnimation(new AnimationBuilder()
