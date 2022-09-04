@@ -40,6 +40,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.WardenEntity;
+import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -405,7 +406,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.targetSelector.add(2,
 				new ActiveTargetGoal<>(this, LivingEntity.class, true,
 						entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
-								|| entity instanceof ArmorStandEntity)
+								|| entity instanceof ArmorStandEntity || entity instanceof BatEntity)
 								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
