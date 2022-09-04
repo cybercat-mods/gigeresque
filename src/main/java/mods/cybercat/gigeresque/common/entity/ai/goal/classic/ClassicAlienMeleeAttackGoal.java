@@ -18,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Hand;
@@ -92,6 +93,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if (livingEntity instanceof ArmorStandEntity) {
 			return false;
 		}
+		if (livingEntity instanceof BatEntity) {
+			return false;
+		}
 		if (this.mob.hasPassengers())
 			return false;
 		if (((Host) livingEntity).isBleeding()) {
@@ -126,6 +130,9 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			return false;
 		}
 		if (livingEntity instanceof ArmorStandEntity) {
+			return false;
+		}
+		if (livingEntity instanceof BatEntity) {
 			return false;
 		}
 		if (this.mob.hasPassengers())
@@ -179,6 +186,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		this.mob.setAttacking(false);
 		this.mob.getNavigation().stop();
 		mob.setIsExecuting(false);
+		this.meleeCounter = 0;
 	}
 
 	@Override
@@ -198,7 +206,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		double yOffset = mob.getEyeY() - ((mob.getEyeY() - mob.getBlockPos().getY()) / 2.0);
 		double e = mob.getX() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
 		double f = mob.getZ() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
-		double d0 = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		double d1 = this.getSquaredMaxAttackDistance(livingEntity);
 		if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
 				&& this.updateCountdownTicks <= 0
@@ -220,17 +227,17 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			this.updateCountdownTicks = this.getTickCount(this.updateCountdownTicks);
 		}
 		this.cooldown = Math.max(this.cooldown - 1, 0);
+		meleeCounter++;
 		if (!this.mob.hasPassengers()) {
 			if (meleeCounter == 1) {
-				if (d0 <= d1) {
-					this.mob.tryAttack(livingEntity);
+				if (d <= d1) {
+					this.attack(livingEntity, d);
 				}
 			}
 			if (meleeCounter >= 20) {
-				meleeCounter = -15;
+				meleeCounter = 0;
 			}
 		}
-		this.attack(livingEntity, d);
 		if (this.mob.hasPassengers()) {
 			holdingCounter++;
 			if (holdingCounter == 120) {
@@ -249,23 +256,19 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	}
 
 	protected void attack(LivingEntity target, double squaredDistance) {
-		double d = this.getSquaredMaxAttackDistance(target);
-		if (squaredDistance <= d) {
-			Stream<BlockState> list = this.mob.world
-					.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(8.0, 8.0, 8.0));
-			Stream<BlockState> list2 = target.world
-					.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
-			SplittableRandom random = new SplittableRandom();
-			int randomPhase = random.nextInt(0, 100);
-			if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
-					&& !ConfigAccessor.isTargetBlacklisted(this.mob, target)) {
-				this.mob.grabTarget(target);
-			} else {
-				if (!this.mob.hasPassengers()) {
-					this.mob.tryAttack(target);
-					this.mob.swingHand(Hand.MAIN_HAND);
-					meleeCounter = -5;
-				}
+		Stream<BlockState> list = this.mob.world
+				.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(8.0, 8.0, 8.0));
+		Stream<BlockState> list2 = target.world.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
+		SplittableRandom random = new SplittableRandom();
+		int randomPhase = random.nextInt(0, 100);
+		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
+				&& ConfigAccessor.isTargetWhitelisted(this.mob, target)) {
+			this.mob.grabTarget(target);
+		} else {
+			if (!this.mob.hasPassengers()) {
+				this.mob.getNavigation().stop();
+				this.mob.tryAttack(target);
+				this.mob.swingHand(Hand.MAIN_HAND);
 			}
 		}
 	}
@@ -287,6 +290,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	}
 
 	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-		return this.mob.getWidth() * 2.0f * (this.mob.getWidth() * 2.0f) + entity.getWidth();
+		return this.mob.getWidth() * 4.0f * (this.mob.getWidth() * 4.0f) + entity.getWidth();
 	}
 }
