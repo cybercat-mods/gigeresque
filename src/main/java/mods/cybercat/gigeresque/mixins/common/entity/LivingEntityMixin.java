@@ -27,10 +27,12 @@ import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -91,6 +93,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Shadow
 	public abstract void kill();
+
+	@Shadow
+	public abstract EntityGroup getGroup();
 
 	private void handleStatusEffect(long offset, StatusEffect statusEffect, Boolean checkStatusEffect) {
 		if (ticksUntilImpregnation < offset && (!checkStatusEffect || !hasStatusEffect(statusEffect))) {
@@ -236,7 +241,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isImmobile" }, at = { @At("RETURN") })
 	protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing()) {
+		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)
+				|| this.isEggmorphing() == true) {
 			return true;
 		}
 		return callbackInfo.getReturnValue();
@@ -304,11 +310,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				&& !(((Object) this) instanceof AlienEntity)) {
 			return false;
 		}
-		if (((((Object) this)instanceof PlayerEntity playerEntity && !(playerEntity.isCreative() || this.isSpectator())))
-				&& !(((Object) this) instanceof AlienEntity)) {
-			return isCoveredInResin;
-		}
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
+			return false;
+		}
+		if (EntityUtils.isFacehuggerAttached(this)) {
 			return false;
 		}
 		return notAlien && isCoveredInResin;
