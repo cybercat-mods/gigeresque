@@ -14,7 +14,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 @Environment(EnvType.CLIENT)
 public class EntityRenderers implements GigeresqueInitializer {
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize() {
 		EntityRendererRegistry.register(Entities.ALIEN, AlienEntityRenderer::new);

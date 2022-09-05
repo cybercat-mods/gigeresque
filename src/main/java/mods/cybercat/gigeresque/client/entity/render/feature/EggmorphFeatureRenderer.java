@@ -21,7 +21,6 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
 
 	private static final HashMap<Identifier, EggmorphLayerTexture> textureCache = new HashMap<Identifier, EggmorphLayerTexture>();
 
-	@SuppressWarnings("resource")
 	public static <T extends Entity> void renderEggmorphedModel(EntityModel<T> renderedModel, Identifier texture,
 			MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle,
 			float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {

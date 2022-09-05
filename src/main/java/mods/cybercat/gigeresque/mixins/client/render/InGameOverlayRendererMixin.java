@@ -63,7 +63,6 @@ public class InGameOverlayRendererMixin {
 		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, BLACK_FLUID_TEXTURE);
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-		@SuppressWarnings("deprecation")
 		float f = client.player.getBrightnessAtEyes();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -80,7 +79,6 @@ public class InGameOverlayRendererMixin {
 		RenderSystem.disableBlend();
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void renderEggmorphOverlay(MinecraftClient client, MatrixStack matrices, float progress) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.enableTexture();

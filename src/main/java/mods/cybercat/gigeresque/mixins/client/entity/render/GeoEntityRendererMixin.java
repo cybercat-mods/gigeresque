@@ -27,7 +27,6 @@ public abstract class GeoEntityRendererMixin<T extends LivingEntity & IAnimatabl
 	@Shadow
 	public abstract boolean addLayer(GeoLayerRenderer<T> layer);
 
-	@SuppressWarnings("unchecked")
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererFactory.Context ctx, AnimatedGeoModel<T> modelProvider, CallbackInfo ci) {
 		this.addLayer(new EggmorphGeoFeatureRenderer<>((IGeoRenderer<T>) this));

@@ -20,7 +20,6 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & IAnimatable> ex
 		this.entityRenderer = entityRenderer;
 	}
 
-	@SuppressWarnings("resource")
 	public static <T extends Entity, M extends GeoModel> void renderEggmorphedModel(IGeoRenderer<T> entityRenderer,
 			M renderedModel, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers,
 			int light, T entity, float tickDelta) {
@@ -30,7 +29,6 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & IAnimatable> ex
 				vertexConsumers.getBuffer(renderLayer), light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, progress);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity,
 			float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw,

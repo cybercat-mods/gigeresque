@@ -29,7 +29,6 @@ public class AquaticChestbursterEntityModel extends AnimatedTickingGeoModel<Aqua
 		return EntityAnimations.AQUATIC_CHESTBURSTER;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setLivingAnimations(AquaticChestbursterEntity entity, Integer uniqueID,
 			AnimationEvent customPredicate) {

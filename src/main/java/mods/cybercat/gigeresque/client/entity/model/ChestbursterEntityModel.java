@@ -29,7 +29,6 @@ public class ChestbursterEntityModel extends AnimatedTickingGeoModel<Chestburste
 		return EntityAnimations.CHESTBURSTER;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setLivingAnimations(ChestbursterEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

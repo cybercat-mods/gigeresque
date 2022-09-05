@@ -29,7 +29,6 @@ public class RunnerAlienEntityModel extends AnimatedTickingGeoModel<RunnerAlienE
 		return EntityAnimations.RUNNER_ALIEN;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setLivingAnimations(RunnerAlienEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

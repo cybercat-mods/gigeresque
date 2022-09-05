@@ -99,7 +99,6 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.get(StairsBlock.WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);

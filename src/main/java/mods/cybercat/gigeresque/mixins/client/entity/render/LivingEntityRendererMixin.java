@@ -26,7 +26,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 	@Shadow
 	protected abstract boolean addFeature(FeatureRenderer<T, M> feature);
 
-	@SuppressWarnings("unchecked")
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererFactory.Context ctx, M model, float shadowRadius, CallbackInfo ci) {
 		this.addFeature(new EggmorphFeatureRenderer<>((FeatureRendererContext<T, M>) this));

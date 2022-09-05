@@ -159,7 +159,6 @@ public class NestResinWebBlock extends Block {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
 			WorldAccess world, BlockPos pos, BlockPos neighborPos) {
@@ -171,7 +170,6 @@ public class NestResinWebBlock extends Block {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canReplace(BlockState state, ItemPlacementContext context) {
 		BlockState blockState = context.getWorld().getBlockState(context.getBlockPos());
@@ -218,7 +216,6 @@ public class NestResinWebBlock extends Block {
 		};
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		return switch (mirror) {

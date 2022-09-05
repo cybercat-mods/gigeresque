@@ -37,7 +37,6 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 				GigFluids.BLACK_FLUID_FLOWING);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setupFluidRendering(Fluid still, Fluid flowing, Identifier textureFluidId) {
 		var stillSpriteId = new Identifier(textureFluidId.getNamespace(),
 				"block/" + textureFluidId.getPath() + "_still");
