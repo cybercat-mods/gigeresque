@@ -41,7 +41,7 @@ public class Entities implements GigeresqueInitializer {
 	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
 			float width, float height) {
 		return Registry.register(Registry.ENTITY_TYPE, new Identifier(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
-				.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).build());
+				.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
 	}
 
 	public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(
