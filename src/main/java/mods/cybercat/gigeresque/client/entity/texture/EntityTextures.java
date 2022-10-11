@@ -13,6 +13,8 @@ public class EntityTextures {
 
 	public static final Identifier ALIEN = new Identifier(Gigeresque.MOD_ID,
 			"%s/alien/alien.png".formatted(BASE_ENTITY_URL));
+	public static final Identifier ALIEN_STATIS = new Identifier(Gigeresque.MOD_ID,
+			"%s/alien/alien_stasis.png".formatted(BASE_ENTITY_URL));
 	public static final Identifier ALIEN_YOUNG = new Identifier(Gigeresque.MOD_ID,
 			"%s/alien/alien_young.png".formatted(BASE_ENTITY_URL));
 	public static final Identifier AQUATIC_ALIEN = new Identifier(Gigeresque.MOD_ID,

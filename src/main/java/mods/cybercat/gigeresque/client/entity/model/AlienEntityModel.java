@@ -18,7 +18,7 @@ public class AlienEntityModel extends AnimatedTickingGeoModel<ClassicAlienEntity
 
 	@Override
 	public Identifier getTextureResource(ClassicAlienEntity object) {
-		return EntityTextures.ALIEN;
+		return object.isStatis() == true ? EntityTextures.ALIEN_STATIS : EntityTextures.ALIEN;
 	}
 
 	@Override
