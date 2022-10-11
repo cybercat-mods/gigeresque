@@ -53,6 +53,12 @@ public class ConfigAccessor {
 		return isTargetBlacklisted(entity.getClass(), target);
 	}
 
+	public static boolean isTargetAlienHost(Entity target) {
+		List<? extends String> waveEntries = GigeresqueConfig.alienHosts;
+		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		return waveEntries.contains(targetIdentifier.toString());
+	}
+
 	public static boolean isTargetDNAImmune(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.dnaBlacklist;
 		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
