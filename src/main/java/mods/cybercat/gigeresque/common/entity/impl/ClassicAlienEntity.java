@@ -233,7 +233,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		var velocityLength = this.getVelocity().horizontalLength();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
-		if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
+		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& this.isStatis() == false) {
 			if (!this.submergedInWater && this.isExecuting() == false) {
 				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
