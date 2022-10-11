@@ -5,7 +5,6 @@ import java.util.SplittableRandom;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -35,7 +34,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 	private int cooldown;
 	private long lastUpdateTime;
 	public static final Predicate<BlockState> NEST = state -> state.isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
-	private int holdingCounter = 0;
 	private int meleeCounter = 0;
 
 	public ClassicAlienMeleeAttackGoal(ClassicAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
@@ -202,10 +200,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		}
 		this.mob.getLookControl().lookAt(livingEntity, 30.0f, 30.0f);
 		double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
-		double yOffset = mob.getEyeY() - ((mob.getEyeY() - mob.getBlockPos().getY()) / 2.0);
-		double e = mob.getX() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
-		double f = mob.getZ() + ((mob.getRandom().nextDouble() / 2.0) - 0.5) * (mob.getRandom().nextBoolean() ? -1 : 1);
 		double d1 = this.getSquaredMaxAttackDistance(livingEntity);
 		if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
 				&& this.updateCountdownTicks <= 0
@@ -238,31 +232,16 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 				meleeCounter = 0;
 			}
 		}
-		if (this.mob.hasPassengers()) {
-			holdingCounter++;
-			if (holdingCounter == 120) {
-				this.mob.getNavigation().stop();
-				mob.setIsExecuting(true);
-				this.mob.setAttacking(false);
-			}
-			if (holdingCounter >= 125) {
-				mob.getFirstPassenger().kill();
-				mob.getFirstPassenger().world.addImportantParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
-				mob.getFirstPassenger().setInvisible(false);
-				mob.setIsExecuting(false);
-				holdingCounter = 0;
-			}
-		}
 	}
 
 	protected void attack(LivingEntity target, double squaredDistance) {
 		Stream<BlockState> list = this.mob.world
-				.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(8.0, 8.0, 8.0));
+				.getStatesInBoxIfLoaded(this.mob.getBoundingBox().expand(18.0, 18.0, 18.0));
 		Stream<BlockState> list2 = target.world.getStatesInBoxIfLoaded(target.getBoundingBox().expand(2.0, 2.0, 2.0));
 		SplittableRandom random = new SplittableRandom();
 		int randomPhase = random.nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
-				&& ConfigAccessor.isTargetWhitelisted(this.mob, target)) {
+				&& ConfigAccessor.isTargetAlienHost(target)) {
 			this.mob.grabTarget(target);
 		} else {
 			if (!this.mob.hasPassengers()) {

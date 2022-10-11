@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import static java.lang.Math.max;
 
+import java.util.function.Predicate;
+
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
@@ -19,6 +21,7 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -77,6 +80,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final LookControl landLookControl = new LookControl(this);
 	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	public static final Predicate<BlockState> NEST = state -> state.isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
 	protected boolean isSearching = false;
