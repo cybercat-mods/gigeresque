@@ -108,7 +108,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "pushAway" }, at = { @At("HEAD") }, cancellable = true)
 	void pushAway(CallbackInfo callbackInfo) {
-		if (this.isEggmorphing())
+		if (this.isEggmorphing() && ConfigAccessor.isTargetAlienHost(this))
 			callbackInfo.cancel();
 	}
 
@@ -153,8 +153,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				resetEggmorphing();
 				setBleeding(false);
 			}
-			handleEggingLogic();
-			handleHostLogic();
+			if (ConfigAccessor.isTargetAlienHost(this)) {
+				handleEggingLogic();
+				handleHostLogic();
+			}
 		}
 	}
 
@@ -168,14 +170,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isPushable" }, at = { @At("RETURN") })
 	public boolean noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.isEggmorphing()) {
+		if (this.isEggmorphing() && ConfigAccessor.isTargetAlienHost(this)) {
 			return false;
 		}
 		return callbackInfo.getReturnValue();
 	}
 
 	private void handleEggingLogic() {
-		if (isEggmorphing()) {
+		if (isEggmorphing() && ConfigAccessor.isTargetAlienHost(this)) {
 			setTicksUntilEggmorphed(ticksUntilEggmorpth++);
 		} else {
 			// Reset eggmorphing counter if the entity is no longer eggmorphing at any
@@ -284,7 +286,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	}
 
 	@Inject(method = { "clearStatusEffects" }, at = { @At("HEAD") }, cancellable = true)
-	public void noMilking(CallbackInfoReturnable<Boolean> callbackInfo) {
+	public void noMilkRemoval(CallbackInfoReturnable<Boolean> callbackInfo) {
 		if (this.hasStatusEffect(GigStatusEffects.ACID) || this.hasStatusEffect(GigStatusEffects.DNA))
 			callbackInfo.setReturnValue(false);
 	}
@@ -306,6 +308,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		boolean isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS
 				|| pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		boolean notAlien = !(((Object) this) instanceof AlienEntity);
+		boolean notHost = ConfigAccessor.isTargetAlienHost(this);
 		if (((((Object) this)instanceof PlayerEntity playerEntity && (playerEntity.isCreative() || this.isSpectator())))
 				&& !(((Object) this) instanceof AlienEntity)) {
 			return false;
@@ -316,7 +319,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (EntityUtils.isFacehuggerAttached(this)) {
 			return false;
 		}
-		return notAlien && isCoveredInResin;
+		if (!ConfigAccessor.isTargetAlienHost(this)) {
+			return false;
+		}
+		return notAlien && isCoveredInResin && notHost;
 	}
 
 	@Override
