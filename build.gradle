@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
@@ -28,6 +28,7 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://maven.gegy.dev' }
+    maven { url 'https://maven.enginehub.org/repo/' }
 }
 
 dependencies {
@@ -35,7 +36,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.12"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.22"
 	modImplementation ("com.terraformersmc:modmenu:4.0.6")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -49,7 +50,7 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-	
+    modImplementation 'com.sk89q.worldedit:worldedit-fabric-mc1.19.2:7.2.12'
 }
 
 processResources {
