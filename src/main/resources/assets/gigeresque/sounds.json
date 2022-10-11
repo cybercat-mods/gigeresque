@@ -2,53 +2,84 @@
 	"alien_hiss": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/hiss_1"
+				"name": "gigeresque:alien/alien_hiss_1"
 			},
 			{
-				"name": "gigeresque:alien/hiss_3"
+				"name": "gigeresque:alien/alien_hiss_2"
 			},
 			{
-				"name": "gigeresque:alien/hiss_4"
+				"name": "gigeresque:alien/alien_hiss_3"
 			}
 		]
 	},
-	"alien_attack": {
+	"alien_claw": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/attack_1"
-			},
+				"name": "gigeresque:alien/alien_claw_woosh"
+			}
+		]
+	},
+	"alien_tail": {
+		"sounds": [
 			{
-				"name": "gigeresque:alien/attack_2"
-			},
-			{
-				"name": "gigeresque:alien/attack_3"
-			},
-			{
-				"name": "gigeresque:alien/attack_4"
+				"name": "gigeresque:alien/alien_tail_woosh"
 			}
 		]
 	},
 	"alien_death": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/death_1"
+				"name": "gigeresque:alien/alien_death_1"
 			},
 			{
-				"name": "gigeresque:alien/death_2"
+				"name": "gigeresque:alien/alien_death_2"
+			},
+			{
+				"name": "gigeresque:alien/alien_death_3"
 			}
 		]
 	},
 	"alien_hurt": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/hurt"
+				"name": "gigeresque:alien/alien_hurt_1"
+			},
+			{
+				"name": "gigeresque:alien/alien_hurt_2"
+			},
+			{
+				"name": "gigeresque:alien/alien_hurt_3"
 			}
 		]
 	},
 	"alien_ambient": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/ambient"
+				"name": "gigeresque:alien/alien_ambient"
+			}
+		]
+	},
+	"alien_headbite": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/alien_headbite"
+			}
+		]
+	},
+	"alien_death_thud": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/alien_death_thud"
+			}
+		]
+	},
+	"alien_crunch": {
+		"sounds": [
+			{
+				"name": "gigeresque:alien/alien_crunch_1"
+			},
+			{
+				"name": "gigeresque:alien/alien_crunch_2"
 			}
 		]
 	},
@@ -132,10 +163,13 @@
 			}
 		]
 	},
-	"alien_footstep_2": {
+	"alien_handstep": {
 		"sounds": [
 			{
-				"name": "gigeresque:alien/alien_footstep_2"
+				"name": "gigeresque:alien/alien_handstep_1"
+			},
+			{
+				"name": "gigeresque:alien/alien_handstep_2"
 			}
 		]
 	},

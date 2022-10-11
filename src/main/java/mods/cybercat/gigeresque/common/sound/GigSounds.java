@@ -23,8 +23,13 @@ public class GigSounds implements GigeresqueInitializer {
 	public static final SoundEvent ALIEN_AMBIENT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_ambient"));
 	public static final SoundEvent ALIEN_HURT = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_hurt"));
 	public static final SoundEvent ALIEN_DEATH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_death"));
-	public static final SoundEvent ALIEN_ATTACK = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_attack"));
-	public static final SoundEvent ALIEN_STEP = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_footstep"));
+	public static final SoundEvent ALIEN_DEATH_THUD = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_death_thud"));
+	public static final SoundEvent ALIEN_CLAW = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_claw"));
+	public static final SoundEvent ALIEN_TAIL = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_tail"));
+	public static final SoundEvent ALIEN_HEADBITE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_headbite"));
+	public static final SoundEvent ALIEN_CRUNCH = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_crunch"));
+	public static final SoundEvent ALIEN_FOOTSTEP = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_footstep"));
+	public static final SoundEvent ALIEN_HANDSTEP = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "alien_handstep"));
 
 	public static final SoundEvent EGG_NOTICE = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_notice"));
 	public static final SoundEvent EGG_OPEN = new SoundEvent(new Identifier(Gigeresque.MOD_ID, "egg_open"));
@@ -47,8 +52,13 @@ public class GigSounds implements GigeresqueInitializer {
 		register(ALIEN_AMBIENT);
 		register(ALIEN_HURT);
 		register(ALIEN_DEATH);
-		register(ALIEN_ATTACK);
-		register(ALIEN_STEP);
+		register(ALIEN_DEATH_THUD);
+		register(ALIEN_CLAW);
+		register(ALIEN_TAIL);
+		register(ALIEN_HEADBITE);
+		register(ALIEN_CRUNCH);
+		register(ALIEN_FOOTSTEP);
+		register(ALIEN_HANDSTEP);
 
 		register(EGG_NOTICE);
 		register(EGG_OPEN);

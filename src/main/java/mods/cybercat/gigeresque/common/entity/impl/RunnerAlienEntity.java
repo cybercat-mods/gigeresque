@@ -142,9 +142,15 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("stepSoundkey")) {
+		if (event.sound.matches("footstepSoundkey")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
+						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("handstepSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
 						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
@@ -157,10 +163,16 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("attackSoundkey")) {
+		if (event.sound.matches("clawSoundkey")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_ATTACK,
-						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("tailSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

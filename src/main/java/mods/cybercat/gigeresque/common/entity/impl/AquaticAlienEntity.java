@@ -284,9 +284,15 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	}
 
 	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("attackSoundkey")) {
+		if (event.sound.matches("clawSoundkey")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_ATTACK,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("tailSoundkey")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
