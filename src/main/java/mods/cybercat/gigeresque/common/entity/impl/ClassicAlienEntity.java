@@ -25,14 +25,17 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPassengersSetS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.GeckoLib;
@@ -146,9 +149,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					this.getFirstPassenger().kill();
 					this.getFirstPassenger().world.addImportantParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
 							0.0);
-					this.getFirstPassenger().setInvisible(false);
-				}
-				if (holdingCounter >= 880) {
 					this.setIsExecuting(false);
 					holdingCounter = 0;
 				}
@@ -190,6 +190,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 
 		target.damage(DamageSource.mob(this), additionalDamage);
+		target.setInvisible(false);
 
 		return super.tryAttack(target);
 	}
@@ -200,6 +201,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		this.goalSelector.add(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
 		this.goalSelector.add(2, new FindNestGoal(this));
 		this.goalSelector.add(2, new BuildNestGoal(this));
+		this.goalSelector.add(8, new LookAtEntityGoal(this, LivingEntity.class, 2.0F));
 	}
 
 	public void grabTarget(Entity entity) {
@@ -215,14 +217,15 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	@Override
 	public void updatePassengerPosition(Entity passenger) {
 		super.updatePassengerPosition(passenger);
-		if (passenger instanceof MobEntity) {
-			MobEntity mobEntity = (MobEntity) passenger;
-			this.bodyYaw = mobEntity.bodyYaw;
-		}
-		passenger.setPosition(this.getX(), this.getY() + 0.6, this.getZ());
-		passenger.speed = 0;
 		if (passenger instanceof LivingEntity) {
-			((LivingEntity) passenger).bodyYaw = this.bodyYaw;
+			LivingEntity mob = (LivingEntity) passenger;
+			mob.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 60, 10, true, true));
+			float f = MathHelper.sin(this.bodyYaw * ((float) Math.PI / 180));
+			float g = MathHelper.cos(this.bodyYaw * ((float) Math.PI / 180));
+			passenger.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
+					this.getY() + (double)(this.isExecuting() == true ? 0.75f : 0.15f), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
+//			mob.bodyYaw = this.bodyYaw;
+			mob.prevPitch = this.prevPitch;
 		}
 	}
 
@@ -237,12 +240,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				&& this.isStatis() == false) {
 			if (!this.submergedInWater && this.isExecuting() == false) {
 				if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
-							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
 					return PlayState.CONTINUE;
-				} else if (this.isExecuting() == false && !this.isCrawling() && this.onGround) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
-							.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
+				} else if (!this.isCrawling()) {
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
+					event.getController().setAnimationSpeed(1);
 					return PlayState.CONTINUE;
 				}
 			} else {
@@ -268,7 +270,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		} else if (this.isExecuting() == true && this.hasPassengers() && this.isStatis() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_carry", false));
 			return PlayState.CONTINUE;
 		} else {
 			if (this.submergedInWater && !isSearching && !this.isAttacking() && !this.hasPassengers()
@@ -279,7 +281,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					&& this.isExecuting() == false && this.isStatis() == false && !isDead) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else if (this.isStatis() == true || this.isAiDisabled() && !isDead) {
+			} else if (this.isStatis() == true || this.isAiDisabled() && !isDead && !this.hasPassengers()) {
 				event.getController().setAnimation(
 						new AnimationBuilder().addAnimation("stasis_enter", false).addAnimation("stasis_loop", true));
 				return PlayState.CONTINUE;
@@ -288,7 +290,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				return PlayState.CONTINUE;
 			}
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
 		return PlayState.CONTINUE;
 	}
 

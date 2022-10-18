@@ -236,7 +236,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			setIsExecuting(nbt.getBoolean("isExecuting"));
 		}
 		if (nbt.contains("isStatis")) {
-			setIsExecuting(nbt.getBoolean("isStatis"));
+			setIsStatis(nbt.getBoolean("isStatis"));
 		}
 	}
 

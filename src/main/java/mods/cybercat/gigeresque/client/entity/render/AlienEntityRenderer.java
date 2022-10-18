@@ -13,6 +13,7 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
+
 	public AlienEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new AlienEntityModel());
 		this.shadowRadius = 0.5f;
@@ -24,16 +25,6 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 			VertexConsumerProvider bufferIn, int packedLightIn) {
 		float scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
-//		if (entity.isCrawling()) {
-//			if (entity.getHorizontalFacing() == Direction.WEST)
-//				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
-//			if (entity.getHorizontalFacing() == Direction.NORTH)
-//				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-//			if (entity.getHorizontalFacing() == Direction.SOUTH)
-//				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
-//			if (entity.getHorizontalFacing() == Direction.EAST)
-//				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
-//		}
 		if (entity.isCrawling()) {
 			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
 					entity.world.getBlockState(entity.getBlockPos().west()))) {
