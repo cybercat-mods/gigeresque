@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,7 +23,7 @@ public class NestResinWebFullBlock extends Block {
 		if (!(entity instanceof AlienEntity)
 				&& !(entity instanceof PlayerEntity
 						&& (((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
-				&& entity instanceof LivingEntity) {
+				&& entity instanceof LivingEntity && ConfigAccessor.isTargetAlienHost(entity)) {
 			entity.slowMovement(state, new Vec3d(0.25, 0.05000000074505806, 0.25));
 			((LivingEntity) entity).setStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 60, 10), entity);
 		}
