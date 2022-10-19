@@ -35,7 +35,7 @@ public class FleeFireGoal<T extends LivingEntity> extends Goal {
 			BlockState testState;
 
 			if ((testState = this.mob.world.getBlockState(testPos)).isIn(BlockTags.FIRE)) {
-				this.mob.getNavigation().startMovingTo(this.mob.getX() - 15, this.mob.getY() - 15, this.mob.getZ() - 15,
+				this.mob.getNavigation().startMovingTo(this.mob.getX() * 2, this.mob.getY() * 2, this.mob.getZ() * 2,
 						3.15);
 				this.mob.setAttacking(false);
 			}
