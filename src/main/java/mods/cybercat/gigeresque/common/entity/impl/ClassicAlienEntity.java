@@ -146,7 +146,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					this.setAttacking(false);
 				}
 				if (holdingCounter == 850) {
-					this.getFirstPassenger().kill();
+					this.getFirstPassenger().damage(GigDamageSources.EXECUTION, Float.MAX_VALUE);
 					this.getFirstPassenger().world.addImportantParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
 							0.0);
 					this.setIsExecuting(false);

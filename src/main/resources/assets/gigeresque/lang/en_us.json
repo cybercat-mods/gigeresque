@@ -61,6 +61,8 @@
   "death.attack.eggmorph": "%s perpetuates the cycle.",
   "death.attack.dna": "%s's genetic code was rearranged.",
   "death.attack.goo": "%s is no longer what they used to be.",
+  "death.attack.execution1": "%s suffered a splitting headache.",
+  "death.attack.execution2": "%s had a brain blast!",
   "effect.gigeresque.trauma": "Trauma",
   "effect.gigeresque.acid": "Acid Burn",
   "effect.gigeresque.dna_disintegration": "DNA Disintegration",
