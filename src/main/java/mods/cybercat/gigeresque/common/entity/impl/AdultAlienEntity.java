@@ -351,7 +351,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public boolean isClimbing() {
 		setIsCrawling(this.horizontalCollision && this.getTarget() != null);
-		return this.horizontalCollision && this.getTarget() != null;
+		return this.horizontalCollision && this.getTarget() != null && !this.hasPassengers();
 	}
 
 	@Override
