@@ -7,7 +7,9 @@ import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.item.ArmorMaterials;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
@@ -31,6 +33,13 @@ public class GigItems implements GigeresqueInitializer {
 
 	public static final SurgeryKitItem SURGERY_KIT = new SurgeryKitItem(
 			new Item.Settings().maxDamage(4).group(GigItemGroups.GENERAL));
+
+//	public static final EngiArmorItem ENGI_ARMOR_HELMET = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.HEAD);
+//	public static final EngiArmorItem ENGI_ARMOR_CHESTPLATE = new EngiArmorItem(ArmorMaterials.DIAMOND,
+//			EquipmentSlot.CHEST);
+//	public static final EngiArmorItem ENGI_ARMOR_LEGGINGS = new EngiArmorItem(ArmorMaterials.DIAMOND,
+//			EquipmentSlot.LEGS);
+//	public static final EngiArmorItem ENGI_ARMOR_BOOTS = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.FEET);
 
 	@Override
 	public void initialize() {
