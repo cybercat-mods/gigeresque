@@ -19,6 +19,7 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeA
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
@@ -105,7 +106,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!world.isClient && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.getVelocity().horizontalLength() == 0) {
+			if (this.isCrawling() || this.submergedInWater) {
 				setCurrentAttackType(switch (random.nextInt(5)) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
 				case 1 -> AlienAttackType.CLAW_RIGHT;
@@ -223,7 +224,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			float f = MathHelper.sin(this.bodyYaw * ((float) Math.PI / 180));
 			float g = MathHelper.cos(this.bodyYaw * ((float) Math.PI / 180));
 			passenger.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
-					this.getY() + (double)(this.isExecuting() == true ? 0.75f : 0.15f), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
+					this.getY() + (double) (this.isExecuting() == true ? 0.75f : 0.15f),
+					this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
 //			mob.bodyYaw = this.bodyYaw;
 			mob.prevPitch = this.prevPitch;
 		}
