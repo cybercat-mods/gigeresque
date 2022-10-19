@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -36,6 +37,9 @@ public class FacehugGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
+		if (((Eggmorphable) livingEntity).isEggmorphing()) {
+			return false;
+		}
 		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
@@ -48,8 +52,8 @@ public class FacehugGoal extends Goal {
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
-				.anyMatch(AlienEntity.class::isInstance)) {
+		if (livingEntity.getVehicle() != null
+				&& livingEntity.getVehicle().streamSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
