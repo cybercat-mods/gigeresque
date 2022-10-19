@@ -5,12 +5,12 @@ import java.util.EnumSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -34,7 +34,7 @@ public class FleeFireGoal<T extends LivingEntity> extends Goal {
 			@SuppressWarnings("unused")
 			BlockState testState;
 
-			if ((testState = this.mob.world.getBlockState(testPos)).isOf(Blocks.FIRE)) {
+			if ((testState = this.mob.world.getBlockState(testPos)).isIn(BlockTags.FIRE)) {
 				this.mob.getNavigation().startMovingTo(this.mob.getX() - 15, this.mob.getY() - 15, this.mob.getZ() - 15,
 						3.15);
 				this.mob.setAttacking(false);
@@ -50,7 +50,7 @@ public class FleeFireGoal<T extends LivingEntity> extends Goal {
 			@SuppressWarnings("unused")
 			BlockState testState;
 
-			if ((testState = this.mob.world.getBlockState(testPos)).isOf(Blocks.FIRE)) {
+			if ((testState = this.mob.world.getBlockState(testPos)).isIn(BlockTags.FIRE)) {
 				return true;
 			}
 		}
