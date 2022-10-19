@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
@@ -23,10 +24,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AlienEntity extends HostileEntity {
-	
+
 	public static final TrackedData<Boolean> UPSIDE_DOWN = DataTracker.registerData(AlienEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
-	
+
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
@@ -41,14 +42,14 @@ public abstract class AlienEntity extends HostileEntity {
 		return 3;
 	}
 
-    public boolean isUpsideDown() {
-        return this.dataTracker.get(UPSIDE_DOWN);
-    }
+	public boolean isUpsideDown() {
+		return this.dataTracker.get(UPSIDE_DOWN);
+	}
 
-    public void setUpsideDown(boolean upsideDown) {
-        this.dataTracker.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
-    }
-	
+	public void setUpsideDown(boolean upsideDown) {
+		this.dataTracker.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
+	}
+
 	@Override
 	public void initDataTracker() {
 		super.initDataTracker();
@@ -93,7 +94,8 @@ public abstract class AlienEntity extends HostileEntity {
 			newState = newState.with(Properties.WATERLOGGED, true);
 		}
 
-		if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof FluidBlock)
+		if (!(posState.getBlock() instanceof AirBlock)
+				&& !(posState.getBlock() instanceof FluidBlock && !(posState.isIn(GigTags.ACID_RESISTANT)))
 				&& !(posState.getBlock() instanceof TorchBlock)) {
 			return;
 		}
@@ -166,8 +168,8 @@ public abstract class AlienEntity extends HostileEntity {
 			if (this.getBlockStateAtPos().getBlock() == net.minecraft.block.Blocks.WATER) {
 				newState = newState.with(Properties.WATERLOGGED, true);
 			}
-
-			world.setBlockState(this.getBlockPos(), newState);
+			if (!this.getBlockStateAtPos().isIn(GigTags.ACID_RESISTANT))
+				world.setBlockState(this.getBlockPos(), newState);
 		}
 
 		return super.damage(source, amount);

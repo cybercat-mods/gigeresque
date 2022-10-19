@@ -1,5 +1,4 @@
 {
-	"replace": false,
 	"values": [
 		"gigeresque:nest_resin",
 		"gigeresque:nest_resin_block",
@@ -32,8 +31,6 @@
 		"gigeresque:alien_storage_block1",
 		"gigeresque:alien_storage_block2",
 		"gigeresque:alien_storage_block3",
-		"gigeresque:alien_storage_block4",
-		"gigeresque:alien_storage_block5",
 		"gigeresque:acid_block",
 		"gigeresque:mural_block_1",
 		"gigeresque:mural_block_2",

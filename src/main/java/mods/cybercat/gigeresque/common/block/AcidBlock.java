@@ -148,8 +148,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	}
 
 	@Override
-	public void randomDisplayTick(BlockState state, World world, BlockPos pos,
-			Random random) {
+	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
 		for (int i = 0; i < (getThickness(state) * 2) + 1; i++) {
 			double yOffset = state.get(WATERLOGGED) ? random.nextDouble() : 0.01;
 			double d = pos.getX() + random.nextDouble();
@@ -166,27 +165,17 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int currentThickness = getThickness(state);
-		if (currentThickness <= 0) {
-			world.setBlockState(pos, Blocks.AIR.getDefaultState());
-		}
-
 		if (random.nextInt(8 - currentThickness) == 0) {
 			boolean canGrief = world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING);
 			BlockPos blockToEat = pos.down();
-
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-
 				if (canGrief && !world.getBlockState(blockToEat).isIn(GigTags.ACID_RESISTANT)) {
 					world.setBlockState(blockToEat, Blocks.AIR.getDefaultState());
 					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_EXTINGUISH,
 							SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,
 							false);
-				} else {
-					world.setBlockState(pos, Blocks.AIR.getDefaultState());
 				}
-			} else {
-				world.setBlockState(pos, Blocks.AIR.getDefaultState());
 			}
 		}
 		super.scheduledTick(state, world, pos, random);
@@ -201,7 +190,7 @@ public class AcidBlock extends FallingBlock implements Waterloggable {
 	public static boolean canFallThrough(BlockState state) {
 		Material material = state.getMaterial();
 		return (state.isAir() || state.isIn(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid()
-				&& state != GIgBlocks.ACID_BLOCK.getDefaultState();
+				&& !state.isIn(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.getDefaultState();
 	}
 
 	private void dealAcidDamage(BlockState state, Entity entity) {
