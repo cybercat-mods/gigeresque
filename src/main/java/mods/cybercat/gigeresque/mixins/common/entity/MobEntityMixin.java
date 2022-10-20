@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 public abstract class MobEntityMixin extends LivingEntity {
 
 	@Shadow
-    private boolean persistent;
+    private boolean persistenceRequired;
 	
 	protected MobEntityMixin(EntityType<? extends LivingEntity> type, Level world) {
 		super(type, world);
@@ -52,7 +52,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 	@Inject(method = { "tick" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
 		if ((this instanceof Host host && host.hasParasite()) || this.hasEffect(GigStatusEffects.DNA)) {
-			this.persistent = true;
+			this.persistenceRequired = true;
 		}
 	}
 }
