@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRend
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.model.SheepFurModel;
 import net.minecraft.client.model.SheepModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -32,7 +33,7 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
 	private static ResourceLocation SHEEP_FUR_LOCATION;
 	@Shadow
 	@Final
-	private SheepModel<Sheep> model;
+	private SheepFurModel<Sheep> model;
 
 	private SheepWoolFeatureRendererMixin(RenderLayerParent<Sheep, SheepModel<Sheep>> context) {
 		super(context);
