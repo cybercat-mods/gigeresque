@@ -9,22 +9,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorphable {
 
-	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@Inject(method = { "shouldDismount" }, at = { @At("RETURN") })
+	@Inject(method = { "wantsToStopRiding" }, at = { @At("RETURN") })
 	protected boolean shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
 		if (this.getVehicle() instanceof AlienEntity) {
 			return false;
@@ -32,25 +32,25 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
 		return callbackInfo.getReturnValue();
 	}
 
-	@Inject(method = { "interact" }, at = { @At("HEAD") }, cancellable = true)
-	protected ActionResult stopPlayerUsing(Entity entity, Hand hand,
-			CallbackInfoReturnable<ActionResult> callbackInfo) {
-		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
-			callbackInfo.setReturnValue(ActionResult.FAIL);
+	@Inject(method = { "interactOn" }, at = { @At("HEAD") }, cancellable = true)
+	protected InteractionResult stopPlayerUsing(Entity entity, InteractionHand hand,
+			CallbackInfoReturnable<InteractionResult> callbackInfo) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+			callbackInfo.setReturnValue(InteractionResult.FAIL);
 		}
 		return callbackInfo.getReturnValue();
 	}
 
 	@Inject(method = { "attack" }, at = { @At("HEAD") }, cancellable = true)
 	protected void noAttacking(Entity target, CallbackInfo callbackInfo) {
-		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
-            this.clearActiveItem();
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+            this.stopUsingItem();
 		}
 	}
 
-	@Inject(method = { "tickMovement" }, at = { @At("HEAD") }, cancellable = true)
+	@Inject(method = { "aiStep" }, at = { @At("HEAD") }, cancellable = true)
 	public void tickMovement(CallbackInfo callbackInfo) {
-		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
 			callbackInfo.cancel();
 		}
 	}

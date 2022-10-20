@@ -5,33 +5,35 @@ import static java.lang.Math.max;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class BuildNestGoal extends Goal {
 	private final AdultAlienEntity mob;
-	private int cooldown = 0;
+	private int coolbelow = 0;
 
 	public BuildNestGoal(AdultAlienEntity strider) {
 		this.mob = strider;
 	}
 
 	@Override
-	public boolean shouldContinue() {
-		return !mob.isAttacking() && !mob.hasPassengers() && !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	public boolean canContinueToUse() {
+		return !mob.isAggressive() && !mob.isVehicle() && !mob.level.canSeeSky(mob.blockPosition())
+				&& mob.level.getSkyDarken() <= 9
+				&& !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	}
 
 	@Override
-	public boolean canStart() {
-		cooldown = max(cooldown - 1, 0);
-		return !mob.isAttacking() && !mob.hasPassengers() && !mob.world.isSkyVisible(mob.getBlockPos()) && mob.world.getAmbientDarkness() <= 9
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	public boolean canUse() {
+		coolbelow = max(coolbelow - 1, 0);
+		return !mob.isAggressive() && !mob.isVehicle() && !mob.level.canSeeSky(mob.blockPosition())
+				&& mob.level.getSkyDarken() <= 9
+				&& !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	}
 
 	@Override
@@ -47,15 +49,15 @@ public class BuildNestGoal extends Goal {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!mob.hasPassengers() && !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN)
-				&& !mob.world.getBlockState(mob.getBlockPos().down()).isOf(GIgBlocks.NEST_RESIN_WEB_CROSS))
-			this.cooldown++;
-		if (this.cooldown == 200)
+		if (!mob.isVehicle() && !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition()).is(GIgBlocks.NEST_RESIN_WEB_CROSS)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN)
+				&& !mob.level.getBlockState(mob.blockPosition().below()).is(GIgBlocks.NEST_RESIN_WEB_CROSS))
+			this.coolbelow++;
+		if (this.coolbelow == 200)
 			NestBuildingHelper.tryBuildNestAround(mob);
 
-		if (this.cooldown >= 203)
-			this.cooldown = -500;
+		if (this.coolbelow >= 203)
+			this.coolbelow = -500;
 	}
 }

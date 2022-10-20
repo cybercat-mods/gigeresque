@@ -1,16 +1,15 @@
 package mods.cybercat.gigeresque.common.item;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.Item;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -24,7 +23,7 @@ public class EngiArmorItem extends ArmorItem implements IAnimatable {
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	public EngiArmorItem(ArmorMaterial materialIn, EquipmentSlot slot) {
-		super(materialIn, slot, new Item.Settings().group(GigItemGroups.GENERAL).maxCount(1));
+		super(materialIn, slot, new Item.Properties().tab(GigItemGroups.GENERAL).stacksTo(1));
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public class EngiArmorItem extends ArmorItem implements IAnimatable {
 				.setAnimation(new AnimationBuilder().addAnimation("todo", false).addAnimation("todo_closed", true));
 
 		// If the living entity is an armorstand just play the animation nonstop
-		if (livingEntity instanceof ArmorStandEntity) {
+		if (livingEntity instanceof ArmorStand) {
 			return PlayState.CONTINUE;
 		}
 
@@ -54,8 +53,8 @@ public class EngiArmorItem extends ArmorItem implements IAnimatable {
 		List<Item> armorList = new ArrayList<>(4);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (slot.getType() == EquipmentSlot.Type.ARMOR) {
-				if (livingEntity.getEquippedStack(slot) != null) {
-					armorList.add(livingEntity.getEquippedStack(slot).getItem());
+				if (livingEntity.getItemBySlot(slot) != null) {
+					armorList.add(livingEntity.getItemBySlot(slot).getItem());
 				}
 			}
 		}

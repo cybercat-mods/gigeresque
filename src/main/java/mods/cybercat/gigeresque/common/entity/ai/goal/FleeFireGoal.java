@@ -4,53 +4,53 @@ import java.util.EnumSet;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
 
 public class FleeFireGoal<T extends LivingEntity> extends Goal {
-	protected final PathAwareEntity mob;
+	protected final PathfinderMob mob;
 	@Nullable
 	protected Path fleePath;
-	protected final EntityNavigation fleeingEntityNavigation;
+	protected final PathNavigation fleeingEntityNavigation;
 
-	public FleeFireGoal(PathAwareEntity mob) {
+	public FleeFireGoal(PathfinderMob mob) {
 		this.mob = mob;
 		this.fleeingEntityNavigation = mob.getNavigation();
-		this.setControls(EnumSet.of(Goal.Control.MOVE));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 	}
 
 	@Override
 	public void tick() {
 		Vec3i radius = new Vec3i(12, 12, 12);
-		for (BlockPos testPos : BlockPos.iterate(this.mob.getBlockPos().subtract(radius),
-				this.mob.getBlockPos().add(radius))) {
+		for (BlockPos testPos : BlockPos.betweenClosed(this.mob.blockPosition().subtract(radius),
+				this.mob.blockPosition().offset(radius))) {
 			@SuppressWarnings("unused")
 			BlockState testState;
 
-			if ((testState = this.mob.world.getBlockState(testPos)).isIn(BlockTags.FIRE)) {
-				this.mob.getNavigation().startMovingTo(this.mob.getX() * 2, this.mob.getY() * 2, this.mob.getZ() * 2,
+			if ((testState = this.mob.level.getBlockState(testPos)).is(BlockTags.FIRE)) {
+				this.mob.getNavigation().moveTo(this.mob.getX() * 2, this.mob.getY() * 2, this.mob.getZ() * 2,
 						3.15);
-				this.mob.setAttacking(false);
+				this.mob.setAggressive(false);
 			}
 		}
 	}
 
 	@Override
-	public boolean canStart() {
+	public boolean canUse() {
 		Vec3i radius = new Vec3i(12, 12, 12);
-		for (BlockPos testPos : BlockPos.iterate(this.mob.getBlockPos().subtract(radius),
-				this.mob.getBlockPos().add(radius))) {
+		for (BlockPos testPos : BlockPos.betweenClosed(this.mob.blockPosition().subtract(radius),
+				this.mob.blockPosition().offset(radius))) {
 			@SuppressWarnings("unused")
 			BlockState testState;
 
-			if ((testState = this.mob.world.getBlockState(testPos)).isIn(BlockTags.FIRE)) {
+			if ((testState = this.mob.level.getBlockState(testPos)).is(BlockTags.FIRE)) {
 				return true;
 			}
 		}

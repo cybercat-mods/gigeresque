@@ -2,49 +2,49 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import java.util.HashMap;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 
-public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
-	public EggmorphFeatureRenderer(FeatureRendererContext<T, M> context) {
+public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
+	public EggmorphFeatureRenderer(RenderLayerParent<T, M> context) {
 		super(context);
 	}
 
-	private static final HashMap<Identifier, EggmorphLayerTexture> textureCache = new HashMap<Identifier, EggmorphLayerTexture>();
+	private static final HashMap<ResourceLocation, EggmorphLayerTexture> textureCache = new HashMap<ResourceLocation, EggmorphLayerTexture>();
 
-	public static <T extends Entity> void renderEggmorphedModel(EntityModel<T> renderedModel, Identifier texture,
-			MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle,
+	public static <T extends Entity> void renderEggmorphedModel(EntityModel<T> renderedModel, ResourceLocation texture,
+			PoseStack matrices, MultiBufferSource vertexConsumers, int light, T entity, float limbAngle,
 			float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-		matrices.push();
-		renderedModel.animateModel(entity, limbAngle, limbDistance, tickDelta);
+		matrices.pushPose();
+		renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
 		var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
 		var progress = 0.0F + (((Eggmorphable) entity).getTicksUntilEggmorphed() / 6000);
-		renderedModel.setAngles(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-		renderedModel.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, progress);
-		matrices.pop();
+		renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+		renderedModel.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, progress);
+		matrices.popPose();
 	}
 
-	public static EggmorphLayerTexture getEggmorphLayerTexture(Identifier texture) {
+	public static EggmorphLayerTexture getEggmorphLayerTexture(ResourceLocation texture) {
 		return textureCache.computeIfAbsent(texture,
-				identifier -> new EggmorphLayerTexture(MinecraftClient.getInstance().getTextureManager(),
-						MinecraftClient.getInstance().getResourceManager(), texture));
+				identifier -> new EggmorphLayerTexture(Minecraft.getInstance().getTextureManager(),
+						Minecraft.getInstance().getResourceManager(), texture));
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity,
-			float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw,
-			float headPitch) {
+	public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, T entity, float limbAngle,
+			float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
 		if (entity instanceof Eggmorphable && ((Eggmorphable) entity).isEggmorphing()) {
-			renderEggmorphedModel(getContextModel(), getTexture(entity), matrices, vertexConsumers, light, entity,
+			renderEggmorphedModel(getParentModel(), getTextureLocation(entity), matrices, vertexConsumers, light, entity,
 					limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
 		}
 	}

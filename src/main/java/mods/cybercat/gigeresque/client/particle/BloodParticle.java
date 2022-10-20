@@ -1,65 +1,64 @@
 package mods.cybercat.gigeresque.client.particle;
 
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.util.Mth;
 
-public class BloodParticle extends SpriteBillboardParticle {
+public class BloodParticle extends TextureSheetParticle {
 
 	@SuppressWarnings("unused")
 	private boolean reachedGround;
-	private final SpriteProvider spriteProvider;
+	private final SpriteSet spriteProvider;
 
-	BloodParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i,
-			SpriteProvider spriteProvider) {
+	BloodParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i,
+			SpriteSet spriteProvider) {
 		super(clientWorld, d, e, f);
-		velocityX = g;
-		velocityY = h;
-		velocityZ = i;
+		xd = g;
+		yd = h;
+		zd = i;
 		var red = 170 / 255.0f;
 		var green = 0 / 255.0f;
 		var blue = 0 / 255.0f;
-		var colorRed = MathHelper.nextFloat(random, red - 0.05f, red + 0.05f);
+		var colorRed = Mth.nextFloat(random, red - 0.05f, red + 0.05f);
 		setColor(colorRed, green, blue);
-		scale *= 0.75f;
-		maxAge = (int) (20.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
+		quadSize *= 0.75f;
+		lifetime = (int) (20.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
 		reachedGround = false;
-		collidesWithWorld = true;
+		hasPhysics = true;
 		this.spriteProvider = spriteProvider;
-		setSpriteForAge(spriteProvider);
+		setSpriteFromAge(spriteProvider);
 	}
 
 	@Override
 	public void tick() {
-		prevPosX = x;
-		prevPosY = y;
-		prevPosZ = z;
-		if (age++ >= maxAge) {
-			markDead();
+		xo = x;
+		yo = y;
+		zo = z;
+		if (age++ >= lifetime) {
+			remove();
 		} else {
-			setSpriteForAge(spriteProvider);
+			setSpriteFromAge(spriteProvider);
 			if (onGround) {
-				velocityY = 0.0;
+				yd = 0.0;
 				reachedGround = true;
 			}
-			this.move(velocityX, velocityY, velocityZ);
-			if (y == prevPosY) {
-				velocityX *= 1.1;
-				velocityZ *= 1.1;
+			this.move(xd, yd, zd);
+			if (y == yo) {
+				xd *= 1.1;
+				zd *= 1.1;
 			}
 		}
 	}
 
 	@Override
-	public ParticleTextureSheet getType() {
-		return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 
-	@Override
-	public float getSize(float tickDelta) {
-		return scale * MathHelper.clamp((((float) age) + tickDelta) / ((float) maxAge) * 32.0f, 0.0f, 1.0f);
+	public float getQuadSize(float tickDelta) {
+		return quadSize * Mth.clamp((((float) age) + tickDelta) / ((float) lifetime) * 32.0f, 0.0f, 1.0f);
 	}
 
 }

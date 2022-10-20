@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.source;
 import java.util.List;
 import java.util.SplittableRandom;
 
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 
 public class GigDamageSources {
 	private GigDamageSources() {

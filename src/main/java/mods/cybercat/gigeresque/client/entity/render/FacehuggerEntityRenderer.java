@@ -2,48 +2,50 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import java.util.HashMap;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
 	private final HashMap<EntityType<?>, TransformDataGenerator> headDistances = new HashMap<>();
 
-	public FacehuggerEntityRenderer(EntityRendererFactory.Context context) {
+	public FacehuggerEntityRenderer(EntityRendererProvider.Context context) {
 		super(context, new FacehuggerEntityModel());
 		this.shadowRadius = 0.2f;
 		headDistances.put(EntityType.SHEEP, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getMountedHeightOffset() - facehugger.getWidth()
-						+ 0.4,
-				host.getWidth() - ((double) facehugger.getHeight()) - 0.1, 0.385,
+				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
+						- facehugger.getBbWidth() + 0.4,
+				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.385,
 				calcStandardOffsetY(facehugger) - 0.05));
 		headDistances.put(EntityType.COW, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getMountedHeightOffset() - facehugger.getWidth()
-						+ 0.4,
-				host.getWidth() - ((double) facehugger.getHeight()) - 0.1, 0.41,
+				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
+						- facehugger.getBbWidth() + 0.4,
+				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41,
 				calcStandardOffsetY(facehugger) - 0.05));
-		headDistances.put(EntityType.PIG, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getMountedHeightOffset() - facehugger.getWidth()
-						+ 0.4,
-				host.getWidth() - ((double) facehugger.getHeight()) - 0.1, 0.41, // Distance from face
-				calcStandardOffsetY(facehugger) - 0.05 // Distance from head
-		));
+		headDistances.put(EntityType.PIG,
+				(facehugger, host) -> new TransformData(0.0,
+						((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
+								- facehugger.getBbWidth() + 0.4,
+						host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41, // Distance from face
+						calcStandardOffsetY(facehugger) - 0.05 // Distance from head
+				));
 		headDistances.put(EntityType.WOLF, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getMountedHeightOffset() - facehugger.getWidth()
-						+ 0.4,
-				host.getWidth() - ((double) facehugger.getHeight()) - 0.1, 0.54,
+				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
+						- facehugger.getBbWidth() + 0.4,
+				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.54,
 				calcStandardOffsetY(facehugger) - 0.15));
 		headDistances.put(EntityType.VILLAGER,
 				(facehugger, host) -> new TransformData(0.0, 0.0, 0.0, 0.36, calcStandardOffsetY(facehugger)));
@@ -54,70 +56,69 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	}
 
 	@Override
-	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider bufferIn, int packedLightIn) {
-		if (entity.isCrawling() && !entity.hasNoGravity()) {
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
-					entity.world.getBlockState(entity.getBlockPos().west()))) {
-				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack,
+			MultiBufferSource bufferIn, int packedLightIn) {
+		if (entity.isCrawling() && !entity.isNoGravity()) {
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
+				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(), entity.world.getBlockState(entity.getBlockPos()))) {
-				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition()))) {
+				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
-					entity.world.getBlockState(entity.getBlockPos().north()))) {
-				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+			if (entity.isColliding(entity.blockPosition(),
+					entity.level.getBlockState(entity.blockPosition().north()))) {
+				stack.mulPose(Vector3f.XP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
-					entity.world.getBlockState(entity.getBlockPos().south()))) {
-				stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+			if (entity.isColliding(entity.blockPosition(),
+					entity.level.getBlockState(entity.blockPosition().south()))) {
+				stack.mulPose(Vector3f.XP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.collidesWithStateAtPos(entity.getBlockPos(),
-					entity.world.getBlockState(entity.getBlockPos().east()))) {
-				stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
+				stack.mulPose(Vector3f.ZP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
 		}
-		if (entity.hasNoGravity() && !entity.isCrawling() && !entity.isSubmergedInWater()) {
-			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
+		if (entity.isNoGravity() && !entity.isCrawling() && !entity.isUnderWater()) {
+			stack.mulPose(Vector3f.ZP.rotationDegrees(180));
 			stack.translate(0, -0.6, 0);
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public void renderEarly(FacehuggerEntity animatable, MatrixStack stackIn, float ticks,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
+	public void renderEarly(FacehuggerEntity animatable, PoseStack stackIn, float ticks,
+			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
+			float red, float green, float blue, float partialTicks) {
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
-		if (animatable.getDataTracker().get(FacehuggerEntity.EGGSPAWN) == true)
-		stackIn.scale(animatable.age < 5 ? 0 : 1F, animatable.age < 5 ? 0 : 1F, animatable.age < 5 ? 0 : 1F);
+		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true)
+			stackIn.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F,
+					animatable.tickCount < 5 ? 0 : 1F);
 	}
 
 	@Override
-	protected void applyRotations(FacehuggerEntity facehugger, MatrixStack matrixStackIn, float ageInTicks,
+	protected void applyRotations(FacehuggerEntity facehugger, PoseStack matrixStackIn, float ageInTicks,
 			float rotationYaw, float partialTicks) {
 		if (facehugger.isAlive() && facehugger.isAttachedToHost()) {
 			var host = (LivingEntity) facehugger.getVehicle();
 			if (host == null)
 				return;
 			var transformData = getTransformData(facehugger, host);
-			var bodyYaw = MathHelper.lerpAngleDegrees(partialTicks, host.prevBodyYaw, host.bodyYaw);
-			var headYaw = MathHelper.lerpAngleDegrees(partialTicks, host.prevHeadYaw, host.headYaw) - bodyYaw;
-			var headPitch = MathHelper.lerpAngleDegrees(partialTicks, host.getPitch(), host.prevPitch);
+			var bodyYaw = Mth.rotLerp(partialTicks, host.yBodyRotO, host.yBodyRot);
+			var headYaw = Mth.rotLerp(partialTicks, host.yHeadRotO, host.yHeadRot) - bodyYaw;
+			var headPitch = Mth.rotLerp(partialTicks, host.getXRot(), host.xRotO);
 
 			// translate head-center
-			matrixStackIn.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(bodyYaw));
+			matrixStackIn.mulPose(Vector3f.YN.rotationDegrees(bodyYaw));
 			matrixStackIn.translate(transformData.originX, transformData.originY, transformData.originZ);
 			// yaw
-			matrixStackIn.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(headYaw));
+			matrixStackIn.mulPose(Vector3f.YN.rotationDegrees(headYaw));
 			// pitch
-			matrixStackIn.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(headPitch));
+			matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(headPitch));
 			matrixStackIn.translate(0.0, transformData.headOffset, transformData.faceOffset); // apply offsets
 
 		} else {
@@ -129,14 +130,14 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 		return headDistances
 				.computeIfAbsent(host.getType(),
 						entityType -> (facehugger1, host1) -> new TransformData(0.0, 0.0, 0.0,
-								((double) host.getEyeHeight(host.getPose())) - host.getMountedHeightOffset()
-										- facehugger.getWidth() + host.getWidth(),
+								((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
+										- facehugger.getBbWidth() + host.getBbWidth(),
 								calcStandardOffsetY(facehugger)))
 				.invoke(facehugger, host);
 	}
 
 	private double calcStandardOffsetY(FacehuggerEntity facehugger) {
-		return -facehugger.getWidth();
+		return -facehugger.getBbWidth();
 	}
 
 	private class TransformData {
@@ -158,7 +159,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	private interface TransformDataGenerator {
 		public TransformData invoke(FacehuggerEntity facehugger, Entity host);
 	}
-	
+
 	@Override
 	protected float getDeathMaxRotation(FacehuggerEntity entityLivingBaseIn) {
 		return 0;

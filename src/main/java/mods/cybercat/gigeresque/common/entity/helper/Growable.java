@@ -3,9 +3,9 @@ package mods.cybercat.gigeresque.common.entity.helper;
 import static java.lang.Math.min;
 
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 public interface Growable {
 	float getGrowth();
@@ -25,15 +25,15 @@ public interface Growable {
 	LivingEntity growInto();
 
 	default void growUp(LivingEntity entity) {
-		World world = entity.world;
-		if (!world.isClient()) {
+		Level world = entity.level;
+		if (!world.isClientSide()) {
 			var newEntity = growInto();
 			if (newEntity == null)
 				return;
-			newEntity.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
+			newEntity.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 			if (newEntity instanceof RunnerbursterEntity)
 					((RunnerbursterEntity) newEntity).setBirthStatus(false);
-			world.spawnEntity(newEntity);
+			world.addFreshEntity(newEntity);
 			entity.remove(Entity.RemovalReason.DISCARDED);
 		}
 	}

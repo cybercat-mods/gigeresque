@@ -7,7 +7,7 @@ import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
@@ -15,17 +15,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 @Environment(EnvType.CLIENT)
 public class ChestbursterEntityModel extends AnimatedTickingGeoModel<ChestbursterEntity> {
 	@Override
-	public Identifier getModelResource(ChestbursterEntity object) {
+	public ResourceLocation getModelResource(ChestbursterEntity object) {
 		return EntityModels.CHESTBURSTER;
 	}
 
 	@Override
-	public Identifier getTextureResource(ChestbursterEntity object) {
+	public ResourceLocation getTextureResource(ChestbursterEntity object) {
 		return EntityTextures.CHESTBURSTER;
 	}
 
 	@Override
-	public Identifier getAnimationResource(ChestbursterEntity animatable) {
+	public ResourceLocation getAnimationResource(ChestbursterEntity animatable) {
 		return EntityAnimations.CHESTBURSTER;
 	}
 

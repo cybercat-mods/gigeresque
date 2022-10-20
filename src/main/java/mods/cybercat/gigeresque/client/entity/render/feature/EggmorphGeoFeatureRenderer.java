@@ -1,12 +1,13 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
@@ -21,16 +22,16 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & IAnimatable> ex
 	}
 
 	public static <T extends Entity, M extends GeoModel> void renderEggmorphedModel(IGeoRenderer<T> entityRenderer,
-			M renderedModel, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+			M renderedModel, ResourceLocation texture, PoseStack matrices, MultiBufferSource vertexConsumers,
 			int light, T entity, float tickDelta) {
 		var progress = 0.0F + (((Eggmorphable) entity).getTicksUntilEggmorphed() / 6000);
 		var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(texture).renderLayer;
 		entityRenderer.render(renderedModel, entity, tickDelta, renderLayer, matrices, vertexConsumers,
-				vertexConsumers.getBuffer(renderLayer), light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f, progress);
+				vertexConsumers.getBuffer(renderLayer), light, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, progress);
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity,
+	public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, T entity,
 			float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw,
 			float headPitch) {
 		if (entity instanceof Eggmorphable && ((Eggmorphable) entity).isEggmorphing()) {

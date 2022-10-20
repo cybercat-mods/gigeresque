@@ -5,36 +5,37 @@ import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.TorchBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.TorchBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
-public abstract class AlienEntity extends HostileEntity {
+public abstract class AlienEntity extends Monster {
 
-	public static final TrackedData<Boolean> UPSIDE_DOWN = DataTracker.registerData(AlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 200) {
 			this.remove(Entity.RemovalReason.KILLED);
-			super.updatePostDeath();
-			this.dropXp();
+			super.tickDeath();
+			this.dropExperience();
 		}
 	}
 
@@ -43,25 +44,25 @@ public abstract class AlienEntity extends HostileEntity {
 	}
 
 	public boolean isUpsideDown() {
-		return this.dataTracker.get(UPSIDE_DOWN);
+		return this.entityData.get(UPSIDE_DOWN);
 	}
 
 	public void setUpsideDown(boolean upsideDown) {
-		this.dataTracker.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
+		this.entityData.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
 	}
 
 	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(UPSIDE_DOWN, false);
+	public void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(UPSIDE_DOWN, false);
 	}
 
-	protected AlienEntity(EntityType<? extends HostileEntity> entityType, World world) {
+	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
-		setPathfindingPenalty(PathNodeType.DANGER_FIRE, 16.0f);
-		setPathfindingPenalty(PathNodeType.DAMAGE_FIRE, -1.0f);
+		setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
+		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
 		if (navigation != null) {
-			navigation.setCanSwim(true);
+			navigation.setCanFloat(true);
 		}
 	}
 
@@ -69,14 +70,14 @@ public abstract class AlienEntity extends HostileEntity {
 	public void tick() {
 		super.tick();
 
-		if (!world.isClient && world.getBlockState(getBlockPos()).getBlock() == GIgBlocks.NEST_RESIN
-				&& this.age % Constants.TPS == 0) {
+		if (!level.isClientSide && level.getBlockState(blockPosition()).getBlock() == GIgBlocks.NEST_RESIN
+				&& this.tickCount % Constants.TPS == 0) {
 			this.heal(0.0833f);
 		}
 	}
 
 	@Override
-	public boolean cannotDespawn() {
+	public boolean requiresCustomPersistence() {
 		return true;
 	}
 
@@ -85,35 +86,35 @@ public abstract class AlienEntity extends HostileEntity {
 	}
 
 	private void generateAcidPool(int xOffset, int zOffset) {
-		BlockPos pos = this.getBlockPos().add(xOffset, 0, zOffset);
-		BlockState posState = world.getBlockState(pos);
+		BlockPos pos = this.blockPosition().offset(xOffset, 0, zOffset);
+		BlockState posState = level.getBlockState(pos);
 
-		BlockState newState = GIgBlocks.ACID_BLOCK.getDefaultState();
+		BlockState newState = GIgBlocks.ACID_BLOCK.defaultBlockState();
 
-		if (posState.getBlock() == net.minecraft.block.Blocks.WATER) {
-			newState = newState.with(Properties.WATERLOGGED, true);
+		if (posState.getBlock() == Blocks.WATER) {
+			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 		}
 
 		if (!(posState.getBlock() instanceof AirBlock)
-				&& !(posState.getBlock() instanceof FluidBlock && !(posState.isIn(GigTags.ACID_RESISTANT)))
+				&& !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT)))
 				&& !(posState.getBlock() instanceof TorchBlock)) {
 			return;
 		}
-		world.setBlockState(pos, newState);
+		level.setBlockAndUpdate(pos, newState);
 	}
 
 	@Override
-	public void onDeath(DamageSource source) {
+	public void die(DamageSource source) {
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source)) {
-			super.onDeath(source);
+			super.die(source);
 			return;
 		}
 		if (source == DamageSource.OUT_OF_WORLD) {
-			super.onDeath(source);
+			super.die(source);
 			return;
 		}
 
-		if (!this.world.isClient) {
+		if (!this.level.isClientSide) {
 			if (source != DamageSource.OUT_OF_WORLD) {
 				if (getAcidDiameter() == 1) {
 					generateAcidPool(0, 0);
@@ -128,24 +129,24 @@ public abstract class AlienEntity extends HostileEntity {
 				}
 			}
 		}
-		super.onDeath(source);
+		super.die(source);
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
-		if (!this.world.isClient) {
-			Entity attacker = source.getAttacker();
+	public boolean hurt(DamageSource source, float amount) {
+		if (!this.level.isClientSide) {
+			Entity attacker = source.getEntity();
 			if (attacker != null) {
 				if (attacker instanceof LivingEntity) {
-					this.brain.remember(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
 				}
 			}
 		}
 
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source))
-			return super.damage(source, amount);
+			return super.hurt(source, amount);
 
-		if (!this.world.isClient && source != DamageSource.OUT_OF_WORLD) {
+		if (!this.level.isClientSide && source != DamageSource.OUT_OF_WORLD) {
 			int acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4)) {
@@ -161,17 +162,17 @@ public abstract class AlienEntity extends HostileEntity {
 			}
 
 			if (acidThickness == 0)
-				return super.damage(source, amount);
+				return super.hurt(source, amount);
 
-			BlockState newState = GIgBlocks.ACID_BLOCK.getDefaultState().with(AcidBlock.THICKNESS, acidThickness);
+			BlockState newState = GIgBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
-			if (this.getBlockStateAtPos().getBlock() == net.minecraft.block.Blocks.WATER) {
-				newState = newState.with(Properties.WATERLOGGED, true);
+			if (this.getFeetBlockState().getBlock() == Blocks.WATER) {
+				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 			}
-			if (!this.getBlockStateAtPos().isIn(GigTags.ACID_RESISTANT))
-				world.setBlockState(this.getBlockPos(), newState);
+			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+				level.setBlockAndUpdate(this.blockPosition(), newState);
 		}
 
-		return super.damage(source, amount);
+		return super.hurt(source, amount);
 	}
 }

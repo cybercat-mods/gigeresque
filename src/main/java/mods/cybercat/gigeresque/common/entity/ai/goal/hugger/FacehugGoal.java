@@ -10,15 +10,15 @@ import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class FacehugGoal extends Goal {
 	protected final FacehuggerEntity mob;
@@ -28,11 +28,11 @@ public class FacehugGoal extends Goal {
 	public FacehugGoal(FacehuggerEntity mob, double speed) {
 		this.mob = mob;
 		this.speed = speed;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
 	@Override
-	public boolean canStart() {
+	public boolean canUse() {
 		LivingEntity livingEntity = this.mob.getTarget();
 		if (livingEntity == null) {
 			return false;
@@ -40,23 +40,23 @@ public class FacehugGoal extends Goal {
 		if (((Eggmorphable) livingEntity).isEggmorphing()) {
 			return false;
 		}
-		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+		if (livingEntity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
-		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+		if (!this.mob.getSensing().hasLineOfSight(livingEntity)) {
 			return false;
 		}
-		if (livingEntity instanceof ArmorStandEntity) {
+		if (livingEntity instanceof ArmorStand) {
 			return false;
 		}
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, livingEntity)) {
 			return false;
 		}
 		if (livingEntity.getVehicle() != null
-				&& livingEntity.getVehicle().streamSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
+				&& livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
-		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
+		if (livingEntity.getMobType() == MobType.UNDEAD) {
 			return false;
 		}
 		if (livingEntity instanceof AlienEntity) {
@@ -78,25 +78,25 @@ public class FacehugGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinue() {
-		return (this.canStart() || !this.mob.getNavigation().isIdle());
+	public boolean canContinueToUse() {
+		return (this.canUse() || !this.mob.getNavigation().isDone());
 	}
 
 	@Override
 	public void start() {
 		super.start();
-		this.mob.setAttacking(true);
+		this.mob.setAggressive(true);
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
 		LivingEntity livingEntity = this.mob.getTarget();
-		if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
 			this.mob.setTarget(null);
 		}
 		this.mob.setIsAttakcing(false);
-		this.mob.setAttacking(false);
+		this.mob.setAggressive(false);
 		mob.setIsJumping(false);
 		mob.setUpsideDown(false);
 		mob.setIsAttakcing(false);
@@ -110,24 +110,24 @@ public class FacehugGoal extends Goal {
 			return;
 		}
 		float q = 2.0F;
-		int k = MathHelper.floor(mob.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(mob.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(mob.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(mob.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(mob.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(mob.getZ() + (double) q + 1.0D);
-		List<Entity> list = mob.world.getOtherEntities(mob,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3d vec3d1 = new Vec3d(mob.getX(), mob.getY(), mob.getZ());
-		this.mob.getNavigation().startMovingTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 1.15);
-		this.mob.getLookControl().lookAt(livingEntity, 30.0f, 30.0f);
+		int k = Mth.floor(mob.getX() - (double) q - 1.0D);
+		int l = Mth.floor(mob.getX() + (double) q + 1.0D);
+		int t = Mth.floor(mob.getY() - (double) q - 1.0D);
+		int u = Mth.floor(mob.getY() + (double) q + 1.0D);
+		int v = Mth.floor(mob.getZ() - (double) q - 1.0D);
+		int w = Mth.floor(mob.getZ() + (double) q + 1.0D);
+		List<Entity> list = mob.level.getEntities(mob,
+				new AABB((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		Vec3 vec3d1 = new Vec3(mob.getX(), mob.getY(), mob.getZ());
+		this.mob.getNavigation().moveTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 1.15);
+		this.mob.getLookControl().setLookAt(livingEntity, 30.0f, 30.0f);
 		mob.setIsAttakcing(true);
 		for (int x = 0; x < list.size(); ++x) {
-			double y = (double) (MathHelper.sqrt((float) livingEntity.squaredDistanceTo(vec3d1)) / q);
-			if (!this.mob.isSubmergedInWater()) {
+			double y = (double) (Mth.sqrt((float) livingEntity.distanceToSqr(vec3d1)) / q);
+			if (!this.mob.isUnderWater()) {
 				if (y <= 2) {
 					this.mob.getNavigation().stop();
-					this.mob.getNavigation().setSpeed(0);
+					this.mob.getNavigation().setSpeedModifier(0);
 					this.attackTime++;
 					if (this.attackTime == 2) {
 						mob.setIsJumping(true);
@@ -138,13 +138,13 @@ public class FacehugGoal extends Goal {
 						mob.setIsJumping(false);
 					}
 					if (this.attackTime == 23) {
-						Vec3d vec3d = this.mob.getVelocity();
-						Vec3d vec3d2 = new Vec3d(livingEntity.getX() - this.mob.getX(), 0.0,
+						Vec3 vec3d = this.mob.getDeltaMovement();
+						Vec3 vec3d2 = new Vec3(livingEntity.getX() - this.mob.getX(), 0.0,
 								livingEntity.getZ() - this.mob.getZ());
-						if (vec3d2.lengthSquared() > 1.0E-7) {
-							vec3d2 = vec3d2.normalize().multiply(0.9).add(vec3d.multiply(0.9));
+						if (vec3d2.lengthSqr() > 1.0E-7) {
+							vec3d2 = vec3d2.normalize().scale(0.9).add(vec3d.scale(0.9));
 						}
-						this.mob.setVelocity(vec3d2.x, 0.6, vec3d2.z);
+						this.mob.setDeltaMovement(vec3d2.x, 0.6, vec3d2.z);
 					}
 					if (this.attackTime == 25) {
 						if (y <= 2) {
@@ -161,7 +161,7 @@ public class FacehugGoal extends Goal {
 					this.attackTime = -1;
 					mob.setUpsideDown(false);
 					mob.setIsJumping(false);
-					this.mob.getNavigation().setSpeed(this.speed);
+					this.mob.getNavigation().setSpeedModifier(this.speed);
 				}
 			} else {
 				this.attackTime++;
@@ -176,6 +176,6 @@ public class FacehugGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(LivingEntity entity) {
-		return this.mob.getWidth() * 2.0f * (this.mob.getWidth() * 2.0f) + entity.getWidth();
+		return this.mob.getBbWidth() * 2.0f * (this.mob.getBbWidth() * 2.0f) + entity.getBbWidth();
 	}
 }

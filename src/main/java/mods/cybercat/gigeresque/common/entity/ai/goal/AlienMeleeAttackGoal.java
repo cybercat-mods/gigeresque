@@ -7,14 +7,14 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
 
 public class AlienMeleeAttackGoal extends Goal {
 	protected final AdultAlienEntity mob;
@@ -33,12 +33,12 @@ public class AlienMeleeAttackGoal extends Goal {
 		this.mob = mob;
 		this.speed = speed;
 		this.pauseWhenMobIdle = pauseWhenMobIdle;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
 	@Override
-	public boolean canStart() {
-		long l = this.mob.world.getTime();
+	public boolean canUse() {
+		long l = this.mob.level.getGameTime();
 		if (l - this.lastUpdateTime < 20L) {
 			return false;
 		}
@@ -47,7 +47,7 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers()
 				.anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
@@ -57,29 +57,29 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (!livingEntity.isAlive()) {
 			return false;
 		}
-		if (livingEntity instanceof ArmorStandEntity) {
+		if (livingEntity instanceof ArmorStand) {
 			return false;
 		}
-		this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
+		this.path = this.mob.getNavigation().createPath(livingEntity, 0);
 		if (this.path != null) {
 			return true;
 		}
-		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+		if (livingEntity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
-		if (mob.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+		if (mob.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
-		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+		if (!this.mob.getSensing().hasLineOfSight(livingEntity)) {
 			return false;
 		}
-		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
+		if (livingEntity.getMobType() == MobType.UNDEAD) {
 			return false;
 		}
 		if (livingEntity instanceof AlienEntity) {
 			return false;
 		}
-		if (this.mob.hasPassengers())
+		if (this.mob.isVehicle())
 			return false;
 		if (((Host) livingEntity).isBleeding()) {
 			return false;
@@ -87,12 +87,12 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
 			return false;
 		}
-		return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.squaredDistanceTo(livingEntity.getX(),
+		return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.distanceToSqr(livingEntity.getX(),
 				livingEntity.getY(), livingEntity.getZ());
 	}
 
 	@Override
-	public boolean shouldContinue() {
+	public boolean canContinueToUse() {
 		LivingEntity livingEntity = this.mob.getTarget();
 		if (livingEntity == null) {
 			return false;
@@ -103,31 +103,31 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (!livingEntity.isAlive()) {
 			return false;
 		}
-		if (this.mob.hasPassengers())
+		if (this.mob.isVehicle())
 			return false;
 		if (!this.pauseWhenMobIdle) {
-			return !this.mob.getNavigation().isIdle();
+			return !this.mob.getNavigation().isDone();
 		}
-		if (livingEntity instanceof ArmorStandEntity) {
+		if (livingEntity instanceof ArmorStand) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().streamSelfAndPassengers()
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers()
 				.anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
-		if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
+		if (!this.mob.isWithinRestriction(livingEntity.blockPosition())) {
 			return false;
 		}
-		if (livingEntity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+		if (livingEntity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
-		if (mob.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+		if (mob.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 			return false;
 		}
-		if (!this.mob.getVisibilityCache().canSee(livingEntity)) {
+		if (!this.mob.getSensing().hasLineOfSight(livingEntity)) {
 			return false;
 		}
-		if (livingEntity.getGroup() == EntityGroup.UNDEAD) {
+		if (livingEntity.getMobType() == MobType.UNDEAD) {
 			return false;
 		}
 		if (livingEntity instanceof AlienEntity) {
@@ -139,14 +139,14 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (EntityUtils.isFacehuggerAttached(livingEntity)) {
 			return false;
 		}
-		return !(livingEntity instanceof PlayerEntity)
-				|| !livingEntity.isSpectator() && !((PlayerEntity) livingEntity).isCreative();
+		return !(livingEntity instanceof Player)
+				|| !livingEntity.isSpectator() && !((Player) livingEntity).isCreative();
 	}
 
 	@Override
 	public void start() {
-		this.mob.getNavigation().startMovingAlong(this.path, this.speed);
-		this.mob.setAttacking(true);
+		this.mob.getNavigation().moveTo(this.path, this.speed);
+		this.mob.setAggressive(true);
 		this.updateCountdownTicks = 0;
 		this.cooldown = 0;
 		mob.setIsExecuting(false);
@@ -155,16 +155,16 @@ public class AlienMeleeAttackGoal extends Goal {
 	@Override
 	public void stop() {
 		LivingEntity livingEntity = this.mob.getTarget();
-		if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
 			this.mob.setTarget(null);
 		}
-		this.mob.setAttacking(false);
+		this.mob.setAggressive(false);
 		this.mob.getNavigation().stop();
 		mob.setIsExecuting(false);
 	}
 
 	@Override
-	public boolean shouldRunEveryTick() {
+	public boolean requiresUpdateEveryTick() {
 		return true;
 	}
 
@@ -174,13 +174,13 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return;
 		}
-		this.mob.getLookControl().lookAt(livingEntity, 30.0f, 30.0f);
-		double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		this.mob.getLookControl().setLookAt(livingEntity, 30.0f, 30.0f);
+		double d = this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
-		if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity))
+		if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity))
 				&& this.updateCountdownTicks <= 0
 				&& (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
-						|| livingEntity.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0
+						|| livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0
 						|| this.mob.getRandom().nextFloat() < 0.05f)) {
 			this.targetX = livingEntity.getX();
 			this.targetY = livingEntity.getY();
@@ -191,13 +191,13 @@ public class AlienMeleeAttackGoal extends Goal {
 			} else if (d > 256.0) {
 				this.updateCountdownTicks += 5;
 			}
-			if (!this.mob.getNavigation().startMovingTo(livingEntity, this.speed)) {
+			if (!this.mob.getNavigation().moveTo(livingEntity, this.speed)) {
 				this.updateCountdownTicks += 15;
 			}
-			this.updateCountdownTicks = this.getTickCount(this.updateCountdownTicks);
+			this.updateCountdownTicks = this.adjustedTickDelay(this.updateCountdownTicks);
 		}
 		this.cooldown = Math.max(this.cooldown - 1, 0);
-		if (!this.mob.hasPassengers()) {
+		if (!this.mob.isVehicle()) {
 			if (meleeCounter == 1) {
 				this.attack(livingEntity, d);
 			}
@@ -211,14 +211,14 @@ public class AlienMeleeAttackGoal extends Goal {
 	protected void attack(LivingEntity target, double squaredDistance) {
 		double d = this.getSquaredMaxAttackDistance(target);
 		if (squaredDistance <= d) {
-			this.mob.tryAttack(target);
-			this.mob.swingHand(Hand.MAIN_HAND);
+			this.mob.doHurtTarget(target);
+			this.mob.swing(InteractionHand.MAIN_HAND);
 			meleeCounter = -5;
 		}
 	}
 
 	protected void resetCooldown() {
-		this.cooldown = this.getTickCount(20);
+		this.cooldown = this.adjustedTickDelay(20);
 	}
 
 	protected boolean isCooledDown() {
@@ -230,10 +230,10 @@ public class AlienMeleeAttackGoal extends Goal {
 	}
 
 	protected int getMaxCooldown() {
-		return this.getTickCount(20);
+		return this.adjustedTickDelay(20);
 	}
 
 	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-		return this.mob.getWidth() * 2.0f * (this.mob.getWidth() * 2.0f) + entity.getWidth();
+		return this.mob.getBbWidth() * 2.0f * (this.mob.getBbWidth() * 2.0f) + entity.getBbWidth();
 	}
 }

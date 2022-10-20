@@ -10,100 +10,100 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class DNAStatusEffect extends StatusEffect {
+public class DNAStatusEffect extends MobEffect {
 	private BlockPos lightBlockPos = null;
 
 	public DNAStatusEffect() {
-		super(StatusEffectCategory.HARMFUL, Color.darkGray.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.darkGray.getRGB());
 	}
 
 	@Override
-	public boolean canApplyUpdateEffect(int duration, int amplifier) {
+	public boolean isDurationEffectTick(int duration, int amplifier) {
 		return true;
 	}
 
 	@Override
-	public boolean isInstant() {
+	public boolean isInstantenous() {
 		return false;
 	}
 
 	@Override
-	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-		super.applyUpdateEffect(entity, amplifier);
+	public void applyEffectTick(LivingEntity entity, int amplifier) {
+		super.applyEffectTick(entity, amplifier);
 		if (this == GigStatusEffects.DNA)
 			entity.heal(0);
 	}
 
 	@Override
-	public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
+	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
 		SplittableRandom random = new SplittableRandom();
 		int randomPhase = random.nextInt(0, 50);
 		if (!(entity instanceof AlienEntity)) {
 			if (randomPhase > 25) {
-				if (entity instanceof PlayerEntity
-						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
-					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
-					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
-					entity.world.spawnEntity(egg);
-					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
+				if (entity instanceof Player
+						&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
+					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.level);
+					egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+					entity.level.addFreshEntity(egg);
+					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
-				} else if (entity instanceof CreeperEntity) {
+				} else if (entity instanceof Creeper) {
 					return;
-				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.world);
-					egg.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
-					entity.world.spawnEntity(egg);
-					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
+				} else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
+					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.level);
+					egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+					entity.level.addFreshEntity(egg);
+					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
 				}
 			} else {
-				if (entity instanceof PlayerEntity
-						&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator())) {
-					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+				if (entity instanceof Player
+						&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
+					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
-				} else if (entity instanceof CreeperEntity) {
+				} else if (entity instanceof Creeper) {
 					return;
-				} else if (!(entity instanceof PlayerEntity) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					entity.damage(GigDamageSources.DNA, Integer.MAX_VALUE);
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+				} else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
+					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				}
 			}
 		}
-		super.onRemoved(entity, attributes, amplifier);
+		super.removeAttributeModifiers(entity, attributes, amplifier);
 	}
 
 	private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 1);
+			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 1);
 			if (lightBlockPos == null)
 				return;
-            AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(entity.world, entity.getX(), entity.getY(), entity.getZ());
+			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
             areaEffectCloudEntity.setRadius(2.0F);
             areaEffectCloudEntity.setDuration(300);
-            areaEffectCloudEntity.setRadiusGrowth(0);
-            areaEffectCloudEntity.addEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
-            entity.world.spawnEntity(areaEffectCloudEntity);
+            areaEffectCloudEntity.setRadiusPerTick(0);
+            areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+            entity.level.addFreshEntity(areaEffectCloudEntity);
 		} else
 			lightBlockPos = null;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -116,7 +116,7 @@ public class DNAStatusEffect extends StatusEffect {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(GIgBlocks.NEST_RESIN_WEB_CROSS))
 						return offsetPos;

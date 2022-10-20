@@ -9,7 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class EntityRenderers implements GigeresqueInitializer {
@@ -25,10 +25,10 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.RUNNER_ALIEN, RunnerAlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNERBURSTER, RunnerbursterEntityRenderer::new);
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1,
-				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SarcophagusRender());
+				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,
-				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new JarRender());
+				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3,
-				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new SittingIdolRender());
+				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
 	}
 }

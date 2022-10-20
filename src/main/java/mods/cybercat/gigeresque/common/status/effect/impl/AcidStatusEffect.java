@@ -4,24 +4,24 @@ import java.awt.Color;
 
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
-public class AcidStatusEffect extends StatusEffect {
+public class AcidStatusEffect extends MobEffect {
 	public AcidStatusEffect() {
-		super(StatusEffectCategory.HARMFUL, Color.green.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.green.getRGB());
 	}
 
 	@Override
-	public boolean canApplyUpdateEffect(int duration, int amplifier) {
+	public boolean isDurationEffectTick(int duration, int amplifier) {
 		return true;
 	}
 
 	@Override
-	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-		super.applyUpdateEffect(entity, amplifier);
+	public void applyEffectTick(LivingEntity entity, int amplifier) {
+		super.applyEffectTick(entity, amplifier);
 		if (this == GigStatusEffects.ACID)
-			entity.damage(GigDamageSources.ACID, 2.0F);
+			entity.hurt(GigDamageSources.ACID, 2.0F);
 	}
 }

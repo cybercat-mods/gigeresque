@@ -9,48 +9,48 @@ import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Host;
-
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class SurgeryKitItem extends Item {
-	public SurgeryKitItem(Settings settings) {
+	public SurgeryKitItem(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		tryRemoveParasite(user.getStackInHand(hand), user, user, hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+		tryRemoveParasite(user.getItemInHand(hand), user, user, hand);
 		return super.use(world, user, hand);
 	}
 
-	private void tryRemoveParasite(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+	private void tryRemoveParasite(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
 		var host = (Host) entity;
 		if (host.hasParasite()) {
-			if (!entity.world.isClient) {
+			if (!entity.level.isClientSide) {
 				if (host.getTicksUntilImpregnation() < 9600) {
 					spawnParasite(entity);
 				}
 
 				host.removeParasite();
-				stack.damage(1, user, p -> p.sendToolBreakStatus(hand));
-				entity.removeStatusEffect(net.minecraft.entity.effect.StatusEffects.HUNGER);
-				entity.removeStatusEffect(net.minecraft.entity.effect.StatusEffects.MINING_FATIGUE);
-				entity.addStatusEffect(new StatusEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
+				stack.hurtAndBreak(1, user, p -> p.broadcastBreakEvent(hand));
+				entity.removeEffect(MobEffects.HUNGER);
+				entity.removeEffect(MobEffects.DIG_SLOWDOWN);
+				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
 				host.setBleeding(false);
 			}
 		}
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		var identifier = Registry.ENTITY_TYPE.getId(entity.getType());
+		var identifier = Registry.ENTITY_TYPE.getKey(entity.getType());
 		var morphMappings = ConfigAccessor.getReversedMorphMappings();
 
 		String runnerString = Entities.RUNNER_ALIEN.toString();
@@ -58,15 +58,15 @@ public class SurgeryKitItem extends Item {
 
 		String orDefault = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
 		if (runnerString.equals(orDefault)) {
-			burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, entity.world);
+			burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, entity.level);
 		} else if (Entities.AQUATIC_ALIEN.toString().equals(orDefault)) {
-			burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, entity.world);
+			burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, entity.level);
 		} else {
-			burster = new ChestbursterEntity(Entities.CHESTBURSTER, entity.world);
+			burster = new ChestbursterEntity(Entities.CHESTBURSTER, entity.level);
 		}
 
 		burster.setHostId(identifier.toString());
-		burster.refreshPositionAndAngles(entity.getBlockPos(), entity.getYaw(), entity.getPitch());
-		entity.world.spawnEntity(burster);
+		burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+		entity.level.addFreshEntity(burster);
 	}
 }

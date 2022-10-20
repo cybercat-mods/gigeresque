@@ -7,7 +7,7 @@ import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
@@ -15,17 +15,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 @Environment(EnvType.CLIENT)
 public class RunnerbursterEntityModel extends AnimatedTickingGeoModel<RunnerbursterEntity> {
 	@Override
-	public Identifier getModelResource(RunnerbursterEntity object) {
+	public ResourceLocation getModelResource(RunnerbursterEntity object) {
 		return EntityModels.RUNNERBURSTER;
 	}
 
 	@Override
-	public Identifier getTextureResource(RunnerbursterEntity object) {
+	public ResourceLocation getTextureResource(RunnerbursterEntity object) {
 		return EntityTextures.RUNNERBURSTER;
 	}
 
 	@Override
-	public Identifier getAnimationResource(RunnerbursterEntity animatable) {
+	public ResourceLocation getAnimationResource(RunnerbursterEntity animatable) {
 		return EntityAnimations.RUNNERBURSTER;
 	}
 

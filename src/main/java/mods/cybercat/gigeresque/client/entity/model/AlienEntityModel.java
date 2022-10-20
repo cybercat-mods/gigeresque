@@ -1,12 +1,13 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
+import com.mojang.math.Vector3f;
+
 import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -16,17 +17,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class AlienEntityModel extends AnimatedTickingGeoModel<ClassicAlienEntity> {
 
 	@Override
-	public Identifier getModelResource(ClassicAlienEntity object) {
+	public ResourceLocation getModelResource(ClassicAlienEntity object) {
 		return EntityModels.ALIEN;
 	}
 
 	@Override
-	public Identifier getTextureResource(ClassicAlienEntity object) {
+	public ResourceLocation getTextureResource(ClassicAlienEntity object) {
 		return object.isStatis() == true ? EntityTextures.ALIEN_STATIS : EntityTextures.ALIEN;
 	}
 
 	@Override
-	public Identifier getAnimationResource(ClassicAlienEntity animatable) {
+	public ResourceLocation getAnimationResource(ClassicAlienEntity animatable) {
 		return EntityAnimations.ALIEN;
 	}
 
@@ -37,8 +38,7 @@ public class AlienEntityModel extends AnimatedTickingGeoModel<ClassicAlienEntity
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (body != null) {
-			body.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion((extraData.netHeadYaw + 3) * ((float) Math.PI / 180F)).getY());
+			body.setRotationY(Vector3f.YP.rotation((extraData.netHeadYaw + 3) * ((float) Math.PI / 180F)).j());
 		}
 	}
 

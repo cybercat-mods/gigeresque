@@ -6,46 +6,45 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.ModelWithHat;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.village.VillagerDataContainer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.VillagerHeadModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.layers.VillagerProfessionLayer;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.VillagerDataHolder;
 
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
-@Mixin(VillagerClothingFeatureRenderer.class)
-public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntity & VillagerDataContainer, M extends EntityModel<T> & ModelWithHat>
-		extends FeatureRenderer<T, M> {
+@Mixin(VillagerProfessionLayer.class)
+public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntity & VillagerDataHolder, M extends EntityModel<T> & VillagerHeadModel>
+		extends RenderLayer<T, M> {
 
-	private VillagerClothingFeatureRendererMixin(FeatureRendererContext<T, M> context) {
+	private VillagerClothingFeatureRendererMixin(RenderLayerParent<T, M> context) {
 		super(context);
 	}
 
 	@Shadow
-	protected abstract Identifier findTexture(String keyType, Identifier keyId);
+	protected abstract ResourceLocation getResourceLocation(String keyType, ResourceLocation keyId);
 
-	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;" + "Lnet/minecraft/client/render"
-			+ "/VertexConsumerProvider;ILnet/minecraft/entity/LivingEntity;FFFFFF)V", at = @At("TAIL"))
-	private void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light,
-			T livingEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+	@Inject(method = "render", at = @At("TAIL"))
+	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity,
+			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-			M entityModel = this.getContextModel();
+			M entityModel = this.getParentModel();
 			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel,
-					findTexture("type", Registry.VILLAGER_TYPE.getId(livingEntity.getVillagerData().getType())),
+					getResourceLocation("type", Registry.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
 					matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
 		}
 	}

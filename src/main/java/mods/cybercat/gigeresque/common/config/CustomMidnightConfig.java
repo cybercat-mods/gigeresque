@@ -26,26 +26,26 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 /**
  * MidnightConfig v2.1.0 by TeamMidnightDust & Motschen Single class config
@@ -66,15 +66,15 @@ public abstract class CustomMidnightConfig {
 		Object widget;
 		int width;
 		int max;
-		Map.Entry<TextFieldWidget, Text> error;
+		Map.Entry<EditBox, Component> error;
 		Object defaultValue;
 		Object value;
 		String tempValue;
 		boolean inLimits = true;
 		String id;
-		Text name;
+		Component name;
 		int index;
-		ClickableWidget colorButton;
+		AbstractWidget colorButton;
 	}
 
 	public static final Map<String, Class<?>> configClass = new HashMap<>();
@@ -126,7 +126,7 @@ public abstract class CustomMidnightConfig {
 
 		if (e != null) {
 			if (!e.name().equals(""))
-				info.name = Text.translatable(e.name());
+				info.name = Component.translatable(e.name());
 			if (type == int.class)
 				textField(info, Integer::parseInt, INTEGER_ONLY, (int) e.min(), (int) e.max(), true);
 			else if (type == float.class)
@@ -137,17 +137,17 @@ public abstract class CustomMidnightConfig {
 				info.max = e.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int) e.max();
 				textField(info, String::length, null, Math.min(e.min(), 0), Math.max(e.max(), 1), true);
 			} else if (type == boolean.class) {
-				Function<Object, Text> func = value -> Text.literal((Boolean) value ? "True" : "False")
-						.formatted((Boolean) value ? Formatting.GREEN : Formatting.RED);
-				info.widget = new AbstractMap.SimpleEntry<ButtonWidget.PressAction, Function<Object, Text>>(button -> {
+				Function<Object, Component> func = value -> Component.literal((Boolean) value ? "True" : "False")
+						.withStyle((Boolean) value ? ChatFormatting.GREEN : ChatFormatting.RED);
+				info.widget = new AbstractMap.SimpleEntry<Button.OnPress, Function<Object, Component>>(button -> {
 					info.value = !(Boolean) info.value;
 					button.setMessage(func.apply(info.value));
 				}, func);
 			} else if (type.isEnum()) {
 				List<?> values = Arrays.asList(field.getType().getEnumConstants());
-				Function<Object, Text> func = value -> Text.translatable(
+				Function<Object, Component> func = value -> Component.translatable(
 						"config." + modid + "." + "enum." + type.getSimpleName() + "." + info.value.toString());
-				info.widget = new AbstractMap.SimpleEntry<ButtonWidget.PressAction, Function<Object, Text>>(button -> {
+				info.widget = new AbstractMap.SimpleEntry<Button.OnPress, Function<Object, Component>>(button -> {
 					int index = values.indexOf(info.value) + 1;
 					info.value = values.get(index >= values.size() ? 0 : index);
 					button.setMessage(func.apply(info.value));
@@ -160,7 +160,7 @@ public abstract class CustomMidnightConfig {
 	private static void textField(EntryInfo info, Function<String, Number> f, Pattern pattern, double min, double max,
 			boolean cast) {
 		boolean isNumber = pattern != null;
-		info.widget = (BiFunction<TextFieldWidget, ButtonWidget, Predicate<String>>) (t, b) -> s -> {
+		info.widget = (BiFunction<EditBox, Button, Predicate<String>>) (t, b) -> s -> {
 			s = s.trim();
 			if (!(s.isEmpty() || !isNumber || pattern.matcher(s).matches()))
 				return false;
@@ -173,15 +173,15 @@ public abstract class CustomMidnightConfig {
 				inLimits = value.doubleValue() >= min && value.doubleValue() <= max;
 				info.error = inLimits ? null
 						: new AbstractMap.SimpleEntry<>(t,
-								Text.literal(value.doubleValue() < min
-										? "§cMinimum " + (isNumber ? "value" : "length")
+								Component.literal(value.doubleValue() < min
+										? "�cMinimum " + (isNumber ? "value" : "length")
 												+ (cast ? " is " + (int) min : " is " + min)
-										: "§cMaximum " + (isNumber ? "value" : "length")
+										: "�cMaximum " + (isNumber ? "value" : "length")
 												+ (cast ? " is " + (int) max : " is " + max)));
 			}
 
 			info.tempValue = s;
-			t.setEditableColor(inLimits ? 0xFFFFFFFF : 0xFFFF7777);
+			t.setTextColor(inLimits ? 0xFFFFFFFF : 0xFFFF7777);
 			info.inLimits = inLimits;
 			b.active = entries.stream().allMatch(e -> e.inLimits);
 
@@ -200,8 +200,8 @@ public abstract class CustomMidnightConfig {
 				if (!HEXADECIMAL_ONLY.matcher(s).matches())
 					return false;
 				try {
-					info.colorButton.setMessage(
-							Text.literal("⬛").setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
+					info.colorButton.setMessage(Component.literal("⬛")
+							.setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
 				} catch (Exception ignored) {
 				}
 			}
@@ -228,7 +228,7 @@ public abstract class CustomMidnightConfig {
 	@Environment(EnvType.CLIENT)
 	private static class MidnightConfigScreen extends Screen {
 		protected MidnightConfigScreen(Screen parent, String modid) {
-			super(Text.translatable("config." + modid + ".title"));
+			super(Component.translatable("config." + modid + ".title"));
 			this.parent = parent;
 			this.modid = modid;
 			this.translationPrefix = "config." + modid + ".";
@@ -275,14 +275,14 @@ public abstract class CustomMidnightConfig {
 			if (!reload)
 				loadValues();
 
-			this.addDrawableChild(
-					new ButtonWidget(this.width / 2 - 154, this.height - 28, 150, 20, ScreenTexts.CANCEL, button -> {
+			this.addRenderableWidget(
+					new Button(this.width / 2 - 154, this.height - 28, 150, 20, CommonComponents.GUI_CANCEL, button -> {
 						loadValues();
-						Objects.requireNonNull(client).setScreen(parent);
+						Objects.requireNonNull(minecraft).setScreen(parent);
 					}));
 
-			ButtonWidget done = this.addDrawableChild(
-					new ButtonWidget(this.width / 2 + 4, this.height - 28, 150, 20, ScreenTexts.DONE, (button) -> {
+			Button done = this.addRenderableWidget(
+					new Button(this.width / 2 + 4, this.height - 28, 150, 20, CommonComponents.GUI_DONE, (button) -> {
 						for (EntryInfo info : entries)
 							if (info.id.equals(modid)) {
 								try {
@@ -291,79 +291,77 @@ public abstract class CustomMidnightConfig {
 								}
 							}
 						write(modid);
-						Objects.requireNonNull(client).setScreen(parent);
+						Objects.requireNonNull(minecraft).setScreen(parent);
 					}));
 
-			this.list = new MidnightConfigListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-			if (this.client != null && this.client.world != null)
+			this.list = new MidnightConfigListWidget(this.minecraft, this.width, this.height, 32, this.height - 32, 25);
+			if (this.minecraft != null && this.minecraft.level != null)
 				this.list.setRenderBackground(false);
-			this.addSelectableChild(this.list);
+			this.addWidget(this.list);
 			for (EntryInfo info : entries) {
 				if (info.id.equals(modid)) {
-					Text name = Objects.requireNonNullElseGet(info.name,
-							() -> Text.translatable(translationPrefix + info.field.getName()));
-					ButtonWidget resetButton = new ButtonWidget(width - 205, 0, 40, 20,
-							Text.translatable("Reset").formatted(Formatting.RED), (button -> {
+					Component name = Objects.requireNonNullElseGet(info.name,
+							() -> Component.translatable(translationPrefix + info.field.getName()));
+					Button resetButton = new Button(width - 205, 0, 40, 20,
+							Component.translatable("Reset").withStyle(ChatFormatting.RED), (button -> {
 								info.value = info.defaultValue;
 								info.tempValue = info.defaultValue.toString();
 								info.index = 0;
 								double scrollAmount = list.getScrollAmount();
 								this.reload = true;
-								Objects.requireNonNull(client).setScreen(this);
+								Objects.requireNonNull(minecraft).setScreen(this);
 								list.setScrollAmount(scrollAmount);
 							}));
 
 					if (info.widget instanceof Map.Entry) {
-						Map.Entry<ButtonWidget.PressAction, Function<Object, Text>> widget = (Map.Entry<ButtonWidget.PressAction, Function<Object, Text>>) info.widget;
+						Map.Entry<Button.OnPress, Function<Object, Component>> widget = (Map.Entry<Button.OnPress, Function<Object, Component>>) info.widget;
 						if (info.field.getType().isEnum())
-							widget.setValue(value -> Text.translatable(translationPrefix + "enum."
+							widget.setValue(value -> Component.translatable(translationPrefix + "enum."
 									+ info.field.getType().getSimpleName() + "." + info.value.toString()));
-						this.list
-								.addButton(
-										List.of(new ButtonWidget(width - 160, 0, 150, 20,
-												widget.getValue().apply(info.value), widget.getKey()), resetButton),
-										name);
+						this.list.addButton(List.of(new Button(width - 160, 0, 150, 20,
+								widget.getValue().apply(info.value), widget.getKey()), resetButton), name);
 					} else if (info.field.getType() == List.class) {
 						if (!reload)
 							info.index = 0;
-						TextFieldWidget widget = new TextFieldWidget(textRenderer, width - 160, 0, 150, 20, null);
+						EditBox widget = new EditBox(font, width - 160, 0, 150, 20, null);
 						widget.setMaxLength(info.width);
 						if (info.index < ((List<String>) info.value).size())
-							widget.setText((String.valueOf(((List<String>) info.value).get(info.index))));
+							widget.setValue((String.valueOf(((List<String>) info.value).get(info.index))));
 						else
-							widget.setText("");
-						Predicate<String> processor = ((BiFunction<TextFieldWidget, ButtonWidget, Predicate<String>>) info.widget)
+							widget.setValue("");
+						Predicate<String> processor = ((BiFunction<EditBox, Button, Predicate<String>>) info.widget)
 								.apply(widget, done);
-						widget.setTextPredicate(processor);
+						widget.setFilter(processor);
 						resetButton.setWidth(20);
-						resetButton.setMessage(Text.literal("R").formatted(Formatting.RED));
-						ButtonWidget cycleButton = new ButtonWidget(width - 185, 0, 20, 20,
-								Text.literal(String.valueOf(info.index)).formatted(Formatting.GOLD), (button -> {
+						resetButton.setMessage(Component.literal("R").withStyle(ChatFormatting.RED));
+						Button cycleButton = new Button(width - 185, 0, 20, 20,
+								Component.literal(String.valueOf(info.index)).withStyle(ChatFormatting.GOLD),
+								(button -> {
 
 									double scrollAmount = list.getScrollAmount();
 									this.reload = true;
 									info.index = info.index + 1;
 									if (info.index > ((List<String>) info.value).size())
 										info.index = 0;
-									Objects.requireNonNull(client).setScreen(this);
+									Objects.requireNonNull(minecraft).setScreen(this);
 									list.setScrollAmount(scrollAmount);
 								}));
 						this.list.addButton(List.of(widget, resetButton, cycleButton), name);
 					} else if (info.widget != null) {
-						TextFieldWidget widget = new TextFieldWidget(textRenderer, width - 160, 0, 150, 20, null);
+						EditBox widget = new EditBox(font, width - 160, 0, 150, 20, null);
 						widget.setMaxLength(info.width);
-						widget.setText(info.tempValue);
-						Predicate<String> processor = ((BiFunction<TextFieldWidget, ButtonWidget, Predicate<String>>) info.widget)
+						widget.setValue(info.tempValue);
+						Predicate<String> processor = ((BiFunction<EditBox, Button, Predicate<String>>) info.widget)
 								.apply(widget, done);
-						widget.setTextPredicate(processor);
+						widget.setFilter(processor);
 						if (info.field.getAnnotation(Entry.class).isColor()) {
 							resetButton.setWidth(20);
-							resetButton.setMessage(Text.literal("R").formatted(Formatting.RED));
-							ButtonWidget colorButton = new ButtonWidget(width - 185, 0, 20, 20, Text.literal("⬛"),
+							resetButton.setMessage(Component.literal("R").withStyle(ChatFormatting.RED));
+							Button colorButton = new Button(width - 185, 0, 20, 20, Component.literal("⬛"),
 									(button -> {
 									}));
 							try {
-								colorButton.setMessage(Text.literal("⬛")
+								colorButton.setMessage(Component.literal("⬛")
 										.setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
 							} catch (Exception ignored) {
 							}
@@ -380,26 +378,26 @@ public abstract class CustomMidnightConfig {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
 			this.renderBackground(matrices);
 			this.list.render(matrices, mouseX, mouseY, delta);
-			drawCenteredText(matrices, textRenderer, title, width / 2, 15, 0xFFFFFF);
+			drawCenteredString(matrices, font, title, width / 2, 15, 0xFFFFFF);
 
 			for (EntryInfo info : entries) {
 				if (info.id.equals(modid)) {
 					if (list.getHoveredButton(mouseX, mouseY).isPresent()) {
-						ClickableWidget buttonWidget = list.getHoveredButton(mouseX, mouseY).get();
-						Text text = ButtonEntry.buttonsWithText.get(buttonWidget);
-						Text name = Text.translatable(this.translationPrefix + info.field.getName());
+						AbstractWidget buttonWidget = list.getHoveredButton(mouseX, mouseY).get();
+						Component text = ButtonEntry.buttonsWithText.get(buttonWidget);
+						Component name = Component.translatable(this.translationPrefix + info.field.getName());
 						String key = translationPrefix + info.field.getName() + ".tooltip";
 
 						if (info.error != null && text.equals(name))
 							renderTooltip(matrices, info.error.getValue(), mouseX, mouseY);
-						else if (I18n.hasTranslation(key) && text.equals(name)) {
-							List<Text> list = new ArrayList<>();
-							for (String str : I18n.translate(key).split("\n"))
-								list.add(Text.literal(str));
-							renderTooltip(matrices, list, mouseX, mouseY);
+						else if (I18n.exists(key) && text.equals(name)) {
+							List<Component> list = new ArrayList<>();
+							for (String str : I18n.get(key).split("\n"))
+								list.add(Component.literal(str));
+							renderComponentTooltip(matrices, list, mouseX, mouseY);
 						}
 					}
 				}
@@ -409,21 +407,21 @@ public abstract class CustomMidnightConfig {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static class MidnightConfigListWidget extends ElementListWidget<ButtonEntry> {
-		TextRenderer textRenderer;
+	public static class MidnightConfigListWidget extends ContainerObjectSelectionList<ButtonEntry> {
+		Font font;
 
-		public MidnightConfigListWidget(MinecraftClient minecraftClient, int i, int j, int k, int l, int m) {
+		public MidnightConfigListWidget(Minecraft minecraftClient, int i, int j, int k, int l, int m) {
 			super(minecraftClient, i, j, k, l, m);
 			this.centerListVertically = false;
-			textRenderer = minecraftClient.textRenderer;
+			font = minecraftClient.font;
 		}
 
 		@Override
-		public int getScrollbarPositionX() {
+		public int getScrollbarPosition() {
 			return this.width - 7;
 		}
 
-		public void addButton(List<ClickableWidget> buttons, Text text) {
+		public void addButton(List<AbstractWidget> buttons, Component text) {
 			this.addEntry(ButtonEntry.create(buttons, text));
 		}
 
@@ -432,7 +430,7 @@ public abstract class CustomMidnightConfig {
 			return 10000;
 		}
 
-		public Optional<ClickableWidget> getHoveredButton(double mouseX, double mouseY) {
+		public Optional<AbstractWidget> getHoveredButton(double mouseX, double mouseY) {
 			for (ButtonEntry buttonEntry : this.children()) {
 				if (!buttonEntry.buttons.isEmpty() && buttonEntry.buttons.get(0).isMouseOver(mouseX, mouseY)) {
 					return Optional.of(buttonEntry.buttons.get(0));
@@ -442,14 +440,14 @@ public abstract class CustomMidnightConfig {
 		}
 	}
 
-	public static class ButtonEntry extends ElementListWidget.Entry<ButtonEntry> {
-		private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		public final List<ClickableWidget> buttons;
-		private final Text text;
-		private final List<ClickableWidget> children = new ArrayList<>();
-		public static final Map<ClickableWidget, Text> buttonsWithText = new HashMap<>();
+	public static class ButtonEntry extends ContainerObjectSelectionList.Entry<ButtonEntry> {
+		private static final Font font = Minecraft.getInstance().font;
+		public final List<AbstractWidget> buttons;
+		private final Component text;
+		private final List<AbstractWidget> children = new ArrayList<>();
+		public static final Map<AbstractWidget, Component> buttonsWithText = new HashMap<>();
 
-		private ButtonEntry(List<ClickableWidget> buttons, Text text) {
+		private ButtonEntry(List<AbstractWidget> buttons, Component text) {
 			if (!buttons.isEmpty())
 				buttonsWithText.put(buttons.get(0), text);
 			this.buttons = buttons;
@@ -457,25 +455,25 @@ public abstract class CustomMidnightConfig {
 			children.addAll(buttons);
 		}
 
-		public static ButtonEntry create(List<ClickableWidget> buttons, Text text) {
+		public static ButtonEntry create(List<AbstractWidget> buttons, Component text) {
 			return new ButtonEntry(buttons, text);
 		}
 
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX,
+		public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX,
 				int mouseY, boolean hovered, float tickDelta) {
 			buttons.forEach(b -> {
 				b.y = y;
 				b.render(matrices, mouseX, mouseY, tickDelta);
 			});
 			if (text != null && (!text.getString().contains("spacer") || !buttons.isEmpty()))
-				DrawableHelper.drawTextWithShadow(matrices, textRenderer, text, 12, y + 5, 0xFFFFFF);
+				GuiComponent.drawString(matrices, font, text, 12, y + 5, 0xFFFFFF);
 		}
 
-		public List<? extends Element> children() {
+		public List<? extends GuiEventListener> children() {
 			return children;
 		}
 
-		public List<? extends Selectable> selectableChildren() {
+		public List<? extends NarratableEntry> narratables() {
 			return children;
 		}
 	}

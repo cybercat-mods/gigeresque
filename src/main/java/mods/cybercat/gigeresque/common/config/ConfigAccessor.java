@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class ConfigAccessor {
 	private static Map<String, String> reversedMorphMappings;
-	private static Map<Identifier, List<String>> whitelistMappings;
-	private static Map<Identifier, List<String>> blacklistMappings;
+	private static Map<ResourceLocation, List<String>> whitelistMappings;
+	private static Map<ResourceLocation, List<String>> blacklistMappings;
 
-	private synchronized static Map<Identifier, List<String>> getWhitelistMappings() {
+	private synchronized static Map<ResourceLocation, List<String>> getWhitelistMappings() {
 		if (whitelistMappings == null) {
 			whitelistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienWhitelist,
 					EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienWhitelist,
@@ -26,7 +26,7 @@ public class ConfigAccessor {
 		return whitelistMappings;
 	}
 
-	private synchronized static Map<Identifier, List<String>> getBlacklistMappings() {
+	private synchronized static Map<ResourceLocation, List<String>> getBlacklistMappings() {
 		if (blacklistMappings == null) {
 			blacklistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienBlacklist,
 					EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienBlacklist,
@@ -43,9 +43,9 @@ public class ConfigAccessor {
 	public static boolean isTargetWhitelisted(Class<? extends Entity> entityClass, Entity target) {
 		if (target == null)
 			return false;
-		Identifier attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
+		ResourceLocation attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		List<String> whitelist = getWhitelistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return whitelist.contains(targetIdentifier.toString());
 	}
 
@@ -55,22 +55,22 @@ public class ConfigAccessor {
 
 	public static boolean isTargetAlienHost(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.alienHosts;
-		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetDNAImmune(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.dnaBlacklist;
-		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetBlacklisted(Class<? extends Entity> entityClass, Entity target) {
 		if (target == null)
 			return false;
-		Identifier attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
+		ResourceLocation attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		List<String> blacklist = getBlacklistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		Identifier targetIdentifier = Registry.ENTITY_TYPE.getId(target.getType());
+		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return blacklist.contains(targetIdentifier.toString());
 	}
 

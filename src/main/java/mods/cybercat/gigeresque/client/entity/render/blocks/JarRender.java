@@ -1,12 +1,13 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mods.cybercat.gigeresque.client.entity.model.blocks.JarModel;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
 public class JarRender extends GeoBlockRenderer<JarStorageEntity> {
@@ -15,10 +16,10 @@ public class JarRender extends GeoBlockRenderer<JarStorageEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(JarStorageEntity animatable, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(JarStorageEntity animatable, float partialTicks, PoseStack stack,
+			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
+			ResourceLocation textureLocation) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

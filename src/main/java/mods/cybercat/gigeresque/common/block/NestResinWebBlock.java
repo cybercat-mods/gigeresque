@@ -9,67 +9,67 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ConnectingBlock;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class NestResinWebBlock extends Block {
-	public static final BooleanProperty UP = ConnectingBlock.UP;
-	public static final BooleanProperty NORTH = ConnectingBlock.NORTH;
-	public static final BooleanProperty EAST = ConnectingBlock.EAST;
-	public static final BooleanProperty SOUTH = ConnectingBlock.SOUTH;
-	public static final BooleanProperty WEST = ConnectingBlock.WEST;
+	public static final BooleanProperty UP = PipeBlock.UP;
+	public static final BooleanProperty NORTH = PipeBlock.NORTH;
+	public static final BooleanProperty EAST = PipeBlock.EAST;
+	public static final BooleanProperty SOUTH = PipeBlock.SOUTH;
+	public static final BooleanProperty WEST = PipeBlock.WEST;
 
-	public static final Map<Direction, BooleanProperty> FACING_PROPERTIES = ConnectingBlock.FACING_PROPERTIES.entrySet()
+	public static final Map<Direction, BooleanProperty> FACING_PROPERTIES = PipeBlock.PROPERTY_BY_DIRECTION.entrySet()
 			.stream().filter(entry -> entry.getKey() != Direction.DOWN).collect(Util.toMap());
-	public static final EnumProperty<NestResinWebVariant> VARIANTS = EnumProperty.of("nest_resin_web_variant",
+	public static final EnumProperty<NestResinWebVariant> VARIANTS = EnumProperty.create("nest_resin_web_variant",
 			NestResinWebVariant.class);
 
-	private static final VoxelShape UP_SHAPE = createCuboidShape(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
-	private static final VoxelShape EAST_SHAPE = createCuboidShape(0.0, 0.0, 0.0, 1.0, 16.0, 16.0);
-	private static final VoxelShape WEST_SHAPE = createCuboidShape(15.0, 0.0, 0.0, 16.0, 16.0, 16.0);
-	private static final VoxelShape SOUTH_SHAPE = createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 1.0);
-	private static final VoxelShape NORTH_SHAPE = createCuboidShape(0.0, 0.0, 15.0, 16.0, 16.0, 16.0);
+	private static final VoxelShape UP_SHAPE = box(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
+	private static final VoxelShape EAST_SHAPE = box(0.0, 0.0, 0.0, 1.0, 16.0, 16.0);
+	private static final VoxelShape WEST_SHAPE = box(15.0, 0.0, 0.0, 16.0, 16.0, 16.0);
+	private static final VoxelShape SOUTH_SHAPE = box(0.0, 0.0, 0.0, 16.0, 16.0, 1.0);
+	private static final VoxelShape NORTH_SHAPE = box(0.0, 0.0, 15.0, 16.0, 16.0, 16.0);
 
 	private static VoxelShape getShapeForState(BlockState state) {
-		VoxelShape voxelShape = VoxelShapes.empty();
-		if (state.get(UP)) {
+		VoxelShape voxelShape = Shapes.empty();
+		if (state.getValue(UP)) {
 			voxelShape = UP_SHAPE;
 		}
-		if (state.get(NORTH)) {
-			voxelShape = VoxelShapes.union(voxelShape, SOUTH_SHAPE);
+		if (state.getValue(NORTH)) {
+			voxelShape = Shapes.or(voxelShape, SOUTH_SHAPE);
 		}
-		if (state.get(SOUTH)) {
-			voxelShape = VoxelShapes.union(voxelShape, NORTH_SHAPE);
+		if (state.getValue(SOUTH)) {
+			voxelShape = Shapes.or(voxelShape, NORTH_SHAPE);
 		}
-		if (state.get(EAST)) {
-			voxelShape = VoxelShapes.union(voxelShape, WEST_SHAPE);
+		if (state.getValue(EAST)) {
+			voxelShape = Shapes.or(voxelShape, WEST_SHAPE);
 		}
-		if (state.get(WEST)) {
-			voxelShape = VoxelShapes.union(voxelShape, EAST_SHAPE);
+		if (state.getValue(WEST)) {
+			voxelShape = Shapes.or(voxelShape, EAST_SHAPE);
 		}
-		return voxelShape.isEmpty() ? VoxelShapes.fullCube() : voxelShape;
+		return voxelShape.isEmpty() ? Shapes.block() : voxelShape;
 	}
 
-	public static boolean shouldConnectTo(BlockView world, BlockPos pos, Direction direction) {
+	public static boolean shouldConnectTo(LevelReader world, BlockPos pos, Direction direction) {
 		BlockState blockState = world.getBlockState(pos);
-		return isFaceFullSquare(blockState.getCollisionShape(world, pos), direction.getOpposite());
+		return isFaceFull(blockState.getCollisionShape(world, pos), direction.getOpposite());
 	}
 
 	public static BooleanProperty getFacingProperty(Direction direction) {
@@ -78,26 +78,26 @@ public class NestResinWebBlock extends Block {
 
 	private Map<BlockState, VoxelShape> shapesByState;
 
-	public NestResinWebBlock(Settings settings) {
+	public NestResinWebBlock(Properties settings) {
 		super(settings);
-		setDefaultState(getStateManager().getDefaultState().with(UP, false).with(NORTH, false).with(EAST, false)
-				.with(SOUTH, false).with(WEST, false).with(VARIANTS, NestResinWebVariant.ONE));
-		shapesByState = getStateManager().getStates().stream()
+		registerDefaultState(getStateDefinition().any().setValue(UP, false).setValue(NORTH, false).setValue(EAST, false)
+				.setValue(SOUTH, false).setValue(WEST, false).setValue(VARIANTS, NestResinWebVariant.ONE));
+		shapesByState = getStateDefinition().getPossibleStates().stream()
 				.collect(Collectors.toMap(Function.identity(), NestResinWebBlock::getShapeForState));
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		return shapesByState.get(state);
 	}
 
 	@Override
-	public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
 		return true;
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return hasAdjacentBlocks(getPlacementShape(state, world, pos));
 	}
 
@@ -108,36 +108,36 @@ public class NestResinWebBlock extends Block {
 	private int getAdjacentBlockCount(BlockState state) {
 		final int[] i = { 0 };
 		FACING_PROPERTIES.values().forEach(it -> {
-			if (state.get(it)) {
+			if (state.getValue(it)) {
 				i[0]++;
 			}
 		});
 		return i[0];
 	}
 
-	private boolean shouldHaveSide(BlockView world, BlockPos pos, Direction side) {
+	private boolean shouldHaveSide(LevelReader world, BlockPos pos, Direction side) {
 		if (side == Direction.DOWN) {
 			return false;
 		} else {
-			BlockPos blockPos = pos.offset(side);
+			BlockPos blockPos = pos.relative(side);
 			if (shouldConnectTo(world, blockPos, side)) {
 				return true;
 			} else if (side.getAxis() == Direction.Axis.Y) {
 				return false;
 			} else {
-				BlockState blockState = world.getBlockState(pos.up());
-				return blockState.isOf(this) && blockState.get(FACING_PROPERTIES.get(side));
+				BlockState blockState = world.getBlockState(pos.above());
+				return blockState.is(this) && blockState.getValue(FACING_PROPERTIES.get(side));
 			}
 		}
 	}
 
-	private BlockState getPlacementShape(BlockState state, BlockView world, BlockPos pos) {
-		BlockPos blockPos = pos.up();
-		if (state.get(UP)) {
-			state = state.with(UP, shouldConnectTo(world, blockPos, Direction.DOWN));
+	private BlockState getPlacementShape(BlockState state, LevelReader world, BlockPos pos) {
+		BlockPos blockPos = pos.above();
+		if (state.getValue(UP)) {
+			state = state.setValue(UP, shouldConnectTo(world, blockPos, Direction.DOWN));
 		}
 		BlockState blockState = null;
-		Iterator<Direction> iterator = Direction.Type.HORIZONTAL.iterator();
+		Iterator<Direction> iterator = Direction.Plane.HORIZONTAL.iterator();
 		while (true) {
 			Direction direction;
 			BooleanProperty booleanProperty;
@@ -147,49 +147,49 @@ public class NestResinWebBlock extends Block {
 				}
 				direction = iterator.next();
 				booleanProperty = getFacingProperty(direction);
-			} while (!state.get(booleanProperty));
+			} while (!state.getValue(booleanProperty));
 			boolean bl = shouldHaveSide(world, pos, direction);
 			if (!bl) {
 				if (blockState == null) {
 					blockState = world.getBlockState(blockPos);
 				}
-				bl = blockState.isOf(this) && blockState.get(booleanProperty);
+				bl = blockState.is(this) && blockState.getValue(booleanProperty);
 			}
-			state = state.with(booleanProperty, bl);
+			state = state.setValue(booleanProperty, bl);
 		}
 	}
 
 	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
-			WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
+			BlockPos pos, BlockPos neighborPos) {
 		if (direction == Direction.DOWN) {
-			return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+			return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 		} else {
 			BlockState blockState = getPlacementShape(state, world, pos);
-			return !hasAdjacentBlocks(blockState) ? Blocks.AIR.getDefaultState() : blockState;
+			return !hasAdjacentBlocks(blockState) ? Blocks.AIR.defaultBlockState() : blockState;
 		}
 	}
 
 	@Override
-	public boolean canReplace(BlockState state, ItemPlacementContext context) {
-		BlockState blockState = context.getWorld().getBlockState(context.getBlockPos());
-		return blockState.isOf(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size()
-				: super.canReplace(state, context);
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+		BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
+		return blockState.is(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size()
+				: super.canBeReplaced(state, context);
 	}
 
 	@Nullable
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
-		boolean bl = blockState.isOf(this);
-		BlockState blockState2 = bl ? blockState : getDefaultState();
-		Direction[] placementDirections = ctx.getPlacementDirections();
+	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+		BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		boolean bl = blockState.is(this);
+		BlockState blockState2 = bl ? blockState : defaultBlockState();
+		Direction[] placementDirections = ctx.getNearestLookingDirections();
 		for (Direction direction : placementDirections) {
 			if (direction != Direction.DOWN) {
 				BooleanProperty booleanProperty = getFacingProperty(direction);
-				boolean bl2 = bl && blockState.get(booleanProperty);
-				if (!bl2 && shouldHaveSide(ctx.getWorld(), ctx.getBlockPos(), direction)) {
-					return blockState2.with(booleanProperty, true).with(VARIANTS,
+				boolean bl2 = bl && blockState.getValue(booleanProperty);
+				if (!bl2 && shouldHaveSide(ctx.getLevel(), ctx.getClickedPos(), direction)) {
+					return blockState2.setValue(booleanProperty, true).setValue(VARIANTS,
 							Arrays.stream(NestResinWebVariant.values()).toList()
 									.get(new Random().nextInt(NestResinWebVariant.values().length)));
 				}
@@ -199,28 +199,28 @@ public class NestResinWebBlock extends Block {
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(UP, NORTH, EAST, SOUTH, WEST, VARIANTS);
 	}
 
 	@Override
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
+	public BlockState rotate(BlockState state, Rotation rotation) {
 		return switch (rotation) {
-		case CLOCKWISE_180 -> state.with(NORTH, state.get(SOUTH)).with(EAST, state.get(WEST))
-				.with(SOUTH, state.get(NORTH)).with(WEST, state.get(EAST));
-		case COUNTERCLOCKWISE_90 -> state.with(NORTH, state.get(EAST)).with(EAST, state.get(SOUTH))
-				.with(SOUTH, state.get(WEST)).with(WEST, state.get(NORTH));
-		case CLOCKWISE_90 -> state.with(NORTH, state.get(WEST)).with(EAST, state.get(NORTH))
-				.with(SOUTH, state.get(EAST)).with(WEST, state.get(SOUTH));
+		case CLOCKWISE_180 -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST))
+				.setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
+		case COUNTERCLOCKWISE_90 -> state.setValue(NORTH, state.getValue(EAST)).setValue(EAST, state.getValue(SOUTH))
+				.setValue(SOUTH, state.getValue(WEST)).setValue(WEST, state.getValue(NORTH));
+		case CLOCKWISE_90 -> state.setValue(NORTH, state.getValue(WEST)).setValue(EAST, state.getValue(NORTH))
+				.setValue(SOUTH, state.getValue(EAST)).setValue(WEST, state.getValue(SOUTH));
 		default -> state;
 		};
 	}
 
 	@Override
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
+	public BlockState mirror(BlockState state, Mirror mirror) {
 		return switch (mirror) {
-		case LEFT_RIGHT -> state.with(NORTH, state.get(SOUTH)).with(SOUTH, state.get(NORTH));
-		case FRONT_BACK -> state.with(EAST, state.get(WEST)).with(WEST, state.get(EAST));
+		case LEFT_RIGHT -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(SOUTH, state.getValue(NORTH));
+		case FRONT_BACK -> state.setValue(EAST, state.getValue(WEST)).setValue(WEST, state.getValue(EAST));
 		default -> super.mirror(state, mirror);
 		};
 	}

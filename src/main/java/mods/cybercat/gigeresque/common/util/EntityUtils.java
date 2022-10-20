@@ -6,12 +6,12 @@ import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.SwordItem;
 
 public class EntityUtils {
 	private EntityUtils() {
@@ -28,24 +28,24 @@ public class EntityUtils {
 
 		boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
 
-		if ((entity instanceof PlayerEntity)
-				&& (((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
+		if ((entity instanceof Player)
+				&& (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 			return false;
 
-		if ((entity instanceof PlayerEntity)
-				&& !(((PlayerEntity) entity).isCreative() || ((PlayerEntity) entity).isSpectator()))
+		if ((entity instanceof Player)
+				&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 			return true;
 
-		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengerList().isEmpty()
+		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengers().isEmpty()
 				&& ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-				&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD && vehicleCondition;
+				&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
 	}
 
 	public static boolean isEggmorphable(Entity entity) {
 		if (entity == null)
 			return false;
-		boolean playerCondition = !(entity instanceof PlayerEntity)
-				|| !((PlayerEntity) entity).isCreative() && !entity.isSpectator();
+		boolean playerCondition = !(entity instanceof Player)
+				|| !((Player) entity).isCreative() && !entity.isSpectator();
 
 		if (ConfigAccessor.isTargetBlacklisted(ClassicAlienEntity.class, entity))
 			return false;
@@ -57,16 +57,16 @@ public class EntityUtils {
 				|| ((LivingEntity) entity).getHealth() <= 4f;
 
 		boolean threatCondition = !(entity instanceof LivingEntity)
-				|| ((LivingEntity) entity).getActiveItem().getItem() instanceof SwordItem
-				|| ((LivingEntity) entity).getActiveItem().getItem() instanceof RangedWeaponItem;
+				|| ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem
+				|| ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
 
 		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity)
 				&& ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-				&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD && playerCondition && weakCondition
+				&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition
 				&& !threatCondition;
 	}
 
 	public static boolean isFacehuggerAttached(Entity entity) {
-		return entity != null && entity.getPassengerList().stream().anyMatch(it -> it instanceof FacehuggerEntity);
+		return entity != null && entity.getPassengers().stream().anyMatch(it -> it instanceof FacehuggerEntity);
 	}
 }

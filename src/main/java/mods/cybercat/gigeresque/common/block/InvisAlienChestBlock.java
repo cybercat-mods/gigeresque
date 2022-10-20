@@ -3,71 +3,71 @@ package mods.cybercat.gigeresque.common.block;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class InvisAlienChestBlock extends Block {
 
-	private static final VoxelShape OUTLINE_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 16);
+	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
 	public InvisAlienChestBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(BlockSoundGroup.GLOW_LICHEN)
-				.strength(5.0f, 8.0f).nonOpaque().dropsNothing());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.GLOW_LICHEN)
+				.strength(5.0f, 8.0f).nonOpaque().noLootTable());
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-		if (!world.isClient) {
+		if (!world.isClientSide) {
 			Vec3i radius = new Vec3i(2, 2, 2);
-			for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
-				if (world.getBlockState(testPos).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-					if (!world.isClient
+			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
+				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+					if (!world.isClientSide
 							&& world.getBlockEntity(testPos)instanceof AlienStorageEntity idolStorageEntity) {
-						player.openHandledScreen(idolStorageEntity);
+						player.openMenu(idolStorageEntity);
 					}
-					return ActionResult.SUCCESS;
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.INVISIBLE;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
-	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		if (world.isClient)
+	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+		if (world.isClientSide)
 			return;
 		Vec3i radius = new Vec3i(2, 2, 2);
-		for (BlockPos testPos : BlockPos.iterate(pos.subtract(radius), pos.add(radius))) {
+		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 			BlockState testState;
-			if ((testState = world.getBlockState(testPos)).isOf(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-				world.breakBlock(testPos, true);
-			} else if (testState.isOf(this)) {
-				world.setBlockState(testPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+				world.destroyBlock(testPos, true);
+			} else if (testState.is(this)) {
+				world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 			}
 		}
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		return OUTLINE_SHAPE;
 	}
 

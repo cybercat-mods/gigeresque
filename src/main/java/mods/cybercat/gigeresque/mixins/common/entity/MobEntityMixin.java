@@ -11,21 +11,21 @@ import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
 
 /**
  * @author Boston Vanseghi
  */
-@Mixin(MobEntity.class)
+@Mixin(Mob.class)
 public abstract class MobEntityMixin extends LivingEntity {
 
 	@Shadow
     private boolean persistent;
 	
-	protected MobEntityMixin(EntityType<? extends LivingEntity> type, World world) {
+	protected MobEntityMixin(EntityType<? extends LivingEntity> type, Level world) {
 		super(type, world);
 	}
 
@@ -35,12 +35,12 @@ public abstract class MobEntityMixin extends LivingEntity {
 			callbackInfo.cancel();
 		}
 
-		if (this.getPassengerList().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
 			callbackInfo.cancel();
 		}
 	}
 
-	@Inject(method = { "cannotDespawn" }, at = { @At("RETURN") })
+	@Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") })
 	public boolean cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
 		if (this instanceof Host host && host.hasParasite()) {
 			return true;
@@ -51,7 +51,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 	
 	@Inject(method = { "tick" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
-		if ((this instanceof Host host && host.hasParasite()) || this.hasStatusEffect(GigStatusEffects.DNA)) {
+		if ((this instanceof Host host && host.hasParasite()) || this.hasEffect(GigStatusEffects.DNA)) {
 			this.persistent = true;
 		}
 	}

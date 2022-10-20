@@ -6,29 +6,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 
-@Mixin(CreeperEntity.class)
-public abstract class CreeperMixin extends HostileEntity {
+@Mixin(Creeper.class)
+public abstract class CreeperMixin extends Monster {
 
-	protected CreeperMixin(EntityType<? extends HostileEntity> entityType, World world) {
+	protected CreeperMixin(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@Inject(method = { "explode" }, at = { @At("HEAD") })
+	@Inject(method = { "explodeCreeper" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
-		if (this.hasStatusEffect(GigStatusEffects.DNA)) {
-            AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(), this.getZ());
-            areaEffectCloudEntity.setRadius(5.0F);
-            areaEffectCloudEntity.setDuration(300);
-            areaEffectCloudEntity.setRadiusGrowth(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
-            areaEffectCloudEntity.addEffect(new StatusEffectInstance(GigStatusEffects.DNA, 600, 0));
-            this.world.spawnEntity(areaEffectCloudEntity);
+		if (this.hasEffect(GigStatusEffects.DNA)) {
+			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+					this.getZ());
+			areaEffectCloudEntity.setRadius(5.0F);
+			areaEffectCloudEntity.setDuration(300);
+			areaEffectCloudEntity
+					.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+			areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+			this.level.addFreshEntity(areaEffectCloudEntity);
 		}
 	}
 }

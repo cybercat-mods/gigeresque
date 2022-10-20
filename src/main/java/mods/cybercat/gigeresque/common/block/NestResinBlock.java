@@ -7,96 +7,95 @@ import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.util.MathUtil;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.EntityShapeContext;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class NestResinBlock extends Block {
-	public NestResinBlock(Settings settings) {
+	public NestResinBlock(Properties settings) {
 		super(settings);
 
-		setDefaultState(getStateManager().getDefaultState().with(Properties.LAYERS, 1));
+		registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LAYERS, 1));
 	}
 
 	private static List<VoxelShape> interpolateShapes(boolean divide, boolean includeEmptyVoxelShape) {
 		ArrayList<VoxelShape> list = new ArrayList<>();
 		if (includeEmptyVoxelShape) {
-			list.add(VoxelShapes.empty());
+			list.add(Shapes.empty());
 		}
 		for (int i = 0; i < 8; i++) {
 			double minY = divide ? (i * 2.0) / 2.0 : i * 2.0;
-			list.add(createCuboidShape(0.0, 0.0, 0.0, 16.0, minY, 16.0));
+			list.add(box(0.0, 0.0, 0.0, 16.0, minY, 16.0));
 		}
 		return list;
 	}
 
-	public static final IntProperty LAYERS = Properties.LAYERS;
+	public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
 	public static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false, true);
 	public static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true, true);
 
 	@Override
-	public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
-		return type == NavigationType.LAND;
+	public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+		return type == PathComputationType.LAND;
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return ALIEN_LAYERS_TO_SHAPE.get(state.get(LAYERS));
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return context instanceof EntityShapeContext
-				&& ((EntityShapeContext) context).getEntity() instanceof AlienEntity
-						? ALIEN_LAYERS_TO_SHAPE.get(state.get(LAYERS))
-						: LAYERS_TO_SHAPE.get(state.get(LAYERS));
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return context instanceof EntityCollisionContext
+				&& ((EntityCollisionContext) context).getEntity() instanceof AlienEntity
+						? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS))
+						: LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
 	}
 
 	@Override
-	public VoxelShape getSidesShape(BlockState state, BlockView world, BlockPos pos) {
-		return LAYERS_TO_SHAPE.get(state.get(LAYERS));
+	public VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
+		return LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
 	}
 
 	@Override
-	public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return LAYERS_TO_SHAPE.get(state.get(LAYERS));
+	public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
 	}
 
 	@Override
-	public boolean hasSidedTransparency(BlockState state) {
+	public boolean useShapeForLightOcclusion(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		BlockState blockState = world.getBlockState(pos.down());
-		boolean isIce = blockState.isOf(Blocks.ICE);
-		boolean isPackedIce = blockState.isOf(Blocks.PACKED_ICE);
-		boolean isBarrier = blockState.isOf(Blocks.BARRIER);
-		boolean isHoney = blockState.isOf(Blocks.HONEY_BLOCK);
-		boolean isSoulSand = blockState.isOf(Blocks.SOUL_SAND);
+	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+		BlockState blockState = world.getBlockState(pos.below());
+		boolean isIce = blockState.is(Blocks.ICE);
+		boolean isPackedIce = blockState.is(Blocks.PACKED_ICE);
+		boolean isBarrier = blockState.is(Blocks.BARRIER);
+		boolean isHoney = blockState.is(Blocks.HONEY_BLOCK);
+		boolean isSoulSand = blockState.is(Blocks.SOUL_SAND);
 		if (!isIce && !isPackedIce && !isBarrier) {
 			if (!isHoney && !isSoulSand) {
-				return isFaceFullSquare(blockState.getCollisionShape(world, pos.down()), Direction.UP)
-						|| blockState.isOf(this) && blockState.get(LAYERS) == 8;
+				return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP)
+						|| blockState.is(this) && blockState.getValue(LAYERS) == 8;
 			} else {
 				return true;
 			}
@@ -106,18 +105,18 @@ public class NestResinBlock extends Block {
 	}
 
 	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
-			WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-		return !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState()
-				: super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
+			BlockPos pos, BlockPos neighborPos) {
+		return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState()
+				: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 	}
 
 	@Override
-	public boolean canReplace(BlockState state, ItemPlacementContext context) {
-		int i = state.get(LAYERS);
-		if (context.getStack().isOf(asItem()) && i < 8) {
-			if (context.canReplaceExisting()) {
-				return context.getSide() == Direction.UP;
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+		int i = state.getValue(LAYERS);
+		if (context.getItemInHand().is(asItem()) && i < 8) {
+			if (context.replacingClickedOnBlock()) {
+				return context.getClickedFace() == Direction.UP;
 			} else {
 				return true;
 			}
@@ -128,26 +127,26 @@ public class NestResinBlock extends Block {
 
 	@Nullable
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
-		if (blockState.isOf(this)) {
-			int i = blockState.get(LAYERS);
-			return blockState.with(LAYERS, MathUtil.coerceAtMost(8, i + 1));
+	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+		BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		if (blockState.is(this)) {
+			int i = blockState.getValue(LAYERS);
+			return blockState.setValue(LAYERS, MathUtil.coerceAtMost(8, i + 1));
 		} else {
-			return super.getPlacementState(ctx);
+			return super.getStateForPlacement(ctx);
 		}
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(LAYERS);
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
 		if (!(entity instanceof AlienEntity)) {
-			double multiplier = MathUtil.clamp(1.0 / state.get(LAYERS), 0.0, 1.0);
-			entity.slowMovement(state, new Vec3d(1.0 * multiplier, 1.0, 1.0 * multiplier));
+			double multiplier = MathUtil.clamp(1.0 / state.getValue(LAYERS), 0.0, 1.0);
+			entity.makeStuckInBlock(state, new Vec3(1.0 * multiplier, 1.0, 1.0 * multiplier));
 		}
 	}
 }

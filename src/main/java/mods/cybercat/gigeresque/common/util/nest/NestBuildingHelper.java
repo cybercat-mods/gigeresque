@@ -11,9 +11,9 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import net.minecraft.block.Block;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class NestBuildingHelper {
 	private NestBuildingHelper() {
@@ -23,36 +23,36 @@ public class NestBuildingHelper {
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				for (int y = -1; y <= 3; y++) {
-					var blockPos = alien.getBlockPos().add(x, y, z);
-					var nestBlockData = getNestBlockData(alien.world, blockPos);
+					var blockPos = alien.blockPosition().offset(x, y, z);
+					var nestBlockData = getNestBlockData(alien.level, blockPos);
 					if (nestBlockData == null)
 						continue;
 
-					if (alien.getWorld().getLightLevel(alien.getBlockPos()) < 8) {
+					if (alien.getLevel().getLightEmission(alien.blockPosition()) < 8) {
 						SplittableRandom random = new SplittableRandom();
 						int randomPhase = random.nextInt(0, 100);
 						if (nestBlockData.isFloor()) {
 							if (randomPhase <= 70) {
-								alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN.getDefaultState());
+								alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN.defaultBlockState());
 							} else {
-								alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+								alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 							}
 						}
 
 						if (nestBlockData.isCorner()) {
-							alien.world.setBlockState(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.getDefaultState());
+							alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 						}
 
 						if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
-							var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.getDefaultState()
-									.with(NestResinWebBlock.UP, nestBlockData.hasUpCoverage())
-									.with(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage())
-									.with(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage())
-									.with(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage())
-									.with(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage())
-									.with(NestResinWebBlock.VARIANTS, NestResinWebVariant.values()[new Random()
+							var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.defaultBlockState()
+									.setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage())
+									.setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage())
+									.setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage())
+									.setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage())
+									.setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage())
+									.setValue(NestResinWebBlock.VARIANTS, NestResinWebVariant.values()[new Random()
 											.nextInt(NestResinWebVariant.values().length)]);
-							alien.world.setBlockState(blockPos, nestResinWebState);
+							alien.level.setBlockAndUpdate(blockPos, nestResinWebState);
 						}
 					}
 				}
@@ -65,17 +65,17 @@ public class NestBuildingHelper {
 				|| block == GIgBlocks.NEST_RESIN_WEB_CROSS || block == GIgBlocks.NEST_RESIN_BLOCK;
 	}
 
-	private static NestBlockData getNestBlockData(World world, BlockPos blockPos) {
+	private static NestBlockData getNestBlockData(Level world, BlockPos blockPos) {
 		var actualState = world.getBlockState(blockPos);
 		var actualBlock = actualState.getBlock();
 
 		if (isResinBlock(actualBlock))
 			return null;
 
-		var upPos = blockPos.up();
+		var upPos = blockPos.above();
 		var upState = world.getBlockState(upPos);
 
-		var downPos = blockPos.down();
+		var downPos = blockPos.below();
 		var downState = world.getBlockState(downPos);
 
 		var northPos = blockPos.north();
@@ -98,7 +98,7 @@ public class NestBuildingHelper {
 		AtomicInteger cornerCoverage = new AtomicInteger();
 
 		blockStates.forEach(it -> {
-			var isOpaqueCube = it.getSecond().isOpaqueFullCube(world, it.getFirst());
+			var isOpaqueCube = it.getSecond().isSolidRender(world, it.getFirst());
 
 			if (isOpaqueCube) {
 				if (!isResinBlock(it.getSecond().getBlock())) {
@@ -113,21 +113,21 @@ public class NestBuildingHelper {
 		});
 
 		var isFloor = actualState.isAir() && upState.isAir() && !isResinBlock(downState.getBlock())
-				&& downState.isOpaqueFullCube(world, downPos) && world.getLightLevel(blockPos) < 10;
+				&& downState.isSolidRender(world, downPos) && world.getLightEmission(blockPos) < 10;
 		var isWall = !isFloor && actualState.isAir() && (upState.isAir() || isResinBlock(upState.getBlock()))
 				&& (1 <= horizontalCoverage.get() && horizontalCoverage.get() <= 2)
-				&& world.getLightLevel(blockPos) < 10;
+				&& world.getLightEmission(blockPos) < 10;
 		var isCorner = actualState.isAir() && (3 <= fullCoverage.get() && fullCoverage.get() <= 5)
-				&& world.getLightLevel(blockPos) < 10;
+				&& world.getLightEmission(blockPos) < 10;
 		var isCeiling = actualState.isAir() && (downState.isAir() || isResinBlock(downState.getBlock()))
-				&& upState.isOpaqueFullCube(world, downPos) && !isCorner && world.getLightLevel(blockPos) < 10;
+				&& upState.isSolidRender(world, downPos) && !isCorner && world.getLightEmission(blockPos) < 10;
 
 		return new NestBlockData(fullCoverage.get(), isCorner, isFloor, isCeiling, isWall,
-				/* upCoverage */ upState.isOpaqueFullCube(world, upPos),
-				/* downCoverage */ downState.isOpaqueFullCube(world, downPos),
-				/* northCoverage */ northState.isOpaqueFullCube(world, northPos),
-				/* southCoverage */ southState.isOpaqueFullCube(world, southPos),
-				/* eastCoverage */ eastState.isOpaqueFullCube(world, eastPos),
-				/* westCoverage */ westState.isOpaqueFullCube(world, westPos));
+				/* upCoverage */ upState.isSolidRender(world, upPos),
+				/* downCoverage */ downState.isSolidRender(world, downPos),
+				/* northCoverage */ northState.isSolidRender(world, northPos),
+				/* southCoverage */ southState.isSolidRender(world, southPos),
+				/* eastCoverage */ eastState.isSolidRender(world, eastPos),
+				/* westCoverage */ westState.isSolidRender(world, westPos));
 	}
 }

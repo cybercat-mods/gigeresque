@@ -7,12 +7,12 @@ import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -26,18 +26,18 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 	private AnimationFactory animationFactory = new AnimationFactory(this);
 
-	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, World world) {
+	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
 		super(type, world);
 	}
 
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 80.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 4.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13000000417232513)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0)
+	public static AttributeSupplier.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 80.0)
+				.add(Attributes.ARMOR, 4.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+				.add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
+				.add(Attributes.ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
+				.add(Attributes.ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
 	}
 
@@ -50,16 +50,16 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		if (attackProgress > 0) {
 			attackProgress--;
 
-			if (!world.isClient && attackProgress <= 0) {
+			if (!level.isClientSide && attackProgress <= 0) {
 				setCurrentAttackType(AlienAttackType.NONE);
 			}
 		}
 
-		if (attackProgress == 0 && handSwinging) {
+		if (attackProgress == 0 && swinging) {
 			attackProgress = 10;
 		}
 
-		if (!world.isClient && getCurrentAttackType() == AlienAttackType.NONE) {
+		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
 			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT;
 			case 1 -> AlienAttackType.CLAW_RIGHT;
@@ -76,9 +76,9 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	@Override
-	protected void initGoals() {
-		super.initGoals();
-		this.goalSelector.add(2, new AlienMeleeAttackGoal(this, 3.0, false));
+	protected void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(2, new AlienMeleeAttackGoal(this, 3.0, false));
 	}
 
 	/*
@@ -86,15 +86,15 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getVelocity().horizontalLength();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
+		var velocityLength = this.getDeltaMovement().horizontalDistance();
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& this.isStatis() == false) {
-			if (lastLimbDistance > 0.35F && this.getFirstPassenger() == null) {
+			if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
 				return PlayState.CONTINUE;
-			} else if (this.isExecuting() == false && lastLimbDistance < 0.35F
+			} else if (this.isExecuting() == false && animationSpeedOld < 0.35F
 					|| (!this.isCrawling() && !this.onGround)) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
 						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
@@ -107,10 +107,10 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (isSearching && !this.isAttacking() && this.isStatis() == false) {
+			if (isSearching && !this.isAggressive() && this.isStatis() == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
 				return PlayState.CONTINUE;
-			} else if (this.isStatis() == true || this.isAiDisabled() && !isDead) {
+			} else if (this.isStatis() == true || this.isNoAi() && !isDead) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == false) {
@@ -132,8 +132,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
-		if (this.dataTracker.get(IS_HISSING) == true && !isDead) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+		if (this.entityData.get(IS_HISSING) == true && !isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", true));
 			return PlayState.CONTINUE;
 		}
@@ -143,45 +143,45 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("footstepSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
-						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
+						SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("handstepSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
-						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
+						SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("idleSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}
 
 	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("clawSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("tailSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
 
 	private <ENTITY extends IAnimatable> void soundHissListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("hissSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}

@@ -2,52 +2,51 @@ package mods.cybercat.gigeresque.common.fluid;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
-
-public abstract class BlackFluid extends FlowableFluid {
+public abstract class BlackFluid extends FlowingFluid {
 	@Override
-	public boolean matchesType(Fluid fluid) {
+	public boolean isSame(Fluid fluid) {
 		return fluid == GigFluids.BLACK_FLUID_STILL || fluid == GigFluids.BLACK_FLUID_FLOWING;
 	}
 
 	@Override
-	public Item getBucketItem() {
+	public Item getBucket() {
 		return GigItems.BLACK_FLUID_BUCKET;
 	}
 
 	@Override
-	public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid,
+	public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid,
 			Direction direction) {
 		return false;
 	}
 
 	@Override
-	public int getTickRate(WorldView world) {
+	public int getTickDelay(LevelReader world) {
 		return 20;
 	}
 
 	@Override
-	protected float getBlastResistance() {
+	protected float getExplosionResistance() {
 		return 100.0f;
 	}
 
 	@Override
-	protected BlockState toBlockState(FluidState state) {
-		return GIgBlocks.BLACK_FLUID.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(state));
+	protected BlockState createLegacyBlock(FluidState state) {
+		return GIgBlocks.BLACK_FLUID.defaultBlockState().setValue(BlockStateProperties.LEVEL, getLegacyLevel(state));
 	}
 
 	@Override
@@ -56,45 +55,45 @@ public abstract class BlackFluid extends FlowableFluid {
 	}
 
 	@Override
-	public Fluid getStill() {
+	public Fluid getSource() {
 		return GigFluids.BLACK_FLUID_STILL;
 	}
 
 	@Override
-	protected boolean isInfinite() {
+	protected boolean canConvertToSource() {
 		return false;
 	}
 
 	@Override
-	protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
+	protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
 		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-		Block.dropStacks(state, world, pos, blockEntity);
+		Block.dropResources(state, world, pos, blockEntity);
 	}
 
 	@Override
-	protected int getFlowSpeed(WorldView world) {
+	protected int getSlopeFindDistance(LevelReader world) {
 		return 2;
 	}
 
 	@Override
-	protected int getLevelDecreasePerBlock(WorldView world) {
+	protected int getDropOff(LevelReader world) {
 		return 2;
 	}
 
 	static class Flowing extends BlackFluid {
 		@Override
-		public void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-			super.appendProperties(builder);
+		public void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
 		}
 
 		@Override
-		public int getLevel(FluidState fluidState) {
-			return fluidState.get(LEVEL);
+		public int getAmount(FluidState fluidState) {
+			return fluidState.getValue(LEVEL);
 		}
 
 		@Override
-		public boolean isStill(FluidState fluidState) {
+		public boolean isSource(FluidState fluidState) {
 			return false;
 		}
 	}
@@ -102,12 +101,12 @@ public abstract class BlackFluid extends FlowableFluid {
 	static class Still extends BlackFluid {
 
 		@Override
-		public int getLevel(FluidState fluidState) {
+		public int getAmount(FluidState fluidState) {
 			return 8;
 		}
 
 		@Override
-		public boolean isStill(FluidState fluidState) {
+		public boolean isSource(FluidState fluidState) {
 			return true;
 		}
 	}

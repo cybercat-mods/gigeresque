@@ -1,19 +1,19 @@
 package mods.cybercat.gigeresque.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class CustomStairsBlock extends StairsBlock {
-	public CustomStairsBlock(BlockState baseBlockState, Settings settings) {
+public class CustomStairsBlock extends StairBlock {
+	public CustomStairsBlock(BlockState baseBlockState, Properties settings) {
 		super(baseBlockState, settings);
 	}
 
-	public CustomStairsBlock(Block block, Settings settings) {
-		this(block.getDefaultState(), settings);
+	public CustomStairsBlock(Block block, Properties settings) {
+		this(block.defaultBlockState(), settings);
 	}
 
 	public CustomStairsBlock(Block block) {
-		this(block, Settings.copy(block));
+		this(block, Properties.copy(block));
 	}
 }

@@ -1,36 +1,36 @@
 package mods.cybercat.gigeresque.common.entity.ai.pathing;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.level.Level;
 
-public class DirectPathNavigator extends MobNavigation {
+public class DirectPathNavigator extends GroundPathNavigation {
 
-    private MobEntity mob;
+    private Mob mob;
     private float yMobOffset = 0;
 
-    public DirectPathNavigator(MobEntity mob, World world) {
+    public DirectPathNavigator(Mob mob, Level world) {
         this(mob, world, 0);
     }
 
-    public DirectPathNavigator(MobEntity mob, World world, float yMobOffset) {
+    public DirectPathNavigator(Mob mob, Level world, float yMobOffset) {
         super(mob, world);
         this.mob = mob;
         this.yMobOffset = yMobOffset;
     }
 
     public void tick() {
-        ++this.tickCount;
+        ++this.tick;
     }
 
     public boolean moveTo(double x, double y, double z, double speedIn) {
-        mob.getMoveControl().moveTo(x, y, z, speedIn);
+        mob.getMoveControl().setWantedPosition(x, y, z, speedIn);
         return true;
     }
 
     public boolean moveTo(Entity entityIn, double speedIn) {
-        mob.getMoveControl().moveTo(entityIn.getX(), entityIn.getY() + yMobOffset, entityIn.getZ(), speedIn);
+        mob.getMoveControl().setWantedPosition(entityIn.getX(), entityIn.getY() + yMobOffset, entityIn.getZ(), speedIn);
         return true;
     }
 

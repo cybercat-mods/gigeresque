@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.common.block;
 
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
-public enum NestResinWebVariant implements StringIdentifiable {
+public enum NestResinWebVariant implements StringRepresentable {
 	ONE("one"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six");
 
 	public final String dirName;
@@ -12,7 +12,7 @@ public enum NestResinWebVariant implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return dirName;
 	}
 }

@@ -11,18 +11,18 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.WardenEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -35,17 +35,17 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 
-	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, World world) {
-		super(type, world);
+	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
+		super(type, level);
 	}
 
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 2.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0)
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.23000000417232513)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.3);
+	public static AttributeSupplier.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 15.0)
+				.add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+				.add(Attributes.FOLLOW_RANGE, 16.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
+				.add(Attributes.ATTACK_DAMAGE, 5.0).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	private AnimationFactory animationFactory = new AnimationFactory(this);
@@ -72,7 +72,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.isBirthed() == true && this.age > 1200 && this.getGrowth() > 200) {
+		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200) {
 			this.setBirthStatus(false);
 		}
 	}
@@ -80,19 +80,19 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	@Override
 	public LivingEntity growInto() {
 		if (hostId == null) {
-			return new ClassicAlienEntity(Entities.ALIEN, world);
+			return new ClassicAlienEntity(Entities.ALIEN, level);
 		}
 
 		var variantId = ConfigAccessor.getReversedMorphMappings().get(hostId);
 		if (variantId == null) {
-			return new ClassicAlienEntity(Entities.ALIEN, world);
+			return new ClassicAlienEntity(Entities.ALIEN, level);
 		}
-		var identifier = new Identifier(variantId);
-		var entityType = Registry.ENTITY_TYPE.getOrEmpty(identifier).orElse(null);
+		var identifier = new ResourceLocation(variantId);
+		var entityType = Registry.ENTITY_TYPE.getOptional(identifier).orElse(null);
 		if (entityType == null) {
-			return new ClassicAlienEntity(Entities.ALIEN, world);
+			return new ClassicAlienEntity(Entities.ALIEN, level);
 		}
-		var entity = entityType.create(world);
+		var entity = entityType.create(level);
 
 		if (hasCustomName()) {
 			if (entity != null) {
@@ -104,17 +104,16 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	}
 
 	@Override
-	protected void initGoals() {
-		super.initGoals();
-		this.goalSelector.add(2, new MeleeAttackGoal(this, 1.35, false));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
-						|| entity instanceof ArmorStandEntity)
-						|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
-								.anyMatch(AlienEntity.class::isInstance))
+	protected void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.35, false));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
+				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand)
+						|| (entity.getVehicle() != null
+								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
 						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-						|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
+						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
 	}
 
@@ -123,25 +122,25 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getVelocity().horizontalLength();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
-		if (velocityLength >= 0.000000001 && !isDead && lastLimbDistance > 0.15F) {
-			if (lastLimbDistance >= 0.35F) {
+		var velocityLength = this.getDeltaMovement().horizontalDistance();
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
+			if (animationSpeedOld >= 0.35F) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
 				return PlayState.CONTINUE;
 			} else {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
 				return PlayState.CONTINUE;
 			}
-		} else if (((this.getTarget() != null && this.tryAttack(getTarget())) || (this.dataTracker.get(EAT) == true))
-				&& !this.isDead()) {
+		} else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (this.entityData.get(EAT) == true))
+				&& !this.isDeadOrDying()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (this.dataTracker.get(BIRTHED) == true && this.age < 60 && this.dataTracker.get(EAT) == false) {
+			if (this.entityData.get(BIRTHED) == true && this.tickCount < 60 && this.entityData.get(EAT) == false) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
 				return PlayState.CONTINUE;
 			} else {
@@ -153,33 +152,33 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 
 	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("footstepSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
-						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
+						SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("handstepSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
-						SoundCategory.HOSTILE, 0.5F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
+						SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("idleSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("clawSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("tailSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -199,6 +198,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 
 	@Override
 	public int tickTimer() {
-		return age;
+		return tickCount;
 	}
 }

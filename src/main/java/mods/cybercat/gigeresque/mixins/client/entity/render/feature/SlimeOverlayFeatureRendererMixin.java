@@ -7,43 +7,42 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.SlimeOverlayFeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.SlimeEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.SlimeModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.layers.SlimeOuterLayer;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
-@Mixin(SlimeOverlayFeatureRenderer.class)
-public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity>
-		extends FeatureRenderer<T, SlimeEntityModel<T>> {
+@Mixin(SlimeOuterLayer.class)
+public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> extends RenderLayer<T, SlimeModel<T>> {
 	@Shadow
 	@Final
 	private EntityModel<T> model;
 
-	private SlimeOverlayFeatureRendererMixin(FeatureRendererContext<T, SlimeEntityModel<T>> context) {
+	private SlimeOverlayFeatureRendererMixin(RenderLayerParent<T, SlimeModel<T>> context) {
 		super(context);
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	private void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, T entity,
-			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T entity, float f,
+			float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (entity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-			this.model.animateModel(entity, f, g, h);
-			this.model.setAngles(entity, f, g, j, k, l);
-			this.getContextModel().copyStateTo(this.model);
-			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTexture(entity), matrixStack,
+			this.model.prepareMobModel(entity, f, g, h);
+			this.model.setupAnim(entity, f, g, j, k, l);
+			this.getParentModel().copyPropertiesTo(this.model);
+			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTextureLocation(entity), matrixStack,
 					vertexConsumerProvider, light, entity, f, g, h, j, k, l);
 		}
 	}

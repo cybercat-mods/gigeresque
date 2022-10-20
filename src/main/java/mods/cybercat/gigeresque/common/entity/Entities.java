@@ -17,13 +17,13 @@ import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class Entities implements GigeresqueInitializer {
 	private Entities() {
@@ -40,8 +40,8 @@ public class Entities implements GigeresqueInitializer {
 
 	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
 			float width, float height) {
-		return Registry.register(Registry.ENTITY_TYPE, new Identifier(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
-				.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
+		return Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
+				.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
 	}
 
 	public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(

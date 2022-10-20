@@ -1,15 +1,16 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
@@ -23,19 +24,19 @@ public class ClassicAlienFeatureRenderer extends GeoLayerRenderer<ClassicAlienEn
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn,
+	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
 			ClassicAlienEntity alienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
 			float ageInTicks, float netHeadYaw, float headPitch) {
-		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.field_32953 : OverlayTexture.DEFAULT_UV;
+		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
 		if (!(alienEntity.getGrowth() >= alienEntity.getMaxGrowth()))
 			entityRenderer.render(getEntityModel().getModel(EntityModels.ALIEN), alienEntity, partialTicks,
-					RenderLayer.getEntityTranslucent(EntityTextures.ALIEN_YOUNG), matrixStackIn, bufferIn,
-					bufferIn.getBuffer(RenderLayer.getEntityTranslucent(EntityTextures.ALIEN_YOUNG)), packedLightIn, uv,
+					RenderType.entityTranslucent(EntityTextures.ALIEN_YOUNG), matrixStackIn, bufferIn,
+					bufferIn.getBuffer(RenderType.entityTranslucent(EntityTextures.ALIEN_YOUNG)), packedLightIn, uv,
 					1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getGrowth()) / 1200));
 	}
 
 	@Override
-	protected Identifier getEntityTexture(ClassicAlienEntity entityIn) {
+	protected ResourceLocation getEntityTexture(ClassicAlienEntity entityIn) {
 		return EntityTextures.ALIEN_YOUNG;
 	}
 }

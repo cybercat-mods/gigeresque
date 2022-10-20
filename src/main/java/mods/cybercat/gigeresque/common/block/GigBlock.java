@@ -1,15 +1,15 @@
 package mods.cybercat.gigeresque.common.block;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class GigBlock extends Block {
 
-	public GigBlock(Settings settings) {
+	public GigBlock(Properties settings) {
 		super(settings);
 	}
 	
 	@Override
-	public boolean canMobSpawnInside() {
+	public boolean isPossibleToRespawnInThis() {
 		return false;
 	}
 

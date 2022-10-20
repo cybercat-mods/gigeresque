@@ -10,25 +10,25 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.AmbientEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -40,18 +40,18 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
-	private static final TrackedData<Boolean> IS_HATCHING = DataTracker.registerData(AlienEggEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<Boolean> IS_HATCHED = DataTracker.registerData(AlienEggEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<Boolean> HAS_FACEHUGGER = DataTracker.registerData(AlienEggEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(AlienEggEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(AlienEggEntity.class,
+			EntityDataSerializers.BOOLEAN);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
 	private final AnimationFactory animationFactory = new AnimationFactory(this);
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
-	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, World world) {
+	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
 		super(type, world);
 	}
 
@@ -60,48 +60,47 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 		return 1;
 	}
 
-	public static DefaultAttributeContainer.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
-				.add(EntityAttributes.GENERIC_ARMOR, 1.0).add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0);
+	public static AttributeSupplier.Builder createAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 20.0).add(Attributes.ARMOR, 1.0)
+				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+				.add(Attributes.FOLLOW_RANGE, 0.0).add(Attributes.MOVEMENT_SPEED, 0.0);
 	}
 
 	public boolean isHatching() {
-		return dataTracker.get(IS_HATCHING);
+		return entityData.get(IS_HATCHING);
 	}
 
 	public void setIsHatching(boolean value) {
-		dataTracker.set(IS_HATCHING, value);
+		entityData.set(IS_HATCHING, value);
 	}
 
 	public boolean isHatched() {
-		return dataTracker.get(IS_HATCHED);
+		return entityData.get(IS_HATCHED);
 	}
 
 	public void setIsHatched(boolean value) {
-		dataTracker.set(IS_HATCHED, value);
+		entityData.set(IS_HATCHED, value);
 	}
 
 	public boolean hasFacehugger() {
-		return dataTracker.get(HAS_FACEHUGGER);
+		return entityData.get(HAS_FACEHUGGER);
 	}
 
 	public void setHasFacehugger(boolean value) {
-		dataTracker.set(HAS_FACEHUGGER, value);
+		entityData.set(HAS_FACEHUGGER, value);
 	}
 
 	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(IS_HATCHING, false);
-		dataTracker.startTracking(IS_HATCHED, false);
-		dataTracker.startTracking(HAS_FACEHUGGER, true);
+	public void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(IS_HATCHING, false);
+		entityData.define(IS_HATCHED, false);
+		entityData.define(HAS_FACEHUGGER, true);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound nbt) {
-		super.writeCustomDataToNbt(nbt);
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
 		nbt.putBoolean("isHatching", isHatching());
 		nbt.putBoolean("isHatched", isHatched());
 		nbt.putBoolean("hasFacehugger", hasFacehugger());
@@ -110,8 +109,8 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound nbt) {
-		super.readCustomDataFromNbt(nbt);
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
 		if (nbt.contains("isHatching")) {
 			setIsHatching(nbt.getBoolean("isHatching"));
 		}
@@ -130,13 +129,13 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected Box calculateBoundingBox() {
-		return super.calculateBoundingBox();
+	protected AABB makeBoundingBox() {
+		return super.makeBoundingBox();
 	}
 
 	@Override
-	public Box getBoundingBox(EntityPose pose) {
-		return this.getBoundingBox().expand(1);
+	public AABB getLocalBoundsForPose(Pose pose) {
+		return this.getBoundingBox().inflate(1);
 	}
 
 	@Override
@@ -147,9 +146,9 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 		}
 
 		if (hatchProgress == 15L) {
-			if (!world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			if (!level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 
@@ -163,12 +162,12 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			ticksOpen++;
 		}
 
-		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !world.isClient) {
-			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, world);
-			facehugger.refreshPositionAndAngles(getBlockPos().up(), getYaw(), getPitch());
-			facehugger.setVelocity(0.0, 0.7, 0.0);
+		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level.isClientSide) {
+			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, level);
+			facehugger.moveTo(blockPosition().above(), getYRot(), getXRot());
+			facehugger.setDeltaMovement(0.0, 0.7, 0.0);
 			facehugger.setEggSpawnState(true);
-			world.spawnEntity(facehugger);
+			level.addFreshEntity(facehugger);
 			setHasFacehugger(false);
 		}
 	}
@@ -177,15 +176,15 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 * Prevents entity collisions from moving the egg.
 	 */
 	@Override
-	public void pushAway(Entity entity) {
-		if (!world.isClient && EntityUtils.isPotentialHost(entity)) {
+	public void doPush(Entity entity) {
+		if (!level.isClientSide && EntityUtils.isPotentialHost(entity)) {
 			setIsHatching(true);
 		}
-		// this.pushAway(entity);
+		// this.doPush(entity);
 	}
 
 	@Override
-	public boolean isCollidable() {
+	public boolean canBeCollidedWith() {
 		return this.isAlive();
 	}
 
@@ -201,7 +200,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 * Prevents fluids from moving the egg.
 	 */
 	@Override
-	public boolean isPushedByFluids() {
+	public boolean isPushedByFluid() {
 		return false;
 	}
 
@@ -209,7 +208,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 * Prevents the egg from moving on its own.
 	 */
 	@Override
-	public boolean movesIndependently() {
+	public boolean shouldPassengersInheritMalus() {
 		return false;
 	}
 
@@ -217,47 +216,47 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 * Prevents the egg moving when hit.
 	 */
 	@Override
-	public void takeKnockback(double strength, double x, double z) {
+	public void knockback(double strength, double x, double z) {
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
-		if (source.getSource() != null || source != DamageSource.IN_WALL && !this.isHatched()) {
+	public boolean hurt(DamageSource source, float amount) {
+		if (source.getDirectEntity() != null || source != DamageSource.IN_WALL && !this.isHatched()) {
 			setIsHatching(true);
 		}
-		return source == DamageSource.IN_WALL ? false : super.damage(source, amount);
+		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
 		float q = 6.0F;
-		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.world.getOtherEntities(this,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3d vec3d1 = new Vec3d(this.getX(), this.getY(), this.getZ());
+		int k = Mth.floor(this.getX() - (double) q - 1.0D);
+		int l = Mth.floor(this.getX() + (double) q + 1.0D);
+		int t = Mth.floor(this.getY() - (double) q - 1.0D);
+		int u = Mth.floor(this.getY() + (double) q + 1.0D);
+		int v = Mth.floor(this.getZ() - (double) q - 1.0D);
+		int w = Mth.floor(this.getZ() + (double) q + 1.0D);
+		List<Entity> list = this.level.getEntities(this,
+				new AABB((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		Vec3 vec3d1 = new Vec3(this.getX(), this.getY(), this.getZ());
 
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
-			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
+			double y = (double) (Mth.sqrt((float) entity.distanceToSqr(vec3d1)) / q);
 			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)
+				if (entity instanceof LivingEntity && !(entity instanceof Player)
 						&& !(entity instanceof AlienEntity)
 						&& !(ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-							&& !(entity instanceof AmbientEntity)
-							&& ((LivingEntity) entity).getGroup() != EntityGroup.UNDEAD) {
+							&& !(entity instanceof AmbientCreature)
+							&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD) {
 						if (EntityUtils.isPotentialHost(entity))
 							setIsHatching(true);
 					}
 				}
-				if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative()
-						&& !((PlayerEntity) entity).isSpectator()) {
+				if (entity instanceof Player && !((Player) entity).isCreative()
+						&& !((Player) entity).isSpectator()) {
 					setIsHatching(true);
 				}
 			}
@@ -268,13 +267,13 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 * Prevents the egg from drowning.
 	 */
 	@Override
-	public boolean canBreatheInWater() {
+	public boolean canBreatheUnderwater() {
 		return true;
 	}
 
 	@Override
-	public boolean cannotDespawn() {
-		return (this.isHatched() && !this.hasFacehugger()) ? false : super.cannotDespawn();
+	public boolean requiresCustomPersistence() {
+		return (this.isHatched() && !this.hasFacehugger()) ? false : super.requiresCustomPersistence();
 	}
 
 	@Override
@@ -288,7 +287,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (isHatched() && !this.isDead()) {
+		if (isHatched() && !this.isDeadOrDying()) {
 			if (!hasFacehugger()) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", true));
 				return PlayState.CONTINUE;
@@ -298,12 +297,12 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			return PlayState.CONTINUE;
 		}
 
-		if (this.isDead()) {
+		if (this.isDeadOrDying()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		}
 
-		if (isHatching() && !this.isDead()) {
+		if (isHatching() && !this.isDeadOrDying()) {
 			event.getController()
 					.setAnimation(new AnimationBuilder().addAnimation("hatch", false).addAnimation("hatched"));
 			return PlayState.CONTINUE;
@@ -324,6 +323,6 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 
 	@Override
 	public int tickTimer() {
-		return age;
+		return tickCount;
 	}
 }

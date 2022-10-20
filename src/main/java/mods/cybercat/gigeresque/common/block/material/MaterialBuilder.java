@@ -1,21 +1,21 @@
 package mods.cybercat.gigeresque.common.block.material;
 
-import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.PushReaction;
 
 public class MaterialBuilder {
-	private PistonBehavior pistonBehavior;
+	private PushReaction pistonBehavior;
 	private boolean blocksMovement;
 	private boolean burnable = false;
 	private boolean liquid = false;
 	private boolean replaceable = false;
 	private boolean solid;
-	private MapColor color;
+	private MaterialColor color;
 	private boolean blocksLight;
 
-	MaterialBuilder(MapColor color) {
-		pistonBehavior = PistonBehavior.NORMAL;
+	MaterialBuilder(MaterialColor color) {
+		pistonBehavior = PushReaction.NORMAL;
 		blocksMovement = true;
 		solid = true;
 		blocksLight = true;
@@ -53,12 +53,12 @@ public class MaterialBuilder {
 	}
 
 	public MaterialBuilder destroyedByPiston() {
-		pistonBehavior = PistonBehavior.DESTROY;
+		pistonBehavior = PushReaction.DESTROY;
 		return this;
 	}
 
 	public MaterialBuilder blocksPiston() {
-		pistonBehavior = PistonBehavior.BLOCK;
+		pistonBehavior = PushReaction.BLOCK;
 		return this;
 	}
 

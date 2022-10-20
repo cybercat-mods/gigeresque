@@ -2,9 +2,9 @@ package mods.cybercat.gigeresque.common.data.handler;
 
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import net.minecraft.entity.data.TrackedDataHandler;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
 
 public class TrackedDataHandlers implements GigeresqueInitializer {
 	private TrackedDataHandlers() {
@@ -19,15 +19,15 @@ public class TrackedDataHandlers implements GigeresqueInitializer {
 		return instance;
 	}
 
-	public static final TrackedDataHandler<AlienAttackType> ALIEN_ATTACK_TYPE = new TrackedDataHandler<>() {
+	public static final EntityDataSerializer<AlienAttackType> ALIEN_ATTACK_TYPE = new EntityDataSerializer<>() {
 		@Override
-		public void write(PacketByteBuf packetByteBuf, AlienAttackType alienAttackType) {
-			packetByteBuf.writeEnumConstant(alienAttackType);
+		public void write(FriendlyByteBuf packetByteBuf, AlienAttackType alienAttackType) {
+			packetByteBuf.writeEnum(alienAttackType);
 		}
 
 		@Override
-		public AlienAttackType read(PacketByteBuf packetByteBuf) {
-			return packetByteBuf.readEnumConstant(AlienAttackType.class);
+		public AlienAttackType read(FriendlyByteBuf packetByteBuf) {
+			return packetByteBuf.readEnum(AlienAttackType.class);
 		}
 
 		@Override
@@ -38,6 +38,6 @@ public class TrackedDataHandlers implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		TrackedDataHandlerRegistry.register(ALIEN_ATTACK_TYPE);
+		EntityDataSerializers.registerSerializer(ALIEN_ATTACK_TYPE);
 	}
 }

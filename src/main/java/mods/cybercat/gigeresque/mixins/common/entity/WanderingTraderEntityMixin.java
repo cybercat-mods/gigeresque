@@ -6,31 +6,30 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mods.cybercat.gigeresque.common.item.SurgeryKitItem;
-
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 /**
  * @author Boston Vanseghi
  */
-@Mixin(WanderingTraderEntity.class)
-public abstract class WanderingTraderEntityMixin extends MerchantEntity {
+@Mixin(WanderingTrader.class)
+public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
-	public WanderingTraderEntityMixin(EntityType<WanderingTraderEntity> type, World world) {
+	public WanderingTraderEntityMixin(EntityType<WanderingTrader> type, Level world) {
 		super(type, world);
 	}
 
-	@Inject(method = { "interactMob" }, at = { @At("HEAD") }, cancellable = true)
-	protected ActionResult interactMob(PlayerEntity player, Hand hand,
-			CallbackInfoReturnable<ActionResult> callbackInfo) {
-		if (player.getStackInHand(hand).getItem() instanceof SurgeryKitItem) {
-			callbackInfo.setReturnValue(super.interactMob(player, hand));
+	@Inject(method = { "mobInteract" }, at = { @At("HEAD") }, cancellable = true)
+	protected InteractionResult mobInteract(Player player, InteractionHand hand,
+			CallbackInfoReturnable<InteractionResult> callbackInfo) {
+		if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem) {
+			callbackInfo.setReturnValue(super.mobInteract(player, hand));
 		}
-		return super.interactMob(player, hand);
+		return super.mobInteract(player, hand);
 	}
 }

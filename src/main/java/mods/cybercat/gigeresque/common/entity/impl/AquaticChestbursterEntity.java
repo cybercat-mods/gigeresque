@@ -4,23 +4,23 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.ai.control.AquaticMoveControl;
-import net.minecraft.entity.ai.control.LookControl;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.control.YawAdjustingLookControl;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,40 +32,40 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 
-	private final MobNavigation landNavigation = new MobNavigation(this, world);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level);
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
-	private final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.7f, 1.0f, false);
-	private final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
+	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
+			false);
+	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 
-	public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, World world) {
+	public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
 		super(type, world);
-		ignoreCameraFrustum = true;
-		stepHeight = 1.0f;
+		maxUpStep = 1.0f;
 
 		navigation = swimNavigation;
 		moveControl = swimMoveControl;
 		lookControl = swimLookControl;
-		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+		setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
 	}
 
 	@Override
-	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
+	public void travel(Vec3 movementInput) {
+		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
-		if (this.age % 10 == 0) {
-			this.calculateDimensions();
+		if (this.tickCount % 10 == 0) {
+			this.refreshDimensions();
 		}
 
-		if (canMoveVoluntarily() && this.isTouchingWater()) {
-			updateVelocity(getMovementSpeed(), movementInput);
-			move(MovementType.SELF, getVelocity());
-			setVelocity(getVelocity().multiply(0.9));
+		if (isEffectiveAi() && this.isInWater()) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.9));
 			if (getTarget() == null) {
-				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 			}
 		} else {
 			super.travel(movementInput);
@@ -74,7 +74,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = new AquaticAlienEntity(Entities.AQUATIC_ALIEN, world);
+		var entity = new AquaticAlienEntity(Entities.AQUATIC_ALIEN, level);
 
 		if (hasCustomName()) {
 			entity.setCustomName(this.getCustomName());
@@ -84,27 +84,27 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 	}
 
 	@Override
-	public boolean canBreatheInWater() {
+	public boolean canBreatheUnderwater() {
 		return true;
 	}
 
 	@Override
-	public EntityNavigation createNavigation(World world) {
+	public PathNavigation createNavigation(Level world) {
 		return swimNavigation;
 	}
 
 	@Override
-	public boolean isPushedByFluids() {
+	public boolean isPushedByFluid() {
 		return false;
 	}
 
 	@Override
-	protected void swimUpward(TagKey<Fluid> fluid) {
+	protected void jumpInLiquid(TagKey<Fluid> fluid) {
 	}
 
 	@Override
-	public EntityDimensions getDimensions(EntityPose pose) {
-		return this.submergedInWater ? super.getDimensions(pose).scaled(1.0f, 0.5f) : super.getDimensions(pose);
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.wasEyeInWater ? super.getDimensions(pose).scale(1.0f, 0.5f) : super.getDimensions(pose);
 	}
 
 	/*
@@ -112,11 +112,11 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 	 */
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getVelocity().horizontalLength();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDead();
-		if (velocityLength >= 0.000000001 && !isDead && lastLimbDistance > 0.15F) {
-			if (this.isSubmergedInWater()) {
-				if (lastLimbDistance >= 0.35F) {
+		var velocityLength = this.getDeltaMovement().horizontalDistance();
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
+			if (this.isUnderWater()) {
+				if (animationSpeedOld >= 0.35F) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
 					return PlayState.CONTINUE;
 				} else {
@@ -124,7 +124,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 					return PlayState.CONTINUE;
 				}
 			} else {
-				if (lastLimbDistance >= 0.35F) {
+				if (animationSpeedOld >= 0.35F) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
 					return PlayState.CONTINUE;
 				} else {
@@ -132,18 +132,18 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 					return PlayState.CONTINUE;
 				}
 			}
-		} else if (this.dataTracker.get(EAT) == true && !this.isDead()) {
+		} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
 			return PlayState.CONTINUE;
 		} else {
-			if (this.age < 5 && this.dataTracker.get(BIRTHED) == true) {
+			if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true) {
 				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
 				return PlayState.CONTINUE;
 			} else {
-				if (this.isSubmergedInWater()) {
+				if (this.isUnderWater()) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
 					return PlayState.CONTINUE;
 				} else {
@@ -156,9 +156,9 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("stepSoundkey")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -173,6 +173,6 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 
 	@Override
 	public int tickTimer() {
-		return age;
+		return tickCount;
 	}
 }

@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.common.block;
 
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
-public enum StorageStates implements StringIdentifiable {
+public enum StorageStates implements StringRepresentable {
 	OPEN("open"), OPENED("opened"), CLOSE("close"), CLOSED("closed"), CLOSING("closing");
 
 	private final String name;
@@ -12,7 +12,7 @@ public enum StorageStates implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.name;
 	}
 }

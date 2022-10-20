@@ -13,18 +13,18 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 
 @Environment(EnvType.CLIENT)
 public class FluidRenderHandlers implements GigeresqueInitializer {
@@ -32,39 +32,37 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 	@Override
 	public void initialize() {
 		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING,
-				new Identifier(Gigeresque.MOD_ID, "black_fluid"));
-		BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getSolid(), GigFluids.BLACK_FLUID_STILL,
+				new ResourceLocation(Gigeresque.MOD_ID, "black_fluid"));
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderType.solid(), GigFluids.BLACK_FLUID_STILL,
 				GigFluids.BLACK_FLUID_FLOWING);
 	}
 
-	private void setupFluidRendering(Fluid still, Fluid flowing, Identifier textureFluidId) {
-		var stillSpriteId = new Identifier(textureFluidId.getNamespace(),
+	private void setupFluidRendering(Fluid still, Fluid flowing, ResourceLocation textureFluidId) {
+		var stillSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
 				"block/" + textureFluidId.getPath() + "_still");
-		var flowingSpriteId = new Identifier(textureFluidId.getNamespace(),
+		var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
 				"block/" + textureFluidId.getPath() + "_flow");
 
 		// If they're not already present, add the sprites to the block atlas
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
-				.register((atlasTexture, registry) -> {
-					registry.register(stillSpriteId);
-					registry.register(flowingSpriteId);
-				});
-		var fluidId = Registry.FLUID.getId(still);
-		var listenerId = new Identifier(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
-		Sprite[] fluidSprites = new Sprite[2];
+		ClientSpriteRegistryCallback.event(TextureAtlas.LOCATION_BLOCKS).register((atlasTexture, registry) -> {
+			registry.register(stillSpriteId);
+			registry.register(flowingSpriteId);
+		});
+		var fluidId = Registry.FLUID.getKey(still);
+		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
+		TextureAtlasSprite[] fluidSprites = new TextureAtlasSprite[2];
 
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES)
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
 				.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 					@Override
-					public void reload(ResourceManager manager) {
-						var atlas = MinecraftClient.getInstance()
-								.getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+					public void onResourceManagerReload(ResourceManager manager) {
+						var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 						fluidSprites[0] = atlas.apply(stillSpriteId);
 						fluidSprites[1] = atlas.apply(flowingSpriteId);
 					}
 
 					@Override
-					public Identifier getFabricId() {
+					public ResourceLocation getFabricId() {
 						return listenerId;
 					}
 				});
@@ -73,7 +71,8 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 		// rendering
 		var renderHandler = new FluidRenderHandler() {
 			@Override
-			public Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+			public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos,
+					FluidState state) {
 				return fluidSprites;
 			}
 		};

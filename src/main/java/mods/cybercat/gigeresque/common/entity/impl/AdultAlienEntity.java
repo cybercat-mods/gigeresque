@@ -21,66 +21,67 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.AquaticMoveControl;
-import net.minecraft.entity.ai.control.LookControl;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.control.YawAdjustingLookControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.SwimAroundGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.WardenEntity;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 
 public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
 
-	protected static final TrackedData<Float> GROWTH = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.FLOAT);
-	protected static final TrackedData<Boolean> IS_HISSING = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	protected static final TrackedData<Float> STATIS_TIMER = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.FLOAT);
-	protected static final TrackedData<Boolean> IS_STATIS = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	protected static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	protected static final TrackedData<Boolean> IS_BREAKING = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	protected static final TrackedData<Boolean> IS_EXECUTION = DataTracker.registerData(AdultAlienEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-	private static final TrackedData<AlienAttackType> CURRENT_ATTACK_TYPE = DataTracker
-			.registerData(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, world);
-	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, world);
+	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.FLOAT);
+	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.FLOAT);
+	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
+			.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
+	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final LookControl landLookControl = new LookControl(this);
-	protected final AquaticMoveControl swimMoveControl = new AquaticMoveControl(this, 85, 10, 0.5f, 1.0f, false);
-	protected final YawAdjustingLookControl swimLookControl = new YawAdjustingLookControl(this, 10);
-	public static final Predicate<BlockState> NEST = state -> state.isOf(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
+			false);
+	protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
+	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
 	protected boolean isSearching = false;
@@ -88,83 +89,83 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected long searchingCooldown = 0L;
 	protected int attackProgress = 0;
 
-	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull World world) {
+	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
-		stepHeight = 1.5f;
+		maxUpStep = 1.5f;
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		setPathfindingPenalty(PathNodeType.WATER, 0.0f);
+		setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
 	}
 
 	public float getStatisTimer() {
-		return dataTracker.get(STATIS_TIMER);
+		return entityData.get(STATIS_TIMER);
 	}
 
 	public void setStatisTimer(float timer) {
-		dataTracker.set(STATIS_TIMER, timer);
+		entityData.set(STATIS_TIMER, timer);
 	}
 
 	public boolean isStatis() {
-		return dataTracker.get(IS_STATIS);
+		return entityData.get(IS_STATIS);
 	}
 
 	public void setIsStatis(boolean isExecuting) {
-		dataTracker.set(IS_STATIS, isExecuting);
+		entityData.set(IS_STATIS, isExecuting);
 	}
 
 	public boolean isExecuting() {
-		return dataTracker.get(IS_EXECUTION);
+		return entityData.get(IS_EXECUTION);
 	}
 
 	public void setIsExecuting(boolean isExecuting) {
-		dataTracker.set(IS_EXECUTION, isExecuting);
+		entityData.set(IS_EXECUTION, isExecuting);
 	}
 
 	public boolean isBreaking() {
-		return dataTracker.get(IS_BREAKING);
+		return entityData.get(IS_BREAKING);
 	}
 
 	public void setIsBreaking(boolean isBreaking) {
-		dataTracker.set(IS_BREAKING, isBreaking);
+		entityData.set(IS_BREAKING, isBreaking);
 	}
 
 	public boolean isHissing() {
-		return dataTracker.get(IS_HISSING);
+		return entityData.get(IS_HISSING);
 	}
 
 	public void setIsHissing(boolean isHissing) {
-		dataTracker.set(IS_HISSING, isHissing);
+		entityData.set(IS_HISSING, isHissing);
 	}
 
 	public boolean isCrawling() {
-		return dataTracker.get(IS_CLIMBING);
+		return entityData.get(IS_CLIMBING);
 	}
 
 	public void setIsCrawling(boolean isHissing) {
-		dataTracker.set(IS_CLIMBING, isHissing);
+		entityData.set(IS_CLIMBING, isHissing);
 	}
 
 	public float getGrowth() {
-		return dataTracker.get(GROWTH);
+		return entityData.get(GROWTH);
 	}
 
 	public void setGrowth(float growth) {
-		dataTracker.set(GROWTH, growth);
+		entityData.set(GROWTH, growth);
 	}
 
 	@Override
-	public void travel(Vec3d movementInput) {
-		this.navigation = (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.submergedInWater || this.isTouchingWater()) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.submergedInWater || this.isTouchingWater()) ? swimLookControl : landLookControl;
+	public void travel(Vec3 movementInput) {
+		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
-		if (canMoveVoluntarily() && this.isTouchingWater()) {
-			updateVelocity(getMovementSpeed(), movementInput);
-			move(MovementType.SELF, getVelocity());
-			setVelocity(getVelocity().multiply(0.9));
+		if (isEffectiveAi() && this.isInWater()) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.9));
 			if (getTarget() == null) {
-				setVelocity(getVelocity().add(0.0, -0.005, 0.0));
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 			}
 		} else {
 			super.travel(movementInput);
@@ -172,39 +173,39 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public boolean canBreatheInWater() {
+	public boolean canBreatheUnderwater() {
 		return true;
 	}
 
 	@Override
-	public boolean isPushedByFluids() {
+	public boolean isPushedByFluid() {
 		return false;
 	}
 
 	protected AlienAttackType getCurrentAttackType() {
-		return dataTracker.get(CURRENT_ATTACK_TYPE);
+		return entityData.get(CURRENT_ATTACK_TYPE);
 	}
 
 	protected void setCurrentAttackType(AlienAttackType value) {
-		dataTracker.set(CURRENT_ATTACK_TYPE, value);
+		entityData.set(CURRENT_ATTACK_TYPE, value);
 	}
 
 	@Override
-	public void initDataTracker() {
-		super.initDataTracker();
-		dataTracker.startTracking(GROWTH, 0.0f);
-		dataTracker.startTracking(STATIS_TIMER, 0.0f);
-		dataTracker.startTracking(IS_HISSING, false);
-		dataTracker.startTracking(IS_CLIMBING, false);
-		dataTracker.startTracking(IS_BREAKING, false);
-		dataTracker.startTracking(IS_EXECUTION, false);
-		dataTracker.startTracking(IS_STATIS, false);
-		dataTracker.startTracking(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
+	public void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(GROWTH, 0.0f);
+		entityData.define(STATIS_TIMER, 0.0f);
+		entityData.define(IS_HISSING, false);
+		entityData.define(IS_CLIMBING, false);
+		entityData.define(IS_BREAKING, false);
+		entityData.define(IS_EXECUTION, false);
+		entityData.define(IS_STATIS, false);
+		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound nbt) {
-		super.writeCustomDataToNbt(nbt);
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
 		nbt.putFloat("growth", getGrowth());
 		nbt.putFloat("getStatisTimer", getStatisTimer());
 		nbt.putBoolean("isHissing", isHissing());
@@ -215,8 +216,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound nbt) {
-		super.readCustomDataFromNbt(nbt);
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
 		if (nbt.contains("getStatisTimer")) {
 			setGrowth(nbt.getFloat("getStatisTimer"));
 		}
@@ -241,42 +242,42 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public int computeFallDamage(float fallDistance, float damageMultiplier) {
+	public int calculateFallDamage(float fallDistance, float damageMultiplier) {
 		if (fallDistance <= 15)
 			return 0;
-		return super.computeFallDamage(fallDistance, damageMultiplier);
+		return super.calculateFallDamage(fallDistance, damageMultiplier);
 	}
 
 	@Override
-	public int getSafeFallDistance() {
+	public int getMaxFallDistance() {
 		return 9;
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason,
-			EntityData entityData, NbtCompound entityNbt) {
-		if (spawnReason != SpawnReason.NATURAL) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason,
+			SpawnGroupData entityData, CompoundTag entityNbt) {
+		if (spawnReason != MobSpawnType.NATURAL) {
 			setGrowth(getMaxGrowth());
 		}
-		return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+		return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 
-		if (!world.isClient && this.isAlive()) {
+		if (!level.isClientSide && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
 
-		if (!world.isClient && this.hasPassengers()) {
-			this.setAttacking(false);
+		if (!level.isClientSide && this.isVehicle()) {
+			this.setAggressive(false);
 		}
 
 		// Statis Logic
 
-		var velocityLength = this.getVelocity().horizontalLength();
-		if ((velocityLength == 0 && !this.hasPassengers() && !this.isSearching && !this.isHissing())) {
+		var velocityLength = this.getDeltaMovement().horizontalDistance();
+		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
@@ -289,8 +290,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		// Hissing Logic
 
-		if (!world.isClient
-				&& (!this.isSearching && !this.hasPassengers() && this.isAlive() && this.isStatis() == false)) {
+		if (!level.isClientSide
+				&& (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -305,8 +306,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		// Searching Logic
 
-		if (world.isClient && (velocityLength == 0 && this.getVelocity().horizontalLength() == 0.0
-				&& !this.isAttacking() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+		if (level.isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0
+				&& !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -328,7 +329,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		var multiplier = 1.0f;
 		if (source.isFire()) {
 			multiplier = 2.0f;
@@ -338,34 +339,34 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 		var isolationModeMultiplier = GigeresqueConfig.isolationMode ? 0.05f : 1.0f;
 
-		return super.damage(source, amount * multiplier * isolationModeMultiplier);
+		return super.hurt(source, amount * multiplier * isolationModeMultiplier);
 	}
 
 	@Override
-	public boolean onKilledOther(ServerWorld world, LivingEntity other) {
-		if (!world.isClient)
+	public boolean wasKilled(ServerLevel world, LivingEntity other) {
+		if (!level.isClientSide)
 			this.heal(1.0833f);
-		return super.onKilledOther(world, other);
+		return super.wasKilled(world, other);
 	}
 
 	@Override
-	public boolean isClimbing() {
+	public boolean onClimbable() {
 		setIsCrawling(this.horizontalCollision && this.getTarget() != null);
-		return this.horizontalCollision && this.getTarget() != null && !this.hasPassengers();
+		return this.horizontalCollision && this.getTarget() != null && !this.isVehicle();
 	}
 
 	@Override
-	protected void swimUpward(TagKey<Fluid> fluid) {
-		super.swimUpward(fluid);
+	protected void jumpInLiquid(TagKey<Fluid> fluid) {
+		super.jumpInLiquid(fluid);
 	}
 
 	@Override
-	public EntityNavigation createNavigation(World world) {
-		return (this.isSubmergedInWater() || this.isTouchingWater()) ? swimNavigation : landNavigation;
+	public PathNavigation createNavigation(Level world) {
+		return (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
 	}
 
 	public boolean isCarryingEggmorphableTarget() {
-		return !getPassengerList().isEmpty() && EntityUtils.isEggmorphable(this.getFirstPassenger());
+		return !getPassengers().isEmpty() && EntityUtils.isEggmorphable(this.getFirstPassenger());
 	}
 
 	@Override
@@ -402,26 +403,25 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(5, new FleeFireGoal<AdultAlienEntity>(this));
-		this.goalSelector.add(5, new KillLightsGoal(this));
-		this.goalSelector.add(1, new SwimAroundGoal(this, 1.0D, 10));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.15D));
-		this.targetSelector.add(2,
-				new ActiveTargetGoal<>(this, LivingEntity.class, true,
-						entity -> !((entity instanceof AlienEntity || entity instanceof WardenEntity
-								|| entity instanceof ArmorStandEntity || entity instanceof BatEntity)
-								|| (entity.getVehicle() != null && entity.getVehicle().streamSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getBlockStateAtPos().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& entity.isAlive())));
-		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
+	protected void registerGoals() {
+		this.goalSelector.addGoal(5, new FleeFireGoal<AdultAlienEntity>(this));
+		this.goalSelector.addGoal(5, new KillLightsGoal(this));
+		this.goalSelector.addGoal(1, new RandomSwimmingGoal(this, 1.0D, 10));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.15D));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
+				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand
+						|| entity instanceof Bat)
+						|| (entity.getVehicle() != null
+								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+								&& entity.isAlive())));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[0]).setAlertOthers());
 	}
 
 	@Override
 	public int tickTimer() {
-		return age;
+		return tickCount;
 	}
 }

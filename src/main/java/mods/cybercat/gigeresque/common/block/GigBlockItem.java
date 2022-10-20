@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -14,7 +14,7 @@ public class GigBlockItem extends BlockItem implements IAnimatable {
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 
-	public GigBlockItem(Block p_i48527_1_, Settings p_i48527_2_) {
+	public GigBlockItem(Block p_i48527_1_, Properties p_i48527_2_) {
 		super(p_i48527_1_, p_i48527_2_);
 	}
 
