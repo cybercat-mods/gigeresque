@@ -5,7 +5,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public class CrawlerNavigation extends GroundPathNavigation {
 	private BlockPos targetPos;
@@ -34,7 +37,21 @@ public class CrawlerNavigation extends GroundPathNavigation {
 			return true;
 		}
 	}
+	
+	@Override
+	protected PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new WalkNodeEvaluator();
+        this.nodeEvaluator.setCanPassDoors(true);
+        return new PathFinder(this.nodeEvaluator, maxVisitedNodes){
 
+            @Override
+            protected float distance(Node first, Node second) {
+                return first.distanceToXZ(second);
+            }
+        };
+	}
+
+	@Override
 	public void tick() {
 		if (!this.isDone()) {
 			super.tick();
@@ -48,6 +65,7 @@ public class CrawlerNavigation extends GroundPathNavigation {
 												Math.max((double) this.mob.getBbWidth(), 1.0D)))) {
 					this.mob.getMoveControl().setWantedPosition((double) this.targetPos.getX(), (double) this.targetPos.getY(),
 							(double) this.targetPos.getZ(), this.speedModifier);
+					this.mob.xRotO = this.targetPos.getX();
 				} else {
 					this.targetPos = null;
 				}
