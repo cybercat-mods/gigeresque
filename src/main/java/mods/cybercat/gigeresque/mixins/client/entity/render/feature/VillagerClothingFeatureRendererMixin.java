@@ -38,13 +38,15 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
 	@Shadow
 	protected abstract ResourceLocation getResourceLocation(String keyType, ResourceLocation keyId);
 
-	@Inject(method = "render", at = @At("TAIL"))
+	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;" + "Lnet/minecraft/client/renderer"
+			+ "/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("TAIL"))
 	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity,
 			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
 			M entityModel = this.getParentModel();
 			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel,
-					getResourceLocation("type", Registry.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
+					getResourceLocation("type",
+							Registry.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
 					matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
 		}
 	}
