@@ -49,7 +49,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public class ClassicAlienEntity extends AdultAlienEntity {
 
 	private AnimationFactory animationFactory = new AnimationFactory(this);
-	private int holdingCounter = 0;
 
 	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
@@ -162,6 +161,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	public boolean doHurtTarget(Entity target) {
 		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
 		case TAIL -> 3.0f;
+		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
 		};
 
@@ -174,6 +174,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
 			}
 			case TAIL -> {
 				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
@@ -182,13 +184,32 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
 				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+			case EXECUTION -> {
+				double yOffset = this.getEyeY() - ((target.getEyeY() - target.blockPosition().getY()) / 2.0);
+				double e = target.getX()
+						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+				double f = target.getZ()
+						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+				holdingCounter++;
+				if (holdingCounter == 760) {
+					this.getNavigation().stop();
+					this.setIsExecuting(true);
+					GeckoLib.LOGGER.debug(holdingCounter);
+					this.setAggressive(false);
+				}
+				if (holdingCounter == 850) {
+					target.hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					target.level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					this.setIsExecuting(false);
+					holdingCounter = 0;
+				}
+				return super.doHurtTarget(target);
 			}
 			}
 		}
-
-		target.hurt(DamageSource.mobAttack(this), additionalDamage);
-		target.setInvisible(false);
-
 		return super.doHurtTarget(target);
 	}
 
@@ -258,7 +279,11 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		} else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_carry", false));
+			if (this.isVehicle()) {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_carry", false));
+			} else {
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_grab", false));
+			}
 			return PlayState.CONTINUE;
 		} else {
 			if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()

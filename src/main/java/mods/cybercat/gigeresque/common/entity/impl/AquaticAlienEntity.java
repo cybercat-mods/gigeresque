@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
@@ -12,6 +13,7 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -162,6 +165,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	public boolean doHurtTarget(Entity target) {
 		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
 		case TAIL -> 3.0f;
+		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
 		};
 
@@ -182,6 +186,27 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
 				}
+			}
+			case EXECUTION -> {
+				double yOffset = this.getEyeY() - ((target.getEyeY() - target.blockPosition().getY()) / 2.0);
+				double e = target.getX()
+						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+				double f = target.getZ()
+						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+				holdingCounter++;
+				if (holdingCounter == 760) {
+					this.getNavigation().stop();
+					this.setIsExecuting(true);
+					GeckoLib.LOGGER.debug(holdingCounter);
+					this.setAggressive(false);
+				}
+				if (holdingCounter == 850) {
+					target.hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					target.level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					this.setIsExecuting(false);
+					holdingCounter = 0;
+				}
+				return super.doHurtTarget(target);
 			}
 			}
 		}

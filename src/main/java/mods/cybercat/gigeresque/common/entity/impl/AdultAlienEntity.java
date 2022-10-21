@@ -91,6 +91,7 @@ public abstract class AdultAlienEntity extends AlienEntity
 	protected long searchingProgress = 0L;
 	protected long searchingCooldown = 0L;
 	protected int attackProgress = 0;
+	public int holdingCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
