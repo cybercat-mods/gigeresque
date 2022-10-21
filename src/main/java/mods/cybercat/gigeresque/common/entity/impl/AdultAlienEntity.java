@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import static java.lang.Math.max;
 
-import java.util.function.Predicate;
-
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
@@ -21,21 +19,24 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
@@ -49,14 +50,17 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 
-public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
+public abstract class AdultAlienEntity extends AlienEntity
+		implements IAnimatable, Growable, IAnimationTickable, VibrationListener.VibrationListenerConfig {
 
 	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
 			EntityDataSerializers.FLOAT);
@@ -77,11 +81,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	protected final MoveControl landMoveControl = new MoveControl(this);
-	protected final LookControl landLookControl = new LookControl(this);
+	protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
 	protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
 			false);
 	protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
-	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
 	protected boolean isSearching = false;
@@ -201,6 +204,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_STATIS, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
+		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
 
 	@Override
@@ -254,8 +258,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason,
-			SpawnGroupData entityData, CompoundTag entityNbt) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty,
+			MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
 		if (spawnReason != MobSpawnType.NATURAL) {
 			setGrowth(getMaxGrowth());
 		}
@@ -265,7 +269,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (!level.isClientSide && this.isAlive()) {
 			grow(this, 1 * getGrowthMultiplier());
 		}
@@ -420,8 +423,25 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[0]).setAlertOthers());
 	}
 
+	public void grabTarget(Entity entity) {
+		if (entity == this.getTarget() && !entity.hasPassenger(this)
+				&& !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
+			entity.startRiding(this, true);
+			if (entity instanceof ServerPlayer) {
+				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
+			}
+		}
+	}
+
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+	
+	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
+			Entity var6, float var7) {
+		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
+		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.3F);
 	}
 }

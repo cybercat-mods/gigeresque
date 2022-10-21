@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -20,8 +19,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -103,7 +100,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.isCrawling() || this.wasEyeInWater) {
+			if (this.isCrawling() || this.isInWater()) {
 				setCurrentAttackType(switch (random.nextInt(5)) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
 				case 1 -> AlienAttackType.CLAW_RIGHT;
@@ -204,16 +201,6 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, LivingEntity.class, 2.0F));
 	}
 
-	public void grabTarget(Entity entity) {
-		if (entity == this.getTarget() && !entity.hasPassenger(this)
-				&& !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
-			entity.startRiding(this, true);
-			if (entity instanceof ServerPlayer) {
-				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
-			}
-		}
-	}
-
 	@Override
 	public void positionRider(Entity passenger) {
 		super.positionRider(passenger);
@@ -239,13 +226,13 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& this.isStatis() == false) {
-			if (!this.wasEyeInWater && this.isExecuting() == false) {
+			if (!this.isInWater() && this.isExecuting() == false) {
 				if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
 					return PlayState.CONTINUE;
 				} else if (!this.isCrawling()) {
 					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
-					event.getController().setAnimationSpeed(1);
+					event.getController().setAnimationSpeed(animationSpeedOld * 4);
 					return PlayState.CONTINUE;
 				}
 			} else {

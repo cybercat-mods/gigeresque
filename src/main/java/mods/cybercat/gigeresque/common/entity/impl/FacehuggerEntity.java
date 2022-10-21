@@ -21,6 +21,7 @@ import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -50,6 +51,11 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.DynamicGameEventListener;
+import net.minecraft.world.level.gameevent.EntityPositionSource;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -92,6 +98,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
+		this.dynamicGameEventListener = new DynamicGameEventListener<VibrationListener>(
+				new VibrationListener(new EntityPositionSource(this, (float)this.getEyeHeight() + 1), 48, this, null, 0.0f, 0));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -416,7 +424,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
 		this.goalSelector.addGoal(5, new FleeFireGoal<FacehuggerEntity>(this));
-		this.goalSelector.addGoal(5, new FacehugGoal(this, 0.9D));
+		this.goalSelector.addGoal(5, new FacehugGoal(this, 1.3D));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 0));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.6D));
 	}
@@ -502,5 +510,12 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+	
+	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
+			Entity var6, float var7) {
+		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
+		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
 	}
 }

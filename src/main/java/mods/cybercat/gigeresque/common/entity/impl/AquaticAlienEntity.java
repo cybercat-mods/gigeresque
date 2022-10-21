@@ -149,11 +149,11 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
 			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT;
-			case 1 -> AlienAttackType.CLAW_RIGHT;
-			case 2 -> AlienAttackType.TAIL_LEFT;
-			case 3 -> AlienAttackType.TAIL_RIGHT;
-			default -> AlienAttackType.CLAW_LEFT;
+			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
+			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
+			case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
+			case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
+			default -> AlienAttackType.CLAW_LEFT_MOVING;
 			});
 		}
 	}
