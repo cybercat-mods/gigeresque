@@ -18,7 +18,7 @@ import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
 public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
 
-	private ItemStack heldItem = new ItemStack(Items.EMERALD);;
+	private ItemStack heldItem = new ItemStack(Items.NETHERITE_SCRAP);;
 	private MultiBufferSource rtb;
 	private ResourceLocation whTexture;
 
@@ -53,9 +53,8 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
 			stack.mulPose(Vector3f.ZP.rotationDegrees(0));
 			stack.translate(0.0D, 2.0D, -1.6);
 			stack.scale(1.0f, 1.0f, 1.0f);
-			Minecraft.getInstance().getItemRenderer().renderStatic(
-					this.animatable.getItem(0) != null ? this.animatable.getItem(0) : heldItem,
-					TransformType.THIRD_PERSON_RIGHT_HAND, packedLightIn, packedOverlayIn, stack, this.rtb, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(heldItem, TransformType.THIRD_PERSON_RIGHT_HAND,
+					packedLightIn, packedOverlayIn, stack, rtb, packedOverlayIn);
 			stack.popPose();
 			bufferIn = rtb.getBuffer(RenderType.entityTranslucent(whTexture));
 		}
