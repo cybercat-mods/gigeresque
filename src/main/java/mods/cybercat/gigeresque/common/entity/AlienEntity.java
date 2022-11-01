@@ -20,6 +20,8 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigVibrationListener;
+import mods.cybercat.gigeresque.common.util.GigVibrationListener.GigVibrationListenerConfig;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -29,8 +31,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.GameEventTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -54,10 +54,9 @@ import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
-public abstract class AlienEntity extends Monster implements VibrationListener.VibrationListenerConfig {
+public abstract class AlienEntity extends Monster implements GigVibrationListenerConfig {
 
 	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
 			EntityDataSerializers.BOOLEAN);
@@ -65,7 +64,7 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 			.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
-	public DynamicGameEventListener<VibrationListener> dynamicGameEventListener;
+	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	private AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 
 	@Override
@@ -99,7 +98,7 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		VibrationListener.codec(this).encodeStart(NbtOps.INSTANCE, this.dynamicGameEventListener.getListener())
+		GigVibrationListener.codec(this).encodeStart(NbtOps.INSTANCE, this.dynamicGameEventListener.getListener())
 				.resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
 		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement)
 				.resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
@@ -109,9 +108,9 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("listener", 10)) {
-			VibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
+			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
 					.resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener
-							.updateListener((VibrationListener) vibrationListener, this.level));
+							.updateListener((GigVibrationListener) vibrationListener, this.level));
 		}
 		if (compound.contains("anger")) {
 			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger")))
@@ -129,8 +128,8 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 		if (navigation != null) {
 			navigation.setCanFloat(true);
 		}
-		this.dynamicGameEventListener = new DynamicGameEventListener<VibrationListener>(
-				new VibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this, null, 0.0f, 0));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
+				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this, null, 0.0f, 0));
 	}
 
 	public int getClientAngerLevel() {
@@ -296,11 +295,6 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 	}
 
 	@Override
-	public TagKey<GameEvent> getListenableEvents() {
-		return GameEventTags.VIBRATIONS;
-	}
-
-	@Override
 	public boolean canTriggerAvoidVibration() {
 		return true;
 	}
@@ -318,6 +312,8 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
 			return false;
 		if (((Host) livingEntity).hasParasite())
+			return false;
+		if (this.isVehicle())
 			return false;
 		if (this.isAlliedTo(entity))
 			return false;
@@ -366,6 +362,9 @@ public abstract class AlienEntity extends Monster implements VibrationListener.V
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
 		if (this.isDeadOrDying()) {
+			return;
+		}
+		if (this.isVehicle()) {
 			return;
 		}
 	}

@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -55,7 +56,6 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -98,8 +98,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		this.dynamicGameEventListener = new DynamicGameEventListener<VibrationListener>(
-				new VibrationListener(new EntityPositionSource(this, (float)this.getEyeHeight() + 1), 48, this, null, 0.0f, 0));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(
+				new EntityPositionSource(this, (float) this.getEyeHeight() + 1), 48, this, null, 0.0f, 0));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -511,7 +511,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	public int tickTimer() {
 		return tickCount;
 	}
-	
+
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {

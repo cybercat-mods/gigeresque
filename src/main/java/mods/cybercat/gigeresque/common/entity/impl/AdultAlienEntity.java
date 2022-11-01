@@ -52,15 +52,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 
-public abstract class AdultAlienEntity extends AlienEntity
-		implements IAnimatable, Growable, IAnimationTickable, VibrationListener.VibrationListenerConfig {
+public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
 
 	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
 			EntityDataSerializers.FLOAT);
@@ -438,11 +436,12 @@ public abstract class AdultAlienEntity extends AlienEntity
 	public int tickTimer() {
 		return tickCount;
 	}
-	
+
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.3F);
+		if (!this.isVehicle() && this.getDeltaMovement().horizontalDistance() <= 0.000000001)
+			this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.3F);
 	}
 }
