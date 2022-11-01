@@ -40,8 +40,8 @@
 	"depends": {
 		"fabricloader": ">=0.14.8",
 		"fabric": "*",
-		"minecraft": ">=1.19.1",
-		"geckolib3": ">=3.1.23",
+		"minecraft": ">=1.19.2",
+		"geckolib3": ">=3.1.33",
 		"java": ">=17"
 	},
 	"accessWidener": "gigeresque.accesswidener"
