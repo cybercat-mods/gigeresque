@@ -10,6 +10,7 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
+import mods.cybercat.gigeresque.common.entity.ai.goal.AlienWalkGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -41,7 +42,6 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -411,7 +411,7 @@ public abstract class AdultAlienEntity extends AlienEntity
 		this.goalSelector.addGoal(5, new FleeFireGoal<AdultAlienEntity>(this));
 		this.goalSelector.addGoal(5, new KillLightsGoal(this));
 		this.goalSelector.addGoal(1, new RandomSwimmingGoal(this, 1.0D, 10));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.15D));
+		this.goalSelector.addGoal(5, new AlienWalkGoal(this, 1.15D, 120, false));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
 				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand
 						|| entity instanceof Bat)
