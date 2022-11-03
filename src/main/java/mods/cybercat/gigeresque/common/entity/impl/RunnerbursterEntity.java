@@ -32,14 +32,18 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 
+	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
 		super(type, level);
 	}
@@ -52,8 +56,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
 				.add(Attributes.ATTACK_DAMAGE, 5.0).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
-
-	private AnimationFactory animationFactory = new AnimationFactory(this);
 
 	@Override
 	protected int getAcidDiameter() {
@@ -131,25 +133,25 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
 			if (animationSpeedOld >= 0.35F) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		} else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (this.entityData.get(EAT) == true))
 				&& !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		} else {
 			if (this.entityData.get(BIRTHED) == true && this.tickCount < 60 && this.entityData.get(EAT) == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		}

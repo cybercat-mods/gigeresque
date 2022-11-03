@@ -25,15 +25,17 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class AlienStorageEntity extends RandomizableContainerBlockEntity implements IAnimatable {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(36, ItemStack.EMPTY);
-	private final AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
@@ -156,14 +158,14 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (getChestState().equals(StorageStates.CLOSING)) {
 			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("closing", false).addAnimation("closed", true));
+					.setAnimation(new AnimationBuilder().addAnimation("closing", EDefaultLoopTypes.PLAY_ONCE).addAnimation("closed", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		} else if (getChestState().equals(StorageStates.OPENED)) {
 			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("opening", false).addAnimation("opened"));
+					.setAnimation(new AnimationBuilder().addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("opened", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

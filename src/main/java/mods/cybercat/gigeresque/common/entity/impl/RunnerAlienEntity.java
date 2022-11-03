@@ -16,15 +16,17 @@ import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class RunnerAlienEntity extends AdultAlienEntity {
 
-	private AnimationFactory animationFactory = new AnimationFactory(this);
+	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
 
 	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
 		super(type, world);
@@ -91,30 +93,30 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& this.isStatis() == false) {
 			if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP)
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (this.isExecuting() == false && animationSpeedOld < 0.35F
 					|| (!this.isCrawling() && !this.onGround)) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP)
+						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			}
 		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		} else {
 			if (isSearching && !this.isAggressive() && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == true || this.isNoAi() && !isDead) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		}
@@ -124,7 +126,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
 			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
+					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
@@ -134,7 +136,7 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (this.entityData.get(IS_HISSING) == true && !isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 

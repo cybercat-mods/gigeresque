@@ -13,14 +13,16 @@ import net.minecraft.world.item.Item;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class EngiArmorItem extends ArmorItem implements IAnimatable {
 
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public EngiArmorItem(ArmorMaterial materialIn, EquipmentSlot slot) {
 		super(materialIn, slot, new Item.Properties().tab(GigItemGroups.GENERAL).stacksTo(1));
@@ -41,7 +43,7 @@ public class EngiArmorItem extends ArmorItem implements IAnimatable {
 		// Always loop the animation but later on in this method we'll decide whether or
 		// not to actually play it
 		event.getController()
-				.setAnimation(new AnimationBuilder().addAnimation("todo", false).addAnimation("todo_closed", true));
+				.setAnimation(new AnimationBuilder().addAnimation("todo", EDefaultLoopTypes.PLAY_ONCE).addAnimation("todo_closed", EDefaultLoopTypes.LOOP));
 
 		// If the living entity is an armorstand just play the animation nonstop
 		if (livingEntity instanceof ArmorStand) {

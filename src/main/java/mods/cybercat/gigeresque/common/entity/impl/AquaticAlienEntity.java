@@ -40,15 +40,17 @@ import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class AquaticAlienEntity extends AdultAlienEntity {
 
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
+	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
 	private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	private final MoveControl landMoveControl = new MoveControl(this);
@@ -225,36 +227,36 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (this.isUnderWater() && this.wasTouchingWater) {
 			if (this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (!this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (isDead) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		} else {
 			if (this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_crawl", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_crawl", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (!this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (isSearching && !this.isAggressive() && !isDead && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", false));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (isDead) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == true || this.isNoAi()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land2", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land2", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 			return PlayState.CONTINUE;
@@ -264,11 +266,11 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
 			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), true));
+					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(IS_BREAKING) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
@@ -277,7 +279,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
 		if (this.entityData.get(IS_HISSING) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 

@@ -28,11 +28,12 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class IdolStorageEntity extends RandomizableContainerBlockEntity implements IAnimatable {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
-	private final AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
@@ -145,8 +146,6 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 	}
 
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		// event.getController().setAnimation(new
-		// AnimationBuilder().addAnimation("closed", true));
 		return PlayState.CONTINUE;
 	}
 

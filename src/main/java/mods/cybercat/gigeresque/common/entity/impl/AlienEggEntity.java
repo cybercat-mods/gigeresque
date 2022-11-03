@@ -37,10 +37,12 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
 
@@ -52,7 +54,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			EntityDataSerializers.BOOLEAN);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
-	private final AnimationFactory animationFactory = new AnimationFactory(this);
+	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
@@ -293,25 +295,25 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (isHatched() && !this.isDeadOrDying()) {
 			if (!hasFacehugger()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
 		if (this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
 		if (isHatching() && !this.isDeadOrDying()) {
 			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("hatch", false).addAnimation("hatched"));
+					.setAnimation(new AnimationBuilder().addAnimation("hatch", EDefaultLoopTypes.PLAY_ONCE).addAnimation("hatched", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

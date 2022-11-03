@@ -25,6 +25,7 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -117,37 +118,37 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
 			if (this.isUnderWater()) {
 				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				}
 			} else {
 				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				}
 			}
 		} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		} else {
 			if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", true));
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else {
 				if (this.isUnderWater()) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", true));
+					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				}
 			}
