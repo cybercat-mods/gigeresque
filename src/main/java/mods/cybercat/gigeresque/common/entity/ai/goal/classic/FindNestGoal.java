@@ -61,13 +61,17 @@ public class FindNestGoal extends MoveToBlockGoal {
 		this.mob.setAggressive(true);
 		if (this.isReachedTarget() && blockPos2 != null && mob.isVehicle()) {
 			this.nextStartTick++;
-			mob.getFirstPassenger().setInvisible(false);
-			if (this.nextStartTick > 10) {
-				mob.getFirstPassenger().setPos(mob.getX(), mob.getY()+0.2, mob.getZ());
+			if (mob.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 				mob.getFirstPassenger().removeVehicle();
+				mob.getFirstPassenger().setPos(mob.getX(), mob.getY(), mob.getZ());
 			}
-			if (this.nextStartTick >= 13)
+			if (this.nextStartTick >= 13) {
+				if (mob.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+					mob.getFirstPassenger().removeVehicle();
+					mob.getFirstPassenger().setPos(mob.getX(), mob.getY(), mob.getZ());
+				}
 				this.nextStartTick = 0;
+			}
 		}
 	}
 

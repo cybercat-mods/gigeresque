@@ -125,6 +125,13 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			this.setPose(Pose.STANDING);
 		}
 
+		if (this.getFirstPassenger() != null) {
+			if (this.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+				this.getFirstPassenger().setPos(this.getX(), this.getY()+0.2, this.getZ());
+				this.getFirstPassenger().removeVehicle();
+			}
+		}
+
 		if (this.getTarget() != null) {
 			Stream<BlockState> list = this.level
 					.getBlockStatesIfLoaded(this.getBoundingBox().inflate(18.0, 18.0, 18.0));
