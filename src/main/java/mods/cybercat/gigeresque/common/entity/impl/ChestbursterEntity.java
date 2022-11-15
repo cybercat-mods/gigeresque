@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -57,12 +59,15 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 		return itemStack.is(GigTags.BUSTER_FOOD) && item.isAlive() && !item.hasPickUpDelay();
 	};
 	public int bloodRendering = 0;
+	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
 
 	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
 	protected String hostId = null;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
+
+		navigation = landNavigation;
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

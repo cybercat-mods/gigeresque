@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.impl;
 
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.sounds.SoundSource;
@@ -33,7 +34,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
 
-	private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level);
+	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
