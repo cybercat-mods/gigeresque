@@ -21,20 +21,16 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.AABB;
 
 public class ClassicAlienMeleeAttackGoal extends Goal {
 	protected final ClassicAlienEntity mob;
 	private final double speed;
 	private final boolean pauseWhenMobIdle;
 	private Path path;
-	private double targetX;
-	private double targetY;
-	private double targetZ;
-	private int updateCountdownTicks;
 	private int cooldown;
 	private long lastUpdateTime;
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
-	private int meleeCounter = 0;
 
 	public ClassicAlienMeleeAttackGoal(ClassicAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
 		this.mob = mob;
@@ -56,7 +52,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			return false;
 		}
 		Stream<BlockState> list2 = livingEntity.level
-				.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
+				.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(1.0, 1.0, 1.0));
 		if (list2.anyMatch(NEST)) {
 			return false;
 		}
@@ -114,7 +110,7 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 			return false;
 		}
 		Stream<BlockState> list2 = livingEntity.level
-				.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
+				.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(1.0, 1.0, 1.0));
 		if (list2.anyMatch(NEST)) {
 			return false;
 		}
@@ -169,10 +165,10 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 
 	@Override
 	public void start() {
-		this.mob.getNavigation().moveTo(this.path, this.speed);
+		//this.mob.getNavigation().moveTo(this.path, this.speed);
 		this.mob.setAggressive(true);
-		this.updateCountdownTicks = 0;
 		this.cooldown = 0;
+		this.mob.setAttackingState(0);
 		mob.setIsExecuting(false);
 	}
 
@@ -184,58 +180,43 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		}
 		this.mob.setAggressive(false);
 		this.mob.getNavigation().stop();
+		this.mob.setAttackingState(0);
+		this.cooldown = -20;
 		mob.setIsExecuting(false);
-		this.meleeCounter = 0;
 	}
 
 	@Override
 	public boolean requiresUpdateEveryTick() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public void tick() {
-		LivingEntity livingEntity = this.mob.getTarget();
-		if (livingEntity == null) {
-			return;
-		}
-		this.mob.getLookControl().setLookAt(livingEntity, 30.0f, 30.0f);
-		double d = this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		double d1 = this.getSquaredMaxAttackDistance(livingEntity);
-		if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity))
-				&& this.updateCountdownTicks <= 0
-				&& (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
-						|| livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0
-						|| this.mob.getRandom().nextFloat() < 0.05f)) {
-			this.targetX = livingEntity.getX();
-			this.targetY = livingEntity.getY();
-			this.targetZ = livingEntity.getZ();
-			this.updateCountdownTicks = 4 + this.mob.getRandom().nextInt(7);
-			if (d > 1024.0) {
-				this.updateCountdownTicks += 10;
-			} else if (d > 256.0) {
-				this.updateCountdownTicks += 5;
-			}
-			if (!this.mob.getNavigation().moveTo(livingEntity, this.speed)) {
-				this.updateCountdownTicks += 15;
-			}
-			this.updateCountdownTicks = this.adjustedTickDelay(this.updateCountdownTicks);
-		}
-		this.cooldown = Math.max(this.cooldown - 1, 0);
-		meleeCounter++;
-		if (!this.mob.isVehicle()) {
-			if (meleeCounter == 1) {
-				if (d <= d1) {
-					this.attack(livingEntity, d);
-				}
-			}
-			if (meleeCounter >= 20) {
-				meleeCounter = 0;
+		LivingEntity livingentity = this.mob.getTarget();
+		if (livingentity != null) {
+			boolean inLineOfSight = this.mob.getSensing().hasLineOfSight(livingentity);
+			this.mob.lookAt(livingentity, 30.0F, 30.0F);
+			final AABB aabb2 = new AABB(this.mob.blockPosition()).inflate(1.5D);
+			if (inLineOfSight) {
+				cooldown++;
+				this.mob.getNavigation().moveTo(livingentity, this.speed);
+				this.mob.getCommandSenderWorld().getEntities(this.mob, aabb2).forEach(e -> {
+					if ((e instanceof LivingEntity) && this.cooldown > 0) {
+						this.attack(livingentity);
+						this.cooldown = -20;
+					} else {
+						this.mob.setAttackingState(0);
+						this.cooldown = -20;
+					}
+				});
+			} else {
+				this.cooldown = -20;
+				this.mob.setAttackingState(0);
 			}
 		}
 	}
 
-	protected void attack(LivingEntity target, double squaredDistance) {
+	protected void attack(LivingEntity target) {
 		Stream<BlockState> list = this.mob.level
 				.getBlockStatesIfLoaded(this.mob.getBoundingBox().inflate(18.0, 18.0, 18.0));
 		Stream<BlockState> list2 = target.level.getBlockStatesIfLoaded(target.getBoundingBox().inflate(2.0, 2.0, 2.0));
@@ -244,10 +225,13 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
 				&& ConfigAccessor.isTargetAlienHost(target)) {
 			this.mob.grabTarget(target);
+			this.mob.setAttackingState(0);
+			this.cooldown = -20;
 		} else {
 			if (!this.mob.isVehicle()) {
-				this.mob.getNavigation().stop();
 				this.mob.doHurtTarget(target);
+				this.cooldown = -20;
+				this.mob.setAttackingState(this.mob.getRandom().nextInt(5));
 				this.mob.swing(InteractionHand.MAIN_HAND);
 			}
 		}

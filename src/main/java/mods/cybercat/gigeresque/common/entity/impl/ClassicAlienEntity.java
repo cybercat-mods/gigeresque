@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -101,8 +103,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.isCrawling() || this.isInWater()) {
-				setCurrentAttackType(switch (random.nextInt(5)) {
+			if (this.isCrawling() || this.isInWater() && this.getDeltaMovement().horizontalDistance() < 0.000001) {
+				setCurrentAttackType(switch (this.getAttckingState()) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
 				case 1 -> AlienAttackType.CLAW_RIGHT;
 				case 2 -> AlienAttackType.TAIL_LEFT;
@@ -110,7 +112,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				default -> AlienAttackType.CLAW_LEFT;
 				});
 			} else {
-				setCurrentAttackType(switch (random.nextInt(5)) {
+				setCurrentAttackType(switch (this.getAttckingState()) {
 				case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
 				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
@@ -150,7 +152,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					GeckoLib.LOGGER.debug(holdingCounter);
 					this.setAggressive(false);
 				}
-				if (holdingCounter == 850) {
+				if (holdingCounter >= 850) {
 					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
 					this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
 							0.0);
@@ -175,10 +177,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		};
 
 		if (target instanceof LivingEntity && !level.isClientSide) {
-			switch (getCurrentAttackType().genericAttackType) {
-			case NONE -> {
-			}
-			case CLAW -> {
+			switch (getAttckingState()) {
+			case 1 -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
@@ -186,7 +186,15 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
-			case TAIL -> {
+			case 2 -> {
+				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
+					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
+				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+			case 3 -> {
 				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
 						.collect(Collectors.toList());
 				if (!armorItems.isEmpty()) {
@@ -196,25 +204,14 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
-			case EXECUTION -> {
-				double yOffset = this.getEyeY() - ((target.getEyeY() - target.blockPosition().getY()) / 2.0);
-				double e = target.getX()
-						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				double f = target.getZ()
-						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				holdingCounter++;
-				if (holdingCounter == 760) {
-					this.getNavigation().stop();
-					this.setIsExecuting(true);
-					GeckoLib.LOGGER.debug(holdingCounter);
-					this.setAggressive(false);
+			case 4 -> {
+				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
+						.collect(Collectors.toList());
+				if (!armorItems.isEmpty()) {
+					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
+					});
 				}
-				if (holdingCounter == 850) {
-					target.hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
-					target.level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
-					this.setIsExecuting(false);
-					holdingCounter = 0;
-				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			}
@@ -236,79 +233,98 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		super.positionRider(passenger);
 		if (passenger instanceof LivingEntity) {
 			LivingEntity mob = (LivingEntity) passenger;
+			SplittableRandom random = new SplittableRandom();
 			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, true, true));
 			float f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
 			float g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
 			passenger.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
-					this.getY() + (double) (this.isExecuting() == true ? 0.75f : 0.15f),
+					this.getY() + (double) (this.isExecuting() == true ? random.nextFloat(0.74F, 0.75f)
+							: random.nextFloat(0.14F, 0.15F)),
 					this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
-//			mob.yBodyRot = this.yBodyRot;
-			mob.xRotO = this.xRotO;
+			mob.yBodyRot = this.yBodyRot;
 		}
 	}
 
 	/*
 	 * ANIMATIONS
 	 */
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
-				&& this.isStatis() == false) {
+		if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false
+				&& !this.swinging) {
 			if (!this.isInWater() && this.isExecuting() == false) {
 				if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP));
+					event.getController()
+							.setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP)
+									.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
+											EDefaultLoopTypes.LOOP));
 					return PlayState.CONTINUE;
 				} else if (!this.isCrawling()) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP));
-					event.getController().setAnimationSpeed(animationSpeedOld * 4);
-					return PlayState.CONTINUE;
-				}
-			} else {
-				if (this.wasEyeInWater && this.isExecuting() == false) {
-					if (this.isAggressive() && !this.isVehicle()) {
-						event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
+					if (this.isVehicle()) {
+						event.getController()
+								.setAnimation(new AnimationBuilder()
+										.addAnimation("walk_carrying", EDefaultLoopTypes.LOOP)
+										.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
+												EDefaultLoopTypes.LOOP));
+						event.getController().setAnimationSpeed(animationSpeedOld * 4);
 						return PlayState.CONTINUE;
 					} else {
-						event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
+						event.getController()
+								.setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP)
+										.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
+												EDefaultLoopTypes.LOOP));
+						event.getController().setAnimationSpeed(animationSpeedOld * 4);
+						return PlayState.CONTINUE;
+					}
+				}
+			} else {
+				if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
+					if (this.isAggressive() && !this.isVehicle()) {
+						event.getController()
+								.setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
+						return PlayState.CONTINUE;
+					} else {
+						event.getController().setAnimation(
+								new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
 						return PlayState.CONTINUE;
 					}
 				}
 			}
-		} else if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
-				&& this.isExecuting() == false) {
-			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
+		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
-		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
+		} else if (isDead && !this.isVehicle()) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		} else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false) {
 			if (this.isVehicle()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_carry", EDefaultLoopTypes.PLAY_ONCE));
+				event.getController().setAnimation(
+						new AnimationBuilder().addAnimation("execution_carry", EDefaultLoopTypes.PLAY_ONCE));
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("execution_grab", EDefaultLoopTypes.PLAY_ONCE));
+				event.getController().setAnimation(
+						new AnimationBuilder().addAnimation("execution_grab", EDefaultLoopTypes.PLAY_ONCE));
 			}
 			return PlayState.CONTINUE;
 		} else {
 			if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
 					&& this.isExecuting() == false && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
 					&& this.isExecuting() == false && this.isStatis() == false && !isDead) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle()) {
-				event.getController().setAnimation(
-						new AnimationBuilder().addAnimation("stasis_enter", EDefaultLoopTypes.PLAY_ONCE).addAnimation("stasis_loop", EDefaultLoopTypes.LOOP));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("stasis_enter", EDefaultLoopTypes.PLAY_ONCE)
+								.addAnimation("stasis_loop", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (!this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		}
@@ -316,14 +332,15 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	}
 
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
-		if (this.entityData.get(IS_BREAKING) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("left_claw", EDefaultLoopTypes.LOOP));
+		if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("left_claw", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
 				&& this.isExecuting() == false) {
-			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation(
+					AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.isVehicle() && this.isExecuting() == false) {
@@ -409,7 +426,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	@Override
 	public void registerControllers(AnimationData data) {
 		AnimationController<ClassicAlienEntity> main = new AnimationController<ClassicAlienEntity>(this, "controller",
-				10f, this::predicate);
+				5f, this::predicate);
 		main.registerSoundListener(this::soundStepListener);
 		data.addAnimationController(main);
 		AnimationController<ClassicAlienEntity> attacking = new AnimationController<ClassicAlienEntity>(this,
