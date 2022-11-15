@@ -42,7 +42,7 @@ public class AlienWalkGoal extends Goal {
 		Vec3 vec3;
 		if (this.mob.isVehicle())
 			return false;
-		if (this.mob.getDeltaMovement().horizontalDistance() <= 0.000000001)
+		if (this.mob.getDeltaMovement().horizontalDistance() >= 0.000000001)
 			return false;
 		if (!this.forceTrigger) {
 			if (this.checkNoActionTime && this.mob.getNoActionTime() >= 100) {
