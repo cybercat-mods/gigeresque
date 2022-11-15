@@ -184,11 +184,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		return false;
 	}
 
-	protected AlienAttackType getCurrentAttackType() {
+	public AlienAttackType getCurrentAttackType() {
 		return entityData.get(CURRENT_ATTACK_TYPE);
 	}
 
-	protected void setCurrentAttackType(AlienAttackType value) {
+	public void setCurrentAttackType(AlienAttackType value) {
 		entityData.set(CURRENT_ATTACK_TYPE, value);
 	}
 
@@ -277,7 +277,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		}
 
 		// Statis Logic
-
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
@@ -291,7 +290,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		}
 
 		// Hissing Logic
-
 		if (!level.isClientSide
 				&& (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
@@ -307,7 +305,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 		}
 
 		// Searching Logic
-
 		if (level.isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0
 				&& !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
@@ -441,7 +438,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (!this.isVehicle() && this.getDeltaMovement().horizontalDistance() <= 0.000000001)
-			this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.3F);
+		if (!this.isVehicle()) {
+			this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.9F);
+		}
 	}
 }

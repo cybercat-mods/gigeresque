@@ -62,15 +62,28 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData
 			.defineId(AlienEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class,
+			EntityDataSerializers.INT);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	private AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 
+	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
+		super(entityType, world);
+		setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
+		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
+		if (navigation != null) {
+			navigation.setCanFloat(true);
+		}
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
+				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this, null, 0.0f, 0));
+	}
+	
 	@Override
 	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 200) {
+		if (this.deathTime == 150) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.tickDeath();
 			this.dropExperience();
@@ -89,10 +102,19 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		this.entityData.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
 	}
 
+	public int getAttckingState() {
+		return this.entityData.get(STATE);
+	}
+
+	public void setAttackingState(int time) {
+		this.entityData.set(STATE, time);
+	}
+
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
 		entityData.define(UPSIDE_DOWN, false);
+		this.entityData.define(STATE, 0);
 	}
 
 	@Override
@@ -119,17 +141,6 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 					});
 			this.syncClientAngerLevel();
 		}
-	}
-
-	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
-		super(entityType, world);
-		setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
-		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-		if (navigation != null) {
-			navigation.setCanFloat(true);
-		}
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this, null, 0.0f, 0));
 	}
 
 	public int getClientAngerLevel() {
@@ -365,6 +376,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return;
 		}
 		if (this.isVehicle()) {
+			return;
+		}
+		if (this.isAggressive()) {
 			return;
 		}
 	}

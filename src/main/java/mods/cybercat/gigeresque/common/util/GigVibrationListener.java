@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener.ReceivingEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,33 +29,32 @@ public class GigVibrationListener implements GameEventListener {
 	protected final int listenerRange;
 	protected final GigVibrationListenerConfig config;
 	@Nullable
-	protected ReceivingEvent receivingEvent;
+	protected GigReceivingEvent receivingEvent;
 	protected float receivingDistance;
 	protected int travelTimeInTicks;
 
 	public static Codec<GigVibrationListener> codec(GigVibrationListenerConfig vibrationListenerConfig) {
 		return RecordCodecBuilder.create(instance -> instance
-				.group(((MapCodec) PositionSource.CODEC.fieldOf("source"))
+				.group((PositionSource.CODEC.fieldOf("source"))
 						.forGetter(vibrationListener -> ((GigVibrationListener) vibrationListener).listenerSource),
-						((MapCodec) ExtraCodecs.NON_NEGATIVE_INT.fieldOf("range")).forGetter(
+						(ExtraCodecs.NON_NEGATIVE_INT.fieldOf("range")).forGetter(
 								vibrationListener -> ((GigVibrationListener) vibrationListener).listenerRange),
-						ReceivingEvent.CODEC.optionalFieldOf("event")
+						GigReceivingEvent.CODEC.optionalFieldOf("event")
 								.forGetter(vibrationListener -> Optional
 										.ofNullable(((GigVibrationListener) vibrationListener).receivingEvent)),
-						((MapCodec) Codec.floatRange(0.0f, Float.MAX_VALUE).fieldOf("event_distance"))
-								.orElse(Float.valueOf(0.0f))
+						(Codec.floatRange(0.0f, Float.MAX_VALUE).fieldOf("event_distance")).orElse(Float.valueOf(0.0f))
 								.forGetter(vibrationListener -> Float
 										.valueOf(((GigVibrationListener) vibrationListener).receivingDistance)),
-						((MapCodec) ExtraCodecs.NON_NEGATIVE_INT.fieldOf("event_delay")).orElse(0).forGetter(
+						(ExtraCodecs.NON_NEGATIVE_INT.fieldOf("event_delay")).orElse(0).forGetter(
 								vibrationListener -> ((GigVibrationListener) vibrationListener).travelTimeInTicks))
 				.apply(instance,
 						(positionSource, integer, optional, float_, integer2) -> new GigVibrationListener(
 								(PositionSource) positionSource, (int) integer, vibrationListenerConfig,
-								((@Nullable ReceivingEvent) optional), ((Float) float_).floatValue(), (int) integer2)));
+								optional.orElse(null), ((Float) float_).floatValue(), (int) integer2)));
 	}
 
 	public GigVibrationListener(PositionSource positionSource, int i,
-			GigVibrationListenerConfig vibrationListenerConfig, @Nullable ReceivingEvent receivingEvent, float f,
+			GigVibrationListenerConfig vibrationListenerConfig, @Nullable GigReceivingEvent receivingEvent, float f,
 			int j) {
 		this.listenerSource = positionSource;
 		this.listenerRange = i;
@@ -122,7 +119,7 @@ public class GigVibrationListener implements GameEventListener {
 	private void scheduleSignal(ServerLevel level, GameEvent event, GameEvent.Context context, Vec3 origin,
 			Vec3 destination) {
 		this.receivingDistance = (float) origin.distanceTo(destination);
-		this.receivingEvent = new ReceivingEvent(event, this.receivingDistance, origin, context.sourceEntity());
+		this.receivingEvent = new GigReceivingEvent(event, this.receivingDistance, origin, context.sourceEntity());
 		this.travelTimeInTicks = Mth.floor(this.receivingDistance);
 		this.config.onSignalSchedule();
 	}
