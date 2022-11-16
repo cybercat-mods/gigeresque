@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.client.entity.model.blocks;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -9,17 +11,17 @@ public class JarModel extends AnimatedGeoModel<JarStorageEntity> {
 
 	@Override
 	public ResourceLocation getAnimationResource(JarStorageEntity animatable) {
-		return new ResourceLocation(Gigeresque.MOD_ID, "animations/jar.animation.json");
+		return EntityAnimations.JAR;
 	}
 
 	@Override
 	public ResourceLocation getModelResource(JarStorageEntity object) {
-		return new ResourceLocation(Gigeresque.MOD_ID, "geo/jar.geo.json");
+		return EntityModels.JAR;
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(JarStorageEntity object) {
-		return new ResourceLocation(Gigeresque.MOD_ID, "textures/block/jar.png");
+		return EntityTextures.JAR;
 	}
 
 }

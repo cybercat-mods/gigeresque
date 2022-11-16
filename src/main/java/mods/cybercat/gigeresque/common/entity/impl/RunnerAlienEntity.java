@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
@@ -33,13 +32,10 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 80.0)
-				.add(Attributes.ARMOR, 4.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-				.add(Attributes.FOLLOW_RANGE, 32.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
-				.add(Attributes.ATTACK_KNOCKBACK, 1.0)
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 80.0).add(Attributes.ARMOR, 4.0)
+				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+				.add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
+				.add(Attributes.ATTACK_DAMAGE, 7.0).add(Attributes.ATTACK_KNOCKBACK, 1.0)
 				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
 	}
 
@@ -93,13 +89,17 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
 				&& this.isStatis() == false) {
 			if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.PLAY_ONCE));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP).addAnimation(
+								AlienAttackType.animationMappings.get(getCurrentAttackType()),
+								EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (this.isExecuting() == false && animationSpeedOld < 0.35F
 					|| (!this.isCrawling() && !this.onGround)) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP)
-						.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.PLAY_ONCE));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP).addAnimation(
+								AlienAttackType.animationMappings.get(getCurrentAttackType()),
+								EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			}
 		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
@@ -110,13 +110,16 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 			return PlayState.CONTINUE;
 		} else {
 			if (isSearching && !this.isAggressive() && this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == true || this.isNoAi() && !isDead) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("stasis", EDefaultLoopTypes.LOOP));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("stasis", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			} else if (this.isStatis() == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
+				event.getController()
+						.setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
 				return PlayState.CONTINUE;
 			}
 		}
@@ -125,8 +128,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
 		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
-			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation(
+					AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
@@ -136,7 +139,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		if (this.entityData.get(IS_HISSING) == true && !isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss_sound", EDefaultLoopTypes.LOOP));
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("hiss_sound", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 
@@ -146,20 +150,20 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("footstepSoundkey")) {
 			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
-						SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("handstepSoundkey")) {
 			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
-						SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("idleSoundkey")) {
 			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}

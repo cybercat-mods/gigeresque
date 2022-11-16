@@ -22,4 +22,10 @@ public class EntityAnimations {
 			"animations/runner_alien.animation.json");
 	public static final ResourceLocation RUNNERBURSTER = new ResourceLocation(Gigeresque.MOD_ID,
 			"animations/runnerburster.animation.json");
+	public static final ResourceLocation SITTINGIDOL = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/sittingidol.geo.json");
+	public static final ResourceLocation SARCOPHAGUS = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/sarcophagus.geo.json");
+	public static final ResourceLocation JAR = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/jar.geo.json");
 }

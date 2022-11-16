@@ -30,8 +30,8 @@ public class ChestbursterEntityModel extends AnimatedTickingGeoModel<Chestburste
 	}
 
 	@Override
-	public void setLivingAnimations(ChestbursterEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
+	public void setCustomAnimations(ChestbursterEntity entity, int uniqueID, AnimationEvent customPredicate) {
+		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		var neck = getAnimationProcessor().getBone("head");
 		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
 		if (extraDataList.isEmpty())

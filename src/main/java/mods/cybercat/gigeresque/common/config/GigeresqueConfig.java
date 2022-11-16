@@ -6,12 +6,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 
 public class GigeresqueConfig extends CustomMidnightConfig {
-	@Entry
-	public static boolean isolationMode = false;
-
-	public boolean getIsolationMode() {
-		return isolationMode;
-	}
 
 	@Entry
 	public static float alienGrowthMultiplier = 1.0f;
@@ -26,7 +20,7 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 	public static float chestbursterGrowthMultiplier = 1.0f;
 
 	@Entry
-	public static float eggmorphTickMultiplier = 1.0f;
+	public static float eggmorphTickTimer = 6000.0f;
 
 	@Entry
 	public static float facehuggerAttachTickTimer = 4800.0f;
@@ -59,8 +53,8 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 		return chestbursterGrowthMultiplier;
 	}
 
-	public static float getEggmorphTickMultiplier() {
-		return eggmorphTickMultiplier;
+	public static float getEggmorphTickTimer() {
+		return eggmorphTickTimer;
 	}
 
 	public static float getFacehuggerAttachTickTimer() {

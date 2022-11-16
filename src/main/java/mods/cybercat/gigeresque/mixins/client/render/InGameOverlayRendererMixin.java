@@ -14,9 +14,9 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FluidState;
 
 /**
@@ -33,10 +32,6 @@ import net.minecraft.world.level.material.FluidState;
 @Environment(EnvType.CLIENT)
 @Mixin(ScreenEffectRenderer.class)
 public class InGameOverlayRendererMixin {
-	private static final ResourceLocation BLACK_FLUID_TEXTURE = new ResourceLocation(Gigeresque.MOD_ID,
-			"textures/misc/black_fluid_overlay.png");
-	private static final ResourceLocation EGGMORPH_OVERLAY_TEXTURE = new ResourceLocation(Gigeresque.MOD_ID,
-			"textures/misc/eggmorph_overlay.png");
 
 	@Inject(method = { "renderScreenEffect" }, at = { @At("RETURN") })
 	private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
@@ -51,8 +46,8 @@ public class InGameOverlayRendererMixin {
 
 			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable
 					&& eggmorphable.isEggmorphing()) {
-				float eggmorphingProgress = (Constants.EGGMORPH_DURATION - eggmorphable.getTicksUntilEggmorphed())
-						/ Constants.EGGMORPH_DURATION;
+				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed())
+						/ GigeresqueConfig.getEggmorphTickTimer();
 				renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
 			}
 		}
@@ -61,7 +56,7 @@ public class InGameOverlayRendererMixin {
 	private static void renderBlackFluidOverlay(Minecraft client, PoseStack matrices) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.enableTexture();
-		RenderSystem.setShaderTexture(0, BLACK_FLUID_TEXTURE);
+		RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		float f = client.player.getLightLevelDependentMagicValue();
 		RenderSystem.enableBlend();
@@ -82,7 +77,7 @@ public class InGameOverlayRendererMixin {
 	private static void renderEggmorphOverlay(Minecraft client, PoseStack matrices, float progress) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.enableTexture();
-		RenderSystem.setShaderTexture(0, EGGMORPH_OVERLAY_TEXTURE);
+		RenderSystem.setShaderTexture(0, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		float f = client.player.getLightLevelDependentMagicValue();
 		RenderSystem.enableBlend();

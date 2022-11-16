@@ -30,8 +30,8 @@ public class RunnerbursterEntityModel extends AnimatedTickingGeoModel<Runnerburs
 	}
 
 	@Override
-	public void setLivingAnimations(RunnerbursterEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
+	public void setCustomAnimations(RunnerbursterEntity entity, int uniqueID, AnimationEvent customPredicate) {
+		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		var neck = getAnimationProcessor().getBone("neck");
 		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
 		if (extraDataList.isEmpty())

@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.entity.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -11,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class EggmorphLayerTexture implements AutoCloseable {
-	private static final ResourceLocation layerTexture = new ResourceLocation(Gigeresque.MOD_ID,
-			"textures/misc/eggmorph_overlay.png");
 	public RenderType renderLayer;
 	private DynamicTexture texture;
 
@@ -23,7 +20,7 @@ public class EggmorphLayerTexture implements AutoCloseable {
 			public void run() {
 				try {
 					var baseImage = NativeImage.read(resourceManager.getResourceOrThrow(base).open());
-					var layerImage = NativeImage.read(resourceManager.getResourceOrThrow(layerTexture).open());
+					var layerImage = NativeImage.read(resourceManager.getResourceOrThrow(EntityTextures.EGGMORPH_OVERLAY).open());
 					texture = new DynamicTexture(new NativeImage(layerImage.getWidth(), layerImage.getHeight(), true));
 					var height = layerImage.getHeight();
 					var width = layerImage.getWidth();

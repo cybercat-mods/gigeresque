@@ -8,7 +8,6 @@ import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
@@ -80,8 +79,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 100.0).add(Attributes.ARMOR, 6.0)
 				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
 				.add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, 7.0 * Constants.getIsolationModeDamageBase())
-				.add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
+				.add(Attributes.ATTACK_DAMAGE, 7.0).add(Attributes.ATTACK_KNOCKBACK, 1.0)
+				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
 	}
 
 	@Override
@@ -129,7 +128,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		if (this.getFirstPassenger() != null) {
 			if (this.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
-				this.getFirstPassenger().setPos(this.getX(), this.getY()+0.2, this.getZ());
+				this.getFirstPassenger().setPos(this.getX(), this.getY() + 0.2, this.getZ());
 				this.getFirstPassenger().removeVehicle();
 			}
 		}

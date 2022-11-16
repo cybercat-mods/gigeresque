@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
@@ -336,9 +335,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 			multiplier = 0.5f;
 		}
 
-		var isolationModeMultiplier = GigeresqueConfig.isolationMode ? 0.05f : 1.0f;
-
-		return super.hurt(source, amount * multiplier * isolationModeMultiplier);
+		return super.hurt(source, amount * multiplier);
 	}
 
 	@Override

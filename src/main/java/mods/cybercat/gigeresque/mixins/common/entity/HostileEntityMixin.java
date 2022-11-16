@@ -37,6 +37,6 @@ public abstract class HostileEntityMixin extends LivingEntity {
 			MobSpawnType spawnReason, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
 		return world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
 				&& Monster.checkMobSpawnRules(type, world, spawnReason, pos, random)
-				&& !world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS);
+				&& !world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS);
 	}
 }

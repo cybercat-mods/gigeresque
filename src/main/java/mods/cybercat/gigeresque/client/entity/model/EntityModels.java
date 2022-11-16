@@ -21,4 +21,10 @@ public class EntityModels {
 			"geo/runner_alien.geo.json");
 	public static final ResourceLocation RUNNERBURSTER = new ResourceLocation(Gigeresque.MOD_ID,
 			"geo/runnerburster.geo.json");
+	public static final ResourceLocation SITTINGIDOL = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/sittingidol.geo.json");
+	public static final ResourceLocation SARCOPHAGUS = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/sarcophagus.geo.json");
+	public static final ResourceLocation JAR = new ResourceLocation(Gigeresque.MOD_ID,
+			"geo/jar.geo.json");
 }

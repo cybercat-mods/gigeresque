@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
+import java.util.List;
+
 import com.mojang.math.Vector3f;
 
 import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
@@ -9,7 +11,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
@@ -32,14 +33,14 @@ public class AlienEntityModel extends AnimatedTickingGeoModel<ClassicAlienEntity
 	}
 
 	@Override
-	public void setLivingAnimations(ClassicAlienEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone body = this.getAnimationProcessor().getBone("body");
-
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		if (body != null) {
-			body.setRotationY(Vector3f.YP.rotation((extraData.netHeadYaw + 3) * ((float) Math.PI / 180F)).j());
-		}
+	public void setCustomAnimations(ClassicAlienEntity entity, int uniqueID, AnimationEvent customPredicate) {
+		super.setCustomAnimations(entity, uniqueID, customPredicate);
+		var body = getAnimationProcessor().getBone("body");
+		List<EntityModelData> extraDataList = customPredicate.getExtraDataOfType(EntityModelData.class);
+		if (extraDataList.isEmpty())
+			return;
+		var extraData = extraDataList.get(0);
+		body.setRotationY(Vector3f.YP.rotation((extraData.netHeadYaw + 3) * ((float) Math.PI / 180F)).j());
 	}
 
 }
