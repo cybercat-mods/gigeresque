@@ -9,6 +9,6 @@ public class BlockRenderLayers implements GigeresqueInitializer {
 	@Override
 	public void initialize() {
 		BlockRenderLayerMap.INSTANCE.putBlock(GIgBlocks.NEST_RESIN_WEB, RenderType.cutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(GIgBlocks.NEST_RESIN_WEB_CROSS, RenderType.cutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(GIgBlocks.NEST_RESIN_WEB_CROSS, RenderType.translucent());
 	}
 }

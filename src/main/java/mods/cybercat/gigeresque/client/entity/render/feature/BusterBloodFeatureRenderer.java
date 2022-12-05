@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -10,33 +11,26 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @Environment(EnvType.CLIENT)
-public class BusterBloodFeatureRenderer extends GeoLayerRenderer<ChestbursterEntity> {
-	private IGeoRenderer<ChestbursterEntity> entityRenderer;
+public class BusterBloodFeatureRenderer extends GeoRenderLayer<ChestbursterEntity> {
 
-	public BusterBloodFeatureRenderer(IGeoRenderer<ChestbursterEntity> entityRenderer) {
+	public BusterBloodFeatureRenderer(GeoRenderer<ChestbursterEntity> entityRenderer) {
 		super(entityRenderer);
-		this.entityRenderer = entityRenderer;
 	}
 
 	@Override
-	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
-			ChestbursterEntity alienEntity, float limbSwing, float limbSwingAmount, float partialTicks,
-			float ageInTicks, float netHeadYaw, float headPitch) {
-		var uv = alienEntity.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
-		if (!(alienEntity.getBlood() >= 1200))
-			entityRenderer.render(getEntityModel().getModel(EntityModels.CHESTBURSTER), alienEntity, partialTicks,
-					RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD), matrixStackIn, bufferIn,
-					bufferIn.getBuffer(RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)), packedLightIn,
-					uv, 1.0f, 1.0f, 1.0f, ((1200 - alienEntity.getBlood()) / 1200));
-	}
-
-	@Override
-	protected ResourceLocation getEntityTexture(ChestbursterEntity entityIn) {
-		return EntityTextures.CHESTBURSTER_BLOOD;
+	public void render(PoseStack poseStack, ChestbursterEntity animatable, BakedGeoModel bakedModel,
+			RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick,
+			int packedLight, int packedOverlay) {
+		var uv = animatable.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
+		if (!(animatable.getGrowth() >= 1200))
+			renderer.reRender(getGeoModel().getBakedModel(EntityModels.CHESTBURSTER), poseStack, bufferSource,
+					animatable, RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD),
+					bufferSource.getBuffer(RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)),
+					partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f, ((1200 - animatable.getBlood()) / 1200));
 	}
 }

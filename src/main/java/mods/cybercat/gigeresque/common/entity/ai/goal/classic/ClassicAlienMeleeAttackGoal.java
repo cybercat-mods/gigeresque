@@ -165,7 +165,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 
 	@Override
 	public void start() {
-		//this.mob.getNavigation().moveTo(this.path, this.speed);
 		this.mob.setAggressive(true);
 		this.cooldown = 0;
 		this.mob.setAttackingState(0);
@@ -235,22 +234,6 @@ public class ClassicAlienMeleeAttackGoal extends Goal {
 				this.mob.swing(InteractionHand.MAIN_HAND);
 			}
 		}
-	}
-
-	protected void resetCooldown() {
-		this.cooldown = this.adjustedTickDelay(20);
-	}
-
-	protected boolean isCooledDown() {
-		return this.cooldown <= 0;
-	}
-
-	protected int getCooldown() {
-		return this.cooldown;
-	}
-
-	protected int getMaxCooldown() {
-		return this.adjustedTickDelay(20);
 	}
 
 	protected double getSquaredMaxAttackDistance(LivingEntity entity) {

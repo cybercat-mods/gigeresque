@@ -77,9 +77,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			navigation.setCanFloat(true);
 		}
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this, null, 0.0f, 0));
+				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 	}
-	
+
 	@Override
 	protected void tickDeath() {
 		++this.deathTime;

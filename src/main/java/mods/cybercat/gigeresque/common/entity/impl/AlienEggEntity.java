@@ -33,18 +33,16 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
+public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class,
 			EntityDataSerializers.BOOLEAN);
@@ -54,7 +52,7 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 			EntityDataSerializers.BOOLEAN);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
@@ -291,45 +289,36 @@ public class AlienEggEntity extends AlienEntity implements IAnimatable, IAnimati
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (isHatched() && !this.isDeadOrDying()) {
-			if (!hasFacehugger()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched_empty", EDefaultLoopTypes.LOOP));
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			if (isHatched() && !this.isDeadOrDying()) {
+				if (!hasFacehugger()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("hatched_empty"));
+					return PlayState.CONTINUE;
+				}
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("hatched"));
 				return PlayState.CONTINUE;
 			}
 
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatched", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
+			if (this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
+				return PlayState.CONTINUE;
+			}
 
-		if (this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
+			if (isHatching() && !this.isDeadOrDying()) {
+				event.getController()
+						.setAnimation(RawAnimation.begin().then("hatch", LoopType.PLAY_ONCE).thenPlayAndHold("hatched"));
+				return PlayState.CONTINUE;
+			}
+			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
 			return PlayState.CONTINUE;
-		}
-
-		if (isHatching() && !this.isDeadOrDying()) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("hatch", EDefaultLoopTypes.PLAY_ONCE).addAnimation("hatched", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 5f, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override

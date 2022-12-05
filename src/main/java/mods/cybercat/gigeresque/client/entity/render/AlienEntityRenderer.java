@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
@@ -10,7 +10,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
@@ -18,7 +18,7 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 	public AlienEntityRenderer(EntityRendererProvider.Context context) {
 		super(context, new AlienEntityModel());
 		this.shadowRadius = 0.5f;
-		this.addLayer(new ClassicAlienFeatureRenderer(this));
+		this.addRenderLayer(new ClassicAlienFeatureRenderer(this));
 	}
 
 	@Override
@@ -28,21 +28,21 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		if (entity.isCrawling()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
-				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().north()))) {
-				stack.mulPose(Vector3f.XP.rotationDegrees(90));
+				stack.mulPose(Axis.XP.rotationDegrees(90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().south()))) {
-				stack.mulPose(Vector3f.XP.rotationDegrees(-90));
+				stack.mulPose(Axis.XP.rotationDegrees(-90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
-				stack.mulPose(Vector3f.ZP.rotationDegrees(90));
+				stack.mulPose(Axis.ZP.rotationDegrees(90));
 				stack.translate(0, -0.5, 0);
 			}
 		}

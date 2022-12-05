@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
@@ -16,7 +16,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
@@ -60,43 +61,43 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 			MultiBufferSource bufferIn, int packedLightIn) {
 		if (entity.isCrawling() && !entity.isNoGravity()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
-				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition()))) {
-				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().north()))) {
-				stack.mulPose(Vector3f.XP.rotationDegrees(90));
+				stack.mulPose(Axis.XP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().south()))) {
-				stack.mulPose(Vector3f.XP.rotationDegrees(-90));
+				stack.mulPose(Axis.XP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
-				stack.mulPose(Vector3f.ZP.rotationDegrees(90));
+				stack.mulPose(Axis.ZP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
 		}
 		if (entity.isNoGravity() && !entity.isCrawling() && !entity.isUnderWater()) {
-			stack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			stack.mulPose(Axis.ZP.rotationDegrees(180));
 			stack.translate(0, -0.6, 0);
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public void renderEarly(FacehuggerEntity animatable, PoseStack stackIn, float ticks,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
-			float red, float green, float blue, float partialTicks) {
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
-				red, green, blue, partialTicks);
+	public void preRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
+			int packedOverlay, float red, float green, float blue, float alpha) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay,
+				red, green, blue, alpha);
 		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true)
-			stackIn.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F,
+			poseStack.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F,
 					animatable.tickCount < 5 ? 0 : 1F);
 	}
 
@@ -113,12 +114,12 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 			var headPitch = Mth.rotLerp(partialTicks, host.getXRot(), host.xRotO);
 
 			// translate head-center
-			matrixStackIn.mulPose(Vector3f.YN.rotationDegrees(bodyYaw));
+			matrixStackIn.mulPose(Axis.YN.rotationDegrees(bodyYaw));
 			matrixStackIn.translate(transformData.originX, transformData.originY, transformData.originZ);
 			// yaw
-			matrixStackIn.mulPose(Vector3f.YN.rotationDegrees(headYaw));
+			matrixStackIn.mulPose(Axis.YN.rotationDegrees(headYaw));
 			// pitch
-			matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(headPitch));
+			matrixStackIn.mulPose(Axis.XP.rotationDegrees(headPitch));
 			matrixStackIn.translate(0.0, transformData.headOffset, transformData.faceOffset); // apply offsets
 
 		} else {

@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.config;
 
 import java.util.List;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 
 public class GigeresqueConfig extends CustomMidnightConfig {
@@ -78,128 +78,128 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 	}
 
 	@Entry
-	public static List<String> alienHosts = List.of(Registry.ENTITY_TYPE.getKey(EntityType.EVOKER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ILLUSIONER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PILLAGER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PIGLIN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PIGLIN_BRUTE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PLAYER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.WITCH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.VILLAGER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.VINDICATOR).toString());
+	public static List<String> alienHosts = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.EVOKER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ILLUSIONER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PILLAGER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIGLIN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIGLIN_BRUTE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WITCH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VILLAGER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VINDICATOR).toString());
 
 	@Entry
-	public static List<String> aquaticAlienHosts = List.of(Registry.ENTITY_TYPE.getKey(EntityType.DOLPHIN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.TURTLE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.GUARDIAN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ELDER_GUARDIAN).toString());
+	public static List<String> aquaticAlienHosts = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DOLPHIN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TURTLE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GUARDIAN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ELDER_GUARDIAN).toString());
 
 	@Entry
-	public static List<String> runnerHosts = List.of(Registry.ENTITY_TYPE.getKey(EntityType.COW).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.DONKEY).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.FOX).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.GOAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.HOGLIN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.HORSE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.LLAMA).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.MOOSHROOM).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.MULE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PANDA).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PIG).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.OCELOT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.POLAR_BEAR).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.RAVAGER).toString(), // TODO: Remove when ubermorphs added
-			Registry.ENTITY_TYPE.getKey(EntityType.SHEEP).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.WOLF).toString());
+	public static List<String> runnerHosts = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COW).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DONKEY).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.FOX).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GOAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.HOGLIN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.HORSE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.LLAMA).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MOOSHROOM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MULE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PANDA).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIG).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.OCELOT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.POLAR_BEAR).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.RAVAGER).toString(), // TODO: Remove when ubermorphs added
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SHEEP).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WOLF).toString());
 
 	@Entry
-	public static List<String> dnaBlacklist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDERMAN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDERMITE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.GHAST).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SHULKER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.IRON_GOLEM).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.MAGMA_CUBE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SLIME).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SILVERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SNOW_GOLEM).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.VEX).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.WITHER).toString());
+	public static List<String> dnaBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDERMAN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDERMITE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GHAST).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SHULKER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.IRON_GOLEM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MAGMA_CUBE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SLIME).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SILVERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SNOW_GOLEM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VEX).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WITHER).toString());
 
 	@Entry
-	public static List<String> alienWhitelist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
+	public static List<String> alienWhitelist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
 
 	@Entry
-	public static List<String> alienBlacklist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SPIDER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CAVE_SPIDER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.COD).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+	public static List<String> alienBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SPIDER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAVE_SPIDER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COD).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
 
 	@Entry
 	public static List<String> aquaticAlienWhitelist = List.of("");
 
 	@Entry
-	public static List<String> aquaticAlienBlacklist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.COD).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+	public static List<String> aquaticAlienBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COD).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
 
 	@Entry
-	public static List<String> facehuggerWhitelist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
+	public static List<String> facehuggerWhitelist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
 
 	@Entry
-	public static List<String> facehuggerBlacklist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CAVE_SPIDER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CHICKEN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.COD).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SHULKER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDERMAN).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.ENDERMITE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.GHAST).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.GLOW_SQUID).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.IRON_GOLEM).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.MAGMA_CUBE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PARROT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.RABBIT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SLIME).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SILVERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SNOW_GOLEM).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SPIDER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SQUID).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.VEX).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.WITHER).toString());
+	public static List<String> facehuggerBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAVE_SPIDER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CHICKEN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COD).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SHULKER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDER_DRAGON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDERMAN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ENDERMITE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GHAST).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GLOW_SQUID).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.IRON_GOLEM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MAGMA_CUBE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.RABBIT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SLIME).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SILVERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SNOW_GOLEM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SPIDER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SQUID).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VEX).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WITHER).toString());
 
 	@Entry
 	public static List<String> runnerWhitelist = List.of("");
 
 	@Entry
-	public static List<String> runnerBlacklist = List.of(Registry.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.COD).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
-			Registry.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+	public static List<String> runnerBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PUFFERFISH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COD).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
 }

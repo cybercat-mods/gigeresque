@@ -37,21 +37,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.GeckoLib;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.GeckoLib;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ClassicAlienEntity extends AdultAlienEntity {
 
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
@@ -247,200 +244,164 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	/*
 	 * ANIMATIONS
 	 */
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false
-				&& !this.swinging) {
-			if (!this.isInWater() && this.isExecuting() == false) {
-				if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
+					&& this.isStatis() == false) {
+				if (!this.isInWater() && this.isExecuting() == false) {
+					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
+						return PlayState.CONTINUE;
+					} else if (!this.isCrawling()) {
+						if (this.isVehicle()) {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("walk_carrying")
+									.thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
+							event.getController().setAnimationSpeed(animationSpeedOld * 4);
+							return PlayState.CONTINUE;
+						} else {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("walk")
+									.thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
+							return PlayState.CONTINUE;
+						}
+					}
+				} else {
+					if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
+						if (this.isAggressive() && !this.isVehicle()) {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
+							return PlayState.CONTINUE;
+						} else {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
+							return PlayState.CONTINUE;
+						}
+					}
+				}
+			} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false
+					&& !this.isVehicle()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
+				return PlayState.CONTINUE;
+			} else if (isDead && !this.isVehicle()) {
+				event.getController().setAnimation(RawAnimation.begin().then("death", LoopType.PLAY_ONCE));
+				return PlayState.CONTINUE;
+			} else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false) {
+				if (this.isVehicle()) {
 					event.getController()
-							.setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP)
-									.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
-											EDefaultLoopTypes.LOOP));
+							.setAnimation(RawAnimation.begin().then("execution_carry", LoopType.PLAY_ONCE));
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().then("execution_grab", LoopType.PLAY_ONCE));
+				}
+				return PlayState.CONTINUE;
+			} else {
+				if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
+						&& this.isExecuting() == false && this.isStatis() == false) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
 					return PlayState.CONTINUE;
-				} else if (!this.isCrawling()) {
-					if (this.isVehicle()) {
-						event.getController()
-								.setAnimation(new AnimationBuilder()
-										.addAnimation("walk_carrying", EDefaultLoopTypes.LOOP)
-										.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
-												EDefaultLoopTypes.LOOP));
-						event.getController().setAnimationSpeed(animationSpeedOld * 4);
-						return PlayState.CONTINUE;
-					} else {
-						event.getController()
-								.setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP)
-										.addAnimation(AlienAttackType.animationMappings.get(getCurrentAttackType()),
-												EDefaultLoopTypes.LOOP));
-						event.getController().setAnimationSpeed(animationSpeedOld * 4);
-						return PlayState.CONTINUE;
-					}
-				}
-			} else {
-				if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
-					if (this.isAggressive() && !this.isVehicle()) {
-						event.getController()
-								.setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
-						return PlayState.CONTINUE;
-					} else {
-						event.getController().setAnimation(
-								new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
-						return PlayState.CONTINUE;
-					}
+				} else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
+						&& this.isExecuting() == false && this.isStatis() == false && !isDead) {
+					event.getController().setAnimation(RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE));
+					return PlayState.CONTINUE;
+				} else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle()) {
+					event.getController().setAnimation(RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE)
+							.thenPlayAndHold("stasis_loop"));
+					return PlayState.CONTINUE;
+				} else if (!this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
+					return PlayState.CONTINUE;
 				}
 			}
-		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
+			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
 			return PlayState.CONTINUE;
-		} else if (isDead && !this.isVehicle()) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		} else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false) {
-			if (this.isVehicle()) {
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("thudSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("biteSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_HEADBITE, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("crunchSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
+			}
+		}));
+		manager.addController(new AnimationController<>(this, "attackController", 1, event -> {
+			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("left_claw"));
+				return PlayState.CONTINUE;
+			}
+			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
+					&& this.isExecuting() == false) {
 				event.getController().setAnimation(
-						new AnimationBuilder().addAnimation("execution_carry", EDefaultLoopTypes.PLAY_ONCE));
-			} else {
-				event.getController().setAnimation(
-						new AnimationBuilder().addAnimation("execution_grab", EDefaultLoopTypes.PLAY_ONCE));
-			}
-			return PlayState.CONTINUE;
-		} else {
-			if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
-					&& this.isExecuting() == false && this.isStatis() == false) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
-					&& this.isExecuting() == false && this.isStatis() == false && !isDead) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle()) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("stasis_enter", EDefaultLoopTypes.PLAY_ONCE)
-								.addAnimation("stasis_loop", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else if (!this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
+						RawAnimation.begin().thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
 				return PlayState.CONTINUE;
 			}
-		}
-		return PlayState.CONTINUE;
-	}
+			if (this.isVehicle() && this.isExecuting() == false) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("kidnap"));
+				return PlayState.CONTINUE;
+			}
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
+			}
+		}));
+		manager.addController(new AnimationController<>(this, "hissController", 1, event -> {
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false
+					&& !isDead) {
+//				event.getController().setAnimation(RawAnimation.begin().thenLoop("hiss"));
+//				return PlayState.CONTINUE;
+			}
 
-	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
-		if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("left_claw", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
-				&& this.isExecuting() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation(
-					AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.isVehicle() && this.isExecuting() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("kidnap", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
-	}
-
-	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hiss", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-
-		return PlayState.STOP;
-	}
-
-	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("footstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("handstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("ambientSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("thudSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("biteSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_HEADBITE, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("crunchSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("clawSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("tailSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundHissListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("hissSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<ClassicAlienEntity> main = new AnimationController<ClassicAlienEntity>(this, "controller",
-				5f, this::predicate);
-		main.registerSoundListener(this::soundStepListener);
-		data.addAnimationController(main);
-		AnimationController<ClassicAlienEntity> attacking = new AnimationController<ClassicAlienEntity>(this,
-				"attackController", 5f, this::attackPredicate);
-		attacking.registerSoundListener(this::soundAttackListener);
-		data.addAnimationController(attacking);
-		AnimationController<ClassicAlienEntity> hissing = new AnimationController<ClassicAlienEntity>(this,
-				"hissController", 10f, this::hissPredicate);
-		hissing.registerSoundListener(this::soundHissListener);
-		data.addAnimationController(hissing);
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 }

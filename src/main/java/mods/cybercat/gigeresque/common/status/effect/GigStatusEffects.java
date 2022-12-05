@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
 import mods.cybercat.gigeresque.common.status.effect.impl.TraumaStatusEffect;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -34,8 +35,8 @@ public class GigStatusEffects implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		Registry.register(Registry.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "trauma"), TRAUMA);
-		Registry.register(Registry.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "acid"), ACID);
-		Registry.register(Registry.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "dna_disintegration"), DNA);
+		Registry.register(BuiltInRegistries.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "trauma"), TRAUMA);
+		Registry.register(BuiltInRegistries.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "acid"), ACID);
+		Registry.register(BuiltInRegistries.MOB_EFFECT, new ResourceLocation(Gigeresque.MOD_ID, "dna_disintegration"), DNA);
 	}
 }

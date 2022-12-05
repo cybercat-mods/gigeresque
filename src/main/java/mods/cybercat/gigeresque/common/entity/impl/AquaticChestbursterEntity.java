@@ -22,22 +22,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class AquaticChestbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
+public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
 	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
 			false);
 	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
@@ -112,69 +112,61 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements IAn
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-			if (this.isUnderWater()) {
-				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
-					return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
+				if (this.isUnderWater()) {
+					if (animationSpeedOld >= 0.35F) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
+						return PlayState.CONTINUE;
+					} else {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
+						return PlayState.CONTINUE;
+					}
 				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", EDefaultLoopTypes.LOOP));
-					return PlayState.CONTINUE;
+					if (animationSpeedOld >= 0.35F) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_slither"));
+						return PlayState.CONTINUE;
+					} else {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("slither"));
+						return PlayState.CONTINUE;
+					}
 				}
-			} else {
-				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", EDefaultLoopTypes.LOOP));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", EDefaultLoopTypes.LOOP));
-					return PlayState.CONTINUE;
-				}
-			}
-		} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else {
-			if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", EDefaultLoopTypes.LOOP));
+			} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
+				return PlayState.CONTINUE;
+			} else if (isDead) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
 				return PlayState.CONTINUE;
 			} else {
-				if (this.isUnderWater()) {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
+				if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("birth"));
 					return PlayState.CONTINUE;
 				} else {
-					event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
-					return PlayState.CONTINUE;
+					if (this.isUnderWater()) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
+						return PlayState.CONTINUE;
+					} else {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
+						return PlayState.CONTINUE;
+					}
 				}
 			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("stepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<AquaticChestbursterEntity> controller = new AnimationController<AquaticChestbursterEntity>(
-				this, "controller", 10f, this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 }

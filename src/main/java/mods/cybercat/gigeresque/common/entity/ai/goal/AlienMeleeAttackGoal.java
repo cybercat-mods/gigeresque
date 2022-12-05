@@ -15,19 +15,15 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.AABB;
 
 public class AlienMeleeAttackGoal extends Goal {
 	protected final AdultAlienEntity mob;
 	private final double speed;
 	private final boolean pauseWhenMobIdle;
 	private Path path;
-	private double targetX;
-	private double targetY;
-	private double targetZ;
-	private int updateCountdownTicks;
 	private int cooldown;
 	private long lastUpdateTime;
-	private int meleeCounter = 0;
 
 	public AlienMeleeAttackGoal(AdultAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
 		this.mob = mob;
@@ -47,8 +43,8 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (livingEntity == null) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers()
-				.anyMatch(AlienEntity.class::isInstance)) {
+		if (livingEntity.getVehicle() != null
+				&& livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (((Host) livingEntity).hasParasite()) {
@@ -111,8 +107,8 @@ public class AlienMeleeAttackGoal extends Goal {
 		if (livingEntity instanceof ArmorStand) {
 			return false;
 		}
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers()
-				.anyMatch(AlienEntity.class::isInstance)) {
+		if (livingEntity.getVehicle() != null
+				&& livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) {
 			return false;
 		}
 		if (!this.mob.isWithinRestriction(livingEntity.blockPosition())) {
@@ -147,7 +143,6 @@ public class AlienMeleeAttackGoal extends Goal {
 	public void start() {
 		this.mob.getNavigation().moveTo(this.path, this.speed);
 		this.mob.setAggressive(true);
-		this.updateCountdownTicks = 0;
 		this.cooldown = 0;
 		mob.setIsExecuting(false);
 	}
@@ -171,69 +166,35 @@ public class AlienMeleeAttackGoal extends Goal {
 	@Override
 	public void tick() {
 		LivingEntity livingEntity = this.mob.getTarget();
-		if (livingEntity == null) {
-			return;
-		}
-		this.mob.getLookControl().setLookAt(livingEntity, 30.0f, 30.0f);
-		double d = this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
-		if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity))
-				&& this.updateCountdownTicks <= 0
-				&& (this.targetX == 0.0 && this.targetY == 0.0 && this.targetZ == 0.0
-						|| livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0
-						|| this.mob.getRandom().nextFloat() < 0.05f)) {
-			this.targetX = livingEntity.getX();
-			this.targetY = livingEntity.getY();
-			this.targetZ = livingEntity.getZ();
-			this.updateCountdownTicks = 4 + this.mob.getRandom().nextInt(7);
-			if (d > 1024.0) {
-				this.updateCountdownTicks += 10;
-			} else if (d > 256.0) {
-				this.updateCountdownTicks += 5;
-			}
-			if (!this.mob.getNavigation().moveTo(livingEntity, this.speed)) {
-				this.updateCountdownTicks += 15;
-			}
-			this.updateCountdownTicks = this.adjustedTickDelay(this.updateCountdownTicks);
-		}
-		this.cooldown = Math.max(this.cooldown - 1, 0);
-		if (!this.mob.isVehicle()) {
-			if (meleeCounter == 1) {
-				this.attack(livingEntity, d);
-			}
-			if (meleeCounter >= 10) {
-				meleeCounter = -15;
+		if (livingEntity != null) {
+			boolean inLineOfSight = this.mob.getSensing().hasLineOfSight(livingEntity);
+			this.mob.lookAt(livingEntity, 30.0F, 30.0F);
+			final AABB aabb2 = new AABB(this.mob.blockPosition()).inflate(1.5D);
+			if (inLineOfSight) {
+				cooldown++;
+				this.mob.getNavigation().moveTo(livingEntity, this.speed);
+				this.mob.getCommandSenderWorld().getEntities(this.mob, aabb2).forEach(e -> {
+					if ((e instanceof LivingEntity) && this.cooldown > 0) {
+						this.attack(livingEntity);
+						this.cooldown = -20;
+					} else {
+						this.mob.setAttackingState(0);
+						this.cooldown = -20;
+					}
+				});
+			} else {
+				this.cooldown = -20;
+				this.mob.setAttackingState(0);
 			}
 		}
-		this.attack(livingEntity, d);
 	}
 
-	protected void attack(LivingEntity target, double squaredDistance) {
-		double d = this.getSquaredMaxAttackDistance(target);
-		if (squaredDistance <= d) {
-			this.mob.doHurtTarget(target);
-			this.mob.swing(InteractionHand.MAIN_HAND);
-			meleeCounter = -5;
-		}
-	}
-
-	protected void resetCooldown() {
-		this.cooldown = this.adjustedTickDelay(20);
-	}
-
-	protected boolean isCooledDown() {
-		return this.cooldown <= 0;
-	}
-
-	protected int getCooldown() {
-		return this.cooldown;
-	}
-
-	protected int getMaxCooldown() {
-		return this.adjustedTickDelay(20);
+	protected void attack(LivingEntity target) {
+		this.mob.doHurtTarget(target);
+		this.mob.swing(InteractionHand.MAIN_HAND);
 	}
 
 	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-		return this.mob.getBbWidth() * 2.0f * (this.mob.getBbWidth() * 2.0f) + entity.getBbWidth();
+		return this.mob.getBbWidth() * 4.0f * (this.mob.getBbWidth() * 4.0f) + entity.getBbWidth();
 	}
 }

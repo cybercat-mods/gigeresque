@@ -54,10 +54,9 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
+import software.bernie.geckolib.animatable.GeoEntity;
 
-public abstract class AdultAlienEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
+public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
 	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
 			EntityDataSerializers.FLOAT);
@@ -92,7 +91,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
-		maxUpStep = 1.5f;
+		maxUpStep = 2.5f;
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -424,11 +423,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements IAnimatabl
 				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
 			}
 		}
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
 	}
 
 	@Override

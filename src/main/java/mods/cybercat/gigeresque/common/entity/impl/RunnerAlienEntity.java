@@ -3,32 +3,48 @@ package mods.cybercat.gigeresque.common.entity.impl;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class RunnerAlienEntity extends AdultAlienEntity {
 
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
 		super(type, world);
+	}
+
+	@Override
+	public void travel(Vec3 movementInput) {
+		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
+
+		if (isEffectiveAi() && this.isInWater()) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.5));
+			if (getTarget() == null) {
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+			}
+		} else {
+			super.travel(movementInput);
+		}
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -59,11 +75,11 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
 			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT;
-			case 1 -> AlienAttackType.CLAW_RIGHT;
+			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
+			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 			case 2 -> AlienAttackType.TAIL_LEFT;
 			case 3 -> AlienAttackType.TAIL_RIGHT;
-			default -> AlienAttackType.CLAW_LEFT;
+			default -> AlienAttackType.CLAW_LEFT_MOVING;
 			});
 		}
 	}
@@ -76,143 +92,118 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		this.goalSelector.addGoal(2, new AlienMeleeAttackGoal(this, 3.0, false));
+		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 3.0, false));
 	}
 
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
-				&& this.isStatis() == false) {
-			if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP).addAnimation(
-								AlienAttackType.animationMappings.get(getCurrentAttackType()),
-								EDefaultLoopTypes.PLAY_ONCE));
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead
+					&& this.isStatis() == false && !this.swinging) {
+				if (!this.isInWater() && this.isExecuting() == false) {
+					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
+						return PlayState.CONTINUE;
+					} else if (this.isExecuting() == false && animationSpeedOld < 0.35F
+							|| (!this.isCrawling() && !this.onGround)) {
+						event.getController().setAnimation(RawAnimation.begin().thenLoop("walk"));
+						return PlayState.CONTINUE;
+					}
+				} else {
+					if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
+						if (this.isAggressive() && !this.isVehicle()) {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
+							return PlayState.CONTINUE;
+						} else {
+							event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
+							return PlayState.CONTINUE;
+						}
+					}
+				}
+			} else if (isDead) {
+				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
 				return PlayState.CONTINUE;
-			} else if (this.isExecuting() == false && animationSpeedOld < 0.35F
-					|| (!this.isCrawling() && !this.onGround)) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP).addAnimation(
-								AlienAttackType.animationMappings.get(getCurrentAttackType()),
-								EDefaultLoopTypes.PLAY_ONCE));
-				return PlayState.CONTINUE;
+			} else {
+				if (this.isStatis() == true || this.isNoAi() && !isDead) {
+					event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("stasis_enter"));
+					return PlayState.CONTINUE;
+				} else if (this.isStatis() == false && this.isInWater()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
+					return PlayState.CONTINUE;
+				} else if (this.isStatis() == false && !this.isInWater()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
+					return PlayState.CONTINUE;
+				}
 			}
-		} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
+			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
 			return PlayState.CONTINUE;
-		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else {
-			if (isSearching && !this.isAggressive() && this.isStatis() == false) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("ambient", EDefaultLoopTypes.PLAY_ONCE));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				}
+			}
+			if (event.getKeyframeData().getSound().matches("idleSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
+			}
+		}));
+		manager.addController(new AnimationController<>(this, "attackController", 1, event -> {
+			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("left_claw"));
 				return PlayState.CONTINUE;
-			} else if (this.isStatis() == true || this.isNoAi() && !isDead) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("stasis", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else if (this.isStatis() == false) {
-				event.getController()
-						.setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
+			}
+			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
+					&& this.isExecuting() == false) {
+				event.getController().setAnimation(RawAnimation.begin()
+						.thenPlayXTimes(AlienAttackType.animationMappings.get(getCurrentAttackType()), 1));
 				return PlayState.CONTINUE;
 			}
-		}
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState attackPredicate(AnimationEvent<E> event) {
-		if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation(
-					AlienAttackType.animationMappings.get(getCurrentAttackType()), EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-
-		return PlayState.STOP;
-	}
-
-	private <E extends IAnimatable> PlayState hissPredicate(AnimationEvent<E> event) {
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (this.entityData.get(IS_HISSING) == true && !isDead) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("hiss_sound", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-
-		return PlayState.STOP;
-	}
-
-	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("footstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("handstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(),
+							this.getY(), this.getZ(),
+							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("idleSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+		}));
+		manager.addController(new AnimationController<>(this, "hissController", 1, event -> {
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false
+					&& !isDead&& !this.isInWater()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("hiss"));
+				return PlayState.CONTINUE;
 			}
-		}
-	}
 
-	private <ENTITY extends IAnimatable> void soundAttackListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("clawSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("tailSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundHissListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("hissSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<RunnerAlienEntity> main = new AnimationController<RunnerAlienEntity>(this, "controller",
-				10f, this::predicate);
-		main.registerSoundListener(this::soundStepListener);
-		data.addAnimationController(main);
-		AnimationController<RunnerAlienEntity> attacking = new AnimationController<RunnerAlienEntity>(this,
-				"attackController", 0f, this::attackPredicate);
-		attacking.registerSoundListener(this::soundAttackListener);
-		data.addAnimationController(attacking);
-		AnimationController<RunnerAlienEntity> hissing = new AnimationController<RunnerAlienEntity>(this,
-				"hissController", 10f, this::hissPredicate);
-		hissing.registerSoundListener(this::soundHissListener);
-		data.addAnimationController(hissing);
-		data.addAnimationController(new AnimationController<>(this, "controller", 10f, this::predicate));
-		data.addAnimationController(new AnimationController<>(this, "attackController", 0f, this::attackPredicate));
-		data.addAnimationController(new AnimationController<>(this, "hissController", 10f, this::hissPredicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 }

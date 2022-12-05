@@ -6,10 +6,10 @@ import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
 @Environment(EnvType.CLIENT)
-public class AquaticAlienEntityModel extends AnimatedTickingGeoModel<AquaticAlienEntity> {
+public class AquaticAlienEntityModel extends GeoModel<AquaticAlienEntity> {
 	@Override
 	public ResourceLocation getModelResource(AquaticAlienEntity object) {
 		return EntityModels.AQUATIC_ALIEN;

@@ -58,19 +58,16 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnimationTickable {
+public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 
 	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
@@ -82,7 +79,7 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 			false);
 	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	public float ticksAttachedToHost = -1.0f;
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
 			EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class,
@@ -100,8 +97,8 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(
-				new EntityPositionSource(this, (float) this.getEyeHeight() + 1), 48, this, null, 0.0f, 0));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
+				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -434,84 +431,72 @@ public class FacehuggerEntity extends AlienEntity implements IAnimatable, IAnima
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("impregnate", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-				&& this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("dead", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isUnderWater()
-				&& !this.isCrawling() && !this.isDeadOrDying()) {
-			if (this.entityData.get(ATTACKING) == false && event.isMoving()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else if (this.entityData.get(ATTACKING) == true && event.isMoving()) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_swim", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_water", EDefaultLoopTypes.LOOP));
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("impregnate"));
 				return PlayState.CONTINUE;
 			}
-		}
-		if (this.entityData.get(JUMPING) == true) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("charge", EDefaultLoopTypes.LOOP));
-			event.getController().setAnimationSpeed(0.5);
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("hatch_leap", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-				&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_crawl", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-				&& this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false
-				&& (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling()
-				&& !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("crawl", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_land", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("huggingSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
+					&& this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("dead"));
+				return PlayState.CONTINUE;
 			}
-		}
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
+					&& this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying()) {
+				if (this.entityData.get(ATTACKING) == false && event.isMoving()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
+					return PlayState.CONTINUE;
+				} else if (this.entityData.get(ATTACKING) == true && event.isMoving()) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
+					return PlayState.CONTINUE;
+				}
+			}
+			if (this.entityData.get(JUMPING) == true) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("charge"));
+				event.getController().setAnimationSpeed(0.5);
+				return PlayState.CONTINUE;
+			}
+			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().then("hatch_leap", LoopType.PLAY_ONCE));
+				return PlayState.CONTINUE;
+			}
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
+					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_crawl"));
+				return PlayState.CONTINUE;
+			}
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
+					&& this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false
+					&& (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking()
+					&& !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
+				return PlayState.CONTINUE;
+			}
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling()
+					&& !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
+				return PlayState.CONTINUE;
+			}
+			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
+			return PlayState.CONTINUE;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
+			}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<FacehuggerEntity> controller = new AnimationController<FacehuggerEntity>(this, "controller",
-				10f, this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override

@@ -17,25 +17,22 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class JarStorageEntity extends RandomizableContainerBlockEntity implements IAnimatable {
+public class JarStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
@@ -151,26 +148,22 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<JarStorageEntity>(this, "controller", 0, this::predicate));
-	}
-
-	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (getChestState().equals(StorageStates.CLOSING)) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("closing", EDefaultLoopTypes.PLAY_ONCE).addAnimation("closed", EDefaultLoopTypes.LOOP));
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, event -> {
+			if (getChestState().equals(StorageStates.CLOSING)) {
+				event.getController().setAnimation(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
+				return PlayState.CONTINUE;
+			} else if (getChestState().equals(StorageStates.OPENED)) {
+				event.getController().setAnimation(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
+				return PlayState.CONTINUE;
+			}
+			event.getController().setAnimation(RawAnimation.begin().thenLoop("closed"));
 			return PlayState.CONTINUE;
-		} else if (getChestState().equals(StorageStates.OPENED)) {
-			event.getController()
-					.setAnimation(new AnimationBuilder().addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("opened", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 }

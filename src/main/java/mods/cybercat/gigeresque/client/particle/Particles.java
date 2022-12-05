@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class Particles implements GigeresqueInitializer {
@@ -22,7 +23,7 @@ public class Particles implements GigeresqueInitializer {
 
 	private void registerParticle(String path, SimpleParticleType type,
 			ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory) {
-		Registry.register(Registry.PARTICLE_TYPE, new ResourceLocation(Gigeresque.MOD_ID, path), type);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, new ResourceLocation(Gigeresque.MOD_ID, path), type);
 		ParticleFactoryRegistry.getInstance().register(type, factory);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +45,7 @@ public class ConfigAccessor {
 			return false;
 		ResourceLocation attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		List<String> whitelist = getWhitelistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
+		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 		return whitelist.contains(targetIdentifier.toString());
 	}
 
@@ -55,13 +55,13 @@ public class ConfigAccessor {
 
 	public static boolean isTargetAlienHost(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.alienHosts;
-		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
+		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetDNAImmune(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.dnaBlacklist;
-		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
+		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
@@ -70,7 +70,7 @@ public class ConfigAccessor {
 			return false;
 		ResourceLocation attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		List<String> blacklist = getBlacklistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		ResourceLocation targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
+		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 		return blacklist.contains(targetIdentifier.toString());
 	}
 

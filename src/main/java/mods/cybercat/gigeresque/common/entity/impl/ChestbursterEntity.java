@@ -32,19 +32,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ChestbursterEntity extends AlienEntity implements IAnimatable, Growable, IAnimationTickable {
+public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable {
 
 	private static final EntityDataAccessor<Float> BLOOD = SynchedEntityData.defineId(ChestbursterEntity.class,
 			EntityDataSerializers.FLOAT);
@@ -60,8 +57,7 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	};
 	public int bloodRendering = 0;
 	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
-
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	protected String hostId = null;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
@@ -200,62 +196,49 @@ public class ChestbursterEntity extends AlienEntity implements IAnimatable, Grow
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-			if (animationSpeedOld >= 0.35F) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("rush_slither", EDefaultLoopTypes.LOOP));
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
+				if (animationSpeedOld >= 0.35F) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_slither"));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("slither"));
+					return PlayState.CONTINUE;
+				}
+			} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
+				return PlayState.CONTINUE;
+			} else if (isDead) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("slither", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
+				if (this.tickCount < 60 && this.entityData.get(BIRTHED) == true) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("birth"));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+					return PlayState.CONTINUE;
+				}
 			}
-		} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else {
-			if (this.tickCount < 60 && this.entityData.get(BIRTHED) == true) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("stepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<ChestbursterEntity> controller = new AnimationController<ChestbursterEntity>(this,
-				"controller", 10f, this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
-	}
-	
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {

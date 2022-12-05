@@ -9,14 +9,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<AquaticChestbursterEntity> {
 	public AquaticChestbursterEntityRenderer(EntityRendererProvider.Context context) {
 		super(context, new AquaticChestbursterEntityModel());
 		this.shadowRadius = 0.5f;
-		this.addLayer(new AquaBusterBloodFeatureRenderer(this));
+		this.addRenderLayer(new AquaBusterBloodFeatureRenderer(this));
 	}
 
 	@Override

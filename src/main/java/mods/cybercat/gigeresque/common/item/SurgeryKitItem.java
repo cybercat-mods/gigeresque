@@ -9,7 +9,7 @@ import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -50,7 +50,7 @@ public class SurgeryKitItem extends Item {
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		var identifier = Registry.ENTITY_TYPE.getKey(entity.getType());
+		var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
 		var morphMappings = ConfigAccessor.getReversedMorphMappings();
 
 		String runnerString = Entities.RUNNER_ALIEN.toString();

@@ -12,7 +12,7 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -28,32 +28,27 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatable, Growable, IAnimationTickable {
+public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
-	private AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
-	
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
 	public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
 		super(type, level);
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 15.0)
-				.add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-				.add(Attributes.FOLLOW_RANGE, 16.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 15.0).add(Attributes.ARMOR, 2.0)
+				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+				.add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
 				.add(Attributes.ATTACK_DAMAGE, 5.0).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
@@ -95,7 +90,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 			return new ClassicAlienEntity(Entities.ALIEN, level);
 		}
 		var identifier = new ResourceLocation(variantId);
-		var entityType = Registry.ENTITY_TYPE.getOptional(identifier).orElse(null);
+		var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(identifier).orElse(null);
 		if (entityType == null) {
 			return new ClassicAlienEntity(Entities.ALIEN, level);
 		}
@@ -127,87 +122,74 @@ public class RunnerbursterEntity extends ChestbursterEntity implements IAnimatab
 	/*
 	 * ANIMATIONS
 	 */
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-		if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-			if (animationSpeedOld >= 0.35F) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("run", EDefaultLoopTypes.LOOP));
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
+				if (animationSpeedOld >= 0.35F) {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("walk"));
+					return PlayState.CONTINUE;
+				}
+			} else if (((this.getTarget() != null && this.doHurtTarget(getTarget()))
+					|| (this.entityData.get(EAT) == true)) && !this.isDeadOrDying()) {
+				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
+				return PlayState.CONTINUE;
+			} else if (isDead) {
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
 				return PlayState.CONTINUE;
 			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
+				if (this.entityData.get(BIRTHED) == true && this.tickCount < 60 && this.entityData.get(EAT) == false) {
+					event.getController().setAnimation(RawAnimation.begin().then("birth", LoopType.PLAY_ONCE));
+					return PlayState.CONTINUE;
+				} else {
+					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+					return PlayState.CONTINUE;
+				}
 			}
-		} else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (this.entityData.get(EAT) == true))
-				&& !this.isDeadOrDying()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chomp", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		} else if (isDead) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else {
-			if (this.entityData.get(BIRTHED) == true && this.tickCount < 60 && this.entityData.get(EAT) == false) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("birth", EDefaultLoopTypes.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				}
 			}
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundStepListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("footstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
-						SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("handstepSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
-						SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("idleSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("idleSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("clawSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
+				if (this.level.isClientSide) {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				}
 			}
-		}
-		if (event.sound.matches("tailSoundkey")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-						SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<RunnerbursterEntity> main = new AnimationController<RunnerbursterEntity>(this, "controller",
-				10f, this::predicate);
-		main.registerSoundListener(this::soundStepListener);
-		data.addAnimationController(main);
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
-	@Override
-	public AnimationFactory getFactory() {
-		return animationFactory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
-	}
-	
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {

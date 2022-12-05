@@ -30,7 +30,7 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -212,7 +212,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			}
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				ResourceLocation identifier = Registry.ENTITY_TYPE.getKey(this.getType());
+				ResourceLocation identifier = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType());
 				Map<String, String> morphMappings = ConfigAccessor.getReversedMorphMappings();
 				String producedVariant = morphMappings.getOrDefault(identifier.toString(),
 						EntityIdentifiers.ALIEN.toString());

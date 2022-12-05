@@ -4,10 +4,11 @@ import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SarcophagusModel extends AnimatedGeoModel<AlienStorageEntity> {
+public class SarcophagusModel extends GeoModel<AlienStorageEntity> {
 
 	@Override
 	public ResourceLocation getAnimationResource(AlienStorageEntity animatable) {
@@ -22,6 +23,11 @@ public class SarcophagusModel extends AnimatedGeoModel<AlienStorageEntity> {
 	@Override
 	public ResourceLocation getTextureResource(AlienStorageEntity object) {
 		return EntityTextures.SARCOPHAGUS;
+	}
+
+	@Override
+	public RenderType getRenderType(AlienStorageEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

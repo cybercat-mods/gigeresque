@@ -6,10 +6,10 @@ import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
 @Environment(EnvType.CLIENT)
-public class FacehuggerEntityModel extends AnimatedTickingGeoModel<FacehuggerEntity> {
+public class FacehuggerEntityModel extends GeoModel<FacehuggerEntity> {
 	@Override
 	public ResourceLocation getModelResource(FacehuggerEntity object) {
 		return EntityModels.FACEHUGGER;

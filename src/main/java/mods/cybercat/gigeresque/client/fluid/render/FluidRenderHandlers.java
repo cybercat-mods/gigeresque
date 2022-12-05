@@ -10,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.Minecraft;
@@ -18,7 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -43,12 +42,7 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 		var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
 				"block/" + textureFluidId.getPath() + "_flow");
 
-		// If they're not already present, add the sprites to the block atlas
-		ClientSpriteRegistryCallback.event(TextureAtlas.LOCATION_BLOCKS).register((atlasTexture, registry) -> {
-			registry.register(stillSpriteId);
-			registry.register(flowingSpriteId);
-		});
-		var fluidId = Registry.FLUID.getKey(still);
+		var fluidId = BuiltInRegistries.FLUID.getKey(still);
 		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 		TextureAtlasSprite[] fluidSprites = new TextureAtlasSprite[2];
 

@@ -17,23 +17,21 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class IdolStorageEntity extends RandomizableContainerBlockEntity implements IAnimatable {
+public class IdolStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
@@ -141,16 +139,15 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<IdolStorageEntity>(this, "controller", 0, this::predicate));
-	}
-
-	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.CONTINUE;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return factory;
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+		
 	}
 }
