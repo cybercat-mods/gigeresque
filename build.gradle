@@ -37,27 +37,28 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
-	mappings( loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-1.19.2:2022.08.14@zip")
-	})
+    mappings loom.officialMojangMappings()
+	//mappings( loom.layered() {
+		//officialMojangMappings()
+		//parchment("org.parchmentmc.data:parchment-1.19.2:2022.08.14@zip")
+	//})
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.36"
-	modImplementation ("com.terraformersmc:modmenu:4.0.6")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.520") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modApi("dev.architectury:architectury-fabric:6.0.37") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modApi("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modImplementation 'com.sk89q.worldedit:worldedit-fabric-mc1.19.2:7.2.12'
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3-rc1:4.0.0'
+	modImplementation ("com.terraformersmc:modmenu:5.0.0-alpha.4")
+    //modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
+        //exclude(group: "net.fabricmc.fabric-api")
+    //}
+    //modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.520") {
+        //exclude(group: "net.fabricmc.fabric-api")
+    //}
+    //modApi("dev.architectury:architectury-fabric:6.0.37") {
+        //exclude(group: "net.fabricmc.fabric-api")
+    //}
+    //modApi("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
+        //exclude(group: "net.fabricmc.fabric-api")
+    //}
+    //modImplementation 'com.sk89q.worldedit:worldedit-fabric-mc1.19.2:7.2.12'
 }
 
 processResources {
