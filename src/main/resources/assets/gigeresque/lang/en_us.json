@@ -94,7 +94,7 @@
   "config.gigeresque.aquaticAlienGrowthMultiplier": "Aquatic Alien Growth Multiplier",
   "config.gigeresque.aquaticChestbursterGrowthMultiplier": "Aquaburster Growth Multiplier",
   "config.gigeresque.chestbursterGrowthMultiplier": "Chestburster Growth Multiplier",
-  "config.gigeresque.eggmorphTickMultiplier": "Eggmorph Tick Multiplier",
+  "config.gigeresque.eggmorphTickTimer": "Eggmorph Tick Timer",
   "config.gigeresque.facehuggerAttachTickTimer": "Facehugger Attach Tick Timer",
   "config.gigeresque.impregnationTickTimer": "Impregnation Tick Timer",
   "config.gigeresque.runnerAlienGrowthMultiplier": "Runner Alien Growth Multiplier",
