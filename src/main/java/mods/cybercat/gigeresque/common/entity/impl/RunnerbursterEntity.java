@@ -6,8 +6,8 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,11 +29,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
@@ -123,65 +119,23 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
-			var velocityLength = this.getDeltaMovement().horizontalDistance();
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("walk"));
-					return PlayState.CONTINUE;
-				}
-			} else if (((this.getTarget() != null && this.doHurtTarget(getTarget()))
-					|| (this.entityData.get(EAT) == true)) && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else if (isDead) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
-				return PlayState.CONTINUE;
-			} else {
-				if (this.entityData.get(BIRTHED) == true && this.tickCount < 60 && this.entityData.get(EAT) == false) {
-					event.getController().setAnimation(RawAnimation.begin().then("birth", LoopType.PLAY_ONCE));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-					return PlayState.CONTINUE;
-				}
-			}
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
-				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
-				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("idleSoundkey")) {
-				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
-				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
-				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
+			if (event.isMoving()  && !isDead)
+				if (animationSpeedOld >= 0.35F)
+					return event.setAndContinue(GigAnimationsDefault.RUN);
+				else
+					return event.setAndContinue(GigAnimationsDefault.WALK);
+			else if (((this.getTarget() != null && this.doHurtTarget(getTarget()))
+					|| (this.entityData.get(EAT) == true)) && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CHOMP);
+			else if (isDead)
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else if (this.entityData.get(BIRTHED) == true)
+				return event.setAndContinue(GigAnimationsDefault.BIRTH);
+			else
+				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
 	}
 

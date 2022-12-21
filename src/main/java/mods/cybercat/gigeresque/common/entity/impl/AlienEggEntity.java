@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -35,11 +36,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
@@ -249,8 +247,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (Mth.sqrt((float) entity.distanceToSqr(vec3d1)) / q);
 			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof Player)
-						&& !(entity instanceof AlienEntity)
+				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity)
 						&& !(ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
 							&& !(entity instanceof AmbientCreature)
@@ -259,8 +256,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 							setIsHatching(true);
 					}
 				}
-				if (entity instanceof Player && !((Player) entity).isCreative()
-						&& !((Player) entity).isSpectator()) {
+				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator()) {
 					setIsHatching(true);
 				}
 			}
@@ -290,29 +286,18 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			if (isHatched() && !this.isDeadOrDying()) {
-				if (!hasFacehugger()) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("hatched_empty"));
-					return PlayState.CONTINUE;
-				}
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("hatched"));
-				return PlayState.CONTINUE;
+				if (!hasFacehugger())
+					return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
+				return event.setAndContinue(GigAnimationsDefault.HATCHED);
 			}
-
-			if (this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
-				return PlayState.CONTINUE;
-			}
-
-			if (isHatching() && !this.isDeadOrDying()) {
-				event.getController()
-						.setAnimation(RawAnimation.begin().then("hatch", LoopType.PLAY_ONCE).thenPlayAndHold("hatched"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
+			if (this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			if (isHatching() && !this.isDeadOrDying())
+				event.getController().setAnimation(GigAnimationsDefault.HATCHING);
+			return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
 	}
 

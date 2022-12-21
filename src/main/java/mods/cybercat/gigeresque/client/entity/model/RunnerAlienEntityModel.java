@@ -1,42 +1,22 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationEvent;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 @Environment(EnvType.CLIENT)
-public class RunnerAlienEntityModel extends GeoModel<RunnerAlienEntity> {
-	@Override
-	public ResourceLocation getModelResource(RunnerAlienEntity object) {
-		return EntityModels.RUNNER_ALIEN;
+public class RunnerAlienEntityModel extends DefaultedEntityGeoModel<RunnerAlienEntity> {
+
+	public RunnerAlienEntityModel() {
+		super(new ResourceLocation(Gigeresque.MOD_ID, "runner_alien/runner_alien"), true);
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(RunnerAlienEntity object) {
-		return EntityTextures.RUNNER_ALIEN;
-	}
-
-	@Override
-	public ResourceLocation getAnimationResource(RunnerAlienEntity animatable) {
-		return EntityAnimations.RUNNER_ALIEN;
-	}
-
-	@Override
-	public void setCustomAnimations(RunnerAlienEntity animatable, long instanceId,
-			AnimationEvent<RunnerAlienEntity> animationEvent) {
-		super.setCustomAnimations(animatable, instanceId, animationEvent);
-		CoreGeoBone neck = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationEvent.getData(DataTickets.ENTITY_MODEL_DATA);
-		if (neck != null) {
-			neck.setRotY((entityData.netHeadYaw() * (((float) Math.PI) / 340f)));
-		}
+	public RenderType getRenderType(RunnerAlienEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

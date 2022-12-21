@@ -24,6 +24,9 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.FACEHUGGER, FacehuggerEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNER_ALIEN, RunnerAlienEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.RUNNERBURSTER, RunnerbursterEntityRenderer::new);
+		EntityRendererRegistry.register(Entities.MUTANT_POPPER, PopperEntityRenderer::new);
+		EntityRendererRegistry.register(Entities.MUTANT_HAMMERPEDE, HammerpedeEntityRenderer::new);
+		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1,
 				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,

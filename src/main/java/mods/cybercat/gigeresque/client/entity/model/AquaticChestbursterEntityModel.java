@@ -1,41 +1,22 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationEvent;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 @Environment(EnvType.CLIENT)
-public class AquaticChestbursterEntityModel extends GeoModel<AquaticChestbursterEntity> {
-	@Override
-	public ResourceLocation getModelResource(AquaticChestbursterEntity object) {
-		return EntityModels.AQUATIC_CHESTBURSTER;
+public class AquaticChestbursterEntityModel extends DefaultedEntityGeoModel<AquaticChestbursterEntity> {
+
+	public AquaticChestbursterEntityModel() {
+		super(new ResourceLocation(Gigeresque.MOD_ID, "aquatic_chestburster/aquatic_chestburster"), true);
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(AquaticChestbursterEntity object) {
-		return EntityTextures.AQUATIC_CHESTBURSTER;
-	}
-
-	@Override
-	public ResourceLocation getAnimationResource(AquaticChestbursterEntity animatable) {
-		return EntityAnimations.AQUATIC_CHESTBURSTER;
-	}
-
-	public void setCustomAnimations(AquaticChestbursterEntity animatable, long instanceId,
-			AnimationEvent<AquaticChestbursterEntity> animationEvent) {
-		super.setCustomAnimations(animatable, instanceId, animationEvent);
-		CoreGeoBone neck = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationEvent.getData(DataTickets.ENTITY_MODEL_DATA);
-		if (neck != null) {
-			neck.setRotY((entityData.netHeadYaw() * (((float) Math.PI) / 340f)));
-		}
+	public RenderType getRenderType(AquaticChestbursterEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

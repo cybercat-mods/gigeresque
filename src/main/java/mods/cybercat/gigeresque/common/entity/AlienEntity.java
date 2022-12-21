@@ -115,6 +115,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		super.defineSynchedData();
 		entityData.define(UPSIDE_DOWN, false);
 		this.entityData.define(STATE, 0);
+		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
 
 	@Override
@@ -129,17 +130,17 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("listener", 10)) {
-			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
-					.resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener
-							.updateListener((GigVibrationListener) vibrationListener, this.level));
-		}
 		if (compound.contains("anger")) {
 			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger")))
 					.resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
 						this.angerManagement = angerManagement;
 					});
 			this.syncClientAngerLevel();
+		}
+		if (compound.contains("listener", 10)) {
+			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
+					.resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener
+							.updateListener((GigVibrationListener) vibrationListener, this.level));
 		}
 	}
 
@@ -178,6 +179,16 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
 		return false;
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		ServerLevel serverLevel = (ServerLevel) this.level;
+		super.customServerAiStep();
+		if (this.tickCount % 20 == 0) {
+			this.angerManagement.tick(serverLevel, this::canTargetEntity);
+			this.syncClientAngerLevel();
+		}
 	}
 
 	@Override

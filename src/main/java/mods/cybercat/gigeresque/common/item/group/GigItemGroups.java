@@ -24,6 +24,9 @@ public class GigItemGroups {
 				entries.accept(GigItems.AQUATIC_ALIEN_SPAWN_EGG);
 				entries.accept(GigItems.RUNNERBURSTER_SPAWN_EGG);
 				entries.accept(GigItems.RUNNER_ALIEN_SPAWN_EGG);
+				entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG);
+				entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG);
+				entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG);
 			}).build();
 
 	public static final CreativeModeTab BLOCKS = FabricItemGroup

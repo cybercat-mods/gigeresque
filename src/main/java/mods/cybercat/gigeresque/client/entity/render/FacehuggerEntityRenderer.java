@@ -92,13 +92,16 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
 	@Override
 	public void preRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
-			int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay,
-				red, green, blue, alpha);
-		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true)
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true) {
+			poseStack.pushPose();
 			poseStack.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F,
 					animatable.tickCount < 5 ? 0 : 1F);
+			poseStack.popPose();
+		}
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

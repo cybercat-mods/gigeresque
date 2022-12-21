@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.AlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.sounds.SoundSource;
@@ -37,7 +38,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.Animation.LoopType;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
@@ -159,6 +160,7 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
@@ -218,45 +220,31 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
-
-			var velocityLength = this.getDeltaMovement().horizontalDistance();
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (this.isUnderWater() && this.wasTouchingWater) {
-				if (this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
-					return PlayState.CONTINUE;
-				} else if (!this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
-					return PlayState.CONTINUE;
-				} else if (isDead) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
-					return PlayState.CONTINUE;
-				}
+				if (this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.SWIM);
+				else if (isDead)
+					return event.setAndContinue(GigAnimationsDefault.DEATH);
+				else
+					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else {
-				if (this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_crawl"));
-					return PlayState.CONTINUE;
-				} else if (!this.isAggressive() && velocityLength > 0.0 && !isDead && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
-					return PlayState.CONTINUE;
-				} else if (isSearching && !this.isAggressive() && !isDead && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE));
-					return PlayState.CONTINUE;
-				} else if (isDead) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
-					return PlayState.CONTINUE;
-				} else if (this.isStatis() == true || this.isNoAi()) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("stasis"));
-					return PlayState.CONTINUE;
-				} else if (this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land2"));
-					return PlayState.CONTINUE;
-				}
+				if (this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
+				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.CRAWL);
+				else if (isSearching && !this.isAggressive() && !isDead && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+				else if (isDead)
+					return event.setAndContinue(GigAnimationsDefault.DEATH);
+				else if (this.isStatis() == true || this.isNoAi())
+					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+				else if (this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
 				return PlayState.CONTINUE;
 			}
 		}).setSoundKeyframeHandler(event -> {
@@ -278,18 +266,13 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 							GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
-		}));
-		manager.addController(new AnimationController<>(this, "attackController", 1, event -> {
-			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("left_claw"));
-				return PlayState.CONTINUE;
-			}
+		})).add(new AnimationController<>(this, "attackController", 1, event -> {
+			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
-					&& this.isExecuting() == false) {
-				event.getController().setAnimation(
-						RawAnimation.begin().thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
-				return PlayState.CONTINUE;
-			}
+					&& this.isExecuting() == false)
+				return event.setAndContinue(RawAnimation.begin()
+						.then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
@@ -304,14 +287,10 @@ public class AquaticAlienEntity extends AdultAlienEntity {
 							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
-		}));
-		manager.addController(new AnimationController<>(this, "hissController", 1, event -> {
+		})).add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false
-					&& !isDead) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("hiss"));
-				return PlayState.CONTINUE;
-			}
+			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+				return event.setAndContinue(GigAnimationsDefault.HISS);
 
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {

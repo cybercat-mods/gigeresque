@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
@@ -60,11 +61,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity {
@@ -432,58 +430,37 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
-			if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("impregnate"));
-				return PlayState.CONTINUE;
-			}
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+			if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("dead"));
-				return PlayState.CONTINUE;
-			}
+					&& this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying()) {
-				if (this.entityData.get(ATTACKING) == false && event.isMoving()) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
-					return PlayState.CONTINUE;
-				} else if (this.entityData.get(ATTACKING) == true && event.isMoving()) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
-					return PlayState.CONTINUE;
-				}
-			}
-			if (this.entityData.get(JUMPING) == true) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("charge"));
-				event.getController().setAnimationSpeed(0.5);
-				return PlayState.CONTINUE;
-			}
-			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().then("hatch_leap", LoopType.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			}
+					&& this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
+				if (this.entityData.get(ATTACKING) == false && event.isMoving())
+					return event.setAndContinue(GigAnimationsDefault.SWIM);
+				else if (this.entityData.get(ATTACKING) == true && event.isMoving())
+					return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+				else
+					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+			if (this.entityData.get(JUMPING) == true)
+				return event.setAndContinue(GigAnimationsDefault.CHARGE);
+			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_crawl"));
-				return PlayState.CONTINUE;
-			}
+					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
 					&& this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false
 					&& (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking()
-					&& !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
-				return PlayState.CONTINUE;
-			}
+					&& !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling()
-					&& !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
-			return PlayState.CONTINUE;
+					&& !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
+			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
 				if (this.level.isClientSide) {

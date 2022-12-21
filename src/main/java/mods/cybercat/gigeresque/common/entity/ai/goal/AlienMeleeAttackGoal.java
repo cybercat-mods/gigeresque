@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.world.InteractionHand;
@@ -18,14 +17,14 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 
 public class AlienMeleeAttackGoal extends Goal {
-	protected final AdultAlienEntity mob;
-	private final double speed;
-	private final boolean pauseWhenMobIdle;
-	private Path path;
-	private int cooldown;
-	private long lastUpdateTime;
+	protected final AlienEntity mob;
+	protected final double speed;
+	protected final boolean pauseWhenMobIdle;
+	protected Path path;
+	protected int cooldown;
+	protected long lastUpdateTime;
 
-	public AlienMeleeAttackGoal(AdultAlienEntity mob, double speed, boolean pauseWhenMobIdle) {
+	public AlienMeleeAttackGoal(AlienEntity mob, double speed, boolean pauseWhenMobIdle) {
 		this.mob = mob;
 		this.speed = speed;
 		this.pauseWhenMobIdle = pauseWhenMobIdle;
@@ -144,7 +143,7 @@ public class AlienMeleeAttackGoal extends Goal {
 		this.mob.getNavigation().moveTo(this.path, this.speed);
 		this.mob.setAggressive(true);
 		this.cooldown = 0;
-		mob.setIsExecuting(false);
+		this.mob.setAttackingState(0);
 	}
 
 	@Override
@@ -155,7 +154,7 @@ public class AlienMeleeAttackGoal extends Goal {
 		}
 		this.mob.setAggressive(false);
 		this.mob.getNavigation().stop();
-		mob.setIsExecuting(false);
+		this.mob.setAttackingState(0);
 	}
 
 	@Override

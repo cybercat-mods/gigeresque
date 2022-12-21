@@ -18,6 +18,7 @@ import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.sounds.SoundSource;
@@ -39,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.Animation.LoopType;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
@@ -99,23 +100,24 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		}
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.isCrawling() || this.isInWater() && this.getDeltaMovement().horizontalDistance() < 0.000001) {
-				setCurrentAttackType(switch (this.getAttckingState()) {
-				case 0 -> AlienAttackType.CLAW_LEFT;
-				case 1 -> AlienAttackType.CLAW_RIGHT;
-				case 2 -> AlienAttackType.TAIL_LEFT;
-				case 3 -> AlienAttackType.TAIL_RIGHT;
-				default -> AlienAttackType.CLAW_LEFT;
-				});
-			} else {
-				setCurrentAttackType(switch (this.getAttckingState()) {
-				case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-				default -> AlienAttackType.CLAW_LEFT_MOVING;
-				});
-			}
+			if (this.isAggressive())
+				if (this.isCrawling() || this.isInWater() && this.getDeltaMovement().horizontalDistance() < 0.000001) {
+					setCurrentAttackType(switch (this.getAttckingState()) {
+					case 0 -> AlienAttackType.CLAW_LEFT;
+					case 1 -> AlienAttackType.CLAW_RIGHT;
+					case 2 -> AlienAttackType.TAIL_LEFT;
+					case 3 -> AlienAttackType.TAIL_RIGHT;
+					default -> AlienAttackType.CLAW_LEFT;
+					});
+				} else {
+					setCurrentAttackType(switch (this.getAttckingState()) {
+					case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
+					case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
+					case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
+					case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
+					default -> AlienAttackType.CLAW_LEFT_MOVING;
+					});
+				}
 		}
 		if (this.isAggressive()) {
 			this.setPose(Pose.CROUCHING);
@@ -148,7 +150,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 					GeckoLib.LOGGER.debug(holdingCounter);
 					this.setAggressive(false);
 				}
-				if (holdingCounter >= 850) {
+				if (holdingCounter >= 840) {
 					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
 					this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
 							0.0);
@@ -245,73 +247,45 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
 					&& this.isStatis() == false) {
 				if (!this.isInWater() && this.isExecuting() == false) {
-					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null) {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("run"));
-						return PlayState.CONTINUE;
-					} else if (!this.isCrawling()) {
-						if (this.isVehicle()) {
-							event.getController().setAnimation(RawAnimation.begin().thenLoop("walk_carrying")
-									.thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
-							event.getController().setAnimationSpeed(animationSpeedOld * 4);
-							return PlayState.CONTINUE;
-						} else {
-							event.getController().setAnimation(RawAnimation.begin().thenLoop("walk")
-									.thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
-							return PlayState.CONTINUE;
-						}
-					}
-				} else {
-					if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
-						if (this.isAggressive() && !this.isVehicle()) {
-							event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
-							return PlayState.CONTINUE;
-						} else {
-							event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
-							return PlayState.CONTINUE;
-						}
-					}
-				}
+					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
+						return event.setAndContinue(GigAnimationsDefault.RUN);
+					else if (!this.isCrawling())
+						if (this.isVehicle())
+							return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
+						else
+							return event.setAndContinue(GigAnimationsDefault.WALK);
+				} else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
+					if (this.isAggressive() && !this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+					else
+						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false
-					&& !this.isVehicle()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("crawl"));
-				return PlayState.CONTINUE;
-			} else if (isDead && !this.isVehicle()) {
-				event.getController().setAnimation(RawAnimation.begin().then("death", LoopType.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false) {
-				if (this.isVehicle()) {
-					event.getController()
-							.setAnimation(RawAnimation.begin().then("execution_carry", LoopType.PLAY_ONCE));
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().then("execution_grab", LoopType.PLAY_ONCE));
-				}
-				return PlayState.CONTINUE;
-			} else {
+					&& !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
+			else if (isDead && !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
+				if (this.isVehicle())
+					return event.setAndContinue(GigAnimationsDefault.EXECUTION_CARRY);
+				else
+					return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
+			else {
 				if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
-						&& this.isExecuting() == false && this.isStatis() == false) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
-					return PlayState.CONTINUE;
-				} else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
-						&& this.isExecuting() == false && this.isStatis() == false && !isDead) {
-					event.getController().setAnimation(RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE));
-					return PlayState.CONTINUE;
-				} else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle()) {
-					event.getController().setAnimation(RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE)
-							.thenPlayAndHold("stasis_loop"));
-					return PlayState.CONTINUE;
-				} else if (!this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle()) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
-					return PlayState.CONTINUE;
-				}
+						&& this.isExecuting() == false && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+				else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
+						&& this.isExecuting() == false && this.isStatis() == false && !isDead && !event.isMoving())
+					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+				else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle())
+					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
 			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
-			return PlayState.CONTINUE;
+			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
 				if (this.level.isClientSide) {
@@ -349,22 +323,15 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 							GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
-		}));
-		manager.addController(new AnimationController<>(this, "attackController", 1, event -> {
-			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("left_claw"));
-				return PlayState.CONTINUE;
-			}
+		})).add(new AnimationController<>(this, "attackController", 1, event -> {
+			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
-					&& this.isExecuting() == false) {
-				event.getController().setAnimation(
-						RawAnimation.begin().thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
-				return PlayState.CONTINUE;
-			}
-			if (this.isVehicle() && this.isExecuting() == false) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("kidnap"));
-				return PlayState.CONTINUE;
-			}
+					&& this.isExecuting() == false)
+				return event.setAndContinue(RawAnimation.begin()
+						.then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
+			if (this.isVehicle() && this.isExecuting() == false)
+				return event.setAndContinue(GigAnimationsDefault.KIDNAP);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
@@ -380,14 +347,10 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				}
 			}
 		}));
-		manager.addController(new AnimationController<>(this, "hissController", 1, event -> {
+		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false
-					&& !isDead) {
-//				event.getController().setAnimation(RawAnimation.begin().thenLoop("hiss"));
-//				return PlayState.CONTINUE;
-			}
-
+			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+				return event.setAndContinue(GigAnimationsDefault.HISS);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {

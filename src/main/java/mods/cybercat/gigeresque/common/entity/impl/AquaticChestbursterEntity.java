@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.impl;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.sounds.SoundSource;
@@ -24,11 +25,8 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
@@ -113,46 +111,31 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
-			var velocityLength = this.getDeltaMovement().horizontalDistance();
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-				if (this.isUnderWater()) {
-					if (animationSpeedOld >= 0.35F) {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_swim"));
-						return PlayState.CONTINUE;
-					} else {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("swim"));
-						return PlayState.CONTINUE;
-					}
-				} else {
-					if (animationSpeedOld >= 0.35F) {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_slither"));
-						return PlayState.CONTINUE;
-					} else {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("slither"));
-						return PlayState.CONTINUE;
-					}
-				}
-			} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else if (isDead) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
-				return PlayState.CONTINUE;
-			} else {
-				if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("birth"));
-					return PlayState.CONTINUE;
-				} else {
-					if (this.isUnderWater()) {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_water"));
-						return PlayState.CONTINUE;
-					} else {
-						event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_land"));
-						return PlayState.CONTINUE;
-					}
+			if (event.isMoving() && !isDead && animationSpeedOld > 0.15F)
+				if (this.isUnderWater())
+					if (animationSpeedOld >= 0.35F)
+						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+					else
+						return event.setAndContinue(GigAnimationsDefault.SWIM);
+				else if (animationSpeedOld >= 0.35F)
+					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
+				else
+					return event.setAndContinue(GigAnimationsDefault.SLITHER);
+			else if (this.entityData.get(EAT) == true && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CHOMP);
+			else if (isDead)
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else {
+				if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true)
+					return event.setAndContinue(GigAnimationsDefault.BIRTH);
+				else {
+					if (this.isUnderWater())
+						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+					else
+						return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 				}
 			}
 		}).setSoundKeyframeHandler(event -> {

@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -34,11 +35,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable {
@@ -74,11 +72,11 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	}
 
 	public float getBlood() {
-		return entityData.get(GROWTH);
+		return entityData.get(BLOOD);
 	}
 
 	public void setBlood(float growth) {
-		entityData.set(GROWTH, growth);
+		entityData.set(BLOOD, growth);
 	}
 
 	@Override
@@ -111,11 +109,11 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	}
 
 	public float getGrowth() {
-		return entityData.get(BLOOD);
+		return entityData.get(GROWTH);
 	}
 
 	public void setGrowth(float growth) {
-		entityData.set(BLOOD, growth);
+		entityData.set(GROWTH, growth);
 	}
 
 	@Override
@@ -197,33 +195,22 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	 * ANIMATIONS
 	 */
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "livingController", 5, event -> {
-			var velocityLength = this.getDeltaMovement().horizontalDistance();
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (velocityLength >= 0.000000001 && !isDead && animationSpeedOld > 0.15F) {
-				if (animationSpeedOld >= 0.35F) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("rush_slither"));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("slither"));
-					return PlayState.CONTINUE;
-				}
-			} else if (this.entityData.get(EAT) == true && !this.isDeadOrDying()) {
-				event.getController().setAnimation(RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			} else if (isDead) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("death"));
-				return PlayState.CONTINUE;
-			} else {
-				if (this.tickCount < 60 && this.entityData.get(BIRTHED) == true) {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("birth"));
-					return PlayState.CONTINUE;
-				} else {
-					event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-					return PlayState.CONTINUE;
-				}
-			}
+			if (event.isMoving() && !isDead && animationSpeedOld > 0.15F)
+				if (animationSpeedOld >= 0.35F)
+					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
+				else
+					return event.setAndContinue(GigAnimationsDefault.SLITHER);
+			else if (this.entityData.get(EAT) == true && !this.isDeadOrDying())
+				return event.setAndContinue(GigAnimationsDefault.CHOMP);
+			else if (isDead)
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else if (this.tickCount < 60 && this.entityData.get(BIRTHED) == true)
+				return event.setAndContinue(GigAnimationsDefault.BIRTH);
+			else
+				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
 				if (this.level.isClientSide) {

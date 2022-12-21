@@ -1,5 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
 public enum GenericAlienAttackType {
-	NONE, CLAW, TAIL, EXECUTION
+	NONE, CLAW, TAIL, EXECUTION, NORMAL, HEAVY
 }

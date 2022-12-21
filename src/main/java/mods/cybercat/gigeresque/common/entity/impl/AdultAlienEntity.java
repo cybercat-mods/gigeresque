@@ -201,7 +201,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_STATIS, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
-		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
+		//this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
 
 	@Override

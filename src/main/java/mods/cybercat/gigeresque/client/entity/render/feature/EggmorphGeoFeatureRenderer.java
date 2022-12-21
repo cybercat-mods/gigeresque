@@ -27,8 +27,8 @@ public class EggmorphGeoFeatureRenderer<T extends LivingEntity & GeoAnimatable> 
 		var renderLayer = EggmorphFeatureRenderer
 				.getEggmorphLayerTexture(getGeoModel().getTextureResource(animatable)).renderLayer;
 		if (animatable instanceof Eggmorphable && ((Eggmorphable) animatable).isEggmorphing())
-			renderer.reRender(getGeoModel().getBakedModel(renderer.getGeoModel().getModelResource(animatable)),
-					poseStack, bufferSource, animatable, renderLayer, bufferSource.getBuffer(renderLayer), partialTick,
-					packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, progress);
+			renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, renderLayer,
+					bufferSource.getBuffer(renderLayer), partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0f,
+					1.0f, 1.0f, progress);
 	}
 }

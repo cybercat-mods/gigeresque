@@ -4871,7 +4871,7 @@
 				}
 			}
 		},
-		"dead": {
+		"death": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {

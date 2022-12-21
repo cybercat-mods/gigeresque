@@ -36,6 +36,12 @@ public class GigItems {
 			new SpawnEggItem(Entities.RUNNER_ALIEN, 0x3E230B, 0x623C25, new Item.Properties()));
 	public static final SpawnEggItem RUNNERBURSTER_SPAWN_EGG = registerItem("runnerburster_spawn_egg",
 			new SpawnEggItem(Entities.RUNNERBURSTER, 0xDED29D, 0x2C2B27, new Item.Properties()));
+	public static final SpawnEggItem MUTANT_POPPER_SPAWN_EGG = registerItem("popper_spawn_egg",
+			new SpawnEggItem(Entities.MUTANT_POPPER, 0xdeeae9, 0x816d66, new Item.Properties()));
+	public static final SpawnEggItem MUTANT_HAMMERPEDE_SPAWN_EGG = registerItem("hammerpede_spawn_egg",
+			new SpawnEggItem(Entities.MUTANT_HAMMERPEDE, 0xe3e1d5, 0x826e66, new Item.Properties()));
+	public static final SpawnEggItem MUTANT_STALKER_SPAWN_EGG = registerItem("stalker_spawn_egg",
+			new SpawnEggItem(Entities.MUTANT_STALKER, 0xcdd7d8, 0x816d66, new Item.Properties()));
 
 //	public static final EngiArmorItem ENGI_ARMOR_HELMET = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.HEAD);
 //	public static final EngiArmorItem ENGI_ARMOR_CHESTPLATE = new EngiArmorItem(ArmorMaterials.DIAMOND,

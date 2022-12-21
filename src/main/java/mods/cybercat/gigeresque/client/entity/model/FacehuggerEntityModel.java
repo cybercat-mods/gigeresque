@@ -1,27 +1,22 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 @Environment(EnvType.CLIENT)
-public class FacehuggerEntityModel extends GeoModel<FacehuggerEntity> {
-	@Override
-	public ResourceLocation getModelResource(FacehuggerEntity object) {
-		return EntityModels.FACEHUGGER;
+public class FacehuggerEntityModel extends DefaultedEntityGeoModel<FacehuggerEntity> {
+
+	public FacehuggerEntityModel() {
+		super(new ResourceLocation(Gigeresque.MOD_ID, "facehugger/facehugger"), false);
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(FacehuggerEntity object) {
-		return EntityTextures.FACEHUGGER;
-	}
-
-	@Override
-	public ResourceLocation getAnimationResource(FacehuggerEntity animatable) {
-		return EntityAnimations.FACEHUGGER;
+	public RenderType getRenderType(FacehuggerEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

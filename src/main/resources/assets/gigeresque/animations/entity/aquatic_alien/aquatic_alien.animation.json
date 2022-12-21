@@ -7528,7 +7528,7 @@
 				}
 			}
 		},
-		"stasis": {
+		"statis_enter": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {

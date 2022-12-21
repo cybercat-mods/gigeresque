@@ -44,8 +44,8 @@ dependencies {
 	//})
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3-rc1:4.0.0'
-	modImplementation ("com.terraformersmc:modmenu:5.0.0-alpha.4")
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.2'
+	modImplementation ("com.terraformersmc:modmenu:5.0.1")
     //modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
         //exclude(group: "net.fabricmc.fabric-api")
     //}

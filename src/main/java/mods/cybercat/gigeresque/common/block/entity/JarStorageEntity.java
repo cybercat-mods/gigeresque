@@ -23,10 +23,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class JarStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
@@ -148,17 +147,13 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 	}
 
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, event -> {
-			if (getChestState().equals(StorageStates.CLOSING)) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-				return PlayState.CONTINUE;
-			} else if (getChestState().equals(StorageStates.OPENED)) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("closed"));
-			return PlayState.CONTINUE;
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			if (getChestState().equals(StorageStates.CLOSING))
+				return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
+			else if (getChestState().equals(StorageStates.OPENED))
+				return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
 		}));
 	}
 

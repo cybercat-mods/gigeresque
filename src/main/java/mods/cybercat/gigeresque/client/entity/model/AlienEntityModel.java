@@ -1,19 +1,19 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mods.cybercat.gigeresque.client.entity.animation.EntityAnimations;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 @Environment(EnvType.CLIENT)
-public class AlienEntityModel extends GeoModel<ClassicAlienEntity> {
+public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity> {
 
-	@Override
-	public ResourceLocation getModelResource(ClassicAlienEntity object) {
-		return EntityModels.ALIEN;
+	public AlienEntityModel() {
+		super(new ResourceLocation(Gigeresque.MOD_ID, "alien/alien"), false);
 	}
 
 	@Override
@@ -22,8 +22,8 @@ public class AlienEntityModel extends GeoModel<ClassicAlienEntity> {
 	}
 
 	@Override
-	public ResourceLocation getAnimationResource(ClassicAlienEntity animatable) {
-		return EntityAnimations.ALIEN;
+	public RenderType getRenderType(ClassicAlienEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

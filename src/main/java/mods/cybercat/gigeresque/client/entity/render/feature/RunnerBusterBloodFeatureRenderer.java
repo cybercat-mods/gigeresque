@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import net.fabricmc.api.EnvType;
@@ -27,10 +26,10 @@ public class RunnerBusterBloodFeatureRenderer extends GeoRenderLayer<Runnerburst
 			RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick,
 			int packedLight, int packedOverlay) {
 		var uv = animatable.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
+		var rendertype = RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD);
 		if (!(animatable.getGrowth() >= 1200))
-			renderer.reRender(getGeoModel().getBakedModel(EntityModels.RUNNERBURSTER), poseStack, bufferSource, animatable,
-					RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD),
-					bufferSource.getBuffer(RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD)), partialTick,
-					packedLight, uv, 1.0f, 1.0f, 1.0f, ((1200 - animatable.getBlood()) / 1200));
+			getRenderer().reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype,
+					bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1, 1, 1,
+					((1200 - animatable.getBlood()) / 1200));
 	}
 }

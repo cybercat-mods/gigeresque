@@ -11,8 +11,11 @@ import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.HammerpedeEntity;
+import mods.cybercat.gigeresque.common.entity.impl.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.StalkerEntity;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -61,6 +64,12 @@ public class Entities implements GigeresqueInitializer {
 			EntityIdentifiers.RUNNER_ALIEN.getPath(), RunnerAlienEntity::new, 1.25f, 1.75f);
 	public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(
 			EntityIdentifiers.RUNNERBURSTER.getPath(), RunnerbursterEntity::new, 0.5f, 0.5f);
+	public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(
+			EntityIdentifiers.MUTANT_POPPER.getPath(), PopperEntity::new, 1.0f, 0.75f);
+	public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(
+			EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), HammerpedeEntity::new, 1.0f, 0.25f);
+	public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(
+			EntityIdentifiers.MUTANT_STALKER.getPath(), StalkerEntity::new, 1.25f, 1.75f);
 
 	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1;
 	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2;
@@ -85,5 +94,8 @@ public class Entities implements GigeresqueInitializer {
 		FabricDefaultAttributeRegistry.register(FACEHUGGER, FacehuggerEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(RUNNER_ALIEN, RunnerAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(RUNNERBURSTER, RunnerbursterEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(MUTANT_POPPER, PopperEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(MUTANT_HAMMERPEDE, HammerpedeEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(MUTANT_STALKER, StalkerEntity.createAttributes());
 	}
 }
