@@ -16,7 +16,7 @@
     "common.entity.WardenEntityMixin"
   ],
   "client": [
-    //"client.entity.render.GeoEntityRendererMixin",
+    "client.entity.render.GeoEntityRendererMixin",
     "client.entity.render.LivingEntityRendererMixin",
     "client.entity.render.feature.SheepWoolFeatureRendererMixin",
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
