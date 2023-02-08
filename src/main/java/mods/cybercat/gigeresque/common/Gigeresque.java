@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common;
 
+import eu.midnightdust.lib.config.MidnightConfig;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.CustomMidnightConfig;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -19,7 +19,7 @@ public class Gigeresque implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CustomMidnightConfig.init(MOD_ID, GigeresqueConfig.class);
+		MidnightConfig.init(MOD_ID, GigeresqueConfig.class);
 
 		new GigItems();
 		GIgBlocks.getInstance().initialize();

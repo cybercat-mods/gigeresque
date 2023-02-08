@@ -59,11 +59,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 
@@ -77,7 +77,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 			false);
 	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	public float ticksAttachedToHost = -1.0f;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
 			EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class,
@@ -236,6 +236,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer()
 						&& host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
+					host.hasParasite();
 					if (!level.isClientSide) {
 						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 								GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);

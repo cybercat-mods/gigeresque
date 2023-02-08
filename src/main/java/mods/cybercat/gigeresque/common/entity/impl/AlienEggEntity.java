@@ -34,11 +34,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
@@ -50,7 +50,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			EntityDataSerializers.BOOLEAN);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {

@@ -33,11 +33,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable {
 
@@ -55,7 +55,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	};
 	public int bloodRendering = 0;
 	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	protected String hostId = null;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {

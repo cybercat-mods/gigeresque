@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.RawAnimation;
 
 public class GigAnimationsDefault {
 

@@ -7,7 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import mod.azure.azurelib.model.DefaultedEntityGeoModel;
 
 @Environment(EnvType.CLIENT)
 public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity> {

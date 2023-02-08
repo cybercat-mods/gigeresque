@@ -41,7 +41,7 @@
 		"fabricloader": ">=0.14.11",
 		"fabric": "*",
 		"minecraft": ">=1.19.2",
-		"geckolib": ">=4.0.0",
+		"azurelib": ">=1.0.0",
 		"java": ">=17"
 	},
 	"accessWidener": "gigeresque.accesswidener"

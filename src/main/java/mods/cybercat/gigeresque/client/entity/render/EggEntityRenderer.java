@@ -5,7 +5,7 @@ import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class EggEntityRenderer extends GeoEntityRenderer<AlienEggEntity> {

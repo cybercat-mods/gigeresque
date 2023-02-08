@@ -54,7 +54,7 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
+import mod.azure.azurelib.animatable.GeoEntity;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 

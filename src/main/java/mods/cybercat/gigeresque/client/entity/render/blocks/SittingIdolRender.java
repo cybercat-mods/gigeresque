@@ -1,19 +1,19 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoBlockRenderer;
+import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 import mods.cybercat.gigeresque.client.entity.model.blocks.SittingIdolModel;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoBlockRenderer;
-import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 
 public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
 

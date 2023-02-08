@@ -2,10 +2,11 @@ package mods.cybercat.gigeresque.common.config;
 
 import java.util.List;
 
+import eu.midnightdust.lib.config.MidnightConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 
-public class GigeresqueConfig extends CustomMidnightConfig {
+public class GigeresqueConfig extends MidnightConfig {
 
 	@Entry
 	public static float alienGrowthMultiplier = 1.0f;
@@ -89,7 +90,8 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VINDICATOR).toString());
 
 	@Entry
-	public static List<String> aquaticAlienHosts = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DOLPHIN).toString(),
+	public static List<String> aquaticAlienHosts = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DOLPHIN).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TURTLE).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GUARDIAN).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ELDER_GUARDIAN).toString());
@@ -128,7 +130,8 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WITHER).toString());
 
 	@Entry
-	public static List<String> alienWhitelist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
+	public static List<String> alienWhitelist = List
+			.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
 
 	@Entry
 	public static List<String> alienBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
@@ -147,7 +150,8 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 	public static List<String> aquaticAlienWhitelist = List.of("");
 
 	@Entry
-	public static List<String> aquaticAlienBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+	public static List<String> aquaticAlienBlacklist = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
@@ -158,10 +162,12 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
 
 	@Entry
-	public static List<String> facehuggerWhitelist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
+	public static List<String> facehuggerWhitelist = List
+			.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString());
 
 	@Entry
-	public static List<String> facehuggerBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
+	public static List<String> facehuggerBlacklist = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BLAZE).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAVE_SPIDER).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CHICKEN).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COD).toString(),
@@ -193,7 +199,8 @@ public class GigeresqueConfig extends CustomMidnightConfig {
 	public static List<String> runnerWhitelist = List.of("");
 
 	@Entry
-	public static List<String> runnerBlacklist = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
+	public static List<String> runnerBlacklist = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BAT).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.BEE).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TROPICAL_FISH).toString(),
