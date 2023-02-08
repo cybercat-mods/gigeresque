@@ -151,7 +151,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				resetEggmorphing();
 				setBleeding(false);
 			}
-			if (ConfigAccessor.isTargetAlienHost(this)) {
+			if (ConfigAccessor.isTargetHostable(this)) {
 				handleEggingLogic();
 				handleHostLogic();
 			}

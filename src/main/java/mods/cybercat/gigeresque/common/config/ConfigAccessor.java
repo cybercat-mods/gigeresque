@@ -53,6 +53,15 @@ public class ConfigAccessor {
 		return isTargetBlacklisted(entity.getClass(), target);
 	}
 
+	public static boolean isTargetHostable(Entity target) {
+		List<? extends String> normalEntries = GigeresqueConfig.alienHosts;
+		List<? extends String> waterEntries = GigeresqueConfig.aquaticAlienHosts;
+		List<? extends String> runnerEntries = GigeresqueConfig.runnerHosts;
+		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		return normalEntries.contains(targetIdentifier.toString()) || waterEntries.contains(targetIdentifier.toString())
+				|| runnerEntries.contains(targetIdentifier.toString());
+	}
+
 	public static boolean isTargetAlienHost(Entity target) {
 		List<? extends String> waveEntries = GigeresqueConfig.alienHosts;
 		ResourceLocation targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
