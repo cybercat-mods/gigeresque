@@ -1,28 +1,65 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class RunnerAlienEntity extends AdultAlienEntity {
+public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwner<RunnerAlienEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -91,9 +128,62 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	}
 
 	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<RunnerAlienEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate((entity,
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
+								|| entity instanceof ArmorStand || entity instanceof Bat)
+								|| !target.hasLineOfSight(entity)
+								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& entity.isAlive())),
+				new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				new HurtBySensor<>());
+	}
+
+	@Override
+	public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new KillLightsTask<>(),
+				new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(
+				new FirstApplicableBehaviour<RunnerAlienEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
+				new SetWalkTargetToAttackTarget<>().speedMod(3.0F), new AnimatableMeleeAttack(10));
+	}
+
+	@Override
 	protected void registerGoals() {
-		super.registerGoals();
-		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 3.0, false));
+		this.goalSelector.addGoal(5, new BuildNestGoal(this));
+		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 
 	/*
@@ -103,6 +193,8 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (isDead)
+				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
 					&& this.isStatis() == false && !this.swinging) {
 				if (!this.isInWater() && this.isExecuting() == false)
@@ -116,14 +208,13 @@ public class RunnerAlienEntity extends AdultAlienEntity {
 							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 						else
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
-			} else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.isStatis() == true || this.isNoAi() && !isDead)
-				return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-			else if (this.isStatis() == false && this.isInWater())
-				return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-			else if (this.isStatis() == false && !this.isInWater())
-				return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
+			} else if (getCurrentAttackType() == AlienAttackType.NONE)
+				if (this.isStatis() == true || this.isNoAi() && !isDead)
+					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+				else if (this.isStatis() == false && this.isInWaterRainOrBubble())
+					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+				else if (this.isStatis() == false && !this.isInWaterRainOrBubble())
+					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
