@@ -4,21 +4,17 @@ import static java.lang.Math.max;
 
 import org.jetbrains.annotations.NotNull;
 
+import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.AlienWalkGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -40,13 +36,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -54,7 +44,6 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
@@ -201,7 +190,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_STATIS, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
-		//this.entityData.define(CLIENT_ANGER_LEVEL, 0);
+		// this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
 
 	@Override
@@ -395,24 +384,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public SoundEvent getDeathSound() {
 		return GigSounds.ALIEN_DEATH;
-	}
-
-	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new FleeFireGoal<AdultAlienEntity>(this));
-		this.goalSelector.addGoal(5, new KillLightsGoal(this));
-		this.goalSelector.addGoal(1, new RandomSwimmingGoal(this, 1.0D, 10));
-		this.goalSelector.addGoal(5, new AlienWalkGoal(this, 1.15D, 120, false));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand
-						|| entity instanceof Bat)
-						|| (entity.getVehicle() != null
-								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-								&& entity.isAlive())));
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[0]).setAlertOthers());
 	}
 
 	public void grabTarget(Entity entity) {

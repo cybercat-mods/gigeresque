@@ -1,13 +1,25 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.LongerAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -20,29 +32,41 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class StalkerEntity extends AlienEntity implements GeoEntity {
+public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<StalkerEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
@@ -69,14 +93,13 @@ public class StalkerEntity extends AlienEntity implements GeoEntity {
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead
+			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead
 					&& this.entityData.get(STATE) == 0)
 				return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
 			else if (this.entityData.get(STATE) >= 1 && !isDead)
-				return event.setAndContinue(
-						RawAnimation.begin().thenLoop(AlienAttackType.animationMappings.get(getCurrentAttackType())));
-			else
-				return event.setAndContinue(GigAnimationsDefault.IDLE);
+				return event.setAndContinue(RawAnimation.begin()
+						.then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
+			return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
 	}
 
@@ -86,20 +109,64 @@ public class StalkerEntity extends AlienEntity implements GeoEntity {
 	}
 
 	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<StalkerEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((entity,
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
+								|| entity instanceof ArmorStand || entity instanceof Bat)
+								|| !target.hasLineOfSight(entity)
+								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& entity.isAlive())),
+				new NearbyBlocksSensor<StalkerEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				new HurtBySensor<>());
+	}
+
+	@Override
+	public BrainActivityGroup<StalkerEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new KillLightsTask<>(),
+				new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<StalkerEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(
+				new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<StalkerEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
+				new SetWalkTargetToAttackTarget<>().speedMod(1.7F),
+				new AnimatableMeleeAttack(20)
+						.whenStarting(entity -> this.setAttackingState(this.getRandom().nextInt(0, 3)))
+						.whenStopping(entity -> this.setAttackingState(0)));
+	}
+
+	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-		this.goalSelector.addGoal(5, new FleeFireGoal<StalkerEntity>(this));
-		this.goalSelector.addGoal(2, new LongerAlienMeleeAttackGoal(this, 1.35, false));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand
-						|| entity instanceof Bat)
-						|| (entity.getVehicle() != null
-								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-								&& entity.isAlive())));
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[0]).setAlertOthers());
+//		this.goalSelector.addGoal(2, new LongerAlienMeleeAttackGoal(this, 1.35, false));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -119,17 +186,18 @@ public class StalkerEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.isAggressive())
-				setCurrentAttackType(switch (this.getAttckingState()) {
-				case 1 -> AlienAttackType.NORMAL;
-				case 2 -> AlienAttackType.HEAVY;
-				default -> AlienAttackType.NORMAL;
-				});
+			setCurrentAttackType(switch (random.nextInt(5)) {
+			case 0 -> AlienAttackType.NORMAL;
+			case 1 -> AlienAttackType.HEAVY;
+			case 2 -> AlienAttackType.NORMAL;
+			case 3 -> AlienAttackType.HEAVY;
+			default -> AlienAttackType.NORMAL;
+			});
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean doHurtTarget(Entity target) {
 
@@ -139,11 +207,11 @@ public class StalkerEntity extends AlienEntity implements GeoEntity {
 		};
 
 		if (target instanceof LivingEntity && !level.isClientSide) {
-			switch (getAttckingState()) {
-			case 1 -> {
+			switch (getCurrentAttackType().genericAttackType) {
+			case NORMAL -> {
 				return super.doHurtTarget(target);
 			}
-			case 2 -> {
+			case HEAVY -> {
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
@@ -22,12 +24,20 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.ClassicAlienMeleeAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FindNestingGroundTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,15 +48,38 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class ClassicAlienEntity extends AdultAlienEntity {
+public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOwner<ClassicAlienEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -67,9 +100,8 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			if (getTarget() == null) {
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 			}
-		} else {
+		} else
 			super.travel(movementInput);
-		}
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -88,48 +120,41 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 
 		if (attackProgress > 0) {
 			attackProgress--;
-
-			if (!level.isClientSide && attackProgress <= 0) {
+			if (!level.isClientSide && attackProgress <= 0)
 				setCurrentAttackType(AlienAttackType.NONE);
-			}
 		}
 
-		if (attackProgress == 0 && swinging) {
+		if (attackProgress == 0 && swinging)
 			attackProgress = 10;
-		}
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
-			if (this.isAggressive())
-				if (this.isCrawling() || this.isInWater() && this.getDeltaMovement().horizontalDistance() < 0.000001) {
-					setCurrentAttackType(switch (this.getAttckingState()) {
-					case 0 -> AlienAttackType.CLAW_LEFT;
-					case 1 -> AlienAttackType.CLAW_RIGHT;
-					case 2 -> AlienAttackType.TAIL_LEFT;
-					case 3 -> AlienAttackType.TAIL_RIGHT;
-					default -> AlienAttackType.CLAW_LEFT;
-					});
-				} else {
-					setCurrentAttackType(switch (this.getAttckingState()) {
-					case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-					case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-					case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-					case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-					default -> AlienAttackType.CLAW_LEFT_MOVING;
-					});
-				}
-		}
-		if (this.isAggressive()) {
+		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+			if (this.isCrawling() || this.isInWater())
+				setCurrentAttackType(switch (random.nextInt(5)) {
+				case 0 -> AlienAttackType.CLAW_LEFT;
+				case 1 -> AlienAttackType.CLAW_RIGHT;
+				case 2 -> AlienAttackType.TAIL_LEFT;
+				case 3 -> AlienAttackType.TAIL_RIGHT;
+				default -> AlienAttackType.CLAW_LEFT;
+				});
+			else
+				setCurrentAttackType(switch (random.nextInt(5)) {
+				case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
+				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
+				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
+				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
+				default -> AlienAttackType.CLAW_LEFT_MOVING;
+				});
+
+		if (this.isAggressive())
 			this.setPose(Pose.CROUCHING);
-		} else {
+		else
 			this.setPose(Pose.STANDING);
-		}
 
-		if (this.getFirstPassenger() != null) {
+		if (this.getFirstPassenger() != null)
 			if (this.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
 				this.getFirstPassenger().setPos(this.getX(), this.getY() + 0.2, this.getZ());
 				this.getFirstPassenger().removeVehicle();
 			}
-		}
 
 		if (this.getTarget() != null) {
 			Stream<BlockState> list = this.level
@@ -172,7 +197,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide) {
+		if (target instanceof LivingEntity && !level.isClientSide)
 			switch (getAttckingState()) {
 			case 1 -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
@@ -193,35 +218,82 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 			case 3 -> {
 				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
 						.collect(Collectors.toList());
-				if (!armorItems.isEmpty()) {
+				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				}
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 4 -> {
 				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
 						.collect(Collectors.toList());
-				if (!armorItems.isEmpty()) {
+				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				}
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			}
-		}
 		return super.doHurtTarget(target);
 	}
 
 	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<ClassicAlienEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
+								|| entity instanceof ArmorStand || entity instanceof Bat)
+								|| !target.hasLineOfSight(entity)
+								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& entity.isAlive())),
+				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				new HurtBySensor<>());
+	}
+
+	@Override
+	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new KillLightsTask<>(),
+				new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FindNestingGroundTask(), new BuildNestTask(),
+				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
+				new SetWalkTargetToAttackTarget<>().speedMod(3.0F), new AnimatableMeleeAttack(10));
+	}
+
+	@Override
 	protected void registerGoals() {
-		super.registerGoals();
-		this.goalSelector.addGoal(2, new ClassicAlienMeleeAttackGoal(this, 3.0, false));
-		this.goalSelector.addGoal(2, new FindNestGoal(this));
-		this.goalSelector.addGoal(2, new BuildNestGoal(this));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, LivingEntity.class, 2.0F));
+		this.goalSelector.addGoal(5, new BuildNestGoal(this));
+		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 
 	@Override
@@ -263,26 +335,26 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 					else
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-			} else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false
-					&& !this.isVehicle())
-				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			else if (isDead && !this.isVehicle())
+			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
-				if (this.isVehicle())
-					return event.setAndContinue(GigAnimationsDefault.EXECUTION_CARRY);
-				else
-					return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
-			else {
-				if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
-						&& this.isExecuting() == false && this.isStatis() == false)
-					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-				else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
-						&& this.isExecuting() == false && this.isStatis() == false && !isDead && !event.isMoving())
-					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
-				else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle())
-					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-			}
+			else if (getCurrentAttackType() == AlienAttackType.NONE)
+				if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+					return event.setAndContinue(GigAnimationsDefault.CRAWL);
+				else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
+					if (this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.EXECUTION_CARRY);
+					else
+						return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
+				else {
+					if (this.wasEyeInWater && !isSearching && !this.isAggressive() && !this.isVehicle()
+							&& this.isExecuting() == false && this.isStatis() == false)
+						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+					else if (!this.wasEyeInWater && isSearching && !this.isAggressive() && !this.isVehicle()
+							&& this.isExecuting() == false && this.isStatis() == false && !isDead && !event.isMoving())
+						return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+					else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+				}
 			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
@@ -322,7 +394,7 @@ public class ClassicAlienEntity extends AdultAlienEntity {
 				}
 			}
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-			if (this.entityData.get(IS_BREAKING) == true && !this.isVehicle())
+			if (this.swinging && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
 					&& this.isExecuting() == false)

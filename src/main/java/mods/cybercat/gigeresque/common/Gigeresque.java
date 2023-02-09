@@ -5,6 +5,8 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
@@ -22,6 +24,8 @@ public class Gigeresque implements ModInitializer {
 		MidnightConfig.init(MOD_ID, GigeresqueConfig.class);
 
 		new GigItems();
+		GigMemoryTypes.init();
+		GigSensors.init();
 		GIgBlocks.getInstance().initialize();
 		GigFluids.getInstance().initialize();
 		GigSounds.getInstance().initialize();

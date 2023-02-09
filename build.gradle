@@ -32,6 +32,7 @@ repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com" }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://maven.gegy.dev' }
@@ -53,6 +54,7 @@ dependencies {
 	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
+	modImplementation "curse.maven:SBL-661293:4277537-sources-4277538"
 }
 
 shadowJar {
