@@ -1,18 +1,27 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.goal.FleeFireGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goal.hugger.FacehugGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -38,15 +47,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
@@ -59,13 +66,27 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class FacehuggerEntity extends AlienEntity implements GeoEntity {
+public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
 	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
@@ -267,6 +288,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 		if (this.isEggSpawn() == true && this.tickCount > 30) {
 			this.setEggSpawnState(false);
 		}
+		if (this.getTarget() != null)
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()))
+				this.attachToHost(this.getTarget());
 		this.setNoGravity(
 				!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.verticalCollision);
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
@@ -412,19 +436,55 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 	}
 
 	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>()
+				.setPredicate((target, entity) -> !((target instanceof AlienEntity || target instanceof Warden
+						|| target instanceof ArmorStand)
+						|| (target.getVehicle() != null
+								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
+						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
+				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new HurtBySensor<>());
+	}
+
+	@Override
+	public BrainActivityGroup<FacehuggerEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(
+				new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
+				new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
+	}
+
+	@Override
 	protected void registerGoals() {
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
-				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand)
-						|| (entity.getVehicle() != null
-								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
-		this.goalSelector.addGoal(5, new FleeFireGoal<FacehuggerEntity>(this));
-		this.goalSelector.addGoal(5, new FacehugGoal(this, 1.3D));
-		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 0));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.6D));
 	}
 
 	/*
@@ -451,16 +511,22 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity {
 			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying())
+					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
+				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
+			}
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
 					&& this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false
 					&& (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking()
-					&& !this.isDeadOrDying())
+					&& !this.isDeadOrDying()) {
+				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
+			}
 			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling()
-					&& !this.isDeadOrDying())
+					&& !this.isDeadOrDying()) {
+				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
+			}
 			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
