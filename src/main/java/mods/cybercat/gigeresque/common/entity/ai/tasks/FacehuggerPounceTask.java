@@ -35,16 +35,18 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		var target = getTarget(entity);
+		var target = entity.getTarget();
 		var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
-		return entity.isOnGround() && entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3
-				&& entity.hasLineOfSight(target);
+		return entity.getTarget() != null && entity.isOnGround()
+				&& entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3 && entity.hasLineOfSight(target);
 	}
 
 	@Override
 	protected void doDelayedAction(E entity) {
+		if (entity.getTarget() == null)
+			return;
 		var vec3d = entity.getDeltaMovement();
-		var target = getTarget(entity);
+		var target = entity.getTarget();
 		var vec3d2 = new Vec3(target.getX() - entity.getX(), 0.0, target.getZ() - entity.getZ());
 		var length = Mth.sqrt((float) vec3d2.length());
 
@@ -54,12 +56,7 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 		var maxXVel = Mth.clamp(vec3d2.x, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE);
 		var maxZVel = Mth.clamp(vec3d2.z, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE);
 
-		entity.push(maxXVel * length, target.getEyeHeight() / 2.5, maxZVel * length);
-	}
-
-	private LivingEntity getTarget(E entity) {
-		if (entity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get() == null)
-			return entity;
-		return entity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
+		if (!entity.horizontalCollision)
+			entity.push(maxXVel * length, target.getEyeHeight() / 2.5, maxZVel * length);
 	}
 }
