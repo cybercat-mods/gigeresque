@@ -203,7 +203,8 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new OneRandomBehaviour<>(
 						new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20)
 								.speedModifier(!this.wasTouchingWater ? 0.25F : 1.5f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+								new Idle<>().startCondition(entity -> !this.isAggressive())
+								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override

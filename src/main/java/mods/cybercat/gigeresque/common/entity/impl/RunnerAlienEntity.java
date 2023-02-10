@@ -171,7 +171,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 								|| target instanceof Player && ((Player) target).isCreative()),
 						new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+						new Idle<>().startCondition(entity -> !this.isAggressive())
+						.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
