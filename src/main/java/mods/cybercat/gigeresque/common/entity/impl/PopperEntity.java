@@ -160,8 +160,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	protected void tickDeath() {
 		super.tickDeath();
 		if (this.deathTime == 35) {
-			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(this.level, this.getX(), this.getY() + 1,
-					this.getZ());
+			var areaEffectCloudEntity = new AreaEffectCloud(this.level, this.getX(), this.getY() + 1, this.getZ());
 			areaEffectCloudEntity.setRadius(2.0F);
 			areaEffectCloudEntity.setDuration(30);
 			areaEffectCloudEntity

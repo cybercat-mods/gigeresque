@@ -26,33 +26,29 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
 
 	@Inject(method = { "wantsToStopRiding" }, at = { @At("RETURN") })
 	protected boolean shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getVehicle() instanceof AlienEntity) {
+		if (this.getVehicle() instanceof AlienEntity)
 			return false;
-		}
 		return callbackInfo.getReturnValue();
 	}
 
 	@Inject(method = { "interactOn" }, at = { @At("HEAD") }, cancellable = true)
 	protected InteractionResult stopPlayerUsing(Entity entity, InteractionHand hand,
 			CallbackInfoReturnable<InteractionResult> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
 			callbackInfo.setReturnValue(InteractionResult.FAIL);
-		}
 		return callbackInfo.getReturnValue();
 	}
 
 	@Inject(method = { "attack" }, at = { @At("HEAD") }, cancellable = true)
 	protected void noAttacking(Entity target, CallbackInfo callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
-            this.stopUsingItem();
-		}
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+			this.stopUsingItem();
 	}
 
 	@Inject(method = { "aiStep" }, at = { @At("HEAD") }, cancellable = true)
 	public void tickMovement(CallbackInfo callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
 			callbackInfo.cancel();
-		}
 	}
 
 }

@@ -13,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +21,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +50,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 		@Override
 		protected boolean isOwnContainer(Player player) {
 			if (player.containerMenu instanceof ChestMenu) {
-				Container inventory = ((ChestMenu) player.containerMenu).getContainer();
+				var inventory = ((ChestMenu) player.containerMenu).getContainer();
 				return inventory == JarStorageEntity.this;
 			}
 			return false;
@@ -67,17 +65,15 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
 		this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-		if (!this.tryLoadLootTable(nbt)) {
+		if (!this.tryLoadLootTable(nbt))
 			ContainerHelper.loadAllItems(nbt, this.items);
-		}
 	}
 
 	@Override
 	public void saveAdditional(CompoundTag nbt) {
 		super.saveAdditional(nbt);
-		if (!this.trySaveLootTable(nbt)) {
+		if (!this.trySaveLootTable(nbt))
 			ContainerHelper.saveAllItems(nbt, this.items);
-		}
 	}
 
 	@Override
@@ -107,35 +103,30 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 
 	@Override
 	public void startOpen(Player player) {
-		if (!this.isRemoved() && !player.isSpectator()) {
+		if (!this.isRemoved() && !player.isSpectator())
 			this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-		}
 	}
 
 	@Override
 	public void stopOpen(Player player) {
-		if (!this.isRemoved() && !player.isSpectator()) {
+		if (!this.isRemoved() && !player.isSpectator())
 			this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-		}
 	}
 
 	public void tick() {
-		if (!this.isRemoved()) {
+		if (!this.isRemoved())
 			this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
-		}
 	}
 
 	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount,
 			int newViewerCount) {
-		Block block = state.getBlock();
+		var block = state.getBlock();
 		world.blockEvent(pos, block, 1, newViewerCount);
-		if (oldViewerCount != newViewerCount) {
-			if (newViewerCount > 0) {
+		if (oldViewerCount != newViewerCount)
+			if (newViewerCount > 0)
 				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-			} else {
+			else
 				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
-			}
-		}
 	}
 
 	public StorageStates getChestState() {

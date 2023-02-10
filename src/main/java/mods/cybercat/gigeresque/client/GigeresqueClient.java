@@ -4,7 +4,6 @@ import mods.cybercat.gigeresque.client.block.BlockRenderLayers;
 import mods.cybercat.gigeresque.client.entity.render.EntityRenderers;
 import mods.cybercat.gigeresque.client.fluid.render.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.particle.Particles;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

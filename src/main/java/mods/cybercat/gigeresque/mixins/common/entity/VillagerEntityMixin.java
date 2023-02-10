@@ -27,9 +27,8 @@ public abstract class VillagerEntityMixin extends AbstractVillager {
 	@Inject(method = { "mobInteract" }, at = { @At("HEAD") }, cancellable = true)
 	protected InteractionResult mobInteract(Player player, InteractionHand hand,
 			CallbackInfoReturnable<InteractionResult> callbackInfo) {
-		if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem) {
+		if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem)
 			callbackInfo.setReturnValue(super.mobInteract(player, hand));
-		}
 		return super.mobInteract(player, hand);
 	}
 }

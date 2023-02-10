@@ -161,29 +161,25 @@ public class ChestbursterEntity extends AlienEntity
 			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
-		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200) {
+		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200)
 			this.setBirthStatus(false);
-		}
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 		nbt.putFloat("growth", getGrowth());
-		if (hostId != null) {
+		if (hostId != null)
 			nbt.putString("hostId", hostId);
-		}
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("growth")) {
+		if (nbt.contains("growth"))
 			setGrowth(nbt.getFloat("growth"));
-		}
-		if (nbt.contains("hostId")) {
+		if (nbt.contains("hostId"))
 			hostId = nbt.getString("hostId");
-		}
 	}
 
 	@Override
@@ -257,11 +253,8 @@ public class ChestbursterEntity extends AlienEntity
 	public LivingEntity growInto() {
 		var entity = new RunnerbursterEntity(Entities.RUNNERBURSTER, level);
 		entity.hostId = this.hostId;
-
-		if (hasCustomName()) {
+		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
-		}
-
 		return entity;
 	}
 

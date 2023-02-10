@@ -44,9 +44,8 @@ public record GigVibrationInfo(GameEvent gameEvent, float distance, Vec3 pos, @N
 	@Nullable
 	private static UUID getProjectileOwner(@Nullable Entity entity) {
 		Projectile projectile;
-		if (entity instanceof Projectile && (projectile = (Projectile) entity).getOwner() != null) {
+		if (entity instanceof Projectile && (projectile = (Projectile) entity).getOwner() != null)
 			return projectile.getOwner().getUUID();
-		}
 		return null;
 	}
 

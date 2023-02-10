@@ -43,7 +43,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
 	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity,
 			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-			M entityModel = this.getParentModel();
+			var entityModel = this.getParentModel();
 			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel,
 					getResourceLocation("type",
 							BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),

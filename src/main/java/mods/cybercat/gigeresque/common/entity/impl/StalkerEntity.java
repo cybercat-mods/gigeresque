@@ -167,7 +167,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	protected void registerGoals() {
-//		this.goalSelector.addGoal(2, new LongerAlienMeleeAttackGoal(this, 1.35, false));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -187,7 +186,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE) {
+		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.NORMAL;
 			case 1 -> AlienAttackType.HEAVY;
@@ -195,19 +194,17 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			case 3 -> AlienAttackType.HEAVY;
 			default -> AlienAttackType.NORMAL;
 			});
-		}
 	}
 
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean doHurtTarget(Entity target) {
-
-		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
+		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
 		case HEAVY -> 3.0f;
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide) {
+		if (target instanceof LivingEntity && !level.isClientSide)
 			switch (getCurrentAttackType().genericAttackType) {
 			case NORMAL -> {
 				return super.doHurtTarget(target);
@@ -217,7 +214,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 				return super.doHurtTarget(target);
 			}
 			}
-		}
 		return super.doHurtTarget(target);
 
 	}

@@ -33,11 +33,10 @@ public class SurgeryKitItem extends Item {
 
 	private void tryRemoveParasite(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
 		var host = (Host) entity;
-		if (host.hasParasite()) {
+		if (host.hasParasite())
 			if (!entity.level.isClientSide) {
-				if (host.getTicksUntilImpregnation() < 9600) {
+				if (host.getTicksUntilImpregnation() < 9600)
 					spawnParasite(entity);
-				}
 
 				host.removeParasite();
 				stack.hurtAndBreak(1, user, p -> p.broadcastBreakEvent(hand));
@@ -46,24 +45,22 @@ public class SurgeryKitItem extends Item {
 				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
 				host.setBleeding(false);
 			}
-		}
 	}
 
 	private void spawnParasite(LivingEntity entity) {
 		var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
 		var morphMappings = ConfigAccessor.getReversedMorphMappings();
 
-		String runnerString = Entities.RUNNER_ALIEN.toString();
+		var runnerString = Entities.RUNNER_ALIEN.toString();
 		ChestbursterEntity burster;
 
-		String orDefault = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
-		if (runnerString.equals(orDefault)) {
+		var orDefault = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
+		if (runnerString.equals(orDefault))
 			burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, entity.level);
-		} else if (Entities.AQUATIC_ALIEN.toString().equals(orDefault)) {
+		else if (Entities.AQUATIC_ALIEN.toString().equals(orDefault))
 			burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, entity.level);
-		} else {
+		else
 			burster = new ChestbursterEntity(Entities.CHESTBURSTER, entity.level);
-		}
 
 		burster.setHostId(identifier.toString());
 		burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());

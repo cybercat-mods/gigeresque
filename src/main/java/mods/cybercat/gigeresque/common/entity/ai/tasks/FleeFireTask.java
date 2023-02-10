@@ -63,7 +63,7 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
     }
 
     private Optional<BlockPos> lookForWater(BlockGetter level, Entity entity) {
-        BlockPos blockPos2 = entity.blockPosition();
+        var blockPos2 = entity.blockPosition();
         if (!level.getBlockState(blockPos2).getCollisionShape(level, blockPos2).isEmpty()) 
             return Optional.empty();
         return BlockPos.findClosestMatch(blockPos2, 5, 1, blockPos -> level.getFluidState((BlockPos)blockPos).is(FluidTags.WATER));

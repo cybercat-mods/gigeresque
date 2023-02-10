@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +53,6 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -73,6 +71,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -95,9 +94,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.5));
-			if (getTarget() == null) {
+			if (getTarget() == null)
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-			}
 		} else
 			super.travel(movementInput);
 	}
@@ -155,15 +153,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			}
 
 		if (this.getTarget() != null) {
-			Stream<BlockState> list = this.level
-					.getBlockStatesIfLoaded(this.getBoundingBox().inflate(18.0, 18.0, 18.0));
+			var list = this.level.getBlockStatesIfLoaded(this.getBoundingBox().inflate(18.0, 18.0, 18.0));
 			if (this.isVehicle() && !list.anyMatch(NEST) && ConfigAccessor.isTargetAlienHost(this.getTarget())) {
-				double yOffset = this.getEyeY()
+				var yOffset = this.getEyeY()
 						- ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY())
 								/ 2.0);
-				double e = this.getFirstPassenger().getX()
+				var e = this.getFirstPassenger().getX()
 						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				double f = this.getFirstPassenger().getZ()
+				var f = this.getFirstPassenger().getZ()
 						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
 				holdingCounter++;
 				if (holdingCounter == 760) {
@@ -189,7 +186,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		float additionalDamage = switch (getCurrentAttackType().genericAttackType) {
+		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
 		case TAIL -> 3.0f;
 		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
@@ -262,7 +259,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
-				new HurtBySensor<>());
+				new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -297,11 +294,11 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public void positionRider(Entity passenger) {
 		super.positionRider(passenger);
 		if (passenger instanceof LivingEntity) {
-			LivingEntity mob = (LivingEntity) passenger;
+			var mob = (LivingEntity) passenger;
 			SplittableRandom random = new SplittableRandom();
 			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, true, true));
-			float f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
-			float g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
+			var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
+			var g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
 			passenger.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
 					this.getY() + (double) (this.isExecuting() == true ? random.nextFloat(0.74F, 0.75f)
 							: random.nextFloat(0.14F, 0.15F)),
@@ -401,18 +398,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				return event.setAndContinue(GigAnimationsDefault.KIDNAP);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
-				if (this.level.isClientSide) {
+			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+				if (this.level.isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 							GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
-				if (this.level.isClientSide) {
+			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+				if (this.level.isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 							GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
 		}));
 		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
@@ -420,12 +413,10 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				return event.setAndContinue(GigAnimationsDefault.HISS);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
-				if (this.level.isClientSide) {
+			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
+				if (this.level.isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 							GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
 		}));
 	}
 

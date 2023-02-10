@@ -1,5 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
@@ -23,11 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
@@ -56,29 +56,25 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
-		if (this.tickCount % 10 == 0) {
+		if (this.tickCount % 10 == 0)
 			this.refreshDimensions();
-		}
 
 		if (isEffectiveAi() && this.isInWater()) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.9));
-			if (getTarget() == null) {
+			if (getTarget() == null)
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-			}
-		} else {
+		} else
 			super.travel(movementInput);
-		}
 	}
 
 	@Override
 	public LivingEntity growInto() {
 		var entity = new AquaticAlienEntity(Entities.AQUATIC_ALIEN, level);
 
-		if (hasCustomName()) {
+		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
-		}
 
 		return entity;
 	}
@@ -139,12 +135,10 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 				}
 			}
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
-				if (this.level.isClientSide) {
+			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
+				if (this.level.isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 							GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
 		}));
 	}
 

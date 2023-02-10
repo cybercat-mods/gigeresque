@@ -35,8 +35,8 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		LivingEntity target = getTarget(entity);
-		int yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
+		var target = getTarget(entity);
+		var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
 		return entity.isOnGround() && entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3
 				&& entity.hasLineOfSight(target);
 	}
@@ -48,9 +48,8 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 		var vec3d2 = new Vec3(target.getX() - entity.getX(), 0.0, target.getZ() - entity.getZ());
 		var length = Mth.sqrt((float) vec3d2.length());
 
-		if (vec3d2.lengthSqr() > 1.0E-7) {
+		if (vec3d2.lengthSqr() > 1.0E-7)
 			vec3d2 = vec3d2.normalize().scale(0.2).add(vec3d.scale(0.2));
-		}
 
 		var maxXVel = Mth.clamp(vec3d2.x, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE);
 		var maxZVel = Mth.clamp(vec3d2.z, -MAX_LEAP_DISTANCE, MAX_LEAP_DISTANCE);

@@ -30,20 +30,17 @@ public class NestBuildingHelper {
 						continue;
 
 					if (alien.getLevel().getLightEmission(alien.blockPosition()) < 8) {
-						SplittableRandom random = new SplittableRandom();
-						int randomPhase = random.nextInt(0, 100);
-						if (nestBlockData.isFloor()) {
-							if (randomPhase <= 70) {
-								alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN.defaultBlockState());
-							} else {
-								alien.level.setBlockAndUpdate(blockPos,
-										GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-							}
-						}
+						var random = new SplittableRandom();
+						var randomPhase = random.nextInt(0, 100);
+						var resinBlock = GIgBlocks.NEST_RESIN.defaultBlockState();
+						if (nestBlockData.isFloor())
+							if (randomPhase <= 70)
+								alien.level.setBlockAndUpdate(blockPos, resinBlock);
+							else
+								alien.level.setBlockAndUpdate(blockPos, resinBlock);
 
-						if (nestBlockData.isCorner()) {
+						if (nestBlockData.isCorner())
 							alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-						}
 
 						if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
 							var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.defaultBlockState()
@@ -97,23 +94,20 @@ public class NestBuildingHelper {
 		var blockStates = List.of(Pair.of(upPos, upState), Pair.of(downPos, downState), Pair.of(northPos, northState),
 				Pair.of(southPos, southState), Pair.of(eastPos, eastState), Pair.of(westPos, westState));
 
-		AtomicInteger fullCoverage = new AtomicInteger();
-		AtomicInteger horizontalCoverage = new AtomicInteger();
-		AtomicInteger cornerCoverage = new AtomicInteger();
+		var fullCoverage = new AtomicInteger();
+		var horizontalCoverage = new AtomicInteger();
+		var cornerCoverage = new AtomicInteger();
 
 		blockStates.forEach(it -> {
 			var isOpaqueCube = it.getSecond().isSolidRender(world, it.getFirst());
 
-			if (isOpaqueCube) {
+			if (isOpaqueCube)
 				if (!isResinBlock(it.getSecond().getBlock())) {
-					if (it.getFirst() != upPos && it.getFirst() != downPos) {
+					if (it.getFirst() != upPos && it.getFirst() != downPos)
 						horizontalCoverage.getAndIncrement();
-					}
 					fullCoverage.getAndIncrement();
-				} else {
+				} else
 					cornerCoverage.getAndIncrement();
-				}
-			}
 		});
 
 		var isFloor = actualState.isAir() && upState.isAir() && !isResinBlock(downState.getBlock())

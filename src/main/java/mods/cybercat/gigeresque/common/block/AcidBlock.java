@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,7 +49,8 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
 	AcidBlock(Properties settings) {
 		super(settings);
-		registerDefaultState((getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
+		registerDefaultState(
+				(getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
 	}
 
 	private void scheduleTickIfNotScheduled(Level world, BlockPos pos) {
@@ -105,11 +105,10 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-			LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-		if (!world.isClientSide() && state.getValue(WATERLOGGED)) {
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
+			BlockPos pos, BlockPos neighborPos) {
+		if (!world.isClientSide() && state.getValue(WATERLOGGED))
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-		}
 		return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 	}
 
@@ -127,12 +126,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	private void setThickness(ServerLevel world, BlockPos pos, BlockState state, int consume) {
-		int newThickness = Math.max(getThickness(state) - consume, 0);
-		BlockState newState = state.setValue(THICKNESS, newThickness);
+		var newThickness = Math.max(getThickness(state) - consume, 0);
+		var newState = state.setValue(THICKNESS, newThickness);
 
-		if (world.getBlockState(pos).getBlock() == Blocks.WATER) {
+		if (world.getBlockState(pos).getBlock() == Blocks.WATER)
 			newState = newState.setValue(WATERLOGGED, true);
-		}
 
 		world.setBlockAndUpdate(pos, newState);
 	}
@@ -150,24 +148,23 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	@Override
 	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
 		for (int i = 0; i < (getThickness(state) * 2) + 1; i++) {
-			double yOffset = state.getValue(WATERLOGGED) ? random.nextDouble() : 0.01;
-			double d = pos.getX() + random.nextDouble();
-			double e = pos.getY() + yOffset;
-			double f = pos.getZ() + random.nextDouble();
-			world.addAlwaysVisibleParticle(Particles.ACID, d, e, f, 0.0, 0.0, 0.0);
+			var yOffset = state.getValue(WATERLOGGED) ? random.nextDouble() : 0.01;
+			var posX = pos.getX() + random.nextDouble();
+			var posY = pos.getY() + yOffset;
+			var posZ = pos.getZ() + random.nextDouble();
+			world.addAlwaysVisibleParticle(Particles.ACID, posX, posY, posZ, 0.0, 0.0, 0.0);
 		}
-		if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0) {
+		if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
 			world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
 					0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-		}
 	}
 
 	@Override
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-		int currentThickness = getThickness(state);
+		var currentThickness = getThickness(state);
 		if (random.nextInt(8 - currentThickness) == 0) {
-			boolean canGrief = world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-			BlockPos blockToEat = pos.below();
+			var canGrief = world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+			var blockToEat = pos.below();
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
 				if (canGrief && !world.getBlockState(blockToEat).is(GigTags.ACID_RESISTANT)) {
@@ -188,7 +185,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	public static boolean canFallThrough(BlockState state) {
-		Material material = state.getMaterial();
+		var material = state.getMaterial();
 		return (state.isAir() || state.is(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid()
 				&& !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
 	}

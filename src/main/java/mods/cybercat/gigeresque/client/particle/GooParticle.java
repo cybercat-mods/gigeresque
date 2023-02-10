@@ -30,17 +30,16 @@ public class GooParticle extends TextureSheetParticle {
 		xo = x;
 		yo = y;
 		zo = z;
-		if (age++ >= lifetime) {
+		if (age++ >= lifetime)
 			remove();
-		} else {
+		else {
 			setSpriteFromAge(spriteProvider);
 			if (onGround) {
 				yd = 0.0;
 				reachedGround = true;
 			}
-			if (reachedGround) {
+			if (reachedGround)
 				yd += 0.002;
-			}
 			this.move(xd, yd, zd);
 			if (y == yo) {
 				xd *= 1.1;

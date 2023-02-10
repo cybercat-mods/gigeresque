@@ -48,43 +48,40 @@ public class DNAStatusEffect extends MobEffect {
 
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
-		SplittableRandom random = new SplittableRandom();
-		int randomPhase = random.nextInt(0, 50);
-		if (!(entity instanceof AlienEntity)) {
+		var random = new SplittableRandom();
+		var randomPhase = random.nextInt(0, 50);
+		if (!(entity instanceof AlienEntity))
 			if (randomPhase > 25) {
-				if (entity instanceof Player
-						&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
-					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.level);
+				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
+					var egg = new AlienEggEntity(Entities.EGG, entity.level);
 					egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 					entity.level.addFreshEntity(egg);
 					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
-				} else if (entity instanceof Creeper) {
+				} else if (entity instanceof Creeper)
 					return;
-				} else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					AlienEggEntity egg = new AlienEggEntity(Entities.EGG, entity.level);
+				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
+					var egg = new AlienEggEntity(Entities.EGG, entity.level);
 					egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 					entity.level.addFreshEntity(egg);
 					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
 					return;
 				}
 			} else {
-				if (entity instanceof Player
-						&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
+				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
-					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
-				} else if (entity instanceof Creeper) {
+				} else if (entity instanceof Creeper)
 					return;
-				} else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
+				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
-					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				}
 			}
-		}
 		super.removeAttributeModifiers(entity, attributes, amplifier);
 	}
 
@@ -93,12 +90,12 @@ public class DNAStatusEffect extends MobEffect {
 			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 1);
 			if (lightBlockPos == null)
 				return;
-			AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
-            areaEffectCloudEntity.setRadius(2.0F);
-            areaEffectCloudEntity.setDuration(300);
-            areaEffectCloudEntity.setRadiusPerTick(0);
-            areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-            entity.level.addFreshEntity(areaEffectCloudEntity);
+			var areaEffectCloudEntity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
+			areaEffectCloudEntity.setRadius(2.0F);
+			areaEffectCloudEntity.setDuration(300);
+			areaEffectCloudEntity.setRadiusPerTick(0);
+			areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+			entity.level.addFreshEntity(areaEffectCloudEntity);
 		} else
 			lightBlockPos = null;
 	}
@@ -107,7 +104,7 @@ public class DNAStatusEffect extends MobEffect {
 		if (blockPos == null)
 			return null;
 
-		int[] offsets = new int[maxDistance * 2 + 1];
+		var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
 		for (int i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;

@@ -1,7 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import java.util.List;
-
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -18,7 +21,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -33,12 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
@@ -113,21 +109,16 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("isHatching")) {
+		if (nbt.contains("isHatching"))
 			setIsHatching(nbt.getBoolean("isHatching"));
-		}
-		if (nbt.contains("isHatched")) {
+		if (nbt.contains("isHatched"))
 			setIsHatched(nbt.getBoolean("isHatched"));
-		}
-		if (nbt.contains("hasFacehugger")) {
+		if (nbt.contains("hasFacehugger"))
 			setHasFacehugger(nbt.getBoolean("hasFacehugger"));
-		}
-		if (nbt.contains("hatchProgress")) {
+		if (nbt.contains("hatchProgress"))
 			hatchProgress = nbt.getLong("hatchProgress");
-		}
-		if (nbt.contains("ticksOpen")) {
+		if (nbt.contains("ticksOpen"))
 			ticksOpen = nbt.getLong("ticksOpen");
-		}
 	}
 
 	@Override
@@ -143,16 +134,13 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) {
+		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
 			hatchProgress++;
-		}
 
-		if (hatchProgress == 15L) {
-			if (!level.isClientSide) {
+		if (hatchProgress == 15L)
+			if (!level.isClientSide)
 				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN,
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {
 			setIsHatching(false);
@@ -160,9 +148,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			ticksOpen++;
 		}
 
-		if (isHatched() && hasFacehugger()) {
+		if (isHatched() && hasFacehugger())
 			ticksOpen++;
-		}
 
 		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level.isClientSide) {
 			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, level);
@@ -179,10 +166,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level.isClientSide && EntityUtils.isPotentialHost(entity)) {
+		if (!level.isClientSide && EntityUtils.isPotentialHost(entity))
 			setIsHatching(true);
-		}
-		// this.doPush(entity);
 	}
 
 	@Override
@@ -223,44 +208,29 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source.getDirectEntity() != null || source != DamageSource.IN_WALL && !this.isHatched()) {
+		if (source.getDirectEntity() != null || source != DamageSource.IN_WALL && !this.isHatched())
 			setIsHatching(true);
-		}
 		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float q = 6.0F;
-		int k = Mth.floor(this.getX() - (double) q - 1.0D);
-		int l = Mth.floor(this.getX() + (double) q + 1.0D);
-		int t = Mth.floor(this.getY() - (double) q - 1.0D);
-		int u = Mth.floor(this.getY() + (double) q + 1.0D);
-		int v = Mth.floor(this.getZ() - (double) q - 1.0D);
-		int w = Mth.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3 vec3d1 = new Vec3(this.getX(), this.getY(), this.getZ());
-
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			double y = (double) (Mth.sqrt((float) entity.distanceToSqr(vec3d1)) / q);
-			if (y <= 1.0D && !ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
+		var aabb = new AABB(this.blockPosition().above()).inflate(7D, 7D, 7D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
+			if (!ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
 				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity)
 						&& !(ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
 							&& !(entity instanceof AmbientCreature)
-							&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD) {
+							&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
 						if (EntityUtils.isPotentialHost(entity))
 							setIsHatching(true);
-					}
 				}
-				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator()) {
+				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator())
 					setIsHatching(true);
-				}
 			}
-		}
+		});
 	}
 
 	/**
@@ -309,8 +279,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
-		if (this.isDeadOrDying()) {
+		if (this.isDeadOrDying())
 			return;
-		}
 	}
 }

@@ -86,10 +86,8 @@ public class FindNestGoal extends MoveToBlockGoal {
 		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.subtract(radius))) {
 			@SuppressWarnings("unused")
 			BlockState testState;
-
-			if ((testState = level.getBlockState(testPos)).is(GIgBlocks.NEST_RESIN_WEB_CROSS)) {
+			if ((testState = level.getBlockState(testPos)).is(GIgBlocks.NEST_RESIN_WEB_CROSS))
 				return testPos;
-			}
 		}
 		return null;
 	}

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -137,11 +136,10 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 					});
 			this.syncClientAngerLevel();
 		}
-		if (compound.contains("listener", 10)) {
+		if (compound.contains("listener", 10))
 			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
 					.resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener
 							.updateListener((GigVibrationListener) vibrationListener, this.level));
-		}
 	}
 
 	public int getClientAngerLevel() {
@@ -170,9 +168,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	}
 
 	public Optional<LivingEntity> getEntityAngryAt() {
-		if (this.getAngerLevel().isAngry()) {
+		if (this.getAngerLevel().isAngry())
 			return this.angerManagement.getActiveEntity();
-		}
 		return Optional.empty();
 	}
 
@@ -183,7 +180,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	@Override
 	protected void customServerAiStep() {
-		ServerLevel serverLevel = (ServerLevel) this.level;
+		var serverLevel = (ServerLevel) this.level;
 		super.customServerAiStep();
 		if (this.tickCount % 20 == 0) {
 			this.angerManagement.tick(serverLevel, this::canTargetEntity);
@@ -195,16 +192,15 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public void tick() {
 		super.tick();
 
-		Level level = this.level;
+		var level = this.level;
 		if (level instanceof ServerLevel) {
-			ServerLevel serverLevel = (ServerLevel) level;
+			var serverLevel = (ServerLevel) level;
 			this.dynamicGameEventListener.getListener().tick(serverLevel);
 		}
 
 		if (!level.isClientSide && level.getBlockState(blockPosition()).getBlock() == GIgBlocks.NEST_RESIN
-				&& this.tickCount % Constants.TPS == 0) {
+				&& this.tickCount % Constants.TPS == 0)
 			this.heal(0.0833f);
-		}
 	}
 
 	@Override
@@ -217,20 +213,17 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	}
 
 	private void generateAcidPool(int xOffset, int zOffset) {
-		BlockPos pos = this.blockPosition().offset(xOffset, 0, zOffset);
-		BlockState posState = level.getBlockState(pos);
+		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
+		var posState = level.getBlockState(pos);
+		var newState = GIgBlocks.ACID_BLOCK.defaultBlockState();
 
-		BlockState newState = GIgBlocks.ACID_BLOCK.defaultBlockState();
-
-		if (posState.getBlock() == Blocks.WATER) {
+		if (posState.getBlock() == Blocks.WATER)
 			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-		}
 
 		if (!(posState.getBlock() instanceof AirBlock)
 				&& !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT)))
-				&& !(posState.getBlock() instanceof TorchBlock)) {
+				&& !(posState.getBlock() instanceof TorchBlock))
 			return;
-		}
 		level.setBlockAndUpdate(pos, newState);
 	}
 
@@ -247,15 +240,13 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 		if (!this.level.isClientSide) {
 			if (source != DamageSource.OUT_OF_WORLD) {
-				if (getAcidDiameter() == 1) {
+				if (getAcidDiameter() == 1)
 					generateAcidPool(0, 0);
-				} else {
-					int radius = (getAcidDiameter() - 1) / 2;
-
+				else {
+					var radius = (getAcidDiameter() - 1) / 2;
 					for (int x = -radius; x <= radius; x++) {
-						for (int z = -radius; z <= radius; z++) {
+						for (int z = -radius; z <= radius; z++)
 							generateAcidPool(x, z);
-						}
 					}
 				}
 			}
@@ -266,50 +257,40 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (!this.level.isClientSide) {
-			Entity attacker = source.getEntity();
-			if (attacker != null) {
-				if (attacker instanceof LivingEntity) {
+			var attacker = source.getEntity();
+			if (attacker != null)
+				if (attacker instanceof LivingEntity)
 					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
-				}
-			}
 		}
 
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source))
 			return super.hurt(source, amount);
 
 		if (!this.level.isClientSide && source != DamageSource.OUT_OF_WORLD) {
-			int acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-			if (this.getHealth() < (this.getMaxHealth() / 4)) {
+			if (this.getHealth() < (this.getMaxHealth() / 4))
 				acidThickness += 1;
-			}
-
-			if (amount >= 5) {
+			if (amount >= 5)
 				acidThickness += 1;
-			}
-
-			if (amount > (this.getMaxHealth() / 10)) {
+			if (amount > (this.getMaxHealth() / 10))
 				acidThickness += 1;
-			}
-
 			if (acidThickness == 0)
 				return super.hurt(source, amount);
 
-			BlockState newState = GIgBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+			var newState = GIgBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
-			if (this.getFeetBlockState().getBlock() == Blocks.WATER) {
+			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-			}
 			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
 				level.setBlockAndUpdate(this.blockPosition(), newState);
 		}
-
 		return super.hurt(source, amount);
 	}
 
 	@Override
 	public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
-		Level level = this.level;
+		var level = this.level;
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
 			biConsumer.accept(this.dynamicGameEventListener, serverLevel);
@@ -328,7 +309,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public boolean canTargetEntity(@Nullable Entity entity) {
 		if (!(entity instanceof LivingEntity))
 			return false;
-		LivingEntity livingEntity = (LivingEntity) entity;
+		var livingEntity = (LivingEntity) entity;
 		if (this.level != entity.level)
 			return false;
 		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
@@ -357,8 +338,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return false;
 		if (!this.level.getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
 			return false;
-		Stream<BlockState> list2 = livingEntity.level
-				.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
+		var list2 = livingEntity.level.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
 		if (list2.anyMatch(NEST))
 			return false;
 		if (livingEntity.getVehicle() != null
@@ -373,9 +353,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public boolean shouldListen(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Context var5) {
 		@SuppressWarnings("unused")
 		LivingEntity livingEntity;
-		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved()) {
+		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
 			return false;
-		}
 		Entity entity = var5.sourceEntity();
 		return !(entity instanceof LivingEntity);
 	}
@@ -383,14 +362,11 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
-		if (this.isDeadOrDying()) {
+		if (this.isDeadOrDying())
 			return;
-		}
-		if (this.isVehicle()) {
+		if (this.isVehicle())
 			return;
-		}
-		if (this.isAggressive()) {
+		if (this.isAggressive())
 			return;
-		}
 	}
 }

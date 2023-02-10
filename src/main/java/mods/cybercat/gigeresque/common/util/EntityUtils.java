@@ -26,14 +26,12 @@ public class EntityUtils {
 		if (ConfigAccessor.isTargetWhitelisted(FacehuggerEntity.class, entity))
 			return true;
 
-		boolean vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
+		var vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
 
-		if ((entity instanceof Player)
-				&& (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
+		if ((entity instanceof Player) && (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 			return false;
 
-		if ((entity instanceof Player)
-				&& !(((Player) entity).isCreative() || ((Player) entity).isSpectator()))
+		if ((entity instanceof Player) && !(((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 			return true;
 
 		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengers().isEmpty()
@@ -44,19 +42,18 @@ public class EntityUtils {
 	public static boolean isEggmorphable(Entity entity) {
 		if (entity == null)
 			return false;
-		boolean playerCondition = !(entity instanceof Player)
-				|| !((Player) entity).isCreative() && !entity.isSpectator();
+		var playerCondition = !(entity instanceof Player) || !((Player) entity).isCreative() && !entity.isSpectator();
 
 		if (ConfigAccessor.isTargetBlacklisted(ClassicAlienEntity.class, entity))
 			return false;
 		if (ConfigAccessor.isTargetWhitelisted(ClassicAlienEntity.class, entity))
 			return true;
 
-		boolean weakCondition = !(entity instanceof LivingEntity)
+		var weakCondition = !(entity instanceof LivingEntity)
 				|| (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f)
 				|| ((LivingEntity) entity).getHealth() <= 4f;
 
-		boolean threatCondition = !(entity instanceof LivingEntity)
+		var threatCondition = !(entity instanceof LivingEntity)
 				|| ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem
 				|| ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
 

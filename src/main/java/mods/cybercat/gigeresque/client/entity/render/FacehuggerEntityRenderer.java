@@ -6,6 +6,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
@@ -16,8 +18,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
@@ -125,9 +125,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 			matrixStackIn.mulPose(Axis.XP.rotationDegrees(headPitch));
 			matrixStackIn.translate(0.0, transformData.headOffset, transformData.faceOffset); // apply offsets
 
-		} else {
+		} else
 			super.applyRotations(facehugger, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
-		}
 	}
 
 	private TransformData getTransformData(FacehuggerEntity facehugger, Entity host) {

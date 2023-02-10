@@ -1,5 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
@@ -27,11 +32,6 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
@@ -70,33 +70,27 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200) {
+		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200)
 			this.setBirthStatus(false);
-		}
 	}
 
 	@Override
 	public LivingEntity growInto() {
-		if (hostId == null) {
+		if (hostId == null)
 			return new ClassicAlienEntity(Entities.ALIEN, level);
-		}
 
 		var variantId = ConfigAccessor.getReversedMorphMappings().get(hostId);
-		if (variantId == null) {
+		if (variantId == null)
 			return new ClassicAlienEntity(Entities.ALIEN, level);
-		}
 		var identifier = new ResourceLocation(variantId);
 		var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(identifier).orElse(null);
-		if (entityType == null) {
+		if (entityType == null)
 			return new ClassicAlienEntity(Entities.ALIEN, level);
-		}
 		var entity = entityType.create(level);
 
-		if (hasCustomName()) {
-			if (entity != null) {
+		if (hasCustomName())
+			if (entity != null)
 				entity.setCustomName(getCustomName());
-			}
-		}
 
 		return (LivingEntity) entity;
 	}
@@ -122,7 +116,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving()  && !isDead)
+			if (event.isMoving() && !isDead)
 				if (animationSpeedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else

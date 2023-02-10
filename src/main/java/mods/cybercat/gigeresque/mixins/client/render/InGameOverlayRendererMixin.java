@@ -24,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.material.FluidState;
 
 /**
  * @author Boston Vanseghi
@@ -36,18 +35,17 @@ public class InGameOverlayRendererMixin {
 	@Inject(method = { "renderScreenEffect" }, at = { @At("RETURN") })
 	private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
 		if (!client.player.isSpectator()) {
-			double d = client.player.getEyeY() - 0.1111111119389534D;
-			BlockPos blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
-			FluidState fluidState = client.player.level.getFluidState(blockPos);
+			var d = client.player.getEyeY() - 0.1111111119389534D;
+			var blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
+			var fluidState = client.player.level.getFluidState(blockPos);
 
-			if (fluidState.createLegacyBlock().getBlock() == GIgBlocks.BLACK_FLUID) {
+			if (fluidState.createLegacyBlock().getBlock() == GIgBlocks.BLACK_FLUID)
 				renderBlackFluidOverlay(client, matrices);
-			}
 
 			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable
 					&& eggmorphable.isEggmorphing()) {
-				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed())
-						/ GigeresqueConfig.getEggmorphTickTimer();
+				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer()
+						- eggmorphable.getTicksUntilEggmorphed()) / GigeresqueConfig.getEggmorphTickTimer();
 				renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
 			}
 		}
@@ -58,12 +56,12 @@ public class InGameOverlayRendererMixin {
 		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-		float f = client.player.getLightLevelDependentMagicValue();
+		var f = client.player.getLightLevelDependentMagicValue();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(f, f, f, 1.0F);
-		float m = -client.player.getYRot() / 64.0F;
-		float n = client.player.getXRot() / 64.0F;
+		var m = -client.player.getYRot() / 64.0F;
+		var n = client.player.getXRot() / 64.0F;
 		Matrix4f matrix4f = matrices.last().pose();
 		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferBuilder.vertex(matrix4f, -1.0F, -1.0F, -0.5F).uv(4.0F + m, 4.0F + n).endVertex();
@@ -79,12 +77,12 @@ public class InGameOverlayRendererMixin {
 		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-		float f = client.player.getLightLevelDependentMagicValue();
+		var f = client.player.getLightLevelDependentMagicValue();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(f, f, f, progress);
-		float m = -client.player.getYRot() / 64.0F;
-		float n = client.player.getXRot() / 64.0F;
+		var m = -client.player.getYRot() / 64.0F;
+		var n = client.player.getXRot() / 64.0F;
 		Matrix4f matrix4f = matrices.last().pose();
 		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferBuilder.vertex(matrix4f, -1.0F, -1.0F, -0.5F).uv(4.0F + m, 4.0F + n).endVertex();

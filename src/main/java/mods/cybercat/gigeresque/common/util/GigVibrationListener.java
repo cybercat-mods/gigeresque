@@ -124,15 +124,14 @@ public class GigVibrationListener implements GameEventListener {
 
 	public void tick(Level level) {
 		if (level instanceof ServerLevel) {
-			ServerLevel serverLevel = (ServerLevel) level;
-			if (this.currentVibration == null) {
+			var serverLevel = (ServerLevel) level;
+			if (this.currentVibration == null)
 				this.selectionStrategy.chosenCandidate(serverLevel.getGameTime()).ifPresent(vibrationInfo -> {
 					this.currentVibration = vibrationInfo;
 					this.travelTimeInTicks = Mth.floor(this.currentVibration.distance());
 					this.config.onSignalSchedule();
 					this.selectionStrategy.startOver();
 				});
-			}
 			if (this.currentVibration != null) {
 				--this.travelTimeInTicks;
 				if (this.travelTimeInTicks <= 0) {
@@ -160,23 +159,18 @@ public class GigVibrationListener implements GameEventListener {
 
 	@Override
 	public boolean handleGameEvent(ServerLevel serverLevel, GameEvent gameEvent, GameEvent.Context context, Vec3 vec3) {
-		if (this.currentVibration != null) {
+		if (this.currentVibration != null)
 			return false;
-		}
-		if (!this.config.isValidVibration(gameEvent, context)) {
+		if (!this.config.isValidVibration(gameEvent, context))
 			return false;
-		}
-		Optional<Vec3> optional = this.listenerSource.getPosition(serverLevel);
-		if (optional.isEmpty()) {
+		var optional = this.listenerSource.getPosition(serverLevel);
+		if (optional.isEmpty())
 			return false;
-		}
-		Vec3 vec32 = optional.get();
-		if (!this.config.shouldListen(serverLevel, this, new BlockPos(vec3), gameEvent, context)) {
+		var vec32 = optional.get();
+		if (!this.config.shouldListen(serverLevel, this, new BlockPos(vec3), gameEvent, context))
 			return false;
-		}
-		if (GigVibrationListener.isOccluded(serverLevel, vec3, vec32)) {
+		if (GigVibrationListener.isOccluded(serverLevel, vec3, vec32))
 			return false;
-		}
 		this.scheduleVibration(serverLevel, gameEvent, context, vec3, vec32);
 		return true;
 	}
@@ -194,12 +188,12 @@ public class GigVibrationListener implements GameEventListener {
 	}
 
 	private static boolean isOccluded(Level level, Vec3 vec3, Vec3 vec32) {
-		Vec3 vec33 = new Vec3((double) Mth.floor(vec3.x) + 0.5, (double) Mth.floor(vec3.y) + 0.5,
+		var vec33 = new Vec3((double) Mth.floor(vec3.x) + 0.5, (double) Mth.floor(vec3.y) + 0.5,
 				(double) Mth.floor(vec3.z) + 0.5);
-		Vec3 vec34 = new Vec3((double) Mth.floor(vec32.x) + 0.5, (double) Mth.floor(vec32.y) + 0.5,
+		var vec34 = new Vec3((double) Mth.floor(vec32.x) + 0.5, (double) Mth.floor(vec32.y) + 0.5,
 				(double) Mth.floor(vec32.z) + 0.5);
 		for (Direction direction : Direction.values()) {
-			Vec3 vec35 = vec33.relative(direction, 1.0E-5f);
+			var vec35 = vec33.relative(direction, 1.0E-5f);
 			if (level
 					.isBlockInLine(new ClipBlockStateContext(vec35, vec34,
 							blockState -> blockState.is(BlockTags.OCCLUDES_VIBRATION_SIGNALS)))
@@ -220,24 +214,19 @@ public class GigVibrationListener implements GameEventListener {
 		}
 
 		default public boolean isValidVibration(GameEvent event, GameEvent.Context context) {
-			if (!event.is(this.getListenableEvents())) {
+			if (!event.is(this.getListenableEvents()))
 				return false;
-			}
-			Entity entity = context.sourceEntity();
+			var entity = context.sourceEntity();
 			if (entity != null) {
-				if (entity.isSpectator()) {
+				if (entity.isSpectator())
 					return false;
-				}
-				if (entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) {
+				if (entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))
 					return false;
-				}
-				if (entity.dampensVibrations()) {
+				if (entity.dampensVibrations())
 					return false;
-				}
 			}
-			if (context.affectedState() != null) {
+			if (context.affectedState() != null)
 				return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
-			}
 			return true;
 		}
 

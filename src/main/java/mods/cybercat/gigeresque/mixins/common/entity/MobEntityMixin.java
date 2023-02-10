@@ -23,36 +23,32 @@ import net.minecraft.world.level.Level;
 public abstract class MobEntityMixin extends LivingEntity {
 
 	@Shadow
-    private boolean persistenceRequired;
-	
+	private boolean persistenceRequired;
+
 	protected MobEntityMixin(EntityType<? extends LivingEntity> type, Level world) {
 		super(type, world);
 	}
 
 	@Inject(method = { "playAmbientSound" }, at = { @At("HEAD") }, cancellable = true)
 	public void playAmbientSound(CallbackInfo callbackInfo) {
-		if (((Eggmorphable) this).isEggmorphing()) {
+		if (((Eggmorphable) this).isEggmorphing())
 			callbackInfo.cancel();
-		}
 
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
 			callbackInfo.cancel();
-		}
 	}
 
 	@Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") })
 	public boolean cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this instanceof Host host && host.hasParasite()) {
+		if (this instanceof Host host && host.hasParasite())
 			return true;
-		}
 
 		return callbackInfo.getReturnValue();
 	}
-	
+
 	@Inject(method = { "tick" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
-		if ((this instanceof Host host && host.hasParasite()) || this.hasEffect(GigStatusEffects.DNA)) {
+		if ((this instanceof Host host && host.hasParasite()) || this.hasEffect(GigStatusEffects.DNA))
 			this.persistenceRequired = true;
-		}
 	}
 }

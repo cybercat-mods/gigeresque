@@ -25,38 +25,35 @@ public class GigVibrationSelector {
 	}
 
 	public void addCandidate(GigVibrationInfo vibrationInfo, long l) {
-		if (this.shouldReplaceVibration(vibrationInfo, l)) {
+		if (this.shouldReplaceVibration(vibrationInfo, l))
 			this.currentVibrationData = Optional.of(Pair.of(vibrationInfo, l));
-		}
 	}
 
 	private boolean shouldReplaceVibration(GigVibrationInfo vibrationInfo, long l) {
-		if (this.currentVibrationData.isEmpty()) {
+		if (this.currentVibrationData.isEmpty())
 			return true;
-		}
-		Pair<GigVibrationInfo, Long> pair = this.currentVibrationData.get();
-		long m = pair.getRight();
-		if (l != m) {
+		var pair = this.currentVibrationData.get();
+		var m = pair.getRight();
+
+		if (l != m)
 			return false;
-		}
-		GigVibrationInfo vibrationInfo2 = pair.getLeft();
-		if (vibrationInfo.distance() < vibrationInfo2.distance()) {
+
+		var vibrationInfo2 = pair.getLeft();
+
+		if (vibrationInfo.distance() < vibrationInfo2.distance())
 			return true;
-		}
-		if (vibrationInfo.distance() > vibrationInfo2.distance()) {
+		if (vibrationInfo.distance() > vibrationInfo2.distance())
 			return false;
-		}
+
 		return GigVibrationListener.getGameEventFrequency(vibrationInfo.gameEvent()) > GigVibrationListener
 				.getGameEventFrequency(vibrationInfo2.gameEvent());
 	}
 
 	public Optional<GigVibrationInfo> chosenCandidate(long l) {
-		if (this.currentVibrationData.isEmpty()) {
+		if (this.currentVibrationData.isEmpty())
 			return Optional.empty();
-		}
-		if (this.currentVibrationData.get().getRight() < l) {
+		if (this.currentVibrationData.get().getRight() < l)
 			return Optional.of(this.currentVibrationData.get().getLeft());
-		}
 		return Optional.empty();
 	}
 

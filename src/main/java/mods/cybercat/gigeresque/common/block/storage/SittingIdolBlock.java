@@ -110,10 +110,9 @@ public class SittingIdolBlock extends BaseEntityBlock {
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		for (BlockPos testPos : BlockPos.betweenClosed(pos, pos.relative((Direction) state.getValue(FACING), 2).above(2))) {
+		for (BlockPos testPos : BlockPos.betweenClosed(pos, pos.relative((Direction) state.getValue(FACING), 2).above(2))) 
 			if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
 				return false;
-		}
 		return true;
 	}
 

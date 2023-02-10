@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
@@ -48,27 +47,22 @@ public class NestResinWebBlock extends Block {
 	private static final VoxelShape NORTH_SHAPE = box(0.0, 0.0, 15.0, 16.0, 16.0, 16.0);
 
 	private static VoxelShape getShapeForState(BlockState state) {
-		VoxelShape voxelShape = Shapes.empty();
-		if (state.getValue(UP)) {
+		var voxelShape = Shapes.empty();
+		if (state.getValue(UP))
 			voxelShape = UP_SHAPE;
-		}
-		if (state.getValue(NORTH)) {
+		if (state.getValue(NORTH))
 			voxelShape = Shapes.or(voxelShape, SOUTH_SHAPE);
-		}
-		if (state.getValue(SOUTH)) {
+		if (state.getValue(SOUTH))
 			voxelShape = Shapes.or(voxelShape, NORTH_SHAPE);
-		}
-		if (state.getValue(EAST)) {
+		if (state.getValue(EAST))
 			voxelShape = Shapes.or(voxelShape, WEST_SHAPE);
-		}
-		if (state.getValue(WEST)) {
+		if (state.getValue(WEST))
 			voxelShape = Shapes.or(voxelShape, EAST_SHAPE);
-		}
 		return voxelShape.isEmpty() ? Shapes.block() : voxelShape;
 	}
 
 	public static boolean shouldConnectTo(LevelReader world, BlockPos pos, Direction direction) {
-		BlockState blockState = world.getBlockState(pos);
+		var blockState = world.getBlockState(pos);
 		return isFaceFull(blockState.getCollisionShape(world, pos), direction.getOpposite());
 	}
 
@@ -116,28 +110,27 @@ public class NestResinWebBlock extends Block {
 	}
 
 	private boolean shouldHaveSide(LevelReader world, BlockPos pos, Direction side) {
-		if (side == Direction.DOWN) {
+		if (side == Direction.DOWN)
 			return false;
-		} else {
-			BlockPos blockPos = pos.relative(side);
-			if (shouldConnectTo(world, blockPos, side)) {
+		else {
+			var blockPos = pos.relative(side);
+			if (shouldConnectTo(world, blockPos, side))
 				return true;
-			} else if (side.getAxis() == Direction.Axis.Y) {
+			else if (side.getAxis() == Direction.Axis.Y)
 				return false;
-			} else {
-				BlockState blockState = world.getBlockState(pos.above());
+			else {
+				var blockState = world.getBlockState(pos.above());
 				return blockState.is(this) && blockState.getValue(FACING_PROPERTIES.get(side));
 			}
 		}
 	}
 
 	private BlockState getPlacementShape(BlockState state, LevelReader world, BlockPos pos) {
-		BlockPos blockPos = pos.above();
-		if (state.getValue(UP)) {
+		var blockPos = pos.above();
+		if (state.getValue(UP))
 			state = state.setValue(UP, shouldConnectTo(world, blockPos, Direction.DOWN));
-		}
 		BlockState blockState = null;
-		Iterator<Direction> iterator = Direction.Plane.HORIZONTAL.iterator();
+		var iterator = Direction.Plane.HORIZONTAL.iterator();
 		while (true) {
 			Direction direction;
 			BooleanProperty booleanProperty;
@@ -148,11 +141,10 @@ public class NestResinWebBlock extends Block {
 				direction = iterator.next();
 				booleanProperty = getFacingProperty(direction);
 			} while (!state.getValue(booleanProperty));
-			boolean bl = shouldHaveSide(world, pos, direction);
+			var bl = shouldHaveSide(world, pos, direction);
 			if (!bl) {
-				if (blockState == null) {
+				if (blockState == null)
 					blockState = world.getBlockState(blockPos);
-				}
 				bl = blockState.is(this) && blockState.getValue(booleanProperty);
 			}
 			state = state.setValue(booleanProperty, bl);
@@ -162,17 +154,17 @@ public class NestResinWebBlock extends Block {
 	@Override
 	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
 			BlockPos pos, BlockPos neighborPos) {
-		if (direction == Direction.DOWN) {
+		if (direction == Direction.DOWN)
 			return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
-		} else {
-			BlockState blockState = getPlacementShape(state, world, pos);
+		else {
+			var blockState = getPlacementShape(state, world, pos);
 			return !hasAdjacentBlocks(blockState) ? Blocks.AIR.defaultBlockState() : blockState;
 		}
 	}
 
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-		BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
+		var blockState = context.getLevel().getBlockState(context.getClickedPos());
 		return blockState.is(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size()
 				: super.canBeReplaced(state, context);
 	}
@@ -180,19 +172,18 @@ public class NestResinWebBlock extends Block {
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-		boolean bl = blockState.is(this);
-		BlockState blockState2 = bl ? blockState : defaultBlockState();
-		Direction[] placementDirections = ctx.getNearestLookingDirections();
+		var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		var bl = blockState.is(this);
+		var blockState2 = bl ? blockState : defaultBlockState();
+		var placementDirections = ctx.getNearestLookingDirections();
 		for (Direction direction : placementDirections) {
 			if (direction != Direction.DOWN) {
-				BooleanProperty booleanProperty = getFacingProperty(direction);
-				boolean bl2 = bl && blockState.getValue(booleanProperty);
-				if (!bl2 && shouldHaveSide(ctx.getLevel(), ctx.getClickedPos(), direction)) {
+				var booleanProperty = getFacingProperty(direction);
+				var bl2 = bl && blockState.getValue(booleanProperty);
+				if (!bl2 && shouldHaveSide(ctx.getLevel(), ctx.getClickedPos(), direction))
 					return blockState2.setValue(booleanProperty, true).setValue(VARIANTS,
 							Arrays.stream(NestResinWebVariant.values()).toList()
 									.get(new Random().nextInt(NestResinWebVariant.values().length)));
-				}
 			}
 		}
 		return bl ? blockState2 : null;

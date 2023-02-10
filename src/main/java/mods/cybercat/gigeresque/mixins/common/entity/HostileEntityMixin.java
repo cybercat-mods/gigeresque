@@ -26,9 +26,8 @@ public abstract class HostileEntityMixin extends LivingEntity {
 	@Inject(method = { "isDarkEnoughToSpawn" }, at = { @At("RETURN") })
 	private static boolean isDarkEnoughToSpawn(ServerLevelAccessor world, BlockPos pos, RandomSource random,
 			CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS)) {
+		if (world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS))
 			return false;
-		}
 		return callbackInfo.getReturnValue();
 	}
 

@@ -17,16 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MuralBlock extends GigBlock {
 
 	public MuralBlock() {
-		super(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).strength(3.0F, 6.0F)
-				.sounds(SoundType.NETHERRACK));
+		super(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK));
 	}
 
 	@Override
 	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity,
 			ItemStack stack) {
 		world.setBlock(pos, GIgBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
-		AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(),
-				pos.getZ());
+		var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
 		areaEffectCloudEntity.setRadius(1.0F);
 		areaEffectCloudEntity.setDuration(60);
 		areaEffectCloudEntity

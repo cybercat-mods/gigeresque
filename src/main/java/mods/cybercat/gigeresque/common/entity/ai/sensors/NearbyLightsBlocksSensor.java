@@ -19,7 +19,8 @@ import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class NearbyLightsBlocksSensor<E extends LivingEntity> extends PredicateSensor<BlockState, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList
+			.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get());
 
 	protected SquareRadius radius = new SquareRadius(1, 1);
 
@@ -72,10 +73,9 @@ public class NearbyLightsBlocksSensor<E extends LivingEntity> extends PredicateS
 				blocks.add(Pair.of(pos.immutable(), state));
 		}
 
-		if (blocks.isEmpty()) {
+		if (blocks.isEmpty())
 			BrainUtils.clearMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get());
-		} else {
+		else
 			BrainUtils.setMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), blocks);
-		}
 	}
 }

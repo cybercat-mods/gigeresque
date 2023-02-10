@@ -32,17 +32,14 @@ public class InvisAlienChest2Block extends Block {
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
 		if (!world.isClientSide) {
-			Vec3i radius = new Vec3i(2, 2, 2);
-			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
+			var radius = new Vec3i(2, 2, 2);
+			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
 				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_3)) {
 					if (!world.isClientSide
-							&& world.getBlockEntity(testPos)instanceof IdolStorageEntity idolStorageEntity) {
+							&& world.getBlockEntity(testPos)instanceof IdolStorageEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
-					}
-
 					return InteractionResult.SUCCESS;
 				}
-			}
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -57,16 +54,15 @@ public class InvisAlienChest2Block extends Block {
 		if (world.isClientSide)
 			return;
 
-		Vec3i radius = new Vec3i(2, 2, 2);
+		var radius = new Vec3i(2, 2, 2);
 
 		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 			BlockState testState;
 
-			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_3)) {
+			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_3))
 				world.destroyBlock(testPos, true);
-			} else if (testState.is(this)) {
+			else if (testState.is(this))
 				world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-			}
 		}
 	}
 

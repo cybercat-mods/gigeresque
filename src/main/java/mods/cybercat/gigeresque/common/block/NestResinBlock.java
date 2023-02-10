@@ -41,7 +41,7 @@ public class NestResinBlock extends Block {
 			list.add(Shapes.empty());
 		}
 		for (int i = 0; i < 8; i++) {
-			double minY = divide ? (i * 2.0) / 2.0 : i * 2.0;
+			var minY = divide ? (i * 2.0) / 2.0 : i * 2.0;
 			list.add(box(0.0, 0.0, 0.0, 16.0, minY, 16.0));
 		}
 		return list;
@@ -86,22 +86,20 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		BlockState blockState = world.getBlockState(pos.below());
-		boolean isIce = blockState.is(Blocks.ICE);
-		boolean isPackedIce = blockState.is(Blocks.PACKED_ICE);
-		boolean isBarrier = blockState.is(Blocks.BARRIER);
-		boolean isHoney = blockState.is(Blocks.HONEY_BLOCK);
-		boolean isSoulSand = blockState.is(Blocks.SOUL_SAND);
+		var blockState = world.getBlockState(pos.below());
+		var isIce = blockState.is(Blocks.ICE);
+		var isPackedIce = blockState.is(Blocks.PACKED_ICE);
+		var isBarrier = blockState.is(Blocks.BARRIER);
+		var isHoney = blockState.is(Blocks.HONEY_BLOCK);
+		var isSoulSand = blockState.is(Blocks.SOUL_SAND);
 		if (!isIce && !isPackedIce && !isBarrier) {
-			if (!isHoney && !isSoulSand) {
+			if (!isHoney && !isSoulSand)
 				return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP)
 						|| blockState.is(this) && blockState.getValue(LAYERS) == 8;
-			} else {
+			else
 				return true;
-			}
-		} else {
+		} else
 			return false;
-		}
 	}
 
 	@Override
@@ -113,28 +111,25 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-		int i = state.getValue(LAYERS);
-		if (context.getItemInHand().is(asItem()) && i < 8) {
-			if (context.replacingClickedOnBlock()) {
+		var i = state.getValue(LAYERS);
+		if (context.getItemInHand().is(asItem()) && i < 8)
+			if (context.replacingClickedOnBlock())
 				return context.getClickedFace() == Direction.UP;
-			} else {
+			else
 				return true;
-			}
-		} else {
+		else
 			return i == 1;
-		}
 	}
 
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
+		var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 		if (blockState.is(this)) {
-			int i = blockState.getValue(LAYERS);
+			var i = blockState.getValue(LAYERS);
 			return blockState.setValue(LAYERS, MathUtil.coerceAtMost(8, i + 1));
-		} else {
+		} else
 			return super.getStateForPlacement(ctx);
-		}
 	}
 
 	@Override
@@ -145,7 +140,7 @@ public class NestResinBlock extends Block {
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
 		if (!(entity instanceof AlienEntity)) {
-			double multiplier = MathUtil.clamp(1.0 / state.getValue(LAYERS), 0.0, 1.0);
+			var multiplier = MathUtil.clamp(1.0 / state.getValue(LAYERS), 0.0, 1.0);
 			entity.makeStuckInBlock(state, new Vec3(1.0 * multiplier, 1.0, 1.0 * multiplier));
 		}
 	}

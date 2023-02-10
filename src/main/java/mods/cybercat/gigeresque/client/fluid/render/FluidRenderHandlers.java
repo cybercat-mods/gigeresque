@@ -44,7 +44,7 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 
 		var fluidId = BuiltInRegistries.FLUID.getKey(still);
 		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
-		TextureAtlasSprite[] fluidSprites = new TextureAtlasSprite[2];
+		var fluidSprites = new TextureAtlasSprite[2];
 
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
 				.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
@@ -61,8 +61,6 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 					}
 				});
 
-		// The FluidRenderer gets the sprites and color from a FluidRenderHandler during
-		// rendering
 		var renderHandler = new FluidRenderHandler() {
 			@Override
 			public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos,

@@ -208,27 +208,20 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("getStatisTimer")) {
+		if (nbt.contains("getStatisTimer"))
 			setGrowth(nbt.getFloat("getStatisTimer"));
-		}
-		if (nbt.contains("growth")) {
+		if (nbt.contains("growth"))
 			setGrowth(nbt.getFloat("growth"));
-		}
-		if (nbt.contains("isHissing")) {
+		if (nbt.contains("isHissing"))
 			setIsHissing(nbt.getBoolean("isHissing"));
-		}
-		if (nbt.contains("isCrawling")) {
+		if (nbt.contains("isCrawling"))
 			setIsCrawling(nbt.getBoolean("isCrawling"));
-		}
-		if (nbt.contains("isBreaking")) {
+		if (nbt.contains("isBreaking"))
 			setIsBreaking(nbt.getBoolean("isBreaking"));
-		}
-		if (nbt.contains("isExecuting")) {
+		if (nbt.contains("isExecuting"))
 			setIsExecuting(nbt.getBoolean("isExecuting"));
-		}
-		if (nbt.contains("isStatis")) {
+		if (nbt.contains("isStatis"))
 			setIsStatis(nbt.getBoolean("isStatis"));
-		}
 	}
 
 	@Override
@@ -246,30 +239,26 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty,
 			MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-		if (spawnReason != MobSpawnType.NATURAL) {
+		if (spawnReason != MobSpawnType.NATURAL)
 			setGrowth(getMaxGrowth());
-		}
 		return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && this.isAlive()) {
+		if (!level.isClientSide && this.isAlive())
 			grow(this, 1 * getGrowthMultiplier());
-		}
 
-		if (!level.isClientSide && this.isVehicle()) {
+		if (!level.isClientSide && this.isVehicle())
 			this.setAggressive(false);
-		}
 
 		// Statis Logic
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
-			if (getStatisTimer() == 500 || this.isStatis() == true) {
+			if (getStatisTimer() == 500 || this.isStatis() == true)
 				setIsStatis(true);
-			}
 		} else {
 			setStatisTimer(0);
 			statisCounter = 0;
@@ -281,9 +270,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 				&& (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
 
-			if (hissingCooldown == 20) {
+			if (hissingCooldown == 20)
 				setIsHissing(true);
-			}
 
 			if (hissingCooldown > 80) {
 				setIsHissing(false);
@@ -299,9 +287,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					searchingProgress = 0;
 					searchingCooldown = Constants.TPS * 15L;
 					isSearching = false;
-				} else {
+				} else
 					searchingProgress++;
-				}
 			} else {
 				searchingCooldown = max(searchingCooldown - 1, 0);
 
@@ -317,11 +304,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		var multiplier = 1.0f;
-		if (source.isFire()) {
+		if (source.isFire())
 			multiplier = 2.0f;
-		} else if (source.isProjectile()) {
+		else if (source.isProjectile())
 			multiplier = 0.5f;
-		}
 
 		return super.hurt(source, amount * multiplier);
 	}
@@ -390,9 +376,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (entity == this.getTarget() && !entity.hasPassenger(this)
 				&& !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
 			entity.startRiding(this, true);
-			if (entity instanceof ServerPlayer) {
+			if (entity instanceof ServerPlayer)
 				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
-			}
 		}
 	}
 
@@ -400,8 +385,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (!this.isVehicle()) {
+		if (!this.isVehicle())
 			this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 2.9F);
-		}
 	}
 }

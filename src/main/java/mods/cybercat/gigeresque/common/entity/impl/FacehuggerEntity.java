@@ -198,16 +198,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 		var vehicle = this.getVehicle();
 
-		if (vehicle instanceof LivingEntity && removesParasite) {
+		if (vehicle instanceof LivingEntity && removesParasite)
 			((Host) vehicle).removeParasite();
-		}
 	}
 
 	@Override
 	public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
-		if (this.level.isClientSide) {
-			// complexBrain.stun(Constants.TPS * 5);
-		}
 		return super.getDismountLocationForPassenger(passenger);
 	}
 
@@ -236,9 +232,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public void grabTarget(Entity entity) {
 		if (!entity.hasPassenger(this)) {
 			this.startRiding(entity, true);
-			if (entity instanceof ServerPlayer) {
+			if (entity instanceof ServerPlayer)
 				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
-			}
 		}
 	}
 
@@ -276,18 +271,16 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				setIsInfertile(true);
 				this.hurt(DamageSource.MAGIC, this.getMaxHealth());
 			}
-		} else {
+		} else
 			ticksAttachedToHost = -1.0f;
-		}
 
 		if (isInfertile()) {
 			this.kill();
 			this.removeFreeWill();
 			return;
 		}
-		if (this.isEggSpawn() == true && this.tickCount > 30) {
+		if (this.isEggSpawn() == true && this.tickCount > 30)
 			this.setEggSpawnState(false);
-		}
 		if (this.getTarget() != null)
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()))
 				this.attachToHost(this.getTarget());
@@ -307,15 +300,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("isInfertile")) {
+		if (nbt.contains("isInfertile"))
 			setIsInfertile(nbt.getBoolean("isInfertile"));
-		}
-		if (nbt.contains("ticksAttachedToHost")) {
+		if (nbt.contains("ticksAttachedToHost"))
 			ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
-		}
-		if (nbt.contains("isCrawling")) {
+		if (nbt.contains("isCrawling"))
 			setIsCrawling(nbt.getBoolean("isCrawling"));
-		}
 	}
 
 	@Override
@@ -325,22 +315,19 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f) {
+		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
 			detachFromHost(true);
-		}
 
-		if ((isAttachedToHost() || isInfertile()) && (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
+		if ((isAttachedToHost() || isInfertile()) && (source == DamageSource.DROWN || source == DamageSource.IN_WALL))
 			return false;
-		}
 
 		return super.hurt(source, amount);
 	}
 
 	@Override
 	public void knockback(double strength, double x, double z) {
-		if (!isInfertile()) {
+		if (!isInfertile())
 			super.knockback(strength, x, z);
-		}
 	}
 
 	@Override
@@ -376,9 +363,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public void stopRiding() {
 		var vehicle = this.getVehicle();
 		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive()
-				&& ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater())) {
+				&& ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
-		}
 		setIsInfertile(true);
 		super.stopRiding();
 	}
@@ -395,12 +381,10 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.9));
-			if (getTarget() == null) {
+			if (getTarget() == null)
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-			}
-		} else {
+		} else
 			super.travel(movementInput);
-		}
 	}
 
 	@Override

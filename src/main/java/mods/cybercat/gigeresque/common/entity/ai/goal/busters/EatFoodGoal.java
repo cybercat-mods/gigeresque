@@ -33,15 +33,13 @@ public class EatFoodGoal extends Goal {
 
 		int growthLeft = (int) ceil(chestburster.getGrowthNeededUntilGrowUp() / (2400));
 		int amountToEat = min(list.get(0).getItem().getCount(), growthLeft);
-		if (!list.isEmpty()) {
+		if (!list.isEmpty())
 			this.chestburster.getNavigation().moveTo(list.get(0), 1.2f);
-		}
 		this.chestburster.getNavigation().moveTo(list.get(0), 1.2f);
 		if (list.get(0).distanceTo(chestburster) >= 0.1 && list.get(0).isAlive() && chestburster.tickCount > 80) {
 			this.cooldown++;
-			if (this.cooldown == 1) {
+			if (this.cooldown == 1)
 				this.chestburster.setEatingStatus(true);
-			}
 			if (this.cooldown == 15) {
 				list.get(0).getItem().shrink(amountToEat);
 				chestburster.playSound(chestburster.getEatingSound(list.get(0).getItem()), 1.0f, 1.0f);
@@ -60,9 +58,8 @@ public class EatFoodGoal extends Goal {
 		super.start();
 		List<ItemEntity> list = this.chestburster.level.getEntitiesOfClass(ItemEntity.class,
 				this.chestburster.getBoundingBox().inflate(8.0, 8.0, 8.0), ChestbursterEntity.PICKABLE_DROP_FILTER);
-		if (!list.isEmpty()) {
+		if (!list.isEmpty())
 			this.chestburster.getNavigation().moveTo(list.get(0), 1.2f);
-		}
 		this.cooldown = 0;
 	}
 

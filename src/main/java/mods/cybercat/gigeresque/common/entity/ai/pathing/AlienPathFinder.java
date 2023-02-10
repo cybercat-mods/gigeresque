@@ -51,9 +51,8 @@ public class AlienPathFinder extends PathFinder {
 
 		private static List<Node> copyPathPoints(Path original) {
 			List<Node> points = new ArrayList();
-			for (int i = 0; i < original.getNodeCount(); i++) {
+			for (int i = 0; i < original.getNodeCount(); i++)
 				points.add(original.getNode(i));
-			}
 			return points;
 		}
 	}
