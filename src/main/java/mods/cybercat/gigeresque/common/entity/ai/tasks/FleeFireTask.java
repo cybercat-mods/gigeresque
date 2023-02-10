@@ -59,7 +59,7 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
         Optional<Vec3> optional;
         if (pathfinder.isOnFire() && (optional = this.lookForWater(level, pathfinder).map(Vec3::atBottomCenterOf)).isPresent()) 
             return optional.get();
-        return LandRandomPos.getPos(pathfinder, 5, 4);
+        return LandRandomPos.getPos(pathfinder, 15, 4);
     }
 
     private Optional<BlockPos> lookForWater(BlockGetter level, Entity entity) {
