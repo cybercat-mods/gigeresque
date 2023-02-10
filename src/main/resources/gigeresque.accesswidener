@@ -1,3 +1,10 @@
 accessWidener v1 named
 
 accessible class net/minecraft/world/entity/item/FallingBlockEntity
+accessible class net/minecraft/server/level/ChunkMap$TrackedEntity
+accessible field net/minecraft/server/level/ChunkMap entityMap Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
+accessible field net/minecraft/server/level/ChunkMap$TrackedEntity serverEntity Lnet/minecraft/server/level/ServerEntity;
+accessible field net/minecraft/server/level/ServerEntity tickCount I
+accessible field net/minecraft/server/level/ServerEntity updateInterval I
+accessible field net/minecraft/world/entity/Entity xRot F
+accessible field net/minecraft/world/entity/Entity yRot F
