@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 
@@ -40,7 +39,7 @@ public class BuildNestTask<E extends AdultAlienEntity> extends DelayedBehaviour<
 
 	@Override
 	protected void doDelayedAction(E alien) {
-		Stream<BlockState> list2 = alien.level.getBlockStatesIfLoaded(alien.getBoundingBox().inflate(4.0, 4.0, 4.0));
+		var list2 = alien.level.getBlockStatesIfLoaded(alien.getBoundingBox().inflate(4.0, 4.0, 4.0));
 		if (list2.noneMatch(NEST))
 			NestBuildingHelper.tryBuildNestAround(alien);
 	}

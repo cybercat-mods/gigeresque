@@ -15,9 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
@@ -49,35 +47,34 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void tick(ServerLevel level, E entity, long gameTime) {
-		Level world = entity.getLevel();
+		var world = entity.getLevel();
 
 		if (targetPos == null) {
-			Vec3 targetVec = locateShadedPos(entity);
+			var targetVec = locateShadedPos(entity);
 			if (targetVec == null)
 				return;
-			BlockPos targetPos = new BlockPos(targetVec);
-			boolean canMoveTo = entity.getNavigation().moveTo(targetVec.x, targetVec.y, targetVec.z, 1.1F);
+			var targetPos = new BlockPos(targetVec);
+			var canMoveTo = entity.getNavigation().moveTo(targetVec.x, targetVec.y, targetVec.z, 1.1F);
 
 			if (!canMoveTo) {
-				BlockPos offset = targetPos.offset(0, 10, 0);
+				var offset = targetPos.offset(0, 10, 0);
 
 				for (int i = 0; i < 20; i++) {
-					BlockPos newPos = offset.offset(0, -i, 0);
-					BlockPos downPos = newPos.below();
+					var newPos = offset.offset(0, -i, 0);
+					var downPos = newPos.below();
 
 					if (world.getBlockState(newPos).isAir() && world.getBlockState(downPos).canOcclude()) {
 						targetPos = newPos;
 
-						if (entity.getNavigation().moveTo(targetPos.getX(), targetPos.getY(), targetPos.getZ(), 1.1F)) {
+						if (entity.getNavigation().moveTo(targetPos.getX(), targetPos.getY(), targetPos.getZ(), 1.1F))
 							break;
-						}
 					}
 				}
 			}
 
 			this.targetPos = targetPos;
 		} else {
-			BlockPos targetPos = this.targetPos;
+			var targetPos = this.targetPos;
 			if (targetPos.closerToCenterThan(entity.position(), 4.0)) {
 				entity.getBrain().setMemory(MemoryModuleType.HOME, GlobalPos.of(world.dimension(), targetPos));
 				hasReachedNestingGround = true;
@@ -86,34 +83,29 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 				for (int x = -1; x <= 1; x++) {
 					for (int z = -1; z <= 1; z++) {
 						resinPos = targetPos.offset(x, 0, z);
-						BlockPos downPos = resinPos.below();
+						var downPos = resinPos.below();
+						var travelUp = !(world.getBlockState(resinPos).isAir() && world.getBlockState(downPos).isAir());
 
-						boolean travelUp = !(world.getBlockState(resinPos).isAir()
-								&& world.getBlockState(downPos).isAir());
-
-						int i = 0;
+						var i = 0;
 						while (!world.getBlockState(resinPos).isAir() || !world.getBlockState(downPos).canOcclude()) {
 							resinPos.offset(0, travelUp ? 1 : -1, 0);
 							downPos.offset(0, travelUp ? 1 : -1, 0);
 
 							i++;
-							if (i > 4) { // Limit search to prevent infinite loop
+							if (i > 4) // Limit search to prevent infinite loop
 								break;
-							}
 						}
 
-						BlockState topState = world.getBlockState(resinPos);
+						var topState = world.getBlockState(resinPos);
 						if (topState.isAir()) {
-							BlockState downState = world.getBlockState(downPos);
-							if (downState.getBlock() == GIgBlocks.NEST_RESIN) {
+							var downState = world.getBlockState(downPos);
+							if (downState.getBlock() == GIgBlocks.NEST_RESIN)
 								world.setBlockAndUpdate(downPos, GIgBlocks.NEST_RESIN.defaultBlockState());
-							} else if (downState.isSolidRender(world, downPos)) {
+							else if (downState.isSolidRender(world, downPos))
 								world.setBlockAndUpdate(resinPos, GIgBlocks.NEST_RESIN.defaultBlockState());
-							}
 						} else if (world.getBlockState(resinPos) == GIgBlocks.NEST_RESIN.defaultBlockState()
-								&& topState.isSolidRender(world, resinPos)) {
+								&& topState.isSolidRender(world, resinPos))
 							world.setBlockAndUpdate(resinPos, GIgBlocks.NEST_RESIN.defaultBlockState());
-						}
 					}
 				}
 			}
