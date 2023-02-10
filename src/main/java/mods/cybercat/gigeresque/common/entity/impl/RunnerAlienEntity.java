@@ -13,9 +13,9 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -165,11 +165,11 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<RunnerAlienEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
+		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new FirstApplicableBehaviour<RunnerAlienEntity>(
+				new TargetOrRetaliate<>(),
+				new SetPlayerLookTarget<>().stopIf(
+						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
+				new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
 						new Idle<>().startCondition(entity -> !this.isAggressive())
 						.runFor(entity -> entity.getRandom().nextInt(30, 60))));
@@ -183,7 +183,6 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new BuildNestGoal(this));
 		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 

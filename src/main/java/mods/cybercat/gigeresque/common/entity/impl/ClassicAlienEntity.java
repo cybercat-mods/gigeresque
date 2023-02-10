@@ -23,11 +23,9 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.FindNestingGroundTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -269,13 +267,12 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new KillLightsTask<>(),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FindNestingGroundTask(), new BuildNestTask(),
+		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new KillLightsTask<>(),
 				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
@@ -293,7 +290,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new BuildNestGoal(this));
 		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 
