@@ -12,6 +12,7 @@ import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -35,7 +36,8 @@ public class NestBuildingHelper {
 							if (randomPhase <= 70) {
 								alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN.defaultBlockState());
 							} else {
-								alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+								alien.level.setBlockAndUpdate(blockPos,
+										GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 							}
 						}
 
@@ -54,6 +56,8 @@ public class NestBuildingHelper {
 											.nextInt(NestResinWebVariant.values().length)]);
 							alien.level.setBlockAndUpdate(blockPos, nestResinWebState);
 						}
+						if (alien.level.isClientSide)
+							alien.playSound(SoundEvents.HONEY_BLOCK_STEP);
 					}
 				}
 			}
