@@ -3,7 +3,7 @@
 	"id": "gigeresque",
 	"version": "${version}",
 	"name": "Gigeresque",
-	"description": "An Alien-themed mod for Fabric.",
+	"description": "Gigeresque is a horror-themed mod that offers players a dive into the horrific biomechanical world of the xenomorphs, and the mutated realms of the neomorphs, deacons, and goo mutants.",
 	"authors": [
 		"AzureDoom",
 		"Boston Vanseghi",
@@ -21,14 +21,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			{
-				"value": "mods.cybercat.gigeresque.common.Gigeresque"
-			}
+			"mods.cybercat.gigeresque.common.Gigeresque"
 		],
 		"client": [
-			{
-				"value": "mods.cybercat.gigeresque.client.GigeresqueClient"
-			}
+			"mods.cybercat.gigeresque.client.GigeresqueClient"
 		],
 		"modmenu": [
 			"mods.cybercat.gigeresque.client.config.ModMenuGigeresque"
@@ -40,7 +36,7 @@
 	"depends": {
 		"fabricloader": ">=0.14.11",
 		"fabric": "*",
-		"minecraft": ">=1.19.2",
+		"minecraft": ">=1.19.3",
 		"azurelib": ">=1.0.2",
 		"smartbrainlib": ">=1.7.4",
 		"java": ">=17"
