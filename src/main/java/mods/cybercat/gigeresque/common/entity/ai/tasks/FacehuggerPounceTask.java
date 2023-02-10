@@ -59,6 +59,8 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 	}
 
 	private LivingEntity getTarget(E entity) {
+		if (entity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get() == null)
+			return entity;
 		return entity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).get();
 	}
 }
