@@ -31,10 +31,6 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	}
 
 	@Override
-	protected void stop(E entity) {
-	}
-
-	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
 		return !entity.isAggressive();
 	}
@@ -44,7 +40,8 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		if (lightSourceLocation == null)
 			return;
-		startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
+		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4))
+			startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
 		if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4)) {
 			var world = entity.level;
 			var random = entity.getRandom();
