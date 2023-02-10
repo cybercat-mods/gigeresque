@@ -59,7 +59,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	@Override
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack,
 			MultiBufferSource bufferIn, int packedLightIn) {
-		if (entity.isCrawling() && !entity.isNoGravity()) {
+		if (entity.isCrawling()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
@@ -82,6 +82,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				stack.mulPose(Axis.ZP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
+//			stack.mulPose(Axis.ZP.rotationDegrees(90));
+//			stack.translate(0, 0, 0);
 		}
 		if (entity.isNoGravity() && !entity.isCrawling() && !entity.isUnderWater()) {
 			stack.mulPose(Axis.ZP.rotationDegrees(180));

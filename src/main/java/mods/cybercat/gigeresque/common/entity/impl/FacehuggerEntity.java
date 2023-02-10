@@ -14,7 +14,6 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
@@ -55,6 +54,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +88,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
-	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
+	private final WallClimberNavigation landNavigation = new WallClimberNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
 	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
@@ -285,7 +285,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()))
 				this.attachToHost(this.getTarget());
 		this.setNoGravity(
-				!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.verticalCollision);
+				!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
@@ -415,8 +415,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision);
-		return this.horizontalCollision;
+		setIsCrawling(this.horizontalCollision && !this.isNoGravity());
+		return true;
 	}
 
 	@Override
