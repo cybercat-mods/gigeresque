@@ -24,7 +24,10 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -59,7 +62,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
@@ -259,6 +261,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(7)
+						.setPredicate((block, entity) -> block.is(GIgBlocks.NEST_RESIN_WEB_CROSS)),
 				new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
@@ -282,7 +286,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(3.0F), new AnimatableMeleeAttack(10));
+				new SetWalkTargetToAttackTarget<>().speedMod(3.0F), new ClassicXenoMeleeAttackTask(10),
+				new EggmorpthTargetTask<>());
 	}
 
 	@Override

@@ -20,6 +20,9 @@ public class GigMemoryTypes {
 
 	public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_LIGHT_BLOCKS = register(
 			"nearby_light_blocks");
+	
+	public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_NEST_BLOCKS = register(
+			"nearby_nest_blocks");
 
 	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
 		return register(id, null);
