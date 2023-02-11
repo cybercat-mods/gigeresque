@@ -200,7 +200,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(
 						new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20)
-								.speedModifier(!this.wasTouchingWater ? 0.25F : 1.5f),
+								.speedModifier(!this.wasTouchingWater ? 0.75F : 1.5f),
 						new Idle<>().startCondition(entity -> !this.isAggressive())
 								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
@@ -208,7 +208,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(!this.wasTouchingWater ? 0.25F : 1.5F),
+				new SetWalkTargetToAttackTarget<>().speedMod(!this.wasTouchingWater ? 0.95F : 1.5F),
 				new AnimatableMeleeAttack(10));
 	}
 
