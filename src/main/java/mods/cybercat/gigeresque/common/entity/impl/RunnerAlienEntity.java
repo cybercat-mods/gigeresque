@@ -154,17 +154,16 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new KillLightsTask<>(),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new FirstApplicableBehaviour<RunnerAlienEntity>(
-				new TargetOrRetaliate<>(),
-				new SetPlayerLookTarget<>().stopIf(
-						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
-				new SetRandomLookTarget<>()),
+		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new KillLightsTask<>(),
+				new FirstApplicableBehaviour<RunnerAlienEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
 						new Idle<>().startCondition(entity -> !this.isAggressive())
 								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
