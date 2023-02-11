@@ -196,6 +196,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	private void detachFromHost(boolean removesParasite) {
 		this.stopRiding();
 		this.ticksAttachedToHost = -1.0f;
+		this.kill();
 
 		var vehicle = this.getVehicle();
 
@@ -260,7 +261,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					}
 					setIsInfertile(true);
 					this.unRide();
-					this.hurt(DamageSource.MAGIC, this.getMaxHealth());
+					this.hurt(DamageSource.GENERIC, Float.MAX_VALUE);
 				}
 			}
 
@@ -270,7 +271,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				this.stopRiding();
 				detachFromHost(true);
 				setIsInfertile(true);
-				this.hurt(DamageSource.MAGIC, this.getMaxHealth());
+				this.kill();
 			}
 		} else
 			ticksAttachedToHost = -1.0f;
@@ -283,7 +284,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (this.isEggSpawn() == true && this.tickCount > 30)
 			this.setEggSpawnState(false);
 		if (this.getTarget() != null)
-			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()))
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox())
+					&& !EntityUtils.isFacehuggerAttached(this.getTarget()))
 				this.attachToHost(this.getTarget());
 		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
 				&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
