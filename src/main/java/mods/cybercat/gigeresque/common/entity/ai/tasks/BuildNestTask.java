@@ -34,13 +34,15 @@ public class BuildNestTask<E extends AdultAlienEntity> extends DelayedBehaviour<
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E alien) {
 		return !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth()
-				&& !alien.level.canSeeSky(alien.blockPosition());
+				&& !alien.level.canSeeSky(alien.blockPosition())
+				&& alien.level.getLightEmission(alien.blockPosition()) <= 3;
 	}
 
 	@Override
 	protected void doDelayedAction(E alien) {
 		var list2 = alien.level.getBlockStatesIfLoaded(alien.getBoundingBox().inflate(4.0, 4.0, 4.0));
-		if (list2.noneMatch(NEST))
+		if (list2.noneMatch(NEST) && !alien.level.canSeeSky(alien.blockPosition())
+				&& alien.level.getLightEmission(alien.blockPosition()) <= 3)
 			NestBuildingHelper.tryBuildNestAround(alien);
 	}
 }
