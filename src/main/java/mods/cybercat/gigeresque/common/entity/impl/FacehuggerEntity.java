@@ -44,6 +44,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
@@ -284,8 +285,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (this.getTarget() != null)
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()))
 				this.attachToHost(this.getTarget());
-		this.setNoGravity(
-				!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
+		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
+				&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
@@ -437,7 +438,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						|| (target.getVehicle() != null
 								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
 						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
+						|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
+						|| (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(15)
