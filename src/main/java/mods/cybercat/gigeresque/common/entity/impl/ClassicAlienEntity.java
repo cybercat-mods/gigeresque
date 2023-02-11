@@ -256,7 +256,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& entity.isAlive())),
+										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)

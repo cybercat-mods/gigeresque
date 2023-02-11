@@ -83,6 +83,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -283,10 +284,21 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		}
 		if (this.isEggSpawn() == true && this.tickCount > 30)
 			this.setEggSpawnState(false);
-		if (this.getTarget() != null)
-			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox())
-					&& !EntityUtils.isFacehuggerAttached(this.getTarget()))
+		if (this.getTarget() != null) {
+			var target = this.getTarget();
+			var huggerchecklist = !((target instanceof AlienEntity || target instanceof Warden
+					|| target instanceof ArmorStand)
+					|| (target.getVehicle() != null
+							&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+					|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+					|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
+					|| (EntityUtils.isFacehuggerAttached(target))
+					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
+					&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive();
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
 				this.attachToHost(this.getTarget());
+
+		}
 		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
 				&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
@@ -439,14 +451,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						|| target instanceof ArmorStand)
 						|| (target.getVehicle() != null
 								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
 						|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
 						|| (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()
+						&& entity.hasLineOfSight(target)),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
-				new HurtBySensor<>());
+				new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
