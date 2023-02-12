@@ -49,6 +49,7 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 				((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
 				target.setPos(Vec3.atBottomCenterOf(lightSourceLocation.stream().findFirst().get().getFirst()));
 				target.removeVehicle();
+				entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
 			}
 	}
 

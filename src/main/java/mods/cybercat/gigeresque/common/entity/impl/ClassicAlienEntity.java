@@ -241,14 +241,15 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public List<ExtendedSensor<ClassicAlienEntity>> getSensors() {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
-						target) -> (!(entity instanceof AlienEntity || entity instanceof Warden
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
 								|| entity instanceof ArmorStand || entity instanceof Bat)
-								|| target.hasLineOfSight(entity)
-								|| !(entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
+								|| !target.hasLineOfSight(entity)
+								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
-								|| !(entity instanceof AlienEggEntity) || !((Host) entity).isBleeding()
-								|| !((Eggmorphable) entity).isEggmorphing() || !this.isVehicle()
-								|| !(EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+								|| ((Eggmorphable) entity).isEggmorphing() || this.isVehicle()
+								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
