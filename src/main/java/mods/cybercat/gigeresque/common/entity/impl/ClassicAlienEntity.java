@@ -267,7 +267,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<>(3.5F),
+		return BrainActivityGroup.coreTasks(
+				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true))
+						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new LookAtTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
