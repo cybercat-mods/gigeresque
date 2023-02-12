@@ -6,23 +6,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoRenderer;
+import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.LivingEntity;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
 @Mixin(value = GeoEntityRenderer.class, remap = false)
-public abstract class GeoEntityRendererMixin<T extends LivingEntity & GeoAnimatable> {
+public abstract class GeoEntityRendererMixin<T extends LivingEntity & GeoEntity> {
 	@Shadow
 	public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 

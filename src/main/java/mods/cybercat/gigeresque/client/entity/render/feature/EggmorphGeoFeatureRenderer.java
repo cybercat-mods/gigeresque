@@ -3,17 +3,17 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoRenderer;
+import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 
-public class EggmorphGeoFeatureRenderer<T extends LivingEntity & GeoAnimatable> extends GeoRenderLayer<T> {
+public class EggmorphGeoFeatureRenderer<T extends LivingEntity & GeoEntity> extends GeoRenderLayer<T> {
 
 	public EggmorphGeoFeatureRenderer(GeoRenderer<T> entityRenderer) {
 		super(entityRenderer);
