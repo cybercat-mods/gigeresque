@@ -101,6 +101,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 	}
 
+	@Inject(method = { "hurt" }, at = { @At("RETURN") })
+	public boolean hurtTweak(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> callbackInfo) {
+		if (this.getPassengers().stream().anyMatch(AlienEntity.class::isInstance)
+				&& damageSource == DamageSource.IN_WALL)
+			return false;
+		return callbackInfo.getReturnValue();
+	}
+
 	@Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
 	void pushAway(CallbackInfo callbackInfo) {
 		if (this.isEggmorphing() && ConfigAccessor.isTargetAlienHost(this))
