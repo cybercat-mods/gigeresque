@@ -175,7 +175,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	}
 
 	private void handleEggingLogic() {
-		if (isEggmorphing() && ConfigAccessor.isTargetAlienHost(this))
+		if (isEggmorphing() && ConfigAccessor.isTargetAlienHost(this) && !hasParasite())
 			setTicksUntilEggmorphed(ticksUntilEggmorpth++);
 		else
 			resetEggmorphing();
@@ -238,7 +238,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isImmobile" }, at = { @At("RETURN") })
 	protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing() == true)
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing() == true && !((Host)this).hasParasite())
 			return true;
 		return callbackInfo.getReturnValue();
 	}

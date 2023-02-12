@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -22,7 +23,7 @@ public class NestResinWebFullBlock extends Block {
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
 		if (!(entity instanceof AlienEntity)
 				&& !(entity instanceof Player && (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
-				&& entity instanceof LivingEntity && ConfigAccessor.isTargetAlienHost(entity)) {
+				&& entity instanceof LivingEntity && ConfigAccessor.isTargetAlienHost(entity) && !((Host)entity).hasParasite()) {
 			entity.makeStuckInBlock(state, new Vec3(0.25, 0.05000000074505806, 0.25));
 			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
 		}

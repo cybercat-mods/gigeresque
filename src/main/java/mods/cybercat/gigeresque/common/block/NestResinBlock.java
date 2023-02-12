@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.util.MathUtil;
+import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -139,7 +140,7 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (!(entity instanceof AlienEntity)) {
+		if (!(entity instanceof AlienEntity) && !((Host)entity).hasParasite()) {
 			var multiplier = MathUtil.clamp(1.0 / state.getValue(LAYERS), 0.0, 1.0);
 			entity.makeStuckInBlock(state, new Vec3(1.0 * multiplier, 1.0, 1.0 * multiplier));
 		}
