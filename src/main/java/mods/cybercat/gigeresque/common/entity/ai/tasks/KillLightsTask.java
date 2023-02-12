@@ -40,9 +40,9 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		if (lightSourceLocation == null)
 			return;
-		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4))
+		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
 			startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-		if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4)) {
+		else {
 			var world = entity.level;
 			var random = entity.getRandom();
 			entity.swing(InteractionHand.MAIN_HAND);
