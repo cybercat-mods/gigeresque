@@ -27,6 +27,7 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -105,16 +106,16 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
 	@Override
 	public List<ExtendedSensor<PopperEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<PopperEntity>()
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),  new NearbyLivingEntitySensor<PopperEntity>()
 				.setPredicate((target, entity) -> !((target instanceof AlienEntity || target instanceof Warden
 						|| target instanceof ArmorStand)
 						|| (target.getVehicle() != null
 								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()|| target.getMobType() == MobType.UNDEAD
+						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
-				new NearbyBlocksSensor<PopperEntity>().setRadius(15)
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
+				new NearbyBlocksSensor<PopperEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new HurtBySensor<>());
 	}

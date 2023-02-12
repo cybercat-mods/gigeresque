@@ -62,6 +62,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -127,26 +128,28 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 								|| !target.hasLineOfSight(entity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
+								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& entity.isAlive())),
-				new NearbyBlocksSensor<StalkerEntity>().setRadius(15)
+								|| ((Eggmorphable) entity).isEggmorphing() || this.isVehicle()
+								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+				new NearbyBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
-				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(15)
+				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
-				new HurtBySensor<>());
+				new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new KillLightsTask<>(),
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F),
 				new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
