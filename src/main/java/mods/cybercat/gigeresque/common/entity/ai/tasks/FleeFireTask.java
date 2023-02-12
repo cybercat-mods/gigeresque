@@ -52,6 +52,8 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
         Vec3 vec3;
         if (owner.getNavigation().isDone() && (vec3 = this.getPanicPos(owner, level)) != null) 
             owner.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speed, 0));
+        if (owner.getFirstPassenger() != null)
+        	owner.getFirstPassenger().removeVehicle();
     }
 
     @Nullable

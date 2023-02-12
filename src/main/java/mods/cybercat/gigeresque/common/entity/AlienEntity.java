@@ -59,6 +59,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
 			EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData
 			.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class,
@@ -93,6 +95,14 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		return 3;
 	}
 
+	public boolean isFleeing() {
+		return this.entityData.get(FLEEING_FIRE);
+	}
+
+	public void setFleeingStatus(boolean fleeing) {
+		this.entityData.set(FLEEING_FIRE, Boolean.valueOf(fleeing));
+	}
+
 	public boolean isUpsideDown() {
 		return this.entityData.get(UPSIDE_DOWN);
 	}
@@ -113,6 +123,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public void defineSynchedData() {
 		super.defineSynchedData();
 		entityData.define(UPSIDE_DOWN, false);
+		entityData.define(FLEEING_FIRE, false);
 		this.entityData.define(STATE, 0);
 		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
