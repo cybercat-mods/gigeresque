@@ -93,7 +93,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 		var random = new SplittableRandom();
 		int randomPhase = random.nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
-				&& ConfigAccessor.isTargetAlienHost(target)) {
+				&& ConfigAccessor.isTargetHostable(target)) {
 			entity.grabTarget(target);
 		} else {
 			if (!entity.isVehicle()) {

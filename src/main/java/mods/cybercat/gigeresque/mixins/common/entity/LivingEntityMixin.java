@@ -111,7 +111,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
 	void pushAway(CallbackInfo callbackInfo) {
-		if (this.isEggmorphing() && ConfigAccessor.isTargetAlienHost(this))
+		if (this.isEggmorphing() && ConfigAccessor.isTargetHostable(this))
 			callbackInfo.cancel();
 	}
 
@@ -169,13 +169,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isPushable" }, at = { @At("RETURN") })
 	public boolean noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.isEggmorphing() && ConfigAccessor.isTargetAlienHost(this))
+		if (this.isEggmorphing() && ConfigAccessor.isTargetHostable(this))
 			return false;
 		return callbackInfo.getReturnValue();
 	}
 
 	private void handleEggingLogic() {
-		if (isEggmorphing() && ConfigAccessor.isTargetAlienHost(this) && !hasParasite())
+		if (isEggmorphing() && ConfigAccessor.isTargetHostable(this) && !hasParasite())
 			setTicksUntilEggmorphed(ticksUntilEggmorpth++);
 		else
 			resetEggmorphing();
@@ -297,7 +297,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		var pos = this.getFeetBlockState().getBlock();
 		var isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		var notAlien = !(((Object) this) instanceof AlienEntity);
-		var notHost = ConfigAccessor.isTargetAlienHost(this);
+		var notHost = ConfigAccessor.isTargetHostable(this);
 		if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())))
 				&& !(((Object) this) instanceof AlienEntity))
 			return false;
@@ -305,7 +305,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			return false;
 		if (EntityUtils.isFacehuggerAttached(this))
 			return false;
-		if (!ConfigAccessor.isTargetAlienHost(this))
+		if (!ConfigAccessor.isTargetHostable(this))
 			return false;
 		return notAlien && isCoveredInResin && notHost;
 	}
