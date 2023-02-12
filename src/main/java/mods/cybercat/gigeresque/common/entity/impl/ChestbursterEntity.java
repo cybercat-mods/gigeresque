@@ -36,6 +36,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -200,10 +201,10 @@ public class ChestbursterEntity extends AlienEntity
 						|| target instanceof ArmorStand)
 						|| (target.getVehicle() != null
 								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()|| target.getMobType() == MobType.UNDEAD
 						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
+						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
