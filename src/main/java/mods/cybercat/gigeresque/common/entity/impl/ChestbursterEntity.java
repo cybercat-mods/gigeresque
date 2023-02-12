@@ -17,6 +17,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
@@ -205,7 +206,7 @@ public class ChestbursterEntity extends AlienEntity
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
-				new HurtBySensor<>());
+				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 
 	@Override
