@@ -24,7 +24,6 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 			Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
 			Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT),
 			Pair.of(MemoryModuleType.HOME, MemoryStatus.VALUE_ABSENT));
-	private boolean hasReachedNestingGround = false;
 	private BlockPos targetPos = null;
 	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
 
@@ -42,7 +41,7 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		return ((AdultAlienEntity) entity).getGrowth() == ((AdultAlienEntity) entity).getMaxGrowth()
-				&& (!entity.getBrain().hasMemoryValue(MemoryModuleType.HOME) || !hasReachedNestingGround);
+				&& !entity.isVehicle();
 	}
 
 	@Override
@@ -77,7 +76,6 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 			var targetPos = this.targetPos;
 			if (targetPos.closerToCenterThan(entity.position(), 4.0)) {
 				entity.getBrain().setMemory(MemoryModuleType.HOME, GlobalPos.of(world.dimension(), targetPos));
-				hasReachedNestingGround = true;
 
 				BlockPos resinPos;
 				for (int x = -1; x <= 1; x++) {
@@ -114,7 +112,6 @@ public class FindNestingGroundTask<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void stop(E entity) {
-		hasReachedNestingGround = false;
 	}
 
 	private Vec3 locateShadedPos(E entity) {

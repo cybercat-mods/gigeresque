@@ -13,7 +13,6 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
@@ -160,7 +159,10 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new KillLightsTask<>(),
+		return BrainActivityGroup.idleTasks(
+				new BuildNestTask(90).stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true)
+						.stopIf(target -> (this.isAggressive() || this.isVehicle())),
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
 				new FirstApplicableBehaviour<RunnerAlienEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
@@ -178,7 +180,6 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 
 	/*

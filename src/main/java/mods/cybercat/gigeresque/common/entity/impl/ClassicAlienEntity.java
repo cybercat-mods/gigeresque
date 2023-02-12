@@ -22,7 +22,6 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.goal.classic.FindNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
@@ -148,11 +147,11 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		else
 			this.setPose(Pose.STANDING);
 
-		if (this.getFirstPassenger() != null)
-			if (this.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
-				this.getFirstPassenger().setPos(this.getX(), this.getY() + 0.2, this.getZ());
-				this.getFirstPassenger().removeVehicle();
-			}
+//		if (this.getFirstPassenger() != null)
+//			if (this.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) {
+//				this.getFirstPassenger().setPos(this.getX(), this.getY() + 0.2, this.getZ());
+//				this.getFirstPassenger().removeVehicle();
+//			}
 
 		if (this.getTarget() != null) {
 			var list = this.level.getBlockStatesIfLoaded(this.getBoundingBox().inflate(18.0, 18.0, 18.0));
@@ -254,45 +253,58 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& entity.isAlive() && entity.hasLineOfSight(target))),
+								|| ((Eggmorphable) entity).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive()
+										&& entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
-				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(7)
+				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(30)
 						.setPredicate((block, entity) -> block.is(GIgBlocks.NEST_RESIN_WEB_CROSS)),
 				new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new FleeFireTask<>(3.5F),
+				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new LookAtTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new BuildNestTask(90), new KillLightsTask<>(),
-				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>(),
+		return BrainActivityGroup.idleTasks(
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle()
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new FirstApplicableBehaviour<ClassicAlienEntity>(
+						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
+								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
 						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
-						new Idle<>().startCondition(entity -> !this.isAggressive())
-								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(
+						entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true))
+						.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(3.0F), new ClassicXenoMeleeAttackTask(10),
-				new EggmorpthTargetTask<>());
+		return BrainActivityGroup.fightTasks(
+				new InvalidateAttackTarget<>().stopIf(target -> (!target.isAlive() || !this.hasLineOfSight(target)
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new SetWalkTargetToAttackTarget<>().speedMod(3.0F)
+						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new ClassicXenoMeleeAttackTask(10)
+						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new FindNestGoal(this));
+//		this.goalSelector.addGoal(5, new FindNestGoal(this));
 	}
 
 	@Override

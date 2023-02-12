@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
@@ -34,7 +33,7 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 
 	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return !entity.isVehicle();
+		return entity.getEntityData().get(AlienEntity.FLEEING_FIRE).booleanValue() == false;
 	}
 
 	@Override
@@ -43,43 +42,14 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 		var target = entity.getFirstPassenger();
 		if (lightSourceLocation == null)
 			return;
-		if (target == null)
-			return;
-		var nearestWebbing = lightSourceLocation.stream().findFirst().get().getFirst();
-		if (nearestWebbing == null)
-			return;
-		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4))
-			startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-		if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4)) {
-			((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
-			target.stopRiding();
-			target.setPos(Vec3.atBottomCenterOf(lightSourceLocation.stream().findFirst().get().getFirst()));
-
-			var hasCeiling = false;
-
-			var ceilingUp = nearestWebbing.above();
-			for (int i = 0; i < 20; i++) {
-				if (entity.level.getBlockState(ceilingUp).isSolidRender(entity.level, ceilingUp)) {
-					hasCeiling = true;
-					break;
-				}
-				ceilingUp = ceilingUp.above();
+		if (target != null)
+			if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 1.4))
+				startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
+			else {
+				((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
+				target.setPos(Vec3.atBottomCenterOf(lightSourceLocation.stream().findFirst().get().getFirst()));
+				target.removeVehicle();
 			}
-
-			var up = nearestWebbing.above();
-			if (hasCeiling) {
-				for (int i = 0; i < 20; i++) {
-					var state = entity.level.getBlockState(up);
-
-					if (state.isAir() || state.getBlock() == GIgBlocks.NEST_RESIN_WEB) {
-						entity.level.setBlockAndUpdate(up, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-					} else {
-						break;
-					}
-					up = up.above();
-				}
-			}
-		}
 	}
 
 	private void startMovingToTarget(E alien, BlockPos targetPos) {
