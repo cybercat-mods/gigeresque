@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -133,7 +134,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<StalkerEntity>().setRadius(7)
+				new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
+				new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
@@ -142,8 +144,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new MoveToWalkTarget<>());
 	}
 
 	@Override

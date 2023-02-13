@@ -18,6 +18,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
@@ -201,11 +202,13 @@ public class ChestbursterEntity extends AlienEntity
 						|| target instanceof ArmorStand)
 						|| (target.getVehicle() != null
 								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()|| target.getMobType() == MobType.UNDEAD
-						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
+						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
+						|| (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
-				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(15)
+				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7),
+				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}

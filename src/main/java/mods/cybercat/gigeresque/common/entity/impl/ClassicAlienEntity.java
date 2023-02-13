@@ -24,6 +24,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
@@ -141,7 +142,10 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
 				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-				case 4 -> AlienAttackType.EXECUTION;
+				case 4 -> (this.getTarget() != null
+						&& (this.getTarget().getHealth() >= (this.getTarget().getMaxHealth() * 0.10)))
+								? AlienAttackType.EXECUTION
+								: AlienAttackType.CLAW_LEFT_MOVING;
 				default -> AlienAttackType.CLAW_LEFT_MOVING;
 				});
 
@@ -262,7 +266,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || this.isVehicle()
 								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
-				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7)
+				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
+				new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
@@ -417,8 +422,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				}
 			}
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-			if (this.swinging && !this.isVehicle())
-				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
+//			if (this.swinging && !this.isVehicle())
+//				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
 					&& this.isExecuting() == false)
 				return event.setAndContinue(RawAnimation.begin()

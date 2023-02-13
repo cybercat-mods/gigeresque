@@ -20,6 +20,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -179,7 +180,8 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7)
+				new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7),
+				new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),

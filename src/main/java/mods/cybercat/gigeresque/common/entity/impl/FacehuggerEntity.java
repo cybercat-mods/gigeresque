@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -457,7 +458,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()
 						&& entity.hasLineOfSight(target)),
-				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(15)
+				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
+				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}

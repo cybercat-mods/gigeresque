@@ -12,6 +12,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -121,8 +122,8 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>()
+						.setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new HurtBySensor<>());
 	}
 

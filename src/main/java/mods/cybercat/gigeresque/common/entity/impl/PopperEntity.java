@@ -11,6 +11,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AttackExplodeTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -120,8 +121,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<PopperEntity>().setRadius(7)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyBlocksSensor<PopperEntity>().setRadius(7), new NearbyRepellentsSensor<PopperEntity>()
+						.setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new HurtBySensor<>());
 	}
 

@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
@@ -19,6 +20,9 @@ public final class GigSensors {
 
 	public static final Supplier<SensorType<NearbyNestBlocksSensor<?>>> NEARBY_NEST_BLOCKS = register(
 			"nearby_nest_blocks", NearbyNestBlocksSensor::new);
+
+	public static final Supplier<SensorType<NearbyRepellentsSensor<?>>> NEARBY_REPELLENT_BLOCKS = register(
+			"nearby_repellent_blocks", NearbyRepellentsSensor::new);
 
 	public static final Supplier<SensorType<ItemEntitySensor<?>>> FOOD_ITEMS = register("food_items",
 			ItemEntitySensor::new);
