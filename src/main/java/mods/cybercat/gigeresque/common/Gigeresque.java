@@ -9,7 +9,6 @@ import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.GigStructures;
@@ -33,6 +32,5 @@ public class Gigeresque implements ModInitializer {
 		TrackedDataHandlers.getInstance().initialize();
 		Entities.getInstance().initialize();
 		GigStructures.registerStructureFeatures();
-		new GigItemGroups();
 	}
 }

@@ -158,20 +158,28 @@ public class GigVibrationListener implements GameEventListener {
 	}
 
 	@Override
-	public boolean handleGameEvent(ServerLevel serverLevel, GameEvent gameEvent, GameEvent.Context context, Vec3 vec3) {
-		if (this.currentVibration != null)
+	public boolean handleGameEvent(ServerLevel level, GameEvent.Message eventMessage) {
+		GameEvent.Context context;
+		if (this.currentVibration != null) {
 			return false;
-		if (!this.config.isValidVibration(gameEvent, context))
+		}
+		GameEvent gameEvent = eventMessage.gameEvent();
+		if (!this.config.isValidVibration(gameEvent, context = eventMessage.context())) {
 			return false;
-		var optional = this.listenerSource.getPosition(serverLevel);
-		if (optional.isEmpty())
+		}
+		Optional<Vec3> optional = this.listenerSource.getPosition(level);
+		if (optional.isEmpty()) {
 			return false;
-		var vec32 = optional.get();
-		if (!this.config.shouldListen(serverLevel, this, new BlockPos(vec3), gameEvent, context))
+		}
+		Vec3 vec3 = eventMessage.source();
+		Vec3 vec32 = optional.get();
+		if (!this.config.shouldListen(level, this, new BlockPos(vec3), gameEvent, context)) {
 			return false;
-		if (GigVibrationListener.isOccluded(serverLevel, vec3, vec32))
+		}
+		if (GigVibrationListener.isOccluded(level, vec3, vec32)) {
 			return false;
-		this.scheduleVibration(serverLevel, gameEvent, context, vec3, vec32);
+		}
+		this.scheduleVibration(level, gameEvent, context, vec3, vec32);
 		return true;
 	}
 

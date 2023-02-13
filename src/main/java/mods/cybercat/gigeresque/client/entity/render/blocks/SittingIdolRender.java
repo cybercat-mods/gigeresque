@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.renderer.GeoBlockRenderer;
@@ -41,9 +41,9 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
 			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
 					IdolStorageEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
 					int packedOverlay) {
-				poseStack.mulPose(Axis.XP.rotationDegrees(0));
-				poseStack.mulPose(Axis.YP.rotationDegrees(0));
-				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+				poseStack.mulPose(Vector3f.XP.rotationDegrees(0));
+				poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+				poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));
 				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
 						packedOverlay);
 			}

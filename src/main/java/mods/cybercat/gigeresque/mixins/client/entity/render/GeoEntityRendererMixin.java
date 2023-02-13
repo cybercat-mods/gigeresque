@@ -10,27 +10,25 @@ import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeckoFeatur
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.Entity;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import net.minecraft.world.entity.LivingEntity;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
+import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
 @Mixin(value = GeoEntityRenderer.class, remap = false)
-public abstract class GeoEntityRendererMixin<T extends Entity & GeoEntity> {
-
-	protected T animatable;
+public abstract class GeoEntityRendererMixin<T extends LivingEntity & IAnimatable> {
 
 	@Shadow
-	public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
+	public abstract boolean addLayer(GeoLayerRenderer<T> layer);
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-		this.addRenderLayer(new EggmorphGeckoFeatureRenderer<>((GeoRenderer<T>) this));
+	private void init(EntityRendererProvider.Context ctx, AnimatedGeoModel<T> modelProvider, CallbackInfo ci) {
+		this.addLayer(new EggmorphGeckoFeatureRenderer<>((IGeoRenderer<T>) this));
 	}
 }

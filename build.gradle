@@ -50,12 +50,12 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.3:1.0.2'
-	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
-    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
-	modImplementation ("com.terraformersmc:modmenu:5.0.2")
-	modImplementation "curse.maven:SBL-661293:4277537-sources-4277538"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.2:1.0.3'
+	modImplementation "maven.modrinth:midnightlib:1.0.0-fabric"
+    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.0.0-fabric'
+	modImplementation ("com.terraformersmc:modmenu:4.1.2")
+	modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.38'
 }
 
 shadowJar {
@@ -130,7 +130,7 @@ if (file('key.properties').exists()) {
         	releaseType = "beta"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.3")
+			addGameVersion("1.19.2")
 			addGameVersion("Fabric")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -166,10 +166,10 @@ if (file('key.properties').exists()) {
 		projectId = '2kXK3iBI' 
 		versionNumber = project.mod_version 
 		versionType = "beta"
-		versionName = 'Fabric/Quilt 1.19.3'
+		versionName = 'Fabric/Quilt 1.19.2'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.3']
+		gameVersions = ['1.19.2']
 		loaders = ['fabric','quilt']
 		dependencies { 
         	required.project "azurelib"

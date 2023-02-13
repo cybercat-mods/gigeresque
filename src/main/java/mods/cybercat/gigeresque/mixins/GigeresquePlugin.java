@@ -19,7 +19,7 @@ public class GigeresquePlugin implements IMixinConfigPlugin {
 
 	private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
 			"mods.cybercat.gigeresque.mixins.client.entity.render.GeoEntityRendererMixin",
-			() -> FabricLoader.getInstance().isModLoaded("geckolib"));
+			() -> FabricLoader.getInstance().isModLoaded("geckolib3"));
 
 	@Override
 	public void onLoad(String mixinPackage) {

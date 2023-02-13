@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -42,7 +42,7 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 		var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
 				"block/" + textureFluidId.getPath() + "_flow");
 
-		var fluidId = BuiltInRegistries.FLUID.getKey(still);
+		var fluidId = Registry.FLUID.getKey(still);
 		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 		var fluidSprites = new TextureAtlasSprite[2];
 

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 
 import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -17,6 +16,6 @@ public class GigStructures {
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {
-		return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, id, () -> codec);
+		return Registry.register(Registry.STRUCTURE_TYPES, id, () -> codec);
 	}
 }

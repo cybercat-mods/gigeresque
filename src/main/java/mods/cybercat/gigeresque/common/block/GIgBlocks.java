@@ -6,12 +6,12 @@ import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
 import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -146,20 +146,20 @@ public class GIgBlocks implements GigeresqueInitializer {
 	public static final WallBlock SINOUS_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(SINOUS_ALIEN_BLOCK));
 
 	private void registerItemBlock(String path, Block block, FabricItemSettings settings) {
-		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource(path), block);
-		Registry.register(BuiltInRegistries.ITEM, Constants.modResource(path), new BlockItem(block, settings));
+		Registry.register(Registry.BLOCK, Constants.modResource(path), block);
+		Registry.register(Registry.ITEM, Constants.modResource(path), new BlockItem(block, settings.tab(GigItemGroups.GENERAL)));
 	}
 
 	private void registerItemBlock(String path, Block block) {
-		registerItemBlock(path, block, new FabricItemSettings());
+		registerItemBlock(path, block, new FabricItemSettings().group(GigItemGroups.GENERAL));
 	}
 
 	@Override
 	public void initialize() {
-		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("black_fluid"), BLACK_FLUID);
-		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis"),
+		Registry.register(Registry.BLOCK, Constants.modResource("black_fluid"), BLACK_FLUID);
+		Registry.register(Registry.BLOCK, Constants.modResource("alien_storage_invis"),
 				ALIEN_STORAGE_BLOCK_INVIS);
-		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis2"),
+		Registry.register(Registry.BLOCK, Constants.modResource("alien_storage_invis2"),
 				ALIEN_STORAGE_BLOCK_INVIS2);
 
 		registerItemBlock("nest_resin", NEST_RESIN);
@@ -174,7 +174,7 @@ public class GIgBlocks implements GigeresqueInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
-		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
+		Registry.register(Registry.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);

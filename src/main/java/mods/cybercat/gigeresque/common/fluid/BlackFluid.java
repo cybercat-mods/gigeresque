@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -92,11 +91,12 @@ public abstract class BlackFluid extends FlowingFluid {
 		public boolean isSource(FluidState fluidState) {
 			return false;
 		}
-
+		
 		@Override
-		protected boolean canConvertToSource(Level var1) {
+		protected boolean canConvertToSource() {
 			return false;
 		}
+
 	}
 
 	static class Still extends BlackFluid {
@@ -112,8 +112,9 @@ public abstract class BlackFluid extends FlowingFluid {
 		}
 
 		@Override
-		protected boolean canConvertToSource(Level var1) {
+		protected boolean canConvertToSource() {
 			return false;
 		}
+
 	}
 }

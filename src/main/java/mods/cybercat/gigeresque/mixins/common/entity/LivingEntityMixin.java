@@ -28,7 +28,7 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -208,7 +208,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				this.hurt(GigDamageSources.CHESTBURSTING, this.getMaxHealth() / 8f);
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType());
+				var identifier = Registry.ENTITY_TYPE.getKey(this.getType());
 				var morphMappings = ConfigAccessor.getReversedMorphMappings();
 				var producedVariant = morphMappings.getOrDefault(identifier.toString(),
 						EntityIdentifiers.ALIEN.toString());

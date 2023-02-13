@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,7 +46,7 @@ public class ConfigAccessor {
 			return false;
 		var attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		var whitelist = getWhitelistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return whitelist.contains(targetIdentifier.toString());
 	}
 
@@ -58,32 +58,32 @@ public class ConfigAccessor {
 		var normalEntries = GigeresqueConfig.alienHosts;
 		var waterEntries = GigeresqueConfig.aquaticAlienHosts;
 		var runnerEntries = GigeresqueConfig.runnerHosts;
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return normalEntries.contains(targetIdentifier.toString()) || waterEntries.contains(targetIdentifier.toString())
 				|| runnerEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetSmallMutantHost(Entity target) {
 		var waveEntries = GigeresqueConfig.smallMutantHosts;
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetLargeMutantHost(Entity target) {
 		var waveEntries = GigeresqueConfig.largeMutantHosts;
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetAlienHost(Entity target) {
 		var waveEntries = GigeresqueConfig.alienHosts;
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetDNAImmune(Entity target) {
 		var waveEntries = GigeresqueConfig.dnaBlacklist;
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return waveEntries.contains(targetIdentifier.toString());
 	}
 
@@ -92,7 +92,7 @@ public class ConfigAccessor {
 			return false;
 		var attackerIdentifier = EntityIdentifiers.typeMappings.get(entityClass);
 		var blacklist = getBlacklistMappings().getOrDefault(attackerIdentifier, Collections.emptyList());
-		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		var targetIdentifier = Registry.ENTITY_TYPE.getKey(target.getType());
 		return blacklist.contains(targetIdentifier.toString());
 	}
 

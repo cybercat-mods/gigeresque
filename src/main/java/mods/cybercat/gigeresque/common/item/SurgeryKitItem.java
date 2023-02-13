@@ -8,9 +8,10 @@ import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,7 +25,7 @@ import net.minecraft.world.level.Level;
 public class SurgeryKitItem extends Item {
 
 	public SurgeryKitItem() {
-		super(new Item.Properties().durability(GigeresqueConfig.maxSurgeryKitUses));
+		super(new Item.Properties().durability(GigeresqueConfig.maxSurgeryKitUses).tab(GigItemGroups.GENERAL));
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class SurgeryKitItem extends Item {
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+		var identifier = Registry.ENTITY_TYPE.getKey(entity.getType());
 		var morphMappings = ConfigAccessor.getReversedMorphMappings();
 
 		var runnerString = Entities.RUNNER_ALIEN.toString();

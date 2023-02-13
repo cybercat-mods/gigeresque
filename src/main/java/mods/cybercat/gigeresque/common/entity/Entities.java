@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -44,7 +43,7 @@ public class Entities implements GigeresqueInitializer {
 
 	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
 			float width, float height) {
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder
+		return Registry.register(Registry.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder
 				.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
 	}
 
@@ -77,13 +76,13 @@ public class Entities implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
 				Gigeresque.MOD_ID + ":alien_storage_block_entity", FabricBlockEntityTypeBuilder
 						.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
 				Gigeresque.MOD_ID + ":alien_storage_jar_entity", FabricBlockEntityTypeBuilder
 						.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(Registry.BLOCK_ENTITY_TYPE,
 				Gigeresque.MOD_ID + ":sitting_idol_entity", FabricBlockEntityTypeBuilder
 						.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
 		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());

@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -20,7 +20,7 @@ public record GigVibrationInfo(GameEvent gameEvent, float distance, Vec3 pos, @N
 		@Nullable UUID projectileOwnerUuid, @Nullable Entity entity) {
 
 	public static final Codec<GigVibrationInfo> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group((BuiltInRegistries.GAME_EVENT.byNameCodec().fieldOf("game_event"))
+			.group((Registry.GAME_EVENT.byNameCodec().fieldOf("game_event"))
 					.forGetter(GigVibrationInfo::gameEvent),
 					(Codec.floatRange(0.0f, Float.MAX_VALUE).fieldOf("distance")).forGetter(GigVibrationInfo::distance),
 					(Vec3.CODEC.fieldOf("pos")).forGetter(GigVibrationInfo::pos),

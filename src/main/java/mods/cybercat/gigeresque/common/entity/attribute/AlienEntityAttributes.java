@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.attribute;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 
 public class AlienEntityAttributes implements GigeresqueInitializer {
@@ -15,7 +14,7 @@ public class AlienEntityAttributes implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		Registry.register(BuiltInRegistries.ATTRIBUTE, Constants.modResource("attribute.intelligence"),
+		Registry.register(Registry.ATTRIBUTE, Constants.modResource("attribute.intelligence"),
 				INTELLIGENCE_ATTRIBUTE);
 	}
 }

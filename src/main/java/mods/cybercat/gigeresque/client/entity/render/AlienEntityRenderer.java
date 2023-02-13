@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
@@ -28,21 +28,21 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		if (entity.isCrawling()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
-				stack.mulPose(Axis.ZP.rotationDegrees(-90));
+				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().north()))) {
-				stack.mulPose(Axis.XP.rotationDegrees(90));
+				stack.mulPose(Vector3f.XP.rotationDegrees(90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().south()))) {
-				stack.mulPose(Axis.XP.rotationDegrees(-90));
+				stack.mulPose(Vector3f.XP.rotationDegrees(-90));
 				stack.translate(0, -0.5, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
-				stack.mulPose(Axis.ZP.rotationDegrees(90));
+				stack.mulPose(Vector3f.ZP.rotationDegrees(90));
 				stack.translate(0, -0.5, 0);
 			}
 		}

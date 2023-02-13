@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.VillagerProfessionLayer;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerDataHolder;
@@ -46,7 +46,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
 			var entityModel = this.getParentModel();
 			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel,
 					getResourceLocation("type",
-							BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
+							Registry.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
 					matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
 		}
 	}

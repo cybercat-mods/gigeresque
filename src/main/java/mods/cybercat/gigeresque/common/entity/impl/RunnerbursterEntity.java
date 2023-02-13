@@ -17,7 +17,7 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -83,7 +83,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 		if (variantId == null)
 			return new ClassicAlienEntity(Entities.ALIEN, level);
 		var identifier = new ResourceLocation(variantId);
-		var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(identifier).orElse(null);
+		var entityType = Registry.ENTITY_TYPE.getOptional(identifier).orElse(null);
 		if (entityType == null)
 			return new ClassicAlienEntity(Entities.ALIEN, level);
 		var entity = entityType.create(level);
