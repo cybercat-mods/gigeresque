@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.item;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
@@ -21,8 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class SurgeryKitItem extends Item {
-	public SurgeryKitItem(Properties settings) {
-		super(settings);
+
+	public SurgeryKitItem() {
+		super(new Item.Properties().durability(4));
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class SurgeryKitItem extends Item {
 		var host = (Host) entity;
 		if (host.hasParasite())
 			if (!entity.level.isClientSide) {
-				if (host.getTicksUntilImpregnation() < 9600)
+				if (host.getTicksUntilImpregnation() < GigeresqueConfig.getImpregnationTickTimer())
 					spawnParasite(entity);
 
 				host.removeParasite();

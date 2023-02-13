@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.client.fluid.render;
 
 import org.jetbrains.annotations.Nullable;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.api.EnvType;
@@ -31,7 +31,7 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 	@Override
 	public void initialize() {
 		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING,
-				new ResourceLocation(Gigeresque.MOD_ID, "black_fluid"));
+				Constants.modResource("black_fluid"));
 		BlockRenderLayerMap.INSTANCE.putFluids(RenderType.solid(), GigFluids.BLACK_FLUID_STILL,
 				GigFluids.BLACK_FLUID_FLOWING);
 	}

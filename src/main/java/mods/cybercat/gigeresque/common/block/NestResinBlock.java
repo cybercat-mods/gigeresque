@@ -128,7 +128,7 @@ public class NestResinBlock extends Block {
 		var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 		if (blockState.is(this)) {
 			var i = blockState.getValue(LAYERS);
-			return blockState.setValue(LAYERS, MathUtil.coerceAtMost(8, i + 1));
+			return blockState.setValue(LAYERS, Math.min(8, i + 1));
 		} else
 			return super.getStateForPlacement(ctx);
 	}

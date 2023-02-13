@@ -1,12 +1,11 @@
 package mods.cybercat.gigeresque.common.item;
 
 import mod.azure.azurelib.items.AzureSpawnEgg;
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -16,8 +15,7 @@ public class GigItems {
 	public static final BucketItem BLACK_FLUID_BUCKET = registerItem("black_fluid_bucket", new BucketItem(
 			GigFluids.BLACK_FLUID_STILL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
-	public static final SurgeryKitItem SURGERY_KIT = registerItem("surgery_kit",
-			new SurgeryKitItem(new Item.Properties().durability(4)));
+	public static final SurgeryKitItem SURGERY_KIT = registerItem("surgery_kit", new SurgeryKitItem());
 
 	public static final AzureSpawnEgg ALIEN_SPAWN_EGG = registerItem("alien_spawn_egg",
 			new AzureSpawnEgg(Entities.ALIEN, 0x404345, 0x949597));
@@ -50,6 +48,6 @@ public class GigItems {
 //	public static final EngiArmorItem ENGI_ARMOR_BOOTS = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.FEET);
 
 	public static <I extends Item> I registerItem(String name, I item) {
-		return Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Gigeresque.MOD_ID, name), item);
+		return Registry.register(BuiltInRegistries.ITEM, Constants.modResource(name), item);
 	}
 }

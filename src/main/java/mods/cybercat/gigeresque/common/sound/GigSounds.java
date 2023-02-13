@@ -1,10 +1,9 @@
 package mods.cybercat.gigeresque.common.sound;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 public class GigSounds implements GigeresqueInitializer {
@@ -20,32 +19,32 @@ public class GigSounds implements GigeresqueInitializer {
 		return instance;
 	}
 
-	public static final SoundEvent ALIEN_HISS = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_hiss"));
-	public static final SoundEvent ALIEN_AMBIENT = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_ambient"));
-	public static final SoundEvent ALIEN_HURT = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_hurt"));
-	public static final SoundEvent ALIEN_DEATH = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_death"));
-	public static final SoundEvent ALIEN_DEATH_THUD = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_death_thud"));
-	public static final SoundEvent ALIEN_CLAW = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_claw"));
-	public static final SoundEvent ALIEN_TAIL = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_tail"));
-	public static final SoundEvent ALIEN_HEADBITE = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_headbite"));
-	public static final SoundEvent ALIEN_CRUNCH = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_crunch"));
-	public static final SoundEvent ALIEN_FOOTSTEP = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_footstep"));
-	public static final SoundEvent ALIEN_HANDSTEP = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "alien_handstep"));
+	public static final SoundEvent ALIEN_HISS = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_hiss"));
+	public static final SoundEvent ALIEN_AMBIENT = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_ambient"));
+	public static final SoundEvent ALIEN_HURT = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_hurt"));
+	public static final SoundEvent ALIEN_DEATH = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_death"));
+	public static final SoundEvent ALIEN_DEATH_THUD = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_death_thud"));
+	public static final SoundEvent ALIEN_CLAW = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_claw"));
+	public static final SoundEvent ALIEN_TAIL = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_tail"));
+	public static final SoundEvent ALIEN_HEADBITE = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_headbite"));
+	public static final SoundEvent ALIEN_CRUNCH = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_crunch"));
+	public static final SoundEvent ALIEN_FOOTSTEP = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_footstep"));
+	public static final SoundEvent ALIEN_HANDSTEP = SoundEvent.createVariableRangeEvent(Constants.modResource("alien_handstep"));
 
-	public static final SoundEvent EGG_NOTICE = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "egg_notice"));
-	public static final SoundEvent EGG_OPEN = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "egg_open"));
+	public static final SoundEvent EGG_NOTICE = SoundEvent.createVariableRangeEvent(Constants.modResource("egg_notice"));
+	public static final SoundEvent EGG_OPEN = SoundEvent.createVariableRangeEvent(Constants.modResource("egg_open"));
 
-	public static final SoundEvent AQUA_LANDMOVE = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "aqua_landmove"));
-	public static final SoundEvent AQUA_LANDCLAW = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "aqua_landclaw"));
+	public static final SoundEvent AQUA_LANDMOVE = SoundEvent.createVariableRangeEvent(Constants.modResource("aqua_landmove"));
+	public static final SoundEvent AQUA_LANDCLAW = SoundEvent.createVariableRangeEvent(Constants.modResource("aqua_landclaw"));
 
-	public static final SoundEvent BURSTER_CRAWL = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "burster_crawl"));
+	public static final SoundEvent BURSTER_CRAWL = SoundEvent.createVariableRangeEvent(Constants.modResource("burster_crawl"));
 
-	public static final SoundEvent HUGGER_AMBIENT = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "hugger_ambient"));
-	public static final SoundEvent HUGGER_DEATH = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "hugger_death"));
-	public static final SoundEvent HUGGER_HURT = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "hugger_hurt"));
-	public static final SoundEvent HUGGER_IMPLANT = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "hugger_implant"));
+	public static final SoundEvent HUGGER_AMBIENT = SoundEvent.createVariableRangeEvent(Constants.modResource("hugger_ambient"));
+	public static final SoundEvent HUGGER_DEATH = SoundEvent.createVariableRangeEvent(Constants.modResource("hugger_death"));
+	public static final SoundEvent HUGGER_HURT = SoundEvent.createVariableRangeEvent(Constants.modResource("hugger_hurt"));
+	public static final SoundEvent HUGGER_IMPLANT = SoundEvent.createVariableRangeEvent(Constants.modResource("hugger_implant"));
 
-	public static final SoundEvent CHESTBURSTING = SoundEvent.createVariableRangeEvent(new ResourceLocation(Gigeresque.MOD_ID, "chestbursting"));
+	public static final SoundEvent CHESTBURSTING = SoundEvent.createVariableRangeEvent(Constants.modResource("chestbursting"));
 
 	@Override
 	public void initialize() {

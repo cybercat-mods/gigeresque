@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.structures;
 
 import com.mojang.serialization.Codec;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +13,7 @@ public class GigStructures {
 	public static StructureType<?> GIG_DUNGEON;
 
 	public static void registerStructureFeatures() {
-		GIG_DUNGEON = register(new ResourceLocation(Gigeresque.MOD_ID, "gig_dungeon"), GigDungeonStructure.CODEC);
+		GIG_DUNGEON = register(Constants.modResource("gig_dungeon"), GigDungeonStructure.CODEC);
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {

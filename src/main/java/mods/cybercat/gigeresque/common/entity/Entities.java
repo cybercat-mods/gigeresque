@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
@@ -22,7 +23,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -44,7 +44,7 @@ public class Entities implements GigeresqueInitializer {
 
 	private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory,
 			float width, float height) {
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Gigeresque.MOD_ID, name), FabricEntityTypeBuilder
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder
 				.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
 	}
 

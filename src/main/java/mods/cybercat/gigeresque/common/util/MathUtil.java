@@ -11,8 +11,4 @@ public class MathUtil {
 			return max;
 		return value;
 	}
-
-	public static int coerceAtMost(int value, int maxValue) {
-		return Math.min(value, maxValue);
-	}
 }

@@ -1,17 +1,16 @@
 package mods.cybercat.gigeresque.common.item.group;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 public class GigItemGroups {
 
 	public static final CreativeModeTab GENERAL = FabricItemGroup
-			.builder(new ResourceLocation(Gigeresque.MOD_ID, "items"))
+			.builder(Constants.modResource("items"))
 			.icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG))
 			.displayItems((enabledFeatures, entries, operatorEnabled) -> {
 				entries.accept(GigItems.BLACK_FLUID_BUCKET);
@@ -30,7 +29,7 @@ public class GigItemGroups {
 			}).build();
 
 	public static final CreativeModeTab BLOCKS = FabricItemGroup
-			.builder(new ResourceLocation(Gigeresque.MOD_ID, "blocks"))
+			.builder(Constants.modResource("blocks"))
 			.icon(() -> new ItemStack(GIgBlocks.NEST_RESIN_WEB))
 			.displayItems((enabledFeatures, entries, operatorEnabled) -> {
 				entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_1);
