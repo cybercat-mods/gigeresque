@@ -119,5 +119,6 @@
 	"gigeresque.midnightconfig.facehuggerBlacklist": "Facehugger Blacklist",
 	"gigeresque.midnightconfig.runnerWhitelist": "Runner Whitelist",
 	"gigeresque.midnightconfig.runnerBlacklist": "Runner Blacklist",
+	"gigeresque.midnightconfig.maxSurgeryKitUses": "Max Uses of Surgery Kits",
 	"gigeresque.midnightconfig.title": "Gigeresque Options"
 }
