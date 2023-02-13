@@ -141,6 +141,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
 				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
+				case 4 -> AlienAttackType.EXECUTION;
 				default -> AlienAttackType.CLAW_LEFT_MOVING;
 				});
 
@@ -225,6 +226,15 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
+			case 5 -> {
+				var health = ((LivingEntity) target).getHealth();
+				var maxhealth = ((LivingEntity) target).getMaxHealth();
+				if (health >= (maxhealth * 0.10)) {
+					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
+					this.grabTarget(target);
+				}
+				return super.doHurtTarget(target);
+			}
 			}
 		return super.doHurtTarget(target);
 	}
@@ -279,8 +289,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new FindDarknessTask().speedModifier(1.15f).stopIf(target -> (this.isAggressive() || this.isVehicle()
-						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new FindDarknessTask().speedModifier(1.15f)
+						.stopIf(target -> (this.isAggressive() || this.isVehicle()
+								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new FirstApplicableBehaviour<ClassicAlienEntity>(
 						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
