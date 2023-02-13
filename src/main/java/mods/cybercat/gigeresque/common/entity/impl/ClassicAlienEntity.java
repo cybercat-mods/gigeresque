@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
@@ -63,6 +64,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -265,6 +267,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true))
 						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new FloatToSurfaceOfFluid<>(),
 				new LookAtTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
 	}
@@ -275,6 +278,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new FindDarknessTask().speedModifier(1.15f).stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new FirstApplicableBehaviour<ClassicAlienEntity>(
 						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
