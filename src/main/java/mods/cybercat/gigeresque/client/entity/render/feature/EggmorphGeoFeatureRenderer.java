@@ -11,9 +11,9 @@ import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 
-public class EggmorphGeoFeatureRenderer<T extends LivingEntity & GeoEntity> extends GeoRenderLayer<T> {
+public class EggmorphGeoFeatureRenderer<T extends Entity & GeoEntity> extends GeoRenderLayer<T> {
 
 	public EggmorphGeoFeatureRenderer(GeoRenderer<T> entityRenderer) {
 		super(entityRenderer);

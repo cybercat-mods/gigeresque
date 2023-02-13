@@ -15,14 +15,14 @@ import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureR
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
 @Mixin(value = GeoEntityRenderer.class, remap = false)
-public abstract class AzureEntityRendererMixin<T extends LivingEntity & GeoEntity> {
+public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
 
 	protected T animatable;
 
@@ -31,7 +31,6 @@ public abstract class AzureEntityRendererMixin<T extends LivingEntity & GeoEntit
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-		if (animatable instanceof LivingEntity)
-			this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
+		this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
 	}
 }
