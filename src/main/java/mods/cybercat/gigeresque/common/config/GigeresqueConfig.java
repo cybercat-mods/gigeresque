@@ -37,6 +37,9 @@ public class GigeresqueConfig extends MidnightConfig {
 
 	@Entry
 	public static int gooEffectTickTimer = 6000;
+	
+	@Entry
+	public static int maxSurgeryKitUses = 4;
 
 	public static float getAlienGrowthMultiplier() {
 		return alienGrowthMultiplier;

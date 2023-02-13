@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 public class SurgeryKitItem extends Item {
 
 	public SurgeryKitItem() {
-		super(new Item.Properties().durability(4));
+		super(new Item.Properties().durability(GigeresqueConfig.maxSurgeryKitUses));
 	}
 
 	@Override
