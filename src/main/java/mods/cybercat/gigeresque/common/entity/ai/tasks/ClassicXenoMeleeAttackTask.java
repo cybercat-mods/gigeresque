@@ -91,7 +91,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
 		var list2 = target.level.getBlockStatesIfLoaded(target.getBoundingBox().inflate(2.0, 2.0, 2.0));
 		var random = new SplittableRandom();
-		int randomPhase = random.nextInt(0, 100);
+		var randomPhase = random.nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
 				&& ConfigAccessor.isTargetHostable(target)) {
 			entity.grabTarget(target);
