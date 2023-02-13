@@ -120,5 +120,7 @@
 	"gigeresque.midnightconfig.runnerWhitelist": "Runner Whitelist",
 	"gigeresque.midnightconfig.runnerBlacklist": "Runner Blacklist",
 	"gigeresque.midnightconfig.maxSurgeryKitUses": "Max Uses of Surgery Kits",
+	"gigeresque.midnightconfig.smallMutantHosts": "Mutant Hammerpede/Pooper Hosts",
+	"gigeresque.midnightconfig.largeMutantHosts": "Mutant Stalker Hosts",
 	"gigeresque.midnightconfig.title": "Gigeresque Options"
 }
