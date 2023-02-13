@@ -40,26 +40,27 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		if (lightSourceLocation == null)
 			return;
-		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
-			startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-		else {
-			var world = entity.level;
-			var random = entity.getRandom();
-			entity.swing(InteractionHand.MAIN_HAND);
-			world.removeBlock(lightSourceLocation.stream().findFirst().get().getFirst(), false);
-			if (!world.isClientSide()) {
-				for (int i = 0; i < 2; i++) {
-					var e = random.nextGaussian() * 0.02;
-					var f = random.nextGaussian() * 0.02;
-					var g = random.nextGaussian() * 0.02;
-					((ServerLevel) world).sendParticles(ParticleTypes.POOF,
-							((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5,
-							lightSourceLocation.stream().findFirst().get().getFirst().getY(),
-							((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e, f,
-							g, 0.15000000596046448);
+		if (!entity.isAggressive())
+			if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
+				startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
+			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 7.0)) {
+				var world = entity.level;
+				var random = entity.getRandom();
+				entity.swing(InteractionHand.MAIN_HAND);
+				world.removeBlock(lightSourceLocation.stream().findFirst().get().getFirst(), false);
+				if (!world.isClientSide()) {
+					for (int i = 0; i < 2; i++) {
+						var e = random.nextGaussian() * 0.02;
+						var f = random.nextGaussian() * 0.02;
+						var g = random.nextGaussian() * 0.02;
+						((ServerLevel) world).sendParticles(ParticleTypes.POOF,
+								((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5,
+								lightSourceLocation.stream().findFirst().get().getFirst().getY(),
+								((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e,
+								f, g, 0.15000000596046448);
+					}
 				}
 			}
-		}
 	}
 
 	private void startMovingToTarget(E alien, BlockPos targetPos) {
