@@ -12,7 +12,7 @@ public class GigItemGroups {
 	private GigItemGroups() {
 	}
 
-	public static final CreativeModeTab GENERAL = FabricItemGroupBuilder.build(Constants.modResource("general"),
+	public static final CreativeModeTab GENERAL = FabricItemGroupBuilder.build(Constants.modResource("items"),
 			() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG));
 	
 	public static final CreativeModeTab BLOCKS = FabricItemGroupBuilder.build(Constants.modResource("blocks"),

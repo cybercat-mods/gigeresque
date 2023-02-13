@@ -147,11 +147,11 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 	private void registerItemBlock(String path, Block block, FabricItemSettings settings) {
 		Registry.register(Registry.BLOCK, Constants.modResource(path), block);
-		Registry.register(Registry.ITEM, Constants.modResource(path), new BlockItem(block, settings.tab(GigItemGroups.GENERAL)));
+		Registry.register(Registry.ITEM, Constants.modResource(path), new BlockItem(block, settings.tab(GigItemGroups.BLOCKS)));
 	}
 
 	private void registerItemBlock(String path, Block block) {
-		registerItemBlock(path, block, new FabricItemSettings().group(GigItemGroups.GENERAL));
+		registerItemBlock(path, block, new FabricItemSettings().group(GigItemGroups.BLOCKS));
 	}
 
 	@Override
