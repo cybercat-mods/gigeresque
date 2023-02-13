@@ -55,7 +55,7 @@ dependencies {
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
 	modImplementation "curse.maven:SBL-661293:4277537-sources-4277538"
-	//compileOnly 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
 }
 
 shadowJar {
@@ -127,12 +127,12 @@ if (file('key.properties').exists()) {
     	project {
         	apiKey = curseProp.getProperty('curseKey')
         	id = "535416"
-        	releaseType = "release"
+        	releaseType = "beta"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.1")
-			addGameVersion("1.19.2")
+			addGameVersion("1.19.3")
 			addGameVersion("Fabric")
+			addGameVersion("Quilt")
 			addGameVersion("Java 17")
 
         	relations {
@@ -163,13 +163,14 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'QyVF9oeo' 
+		projectId = '2kXK3iBI' 
 		versionNumber = project.mod_version 
-		versionName = 'Fabric 1.19.2'
+		versionType = "beta"
+		versionName = 'Fabric/Quilt 1.19.3'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.2']
-		loaders = ['fabric']
+		gameVersions = ['1.19.3']
+		loaders = ['fabric','quilt']
 		dependencies { 
         	required.project "azurelib"
         	required.project "fabric-api"
