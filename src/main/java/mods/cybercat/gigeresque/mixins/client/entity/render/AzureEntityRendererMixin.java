@@ -22,12 +22,16 @@ import net.minecraft.world.entity.LivingEntity;
  */
 @Environment(EnvType.CLIENT)
 @Mixin(value = GeoEntityRenderer.class, remap = false)
-public abstract class GeoEntityRendererMixin<T extends LivingEntity & GeoEntity> {
+public abstract class AzureEntityRendererMixin<T extends LivingEntity & GeoEntity> {
+
+	protected T animatable;
+
 	@Shadow
 	public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-		this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
+		if (animatable instanceof LivingEntity)
+			this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
 	}
 }
