@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.mixins.client;
+package mods.cybercat.gigeresque.mixins;
 
 import java.util.List;
 import java.util.Map;
