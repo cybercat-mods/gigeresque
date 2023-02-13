@@ -98,7 +98,6 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 		} else {
 			if (!entity.isVehicle()) {
 				entity.doHurtTarget(target);
-				entity.swing(InteractionHand.MAIN_HAND);
 			}
 		}
 	}
