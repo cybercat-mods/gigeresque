@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.block.storage;
 
 import java.util.stream.Stream;
 
-import mods.cybercat.gigeresque.common.block.StorageProperties;
-import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;

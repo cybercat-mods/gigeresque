@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.block.StorageProperties;
-import mods.cybercat.gigeresque.common.block.StorageStates;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
