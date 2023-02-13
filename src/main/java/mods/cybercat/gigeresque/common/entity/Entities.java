@@ -67,7 +67,7 @@ public class Entities implements GigeresqueInitializer {
 	public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(
 			EntityIdentifiers.MUTANT_POPPER.getPath(), PopperEntity::new, 1.0f, 0.75f);
 	public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(
-			EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), HammerpedeEntity::new, 1.0f, 0.25f);
+			EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), HammerpedeEntity::new, 1.4f, 0.75f);
 	public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(
 			EntityIdentifiers.MUTANT_STALKER.getPath(), StalkerEntity::new, 1.25f, 1.75f);
 

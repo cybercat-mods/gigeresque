@@ -30,7 +30,10 @@ public class ConfigAccessor {
 			blacklistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienBlacklist,
 					EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienBlacklist,
 					EntityIdentifiers.FACEHUGGER, GigeresqueConfig.facehuggerBlacklist, EntityIdentifiers.RUNNER_ALIEN,
-					GigeresqueConfig.runnerBlacklist);
+					GigeresqueConfig.runnerBlacklist,EntityIdentifiers.MUTANT_POPPER,
+					GigeresqueConfig.smallMutantHosts,EntityIdentifiers.MUTANT_HAMMERPEDE,
+					GigeresqueConfig.smallMutantHosts,EntityIdentifiers.MUTANT_STALKER,
+					GigeresqueConfig.largeMutantHosts);
 		return blacklistMappings;
 	}
 
@@ -58,6 +61,18 @@ public class ConfigAccessor {
 		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 		return normalEntries.contains(targetIdentifier.toString()) || waterEntries.contains(targetIdentifier.toString())
 				|| runnerEntries.contains(targetIdentifier.toString());
+	}
+
+	public static boolean isTargetSmallMutantHost(Entity target) {
+		var waveEntries = GigeresqueConfig.smallMutantHosts;
+		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		return waveEntries.contains(targetIdentifier.toString());
+	}
+
+	public static boolean isTargetLargeMutantHost(Entity target) {
+		var waveEntries = GigeresqueConfig.largeMutantHosts;
+		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+		return waveEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetAlienHost(Entity target) {

@@ -24,7 +24,6 @@ public class AttackExplodeTask<E extends PopperEntity> extends DelayedBehaviour<
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
 			Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
 			Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
-
 	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
 
 	@Nullable
@@ -54,7 +53,6 @@ public class AttackExplodeTask<E extends PopperEntity> extends DelayedBehaviour<
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-
 		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
 	}
 
@@ -85,7 +83,9 @@ public class AttackExplodeTask<E extends PopperEntity> extends DelayedBehaviour<
 		if (randomPhase >= 90) {
 			entity.explode();
 			entity.remove(RemovalReason.KILLED);
-		} else
+		} else {
+			entity.swing(InteractionHand.MAIN_HAND);
 			entity.doHurtTarget(this.target);
+		}
 	}
 }

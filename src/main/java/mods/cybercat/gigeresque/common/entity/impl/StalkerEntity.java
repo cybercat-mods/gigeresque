@@ -76,6 +76,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
+		maxUpStep = 1.5f;
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
 				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
@@ -128,10 +129,10 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 								|| !target.hasLineOfSight(entity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
-								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || this.isVehicle()
-								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
 				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
@@ -154,7 +155,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
 						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.15f),
 						new Idle<>().startCondition(entity -> !this.isAggressive())
 								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}

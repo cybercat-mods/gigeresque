@@ -97,6 +97,45 @@ public class GigeresqueConfig extends MidnightConfig {
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ELDER_GUARDIAN).toString());
 
 	@Entry
+	public static List<String> smallMutantHosts = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CHICKEN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.OCELOT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.FROG).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.TADPOLE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.AXOLOTL).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ALLAY).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+
+	@Entry
+	public static List<String> largeMutantHosts = List.of(
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COW).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.EVOKER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ILLUSIONER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PILLAGER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIGLIN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIGLIN_BRUTE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WITCH).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VILLAGER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.VINDICATOR).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DONKEY).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.FOX).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.GOAT).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.HOGLIN).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.HORSE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.LLAMA).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MOOSHROOM).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PLAYER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.MULE).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PANDA).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PIG).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.POLAR_BEAR).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.RAVAGER).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SHEEP).toString(),
+			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WOLF).toString());
+
+	@Entry
 	public static List<String> runnerHosts = List.of(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.COW).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.DONKEY).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.FOX).toString(),

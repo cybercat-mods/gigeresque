@@ -39,7 +39,8 @@ public class GigAnimationsDefault {
 	public static final RawAnimation HATCH_LEAP = RawAnimation.begin().then("hatch_leap", LoopType.PLAY_ONCE);
 
 	/* ATTACKING */
-	public static final RawAnimation CHARGE = RawAnimation.begin().thenPlayAndHold("charge");
+	public static final RawAnimation CHARGE = RawAnimation.begin().then("charge", LoopType.PLAY_ONCE);
+	public static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
 	public static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("death");
 	public static final RawAnimation IMPREGNATE = RawAnimation.begin().thenPlayAndHold("impregnate");
 	public static final RawAnimation CHOMP = RawAnimation.begin().then("chomp", LoopType.PLAY_ONCE);

@@ -68,6 +68,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
 	public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
+		maxUpStep = 1.5f;
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
 				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
@@ -77,14 +78,14 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead && !this.swinging)
+			if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0)
 				if (animationSpeedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.swinging && !isDead)
+			else if (this.entityData.get(STATE) == 1 && !isDead)
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
@@ -144,13 +145,15 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	@Override
 	public BrainActivityGroup<PopperEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(0.6F), new AttackExplodeTask(10));
+				new SetWalkTargetToAttackTarget<>().speedMod(1.2F),
+				new AttackExplodeTask(20).whenStarting(entity -> this.setAttackingState(1))
+						.whenStopping(entity -> this.setAttackingState(0)));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 15.0).add(Attributes.ARMOR, 1.0)
 				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 0.0)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 3.0)
 				.add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
 	}
 
@@ -164,7 +167,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	@Override
 	protected void tickDeath() {
 		super.tickDeath();
-		if (this.deathTime == 35) {
+		if (this.deathTime == 55) {
 			this.explode();
 		}
 	}
