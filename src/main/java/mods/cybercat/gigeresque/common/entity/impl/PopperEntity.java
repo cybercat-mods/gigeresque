@@ -118,7 +118,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<PopperEntity>().setRadius(7), new NearbyRepellentsSensor<PopperEntity>()

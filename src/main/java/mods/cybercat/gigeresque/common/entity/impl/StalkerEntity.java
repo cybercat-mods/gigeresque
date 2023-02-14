@@ -129,7 +129,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 								|| entity instanceof ArmorStand || entity instanceof Bat)
 								|| !target.hasLineOfSight(entity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
+										.anyMatch(AlienEntity.class::isInstance))|| ((Host) entity).hasParasite()
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
 								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)

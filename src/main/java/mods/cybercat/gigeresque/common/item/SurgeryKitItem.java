@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.Registry;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -29,24 +30,38 @@ public class SurgeryKitItem extends Item {
 	}
 
 	@Override
+	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity,
+			InteractionHand interactionHand) {
+		tryRemoveParasite(itemStack, livingEntity);
+		player.getCooldowns().addCooldown(this, 15);
+		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
+		return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
+	}
+
+	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		tryRemoveParasite(user.getItemInHand(hand), user, user, hand);
+		tryRemoveParasite(user.getItemInHand(hand), user);
 		return super.use(world, user, hand);
 	}
 
-	private void tryRemoveParasite(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
+	private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
 		var host = (Host) entity;
 		if (host.hasParasite())
 			if (!entity.level.isClientSide) {
+				entity.removeEffect(MobEffects.HUNGER);
+				entity.removeEffect(MobEffects.WEAKNESS);
+				entity.removeEffect(MobEffects.DIG_SLOWDOWN);
+				host.setBleeding(false);
 				if (host.getTicksUntilImpregnation() < GigeresqueConfig.getImpregnationTickTimer())
 					spawnParasite(entity);
 
 				host.removeParasite();
-				stack.hurtAndBreak(1, user, p -> p.broadcastBreakEvent(hand));
-				entity.removeEffect(MobEffects.HUNGER);
-				entity.removeEffect(MobEffects.DIG_SLOWDOWN);
+				if (entity instanceof Player) {
+					Player playerentity = (Player) entity;
+					playerentity.getCooldowns().addCooldown(this, 15);
+					stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+				}
 				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
-				host.setBleeding(false);
 			}
 	}
 

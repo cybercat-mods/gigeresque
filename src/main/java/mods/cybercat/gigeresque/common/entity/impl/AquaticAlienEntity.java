@@ -177,7 +177,8 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7),
