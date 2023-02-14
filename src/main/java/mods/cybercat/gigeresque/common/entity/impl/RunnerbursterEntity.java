@@ -103,7 +103,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand)
 						|| (entity.getVehicle() != null
 								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()|| ((Host) entity).hasParasite()
 						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
 						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));

@@ -263,9 +263,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Eggmorphable) entity).isEggmorphing() || this.isVehicle()
-								|| (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| (entity instanceof AlienEggEntity) || ((Host) entity).hasParasite()
+								|| ((Host) entity).isBleeding() || ((Eggmorphable) entity).isEggmorphing()
+								|| this.isVehicle() || (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
 				new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
