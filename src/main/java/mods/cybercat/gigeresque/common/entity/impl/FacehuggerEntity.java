@@ -263,7 +263,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					}
 					setIsInfertile(true);
 					this.unRide();
-					this.hurt(DamageSource.GENERIC, Float.MAX_VALUE);
+					this.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 				}
 			}
 
@@ -292,8 +292,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					|| (target.getVehicle() != null
 							&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
 					|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-					|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-					|| (EntityUtils.isFacehuggerAttached(target))
+					|| ((Host) target).hasParasite() || target.getMobType() == MobType.UNDEAD
+					|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
 					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 					&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive();
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
