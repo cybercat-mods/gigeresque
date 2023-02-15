@@ -7,6 +7,9 @@ import net.minecraft.world.item.Item;
 
 public class GigItems {
 
+	public static void init() {
+	}
+
 	public static final GigBucket BLACK_FLUID_BUCKET = registerItem("black_fluid_bucket", new GigBucket());
 
 	public static final SurgeryKitItem SURGERY_KIT = registerItem("surgery_kit", new SurgeryKitItem());
@@ -33,13 +36,6 @@ public class GigItems {
 			new GigSpawnEgg(Entities.MUTANT_HAMMERPEDE, 0xe3e1d5, 0x826e66));
 	public static final GigSpawnEgg MUTANT_STALKER_SPAWN_EGG = registerItem("stalker_spawn_egg",
 			new GigSpawnEgg(Entities.MUTANT_STALKER, 0xcdd7d8, 0x816d66));
-
-//	public static final EngiArmorItem ENGI_ARMOR_HELMET = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.HEAD);
-//	public static final EngiArmorItem ENGI_ARMOR_CHESTPLATE = new EngiArmorItem(ArmorMaterials.DIAMOND,
-//			EquipmentSlot.CHEST);
-//	public static final EngiArmorItem ENGI_ARMOR_LEGGINGS = new EngiArmorItem(ArmorMaterials.DIAMOND,
-//			EquipmentSlot.LEGS);
-//	public static final EngiArmorItem ENGI_ARMOR_BOOTS = new EngiArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.FEET);
 
 	public static <I extends Item> I registerItem(String name, I item) {
 		return Registry.register(Registry.ITEM, Constants.modResource(name), item);

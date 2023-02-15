@@ -23,7 +23,7 @@ public class Gigeresque implements ModInitializer {
 	public void onInitialize() {
 		MidnightConfig.init(MOD_ID, GigeresqueConfig.class);
 
-		new GigItems();
+		GigItems.init();
 		GigMemoryTypes.init();
 		GigSensors.init();
 		GIgBlocks.getInstance().initialize();
