@@ -164,7 +164,7 @@ if (file('key.properties').exists()) {
 		
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = '2kXK3iBI' 
-		versionNumber = project.mod_version 
+		versionNumber = project.modVersion 
 		versionType = "beta"
 		versionName = 'Fabric/Quilt 1.19.2'
 		uploadFile = remapJar 
