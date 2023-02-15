@@ -143,5 +143,9 @@
 	"gigeresque.midnightconfig.alieneggHealth": "Alien Egg Health",
 	"gigeresque.midnightconfig.chestbursterHealth": "Chestburster Health",
 	"gigeresque.midnightconfig.facehuggerHealth": "Facehugger Health",
+	"gigeresque.midnightconfig.alienegg_biomes": "Alien Egg Spawn Biomes",
+	"gigeresque.midnightconfig.alienegg_spawn_weight": "Alien Egg Spawn Weight",
+	"gigeresque.midnightconfig.alienegg_min_group": "Alien Egg Spawn Min Group Size",
+	"gigeresque.midnightconfig.alienegg_max_group": "Alien Egg Spawn Max Group Size",
 	"gigeresque.midnightconfig.title": "Gigeresque Options"
 }

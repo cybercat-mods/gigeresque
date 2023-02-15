@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import eu.midnightdust.lib.config.MidnightConfig;
@@ -306,4 +307,14 @@ public class GigeresqueConfig extends MidnightConfig {
 			Registry.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
 			Registry.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
 			Registry.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+
+	@Entry
+	public static List<String> alienegg_biomes = Arrays.asList("");
+
+	@Entry
+	public static int alienegg_spawn_weight = 10;
+	@Entry
+	public static int alienegg_min_group = 1;
+	@Entry
+	public static int alienegg_max_group = 1;
 }
