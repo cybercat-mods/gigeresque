@@ -85,11 +85,12 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 80.0).add(Attributes.ARMOR, 4.0)
-				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-				.add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, 7.0).add(Attributes.ATTACK_KNOCKBACK, 1.0)
-				.add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerXenoHealth)
+				.add(Attributes.ARMOR, GigeresqueConfig.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
+				.add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerXenoAttackDamage)
+				.add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
 	}
 
 	@Override

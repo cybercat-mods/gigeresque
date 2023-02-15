@@ -42,10 +42,12 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 15.0).add(Attributes.ARMOR, 2.0)
-				.add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-				.add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, 5.0).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerbusterHealth)
+				.add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
+				.add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerbusterAttackDamage)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	@Override
@@ -103,8 +105,9 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 				entity -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand)
 						|| (entity.getVehicle() != null
 								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()|| ((Host) entity).hasParasite()
-						|| ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+						|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
+						|| ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing()
+						|| (EntityUtils.isFacehuggerAttached(entity))
 						|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity) && entity.isAlive()));
 	}
