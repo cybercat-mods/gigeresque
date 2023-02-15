@@ -40,6 +40,69 @@ public class GigeresqueConfig extends MidnightConfig {
 	
 	@Entry
 	public static int maxSurgeryKitUses = 4;
+	
+	@Entry
+	public static double classicXenoHealth = 100;
+	
+	@Entry
+	public static double classicXenoArmor = 6;
+	
+	@Entry
+	public static double classicXenoAttackDamage = 7;
+	
+	@Entry
+	public static double aquaticXenoHealth = 90;
+	
+	@Entry
+	public static double aquaticXenoArmor = 4;
+	
+	@Entry
+	public static double aquaticXenoAttackDamage = 7;
+	
+	@Entry
+	public static double hammerpedeHealth = 15;
+	
+	@Entry
+	public static double hammerpedeAttackDamage = 1.5;
+	
+	@Entry
+	public static double popperHealth = 15;
+	
+	@Entry
+	public static double popperAttackDamage = 3;
+	
+	@Entry
+	public static double runnerbusterHealth = 15;
+	
+	@Entry
+	public static double runnerbusterAttackDamage = 5;
+	
+	@Entry
+	public static double stalkerXenoHealth = 60;
+	
+	@Entry
+	public static double stalkerXenoArmor = 2;
+	
+	@Entry
+	public static double stalkerAttackDamage = 5;
+	
+	@Entry
+	public static double runnerXenoHealth = 80;
+	
+	@Entry
+	public static double runnerXenoArmor = 4;
+	
+	@Entry
+	public static double runnerXenoAttackDamage = 7;
+	
+	@Entry
+	public static double alieneggHealth = 20;
+	
+	@Entry
+	public static double chestbursterHealth = 15;
+	
+	@Entry
+	public static double facehuggerHealth = 20;
 
 	public static float getAlienGrowthMultiplier() {
 		return alienGrowthMultiplier;
