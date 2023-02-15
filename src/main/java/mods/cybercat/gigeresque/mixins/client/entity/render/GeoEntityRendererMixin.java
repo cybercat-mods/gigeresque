@@ -11,6 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -24,13 +25,15 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 @Mixin(value = GeoEntityRenderer.class, remap = false)
 public abstract class GeoEntityRendererMixin<T extends Entity & GeoEntity> {
 
-	protected T animatable;
+	@Shadow
+	public abstract T getAnimatable();
 
 	@Shadow
 	public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-		this.addRenderLayer(new EggmorphGeckoFeatureRenderer<>((GeoRenderer<T>) this));
+		if (this.getAnimatable() instanceof Mob)
+			this.addRenderLayer(new EggmorphGeckoFeatureRenderer<>((GeoRenderer<T>) this));
 	}
 }
