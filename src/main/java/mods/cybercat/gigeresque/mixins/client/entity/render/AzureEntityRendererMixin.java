@@ -16,6 +16,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 
 /**
  * @author Aelpecyem
@@ -24,13 +25,15 @@ import net.minecraft.world.entity.Entity;
 @Mixin(value = GeoEntityRenderer.class, remap = false)
 public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
 
-	protected T animatable;
+	@Shadow
+	public abstract T getAnimatable();
 
 	@Shadow
 	public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-		this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
+		if (this.getAnimatable() instanceof Mob)
+			this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
 	}
 }

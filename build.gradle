@@ -56,6 +56,7 @@ dependencies {
 	modImplementation ("com.terraformersmc:modmenu:4.1.2")
 	modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
 	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.39'
+	modImplementation "curse.maven:HWG-448106:4065708"
 }
 
 shadowJar {
