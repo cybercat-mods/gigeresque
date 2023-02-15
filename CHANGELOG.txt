@@ -1,4 +1,3 @@
-v.0.5.0
+v.0.5.1
 
-- This is a beta build that contains the natural generating strucutures that contain the Alien Eggs. 
-- AI is mostly setup for the main 3 life cycles being focused on currently. More AI is coming but is still WIP.
+- Structures should no longer generate with air blocks
