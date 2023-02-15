@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.GigStructures;
+import mods.cybercat.gigeresque.common.util.MobSpawn;
 import net.fabricmc.api.ModInitializer;
 
 public class Gigeresque implements ModInitializer {
@@ -32,6 +33,7 @@ public class Gigeresque implements ModInitializer {
 		GigStatusEffects.getInstance().initialize();
 		TrackedDataHandlers.getInstance().initialize();
 		Entities.getInstance().initialize();
+		MobSpawn.addSpawnEntries();
 		GigStructures.registerStructureFeatures();
 		new GigItemGroups();
 	}

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import eu.midnightdust.lib.config.MidnightConfig;
@@ -37,70 +38,70 @@ public class GigeresqueConfig extends MidnightConfig {
 
 	@Entry
 	public static int gooEffectTickTimer = 6000;
-	
+
 	@Entry
 	public static int maxSurgeryKitUses = 4;
-	
+
 	@Entry
 	public static double classicXenoHealth = 100;
-	
+
 	@Entry
 	public static double classicXenoArmor = 6;
-	
+
 	@Entry
 	public static double classicXenoAttackDamage = 7;
-	
+
 	@Entry
 	public static double aquaticXenoHealth = 90;
-	
+
 	@Entry
 	public static double aquaticXenoArmor = 4;
-	
+
 	@Entry
 	public static double aquaticXenoAttackDamage = 7;
-	
+
 	@Entry
 	public static double hammerpedeHealth = 15;
-	
+
 	@Entry
 	public static double hammerpedeAttackDamage = 1.5;
-	
+
 	@Entry
 	public static double popperHealth = 15;
-	
+
 	@Entry
 	public static double popperAttackDamage = 3;
-	
+
 	@Entry
 	public static double runnerbusterHealth = 15;
-	
+
 	@Entry
 	public static double runnerbusterAttackDamage = 5;
-	
+
 	@Entry
 	public static double stalkerXenoHealth = 60;
-	
+
 	@Entry
 	public static double stalkerXenoArmor = 2;
-	
+
 	@Entry
 	public static double stalkerAttackDamage = 5;
-	
+
 	@Entry
 	public static double runnerXenoHealth = 80;
-	
+
 	@Entry
 	public static double runnerXenoArmor = 4;
-	
+
 	@Entry
 	public static double runnerXenoAttackDamage = 7;
-	
+
 	@Entry
 	public static double alieneggHealth = 20;
-	
+
 	@Entry
 	public static double chestbursterHealth = 15;
-	
+
 	@Entry
 	public static double facehuggerHealth = 20;
 
@@ -314,4 +315,14 @@ public class GigeresqueConfig extends MidnightConfig {
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.SALMON).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CREEPER).toString(),
 			BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.PARROT).toString());
+
+	@Entry
+	public static List<String> alienegg_biomes = Arrays.asList("");
+
+	@Entry
+	public static int alienegg_spawn_weight = 10;
+	@Entry
+	public static int alienegg_min_group = 1;
+	@Entry
+	public static int alienegg_max_group = 1;
 }

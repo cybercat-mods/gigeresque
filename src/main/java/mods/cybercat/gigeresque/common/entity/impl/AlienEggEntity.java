@@ -22,10 +22,14 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -33,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
@@ -57,6 +62,15 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	protected int getAcidDiameter() {
 		return 1;
+	}
+
+	public static boolean canSpawn(EntityType<? extends AlienEntity> type, ServerLevelAccessor world,
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
+		if (world.getDifficulty() == Difficulty.PEACEFUL)
+			return false;
+		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
+			return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
+		return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
