@@ -1,8 +1,5 @@
-v.0.5.4
+v.0.5.5
 
-- Fixes Facehugger crash. (#114)
-- Tweaks Nesting
-- Tweaks Classic Xeno to jump at targets if they are above 3 blocks from it's reach.
-- Tweaks Classic Xeno rendering when crawling.
-- Web Resin now longer slow falls entities, instead stopping them completely from falling.
-- Tweaks Eggmorph pathfinding.
+- Tweaks signal movement.
+- Tweaks Classic Attacking animations and range.
+- Tweaks the crawling of adult Xenos.
