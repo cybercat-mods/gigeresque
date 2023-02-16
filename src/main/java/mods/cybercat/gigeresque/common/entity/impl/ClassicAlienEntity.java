@@ -28,8 +28,8 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -296,9 +296,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new FindDarknessTask().speedModifier(1.15f)
-						.stopIf(target -> (this.isAggressive() || this.isVehicle()
-								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new FirstApplicableBehaviour<ClassicAlienEntity>(
 						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
@@ -313,12 +310,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(target -> (!target.isAlive() || !this.hasLineOfSight(target)
-						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new InvalidateAttackTarget<>().invalidateIf(
+						(entity, target) -> (target instanceof Player pl && (pl.isCreative() || pl.isSpectator()))
+								|| !entity.hasLineOfSight(target)),
 				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed)
-						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
-				new ClassicXenoMeleeAttackTask(10)
-						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
+						.stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true
+								|| !this.hasLineOfSight(entity))),
+				new JumpToTargetTask<>(10), new ClassicXenoMeleeAttackTask(10)
+						.stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
 	}
 
 	@Override
@@ -367,10 +366,10 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (getCurrentAttackType() == AlienAttackType.NONE)
-				if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
-					return event.setAndContinue(GigAnimationsDefault.CRAWL);
-				else if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
+				if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
 					if (this.isVehicle())
 						return event.setAndContinue(GigAnimationsDefault.EXECUTION_CARRY);
 					else
