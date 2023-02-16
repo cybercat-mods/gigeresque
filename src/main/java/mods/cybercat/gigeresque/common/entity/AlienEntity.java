@@ -30,6 +30,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.GameEventTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -361,13 +363,15 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	}
 
 	@Override
+	public TagKey<GameEvent> getListenableEvents() {
+		return GameEventTags.WARDEN_CAN_LISTEN;
+	}
+
+	@Override
 	public boolean shouldListen(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Context var5) {
-		@SuppressWarnings("unused")
-		LivingEntity livingEntity;
 		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
 			return false;
-		Entity entity = var5.sourceEntity();
-		return !(entity instanceof LivingEntity);
+		return true;
 	}
 
 	@Override

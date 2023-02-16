@@ -160,25 +160,20 @@ public class GigVibrationListener implements GameEventListener {
 	@Override
 	public boolean handleGameEvent(ServerLevel level, GameEvent.Message eventMessage) {
 		GameEvent.Context context;
-		if (this.currentVibration != null) {
+		if (this.currentVibration != null)
 			return false;
-		}
-		GameEvent gameEvent = eventMessage.gameEvent();
-		if (!this.config.isValidVibration(gameEvent, context = eventMessage.context())) {
+		var gameEvent = eventMessage.gameEvent();
+		if (!this.config.isValidVibration(gameEvent, context = eventMessage.context()))
 			return false;
-		}
-		Optional<Vec3> optional = this.listenerSource.getPosition(level);
-		if (optional.isEmpty()) {
+		var optional = this.listenerSource.getPosition(level);
+		if (optional.isEmpty())
 			return false;
-		}
-		Vec3 vec3 = eventMessage.source();
-		Vec3 vec32 = optional.get();
-		if (!this.config.shouldListen(level, this, new BlockPos(vec3), gameEvent, context)) {
+		var vec3 = eventMessage.source();
+		var vec32 = optional.get();
+		if (!this.config.shouldListen(level, this, new BlockPos(vec3), gameEvent, context))
 			return false;
-		}
-		if (GigVibrationListener.isOccluded(level, vec3, vec32)) {
+		if (GigVibrationListener.isOccluded(level, vec3, vec32))
 			return false;
-		}
 		this.scheduleVibration(level, gameEvent, context, vec3, vec32);
 		return true;
 	}
@@ -230,11 +225,7 @@ public class GigVibrationListener implements GameEventListener {
 					return false;
 				if (entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))
 					return false;
-				if (entity.dampensVibrations())
-					return false;
 			}
-			if (context.affectedState() != null)
-				return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
 			return true;
 		}
 
