@@ -10,6 +10,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.Minecraft;
@@ -46,6 +47,10 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 		var fluidSprites = new TextureAtlasSprite[2];
 
+		ClientSpriteRegistryCallback.event(TextureAtlas.LOCATION_BLOCKS).register((atlasTexture, registry) -> {
+			registry.register(stillSpriteId);
+			registry.register(flowingSpriteId);
+		});
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
 				.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 					@Override

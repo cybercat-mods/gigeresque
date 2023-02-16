@@ -60,6 +60,11 @@ public abstract class BlackFluid extends FlowingFluid {
 	}
 
 	@Override
+	protected boolean canConvertToSource() {
+		return false;
+	}
+
+	@Override
 	protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
 		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
 		Block.dropResources(state, world, pos, blockEntity);
@@ -91,12 +96,6 @@ public abstract class BlackFluid extends FlowingFluid {
 		public boolean isSource(FluidState fluidState) {
 			return false;
 		}
-		
-		@Override
-		protected boolean canConvertToSource() {
-			return false;
-		}
-
 	}
 
 	static class Still extends BlackFluid {
@@ -110,11 +109,5 @@ public abstract class BlackFluid extends FlowingFluid {
 		public boolean isSource(FluidState fluidState) {
 			return true;
 		}
-
-		@Override
-		protected boolean canConvertToSource() {
-			return false;
-		}
-
 	}
 }
