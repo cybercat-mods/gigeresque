@@ -52,6 +52,9 @@ public class GigeresqueConfig extends MidnightConfig {
 	public static double classicXenoAttackDamage = 7;
 
 	@Entry
+	public static float classicXenoAttackSpeed = 3.0F;
+
+	@Entry
 	public static double aquaticXenoHealth = 90;
 
 	@Entry
@@ -88,6 +91,9 @@ public class GigeresqueConfig extends MidnightConfig {
 	public static double stalkerAttackDamage = 5;
 
 	@Entry
+	public static float stalkerAttackSpeed = 1.7F;
+
+	@Entry
 	public static double runnerXenoHealth = 80;
 
 	@Entry
@@ -95,6 +101,9 @@ public class GigeresqueConfig extends MidnightConfig {
 
 	@Entry
 	public static double runnerXenoAttackDamage = 7;
+
+	@Entry
+	public static float runnerXenoAttackSpeed = 3.0F;
 
 	@Entry
 	public static double alieneggHealth = 20;

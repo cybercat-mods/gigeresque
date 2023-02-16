@@ -150,5 +150,8 @@
 	"gigeresque.midnightconfig.alienegg_spawn_weight": "Alien Egg Spawn Weight",
 	"gigeresque.midnightconfig.alienegg_min_group": "Alien Egg Spawn Min Group Size",
 	"gigeresque.midnightconfig.alienegg_max_group": "Alien Egg Spawn Max Group Size",
+	"gigeresque.midnightconfig.classicXenoAttackSpeed": "Classic Xeno Attack Movement Speed",
+	"gigeresque.midnightconfig.stalkerAttackSpeed": "Stalker Attack Movement Speed",
+	"gigeresque.midnightconfig.runnerXenoAttackSpeed": "Runner Attack Movement Speed",
 	"gigeresque.midnightconfig.title": "Gigeresque Options"
 }
