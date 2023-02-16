@@ -15,9 +15,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.RandomUtil;
 
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
@@ -52,12 +54,14 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 		if (target != null)
 			if (test != nestLocation)
 				if (!nestLocation.closerToCenterThan(entity.position(), 1.4))
-					startMovingToTarget(entity, nestLocation);
+					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 0));
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-						if (!testPos.equals(test) && !level.getBlockState(testPos).isAir())
+						if (!testPos.equals(test) && !level.getBlockState(testPos).isAir()) {
+							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 							return;
-						else {
+						} else {
+							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 							((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
 							target.setPos(Vec3.atBottomCenterOf(test));
 							target.removeVehicle();
@@ -66,11 +70,6 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 							level.setBlockAndUpdate(test.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 						}
 				}
-	}
-
-	private void startMovingToTarget(E alien, BlockPos targetPos) {
-		alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(),
-				((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
 	}
 
 }
