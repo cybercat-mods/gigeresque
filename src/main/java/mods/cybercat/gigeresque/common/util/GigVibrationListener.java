@@ -206,11 +206,11 @@ public class GigVibrationListener implements GameEventListener {
 
 	public static interface GigVibrationListenerConfig {
 		default public TagKey<GameEvent> getListenableEvents() {
-			return GameEventTags.VIBRATIONS;
+			return GameEventTags.WARDEN_CAN_LISTEN;
 		}
 
 		default public boolean canTriggerAvoidVibration() {
-			return false;
+			return true;
 		}
 
 		default public boolean isValidVibration(GameEvent event, GameEvent.Context context) {
