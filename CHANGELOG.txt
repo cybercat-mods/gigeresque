@@ -1,5 +1,6 @@
-v.0.5.2
+v.0.5.3
 
-- Tweak Mixin for crashing.
-- Fixes missing Lang entries for Health, Armor, Attack configs.
-- Addes a default empty spawn config for Alien Eggs. 
+- Fixes missing Lang Files Entries (#110)
+- Fixes Facehugger crash. (#111)
+- Adds config to increase attack movment speed to Classic Xeno, Runner, and Stalker.
+- Tweaks the vibration of the Xenos. 
