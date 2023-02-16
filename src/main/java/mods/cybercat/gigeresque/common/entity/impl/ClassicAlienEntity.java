@@ -263,6 +263,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| !target.hasLineOfSight(entity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
+								|| (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).hasParasite()
 								|| ((Host) entity).isBleeding() || ((Eggmorphable) entity).isEggmorphing()

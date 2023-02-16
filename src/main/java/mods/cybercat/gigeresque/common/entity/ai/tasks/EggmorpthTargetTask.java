@@ -15,9 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.RandomUtil;
@@ -49,20 +47,24 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 		var target = entity.getFirstPassenger();
 		if (lightSourceLocation == null)
 			return;
-		var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 3, 3, true, level);
+		var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, level);
 		var nestLocation = lightSourceLocation.stream().findAny().get().getFirst();
 		if (target != null)
 			if (test != nestLocation)
 				if (!nestLocation.closerToCenterThan(entity.position(), 1.4))
 					startMovingToTarget(entity, nestLocation);
 				else {
-					if (level.getBlockStates(new AABB(test)) != Blocks.AIR.defaultBlockState()) {
-						((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
-						target.setPos(Vec3.atBottomCenterOf(test));
-						target.removeVehicle();
-						entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-						level.setBlockAndUpdate(test, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-					}
+					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
+						if (!testPos.equals(test) && !level.getBlockState(testPos).isAir())
+							return;
+						else {
+							((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
+							target.setPos(Vec3.atBottomCenterOf(test));
+							target.removeVehicle();
+							entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+							level.setBlockAndUpdate(test, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							level.setBlockAndUpdate(test.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+						}
 				}
 	}
 
