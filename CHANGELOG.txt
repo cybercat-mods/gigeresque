@@ -1,6 +1,8 @@
-v.0.5.3
+v.0.5.4
 
-- Fixes missing Lang Files Entries (#110)
-- Fixes Facehugger crash. (#111)
-- Adds config to increase attack movment speed to Classic Xeno, Runner, and Stalker.
-- Tweaks the vibration of the Xenos. 
+- Fixes Facehugger crash. (#114)
+- Tweaks Nesting
+- Tweaks Classic Xeno to jump at targets if they are above 3 blocks from it's reach.
+- Tweaks Classic Xeno rendering when crawling.
+- Web Resin now longer slow falls entities, instead stopping them completely from falling.
+- Tweaks Eggmorph pathfinding.
