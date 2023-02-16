@@ -321,7 +321,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && this.getTarget() != null);
+		setIsCrawling(this.horizontalCollision && this.getTarget() != null && !this.isVehicle());
 		return this.horizontalCollision && this.getTarget() != null && !this.isVehicle();
 	}
 
