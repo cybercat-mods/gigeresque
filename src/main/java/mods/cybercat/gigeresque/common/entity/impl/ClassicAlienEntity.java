@@ -143,10 +143,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
 				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-				case 4 -> (this.getTarget() != null
-						&& (this.getTarget().getHealth() >= (this.getTarget().getMaxHealth() * 0.10)))
-								? AlienAttackType.EXECUTION
-								: AlienAttackType.CLAW_LEFT_MOVING;
 				default -> AlienAttackType.CLAW_LEFT_MOVING;
 				});
 
@@ -231,18 +227,29 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				target.hurt(DamageSource.mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
-			case 5 -> {
-				var health = ((LivingEntity) target).getHealth();
-				var maxhealth = ((LivingEntity) target).getMaxHealth();
-				if (health >= (maxhealth * 0.10)) {
-					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
-					this.grabTarget(target);
-				}
-				return super.doHurtTarget(target);
-			}
+//			case 5 -> {
+//				var health = ((LivingEntity) target).getHealth();
+//				var maxhealth = ((LivingEntity) target).getMaxHealth();
+//				if (health >= (maxhealth * 0.10)) {
+//					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
+//					this.grabTarget(target);
+//				}
+//				return super.doHurtTarget(target);
+//			}
 			}
 		return super.doHurtTarget(target);
 	}
+
+	@Override
+    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+        return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
+    }
+
+	@Override
+    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+        return d <= this.getMeleeAttackRangeSqr(livingEntity);
+    }
 
 	@Override
 	protected Brain.Provider<?> brainProvider() {
@@ -310,9 +317,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf(
-						(entity, target) -> (target instanceof Player pl && (pl.isCreative() || pl.isSpectator()))
-								|| !entity.hasLineOfSight(target)),
+				new InvalidateAttackTarget<>(),
 				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed)
 						.stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true
 								|| !this.hasLineOfSight(entity))),
@@ -349,7 +354,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
+			if (this.isOnGround() && event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
 					&& this.isStatis() == false) {
 				if (!this.isInWater() && this.isExecuting() == false) {
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
@@ -366,6 +371,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
+			else if (!this.isOnGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (getCurrentAttackType() == AlienAttackType.NONE)

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.SplittableRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +12,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -60,10 +58,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		Stream<BlockState> list2 = target.level.getBlockStatesIfLoaded(target.getBoundingBox().inflate(2.0, 2.0, 2.0));
-
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target)
-				&& entity.getEntityData().get(AlienEntity.FLEEING_FIRE) != true && !list2.anyMatch(NEST);
+		return BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target);
 	}
 
 	@Override
