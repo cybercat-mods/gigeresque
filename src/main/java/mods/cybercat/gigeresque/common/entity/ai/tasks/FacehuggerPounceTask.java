@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -11,7 +9,6 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -23,8 +20,6 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 			Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
 			Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
 	private static final double MAX_LEAP_DISTANCE = 8.0;
-	@Nullable
-	protected LivingEntity target = null;
 
 	public FacehuggerPounceTask(int delayTicks) {
 		super(delayTicks);
@@ -39,9 +34,11 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		var target = entity.getTarget();
 		var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
-		return entity.getTarget() != null && entity.isOnGround()
-				&& entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3 && entity.hasLineOfSight(target) && (target.getVehicle() != null
-						&& !target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !EntityUtils.isFacehuggerAttached(target);
+		return target != null && entity.isOnGround() && entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3
+				&& entity.hasLineOfSight(target)
+				&& (target.getVehicle() != null
+						&& !target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+				&& !EntityUtils.isFacehuggerAttached(target);
 	}
 
 	@Override
