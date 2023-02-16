@@ -314,7 +314,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		return BrainActivityGroup.fightTasks(
 				new InvalidateAttackTarget<>().stopIf(target -> (!target.isAlive() || !this.hasLineOfSight(target)
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new SetWalkTargetToAttackTarget<>().speedMod(3.0F)
+				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed)
 						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new ClassicXenoMeleeAttackTask(10)
 						.stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
