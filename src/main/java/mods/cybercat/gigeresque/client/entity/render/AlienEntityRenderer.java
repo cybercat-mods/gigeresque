@@ -29,21 +29,25 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 		if (entity.isCrawling()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
 				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-				stack.translate(0, -0.5, 0);
+				stack.translate(0, -0.2, 0);
+			}
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition()))) {
+				stack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().north()))) {
 				stack.mulPose(Vector3f.XP.rotationDegrees(90));
-				stack.translate(0, -0.5, 0);
+				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(),
 					entity.level.getBlockState(entity.blockPosition().south()))) {
 				stack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				stack.translate(0, -0.5, 0);
+				stack.translate(0, -0.2, 0);
 			}
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
 				stack.mulPose(Vector3f.ZP.rotationDegrees(90));
-				stack.translate(0, -0.5, 0);
+				stack.translate(0, -0.2, 0);
 			}
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
