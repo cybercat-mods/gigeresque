@@ -36,6 +36,8 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -44,6 +46,7 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
@@ -321,8 +324,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && this.getTarget() != null && !this.isVehicle());
-		return this.horizontalCollision && this.getTarget() != null && !this.isVehicle();
+		setIsCrawling(this.horizontalCollision && this.isAggressive());
+		return this.horizontalCollision && this.isAggressive();
 	}
 
 	@Override
