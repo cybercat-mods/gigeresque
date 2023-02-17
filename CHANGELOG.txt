@@ -1,5 +1,4 @@
-v.0.5.5
+v.0.5.6
 
-- Tweaks signal movement.
-- Tweaks Classic Attacking animations and range.
-- Tweaks the crawling of adult Xenos.
+- Fixes Swimming animations on Runner and Classic Xenos. (#118)
+- Tweak for #119 but not fully fixed.
