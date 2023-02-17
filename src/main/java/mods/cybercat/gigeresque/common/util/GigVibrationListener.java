@@ -226,6 +226,8 @@ public class GigVibrationListener implements GameEventListener {
 				if (entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))
 					return false;
 			}
+			if (context.affectedState() != null)
+				return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
 			return true;
 		}
 

@@ -371,7 +371,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public boolean shouldListen(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Context var5) {
 		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
 			return false;
-		return true;
+		Entity entity = var5.sourceEntity();
+		return !(entity instanceof LivingEntity);
 	}
 
 	@Override
