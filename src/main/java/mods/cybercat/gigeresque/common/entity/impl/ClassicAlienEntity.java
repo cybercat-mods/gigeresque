@@ -65,7 +65,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -241,15 +240,15 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	}
 
 	@Override
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
-    }
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
+	}
 
 	@Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-        return d <= this.getMeleeAttackRangeSqr(livingEntity);
-    }
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
 
 	@Override
 	protected Brain.Provider<?> brainProvider() {
@@ -291,7 +290,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true))
 						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
-				new FloatToSurfaceOfFluid<>(),
+//				new FloatToSurfaceOfFluid<>(),
 				new LookAtTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
 	}
@@ -316,8 +315,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>(),
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>(),
 				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed)
 						.stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true
 								|| !this.hasLineOfSight(entity))),
@@ -354,9 +352,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.isOnGround() && event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
+			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
 					&& this.isStatis() == false) {
-				if (!this.isInWater() && this.isExecuting() == false) {
+				if (this.isOnGround() && !this.isInWater() && this.isExecuting() == false) {
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (!this.isCrawling())
@@ -364,14 +362,15 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 							return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
 						else
 							return event.setAndContinue(GigAnimationsDefault.WALK);
-				} else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
+				} else if (this.isInWater() && this.isExecuting() == false && !this.isVehicle())
 					if (this.isAggressive() && !this.isVehicle())
 						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 					else
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (!this.isOnGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+			else if (!this.isInWater() && !this.isOnGround() && this.isExecuting() == false && this.isStatis() == false
+					&& !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
@@ -391,7 +390,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					else if (this.isStatis() == true || this.isNoAi() && !isDead && !this.isVehicle())
 						return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
 				}
-			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(
+					this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
 				if (this.level.isClientSide) {

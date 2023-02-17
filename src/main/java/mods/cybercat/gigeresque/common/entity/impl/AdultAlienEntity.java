@@ -324,8 +324,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && this.isAggressive());
-		return this.horizontalCollision && this.isAggressive();
+		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater());
+		return this.horizontalCollision && this.isAggressive() && !this.isInWater();
 	}
 
 	@Override
@@ -386,10 +386,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity,
 			Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (!this.isVehicle())
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
 	}
 }

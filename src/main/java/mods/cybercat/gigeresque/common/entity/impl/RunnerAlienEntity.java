@@ -212,11 +212,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 			} else if (getCurrentAttackType() == AlienAttackType.NONE)
 				if (this.isStatis() == true || this.isNoAi() && !isDead)
 					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-				else if (this.isStatis() == false && this.isInWaterRainOrBubble())
-					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-				else if (this.isStatis() == false && !this.isInWaterRainOrBubble())
-					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
-			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(
+					this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level.isClientSide)
