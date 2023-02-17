@@ -41,5 +41,10 @@
 		"smartbrainlib": ">=1.7.4",
 		"java": ">=17"
 	},
-	"accessWidener": "gigeresque.accesswidener"
+	"accessWidener": "gigeresque.accesswidener",
+	"custom": {
+		"lithium:options": {
+			"mixin.ai.task.memory_change_counting": false
+		}
+	}
 }
