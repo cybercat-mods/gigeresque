@@ -324,11 +324,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	}
 
 	@Override
-	protected void registerGoals() {
-//		this.goalSelector.addGoal(5, new FindNestGoal(this));
-	}
-
-	@Override
 	public void positionRider(Entity passenger) {
 		super.positionRider(passenger);
 		if (passenger instanceof LivingEntity) {
