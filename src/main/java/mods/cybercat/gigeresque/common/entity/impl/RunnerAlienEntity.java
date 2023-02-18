@@ -86,8 +86,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerXenoHealth)
-				.add(Attributes.ARMOR, GigeresqueConfig.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.ARMOR, GigeresqueConfig.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 6.0)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0)
 				.add(Attributes.MOVEMENT_SPEED, 0.13000000417232513)
 				.add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerXenoAttackDamage)
 				.add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
@@ -178,9 +178,20 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
-				new AnimatableMeleeAttack(10));
+		return BrainActivityGroup
+				.fightTasks(
+						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
+								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
+								|| !this.hasLineOfSight(target)
+								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(target))
+								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& !target.isAlive())),
+						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
+						new AnimatableMeleeAttack(10));
 	}
 
 	@Override
