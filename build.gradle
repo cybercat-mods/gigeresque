@@ -57,7 +57,7 @@ dependencies {
 	modImplementation "curse.maven:SBL-661293:4277537-sources-4277538"
 	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
 	modImplementation "curse.maven:HWG-448106:4363593"
-	modImplementation "curse.maven:Debug-783010:4399767"
+	//modImplementation "curse.maven:Debug-783010:4399767"
 }
 
 shadowJar {
