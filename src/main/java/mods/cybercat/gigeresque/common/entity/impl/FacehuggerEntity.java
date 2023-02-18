@@ -57,6 +57,7 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
@@ -483,10 +484,19 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>()
-						.stopIf(target -> (!target.isAlive() || ((Eggmorphable) target).isEggmorphing())),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
+		return BrainActivityGroup
+				.fightTasks(
+						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
+								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
+								|| !this.hasLineOfSight(target)
+								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(target))
+								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& !target.isAlive())),
+						new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
 	}
 
 	@Override

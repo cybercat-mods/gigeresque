@@ -165,11 +165,22 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.stalkerAttackSpeed),
-				new AnimatableMeleeAttack(20)
-						.whenStarting(entity -> this.setAttackingState(this.getRandom().nextInt(0, 3)))
-						.whenStopping(entity -> this.setAttackingState(0)));
+		return BrainActivityGroup
+				.fightTasks(
+						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
+								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
+								|| !this.hasLineOfSight(target)
+								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
+										.anyMatch(AlienEntity.class::isInstance))
+								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(target))
+								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+										&& !target.isAlive())),
+						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.stalkerAttackSpeed),
+						new AnimatableMeleeAttack(20)
+								.whenStarting(entity -> this.setAttackingState(this.getRandom().nextInt(0, 3)))
+								.whenStopping(entity -> this.setAttackingState(0)));
 	}
 
 	@Override
