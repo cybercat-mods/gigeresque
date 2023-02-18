@@ -56,6 +56,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.AABB;
 
 public abstract class AlienEntity extends Monster implements GigVibrationListenerConfig {
 
@@ -210,10 +211,13 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			var serverLevel = (ServerLevel) level;
 			this.dynamicGameEventListener.getListener().tick(serverLevel);
 		}
-
-		if (!level.isClientSide && level.getBlockState(blockPosition()).getBlock() == GIgBlocks.NEST_RESIN
-				&& this.tickCount % Constants.TPS == 0)
-			this.heal(0.0833f);
+		var searcharea = this.level.getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D));
+		if (!level.isClientSide && this.tickCount % Constants.TPS == 0)
+			searcharea.forEach(e -> {
+				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB)
+						|| e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
+					this.heal(0.5833f);
+			});
 	}
 
 	@Override
