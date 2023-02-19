@@ -101,12 +101,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 	}
 
-	@Inject(method = { "hurt" }, at = { @At("RETURN") })
-	public boolean hurtTweak(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(AlienEntity.class::isInstance)
-				&& damageSource == DamageSource.IN_WALL)
-			return false;
-		return callbackInfo.getReturnValue();
+	@Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
+	public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
+		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)
+				|| (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity))
+				&& (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
+			callbackInfo.setReturnValue(false);
+			callbackInfo.cancel();
+		}
 	}
 
 	@Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
@@ -238,7 +240,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isImmobile" }, at = { @At("RETURN") })
 	protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing() == true && !((Host)this).hasParasite())
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)
+				|| this.isEggmorphing() == true && !((Host) this).hasParasite())
 			return true;
 		return callbackInfo.getReturnValue();
 	}
@@ -264,15 +267,6 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			setTicksUntilEggmorphed(nbt.getInt("ticksUntilEggmorphed"));
 		if (nbt.contains("isBleeding"))
 			setBleeding(nbt.getBoolean("isBleeding"));
-	}
-
-	@Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
-	public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)
-				&& (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
-			callbackInfo.setReturnValue(false);
-			callbackInfo.cancel();
-		}
 	}
 
 	@Inject(method = { "removeAllEffects" }, at = { @At("HEAD") }, cancellable = true)
