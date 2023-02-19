@@ -1,4 +1,7 @@
-v.0.5.6
+v.0.5.7
 
-- Fixes Swimming animations on Runner and Classic Xenos. (#118)
-- Tweak for #119 but not fully fixed.
+- Clean up code.
+- Rewrites Nest Healing on Aliens.
+- Updates InvalidateAttackTarget for all attacking Aliens.
+- Mixin tweak on egg morphing. 
+- Increases idle timer of Classic Xenos.
