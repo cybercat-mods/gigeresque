@@ -13,8 +13,10 @@ import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.GigStructures;
+import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.util.MobSpawn;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class Gigeresque implements ModInitializer {
 	public static GigeresqueConfig config;
@@ -35,6 +37,7 @@ public class Gigeresque implements ModInitializer {
 		Entities.getInstance().initialize();
 		MobSpawn.addSpawnEntries();
 		GigStructures.registerStructureFeatures();
+		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
 		AzureLib.initialize();
 	}
 }
