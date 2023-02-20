@@ -37,7 +37,7 @@ public class Gigeresque implements ModInitializer {
 		Entities.getInstance().initialize();
 		MobSpawn.addSpawnEntries();
 		GigStructures.registerStructureFeatures();
-		new GigItemGroups();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
+		GigItemGroups.init();;
 	}
 }

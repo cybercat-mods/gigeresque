@@ -9,6 +9,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class GigItemGroups {
 
+	public static void init() {
+	}
+
 	public static final CreativeModeTab GENERAL = FabricItemGroup
 			.builder(Constants.modResource("items"))
 			.icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG))
