@@ -57,17 +57,14 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 0));
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-						if (!testPos.equals(test) && !level.getBlockState(testPos).isAir()) {
-							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-							return;
-						} else {
+						if (level.getBlockState(test).isAir()) {
 							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 							((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
-							target.setPos(Vec3.atBottomCenterOf(test));
+							target.setPos(Vec3.atBottomCenterOf(testPos));
 							target.removeVehicle();
 							entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-							level.setBlockAndUpdate(test, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-							level.setBlockAndUpdate(test.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							level.setBlockAndUpdate(testPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							level.setBlockAndUpdate(testPos.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 						}
 				}
 	}
