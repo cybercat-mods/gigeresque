@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class GigTags {
 
@@ -22,4 +23,8 @@ public class GigTags {
 
 	/* ITEMS */
 	public static final TagKey<Item> BUSTER_FOOD = TagKey.create(Registries.ITEM, Constants.modResource("buster_food"));
+
+	/* DUNGEONS */
+	public static final TagKey<Structure> GIG_EXPLORER_MAPS = TagKey.create(Registries.STRUCTURE,
+			Constants.modResource("gig_explorer_maps"));
 }
