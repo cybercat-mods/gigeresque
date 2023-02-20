@@ -484,10 +484,10 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-		return BrainActivityGroup
-				.fightTasks(
-						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
-								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
+		return BrainActivityGroup.fightTasks(
+				new InvalidateAttackTarget<>().invalidateIf((entity,
+						target) -> ((target instanceof AlienEntity || target instanceof Warden
+								|| target instanceof ArmorStand || target instanceof Bat)
 								|| !this.hasLineOfSight(target)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
@@ -496,7 +496,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 								|| (EntityUtils.isFacehuggerAttached(target))
 								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& !target.isAlive())),
-						new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
+				new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
 	}
 
 	@Override

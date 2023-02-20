@@ -180,7 +180,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
 		return BrainActivityGroup
 				.fightTasks(
-						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
+						new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity
 								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
 								|| !this.hasLineOfSight(target)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()

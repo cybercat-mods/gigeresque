@@ -167,7 +167,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	public BrainActivityGroup<StalkerEntity> getFightTasks() {
 		return BrainActivityGroup
 				.fightTasks(
-						new InvalidateAttackTarget<>().stopIf(target -> ((target instanceof AlienEntity
+						new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity
 								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
 								|| !this.hasLineOfSight(target)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
