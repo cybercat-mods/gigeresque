@@ -1,7 +1,5 @@
-v.0.5.7
+v.0.5.8
 
-- Clean up code.
-- Rewrites Nest Healing on Aliens.
-- Updates InvalidateAttackTarget for all attacking Aliens.
-- Mixin tweak on egg morphing. 
-- Increases idle timer of Classic Xenos.
+- Map to Dungeons will now be tradeable from Level 4 Cartographer Villagers.
+- Adds an air check for the placement code of Eggmorphing (#123)
+- Tweaked InvalidateAttackTarget
