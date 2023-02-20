@@ -1,3 +1,5 @@
-v.0.5.7b
+v.0.5.8
 
-- Updates required AzureLib version to fix crashes when starting up the game with Geckolib 3 mods.
+- Map to Dungeons will now be tradeable from Level 4 Cartographer Villagers.
+- Adds an air check for the placement code of Eggmorphing (#123)
+- Tweaked InvalidateAttackTarget
