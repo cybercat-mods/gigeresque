@@ -1,7 +1,3 @@
-v.0.5.7
+v.0.5.7b
 
-- Clean up code.
-- Rewrites Nest Healing on Aliens.
-- Updates InvalidateAttackTarget for all attacking Aliens.
-- Mixin tweak on egg morphing. 
-- Increases idle timer of Classic Xenos.
+- Updates required AzureLib version to fix crashes when starting up the game with Geckolib 3 mods.
