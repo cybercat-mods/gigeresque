@@ -300,7 +300,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive();
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
 				this.attachToHost(this.getTarget());
-
 		}
 		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
 				&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
