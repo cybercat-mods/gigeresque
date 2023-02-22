@@ -186,7 +186,6 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			var egg = new AlienEggEntity(Entities.EGG, level);
 			egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 			level.addFreshEntity(egg);
-			level.destroyBlock(this.blockPosition(), false);
 			hasEggSpawned = true;
 			hurt(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
 		}
