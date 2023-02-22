@@ -184,6 +184,9 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 		super.tickDeath();
 		if (this.deathTime == 55) {
 			this.explode();
+			this.remove(Entity.RemovalReason.KILLED);
+			super.tickDeath();
+			this.dropExperience();
 		}
 	}
 
