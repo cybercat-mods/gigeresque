@@ -14,8 +14,6 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.DirectPathNavigator;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
@@ -94,8 +92,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	private final WallClimberNavigation landNavigation = new WallClimberNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
-	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
-	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
+//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
+//	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
@@ -222,7 +220,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		this.startRiding(validHost);
 		validHost.setSpeed(0.0f);
 		if (GigeresqueConfig.facehuggerGivesBlindness == true)
-			validHost.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
+			validHost.addEffect(
+					new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
 	}
 
 	@Override
@@ -303,8 +302,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
 				this.attachToHost(this.getTarget());
 		}
-		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
-				&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
+//		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
+//		&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
@@ -391,9 +390,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public void travel(Vec3 movementInput) {
 		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation
-				: this.isCrawling() ? landNavigation : this.isNoGravity() ? roofNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl
-				: this.isNoGravity() ? roofMoveControl : this.isCrawling() ? landMoveControl : landMoveControl;
+				: this.isCrawling() ? landNavigation :
+//					this.isNoGravity() ? roofNavigation : 
+						landNavigation;
+		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ?
+//						roofMoveControl : this.isCrawling() ? 
+				landMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
 		if (isEffectiveAi() && this.isInWater()) {
@@ -418,8 +420,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public PathNavigation createNavigation(Level world) {
-		return this.isInWater() ? swimNavigation
-				: this.isCrawling() ? landNavigation : this.isNoGravity() ? roofNavigation : landNavigation;
+		return this.isInWater() ? swimNavigation : this.isCrawling() ? landNavigation :
+//					this.isNoGravity() ? roofNavigation :
+				landNavigation;
 	}
 
 	@Override
