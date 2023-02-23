@@ -16,6 +16,7 @@ import com.mojang.serialization.Dynamic;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -81,7 +82,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			navigation.setCanFloat(true);
 		}
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
+				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), GigeresqueConfig.xenoMaxSoundRange, this));
 	}
 
 	@Override
