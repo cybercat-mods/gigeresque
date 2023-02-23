@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -34,8 +33,8 @@ public abstract class HostileEntityMixin extends LivingEntity {
 	@Inject(method = { "checkMonsterSpawnRules" }, at = { @At("RETURN") })
 	private static boolean checkMonsterSpawnRules(EntityType<? extends Monster> type, ServerLevelAccessor world,
 			MobSpawnType spawnReason, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
-		return world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
-				&& Monster.checkMobSpawnRules(type, world, spawnReason, pos, random)
-				&& !world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS);
+		if (world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS))
+			return false;
+		return callbackInfo.getReturnValue();
 	}
 }
