@@ -241,8 +241,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
 							&& !(entity instanceof AmbientCreature)
 							&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
-						if (EntityUtils.isPotentialHost(entity))
-							setIsHatching(true);
+						if (!(entity.getVehicle() != null
+								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
+							if (EntityUtils.isPotentialHost(entity))
+								setIsHatching(true);
 				}
 				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator())
 					setIsHatching(true);
