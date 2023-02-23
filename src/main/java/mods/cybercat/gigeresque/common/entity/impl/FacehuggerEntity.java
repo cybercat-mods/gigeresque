@@ -221,6 +221,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		this.grabTarget(validHost);
 		this.startRiding(validHost);
 		validHost.setSpeed(0.0f);
+		if (GigeresqueConfig.facehuggerGivesBlindness == true)
+			validHost.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
 	}
 
 	@Override
