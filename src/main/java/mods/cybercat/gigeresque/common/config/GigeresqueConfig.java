@@ -40,6 +40,9 @@ public class GigeresqueConfig extends MidnightConfig {
 	public static int gooEffectTickTimer = 6000;
 
 	@Entry
+	public static float acidDamage = 2;
+
+	@Entry
 	public static int maxSurgeryKitUses = 4;
 
 	@Entry
