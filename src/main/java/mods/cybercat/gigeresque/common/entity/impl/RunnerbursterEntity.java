@@ -58,7 +58,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	/*
 	 * GROWTH
 	 */
-
 	@Override
 	public float getGrowthMultiplier() {
 		return GigeresqueConfig.runnerbursterGrowthMultiplier;
