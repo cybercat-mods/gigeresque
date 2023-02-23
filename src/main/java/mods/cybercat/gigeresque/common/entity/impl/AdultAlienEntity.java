@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -324,8 +325,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater());
-		return this.horizontalCollision && this.isAggressive() && !this.isInWater();
+		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION));
+		return this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION);
 	}
 
 	@Override
