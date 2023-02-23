@@ -10,6 +10,9 @@ import net.minecraft.world.entity.EntityType;
 public class GigeresqueConfig extends MidnightConfig {
 
 	@Entry
+	public static boolean facehuggerGivesBlindness = false;
+	
+	@Entry
 	public static float alienGrowthMultiplier = 1.0f;
 
 	@Entry
