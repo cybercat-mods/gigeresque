@@ -13,8 +13,8 @@ public class GigAnimationsDefault {
 	public static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
 	public static final RawAnimation IDLE_LAND = RawAnimation.begin().thenLoop("idle_land");
 	public static final RawAnimation IDLE_LAND2 = RawAnimation.begin().thenLoop("idle_land2");
-	public static final RawAnimation STATIS_ENTER = RawAnimation.begin().thenPlayAndHold("statis_enter");
-	public static final RawAnimation STATIS_LEAVE = RawAnimation.begin().thenPlayXTimes("statis_leave", 1);
+	public static final RawAnimation STATIS_ENTER = RawAnimation.begin().thenPlayAndHold("stasis_enter");
+	public static final RawAnimation STATIS_LEAVE = RawAnimation.begin().thenPlayXTimes("stasis_leave", 1);
 
 	/* WATER IDLE */
 	public static final RawAnimation IDLE_WATER = RawAnimation.begin().thenLoop("idle_water");
