@@ -154,5 +154,14 @@
 	"gigeresque.midnightconfig.classicXenoAttackSpeed": "Classic Xeno Attack Movement Speed",
 	"gigeresque.midnightconfig.stalkerAttackSpeed": "Stalker Attack Movement Speed",
 	"gigeresque.midnightconfig.runnerXenoAttackSpeed": "Runner Attack Movement Speed",
+	"gigeresque.midnightconfig.classicXenoTailAttackDamage": "Classic Xeno Tail Extra Damage",
+	"gigeresque.midnightconfig.aquaticXenoTailAttackDamage": "Aquatic Xeno Tail Extra Damage",
+	"gigeresque.midnightconfig.stalkerTailAttackDamage": "Stalker Tail Extra Damage",
+	"gigeresque.midnightconfig.runnerXenoTailAttackDamage": "Runner Tail Extra Damage",
+	"gigeresque.midnightconfig.alieneggHatchRange": "Egg Hatch Range",
+	"gigeresque.midnightconfig.acidDamage": "Acid Damage Per Tick",
+	"gigeresque.midnightconfig.xenoMaxSoundRange": "Xeno Audio Range",
+	"gigeresque.midnightconfig.surgeryKitCooldownTicks": "Surgery Kit Cooldown Ticks",
+	"gigeresque.midnightconfig.facehuggerGivesBlindness": "Facehuggers Give Blindness",
 	"gigeresque.midnightconfig.title": "Gigeresque Options"
 }
