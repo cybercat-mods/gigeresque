@@ -260,6 +260,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						&& host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
 					host.hasParasite();
+					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
+						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
 					if (!level.isClientSide) {
 						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
 								GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
@@ -273,6 +275,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			var vehicle = this.getVehicle();
 			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof Player
 					&& (((Player) vehicle).isCreative() || ((Player) vehicle).isSpectator())) {
+				if (((Player) host).hasEffect(MobEffects.BLINDNESS))
+					((Player) host).removeEffect(MobEffects.BLINDNESS);
 				this.stopRiding();
 				detachFromHost(true);
 				setIsInfertile(true);
