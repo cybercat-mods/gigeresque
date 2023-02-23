@@ -121,6 +121,9 @@ public class GigeresqueConfig extends MidnightConfig {
 	public static double alieneggHealth = 20;
 
 	@Entry
+	public static double alieneggHatchRange = 7;
+
+	@Entry
 	public static double chestbursterHealth = 15;
 
 	@Entry

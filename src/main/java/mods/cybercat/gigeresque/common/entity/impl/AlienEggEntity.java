@@ -233,7 +233,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		var aabb = new AABB(this.blockPosition().above()).inflate(7D, 7D, 7D);
+		var aabb = new AABB(this.blockPosition().above()).inflate(GigeresqueConfig.alieneggHatchRange);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
 			if (!ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
 				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity)
