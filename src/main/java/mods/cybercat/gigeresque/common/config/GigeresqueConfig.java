@@ -46,6 +46,9 @@ public class GigeresqueConfig extends MidnightConfig {
 	public static int maxSurgeryKitUses = 4;
 	
 	@Entry
+	public static int surgeryKitCooldownTicks = 15;
+	
+	@Entry
 	public static int xenoMaxSoundRange = 48;
 
 	@Entry
