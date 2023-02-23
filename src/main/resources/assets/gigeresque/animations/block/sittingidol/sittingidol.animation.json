@@ -2,7 +2,14 @@
 	"format_version": "1.8.0",
 	"animations": {
 		"closed": {
-			"loop": true
+			"loop": true,
+			"bones": {
+				"heldItem": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time * 50) * 150", "math.cos(query.anim_time * 50) * 150", "math.sin(query.anim_time * 50) * 150"]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
