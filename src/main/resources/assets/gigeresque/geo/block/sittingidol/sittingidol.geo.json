@@ -24,7 +24,7 @@
 				{
 					"name": "heldItem",
 					"parent": "chest",
-					"pivot": [0, 36, -25],
+					"pivot": [0, 37, -25],
 					"cubes": [
 						{"origin": [-1, 36, -26], "size": [2, 2, 2], "uv": [0, 0]}
 					]
@@ -136,8 +136,8 @@
 					"pivot": [8, 29, 2],
 					"rotation": [17.5, -12.5, 0],
 					"cubes": [
-						{"origin": [3, 22, -15], "size": [6, 7, 18], "pivot": [8, 29, 2], "rotation": [0, 0, 0], "uv": [74, 50]},
-						{"origin": [5, 21, -3], "size": [5, 9, 10], "pivot": [8, 29, 2], "rotation": [0, 0, 0], "uv": [68, 77]}
+						{"origin": [3, 22, -15], "size": [6, 7, 18], "uv": [74, 50]},
+						{"origin": [5, 21, -3], "size": [5, 9, 10], "uv": [68, 77]}
 					]
 				},
 				{
@@ -174,8 +174,8 @@
 					"pivot": [-8, 29, 2],
 					"rotation": [17.5, 12.5, 0],
 					"cubes": [
-						{"origin": [-9, 22, -15], "size": [6, 7, 18], "pivot": [-8, 29, 2], "rotation": [0, 0, 0], "uv": [74, 50], "mirror": true},
-						{"origin": [-10, 21, -3], "size": [5, 9, 10], "pivot": [-8, 29, 2], "rotation": [0, 0, 0], "uv": [68, 77], "mirror": true}
+						{"origin": [-9, 22, -15], "size": [6, 7, 18], "uv": [74, 50], "mirror": true},
+						{"origin": [-10, 21, -3], "size": [5, 9, 10], "uv": [68, 77], "mirror": true}
 					]
 				},
 				{
