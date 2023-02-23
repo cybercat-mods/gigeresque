@@ -32,7 +32,7 @@ public class SurgeryKitItem extends Item {
 	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity,
 			InteractionHand interactionHand) {
 		tryRemoveParasite(itemStack, livingEntity);
-		player.getCooldowns().addCooldown(this, 15);
+		player.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
 		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
 		return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
 	}
@@ -57,7 +57,7 @@ public class SurgeryKitItem extends Item {
 				host.removeParasite();
 				if (entity instanceof Player) {
 					Player playerentity = (Player) entity;
-					playerentity.getCooldowns().addCooldown(this, 15);
+					playerentity.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
 					stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 				}
 				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
