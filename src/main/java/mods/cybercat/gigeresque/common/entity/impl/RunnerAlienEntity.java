@@ -1,6 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -26,6 +29,8 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -117,6 +122,63 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 			case 3 -> AlienAttackType.TAIL_RIGHT;
 			default -> AlienAttackType.CLAW_LEFT_MOVING;
 			});
+	}
+
+	@Override
+	public boolean doHurtTarget(Entity target) {
+		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
+		case TAIL -> GigeresqueConfig.runnerXenoTailAttackDamage;
+		case EXECUTION -> Float.MAX_VALUE;
+		default -> 0.0f;
+		};
+
+		if (target instanceof LivingEntity && !level.isClientSide)
+			switch (getAttckingState()) {
+			case 1 -> {
+				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
+					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
+				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+			case 2 -> {
+				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
+					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
+				}
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+			case 3 -> {
+				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
+						.collect(Collectors.toList());
+				if (!armorItems.isEmpty())
+					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
+					});
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+			case 4 -> {
+				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false)
+						.collect(Collectors.toList());
+				if (!armorItems.isEmpty())
+					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
+					});
+				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				return super.doHurtTarget(target);
+			}
+//			case 5 -> {
+//				var health = ((LivingEntity) target).getHealth();
+//				var maxhealth = ((LivingEntity) target).getMaxHealth();
+//				if (health >= (maxhealth * 0.10)) {
+//					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
+//					this.grabTarget(target);
+//				}
+//				return super.doHurtTarget(target);
+//			}
+			}
+		return super.doHurtTarget(target);
 	}
 
 	@Override

@@ -261,7 +261,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> 3.0f;
+		case TAIL -> GigeresqueConfig.aquaticXenoTailAttackDamage;
 		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
 		};

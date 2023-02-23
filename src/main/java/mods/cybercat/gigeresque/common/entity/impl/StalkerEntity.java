@@ -220,7 +220,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case HEAVY -> 3.0f;
+		case HEAVY -> GigeresqueConfig.stalkerTailAttackDamage;
 		default -> 0.0f;
 		};
 
