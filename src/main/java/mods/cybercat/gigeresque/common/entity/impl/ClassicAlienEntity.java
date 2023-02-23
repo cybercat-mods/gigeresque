@@ -151,8 +151,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			this.setPose(Pose.STANDING);
 
 		if (this.getTarget() != null) {
-			var list = this.level.getBlockStatesIfLoaded(this.getBoundingBox().inflate(18.0, 18.0, 18.0));
-			if (this.isVehicle() && !list.anyMatch(NEST) && ConfigAccessor.isTargetHostable(this.getTarget())) {
+			if (this.isVehicle()) {
 				var yOffset = this.getEyeY()
 						- ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY())
 								/ 2.0);
