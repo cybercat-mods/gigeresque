@@ -1,16 +1,4 @@
-v.0.5.9
+v.0.5.10
 
-- Fix Poppers not properly removing on death.
-- Tweak Egg placment on finished eggmorphing.
-- Added Config for the extra damage when using a tail attack for Aquatic, Classic, Runner, and Stalker.
-- Added Config for Egg hatch range.
-- Added Config for Acid Damage per tick.
-- Added Config for Max Range of Sounds for aliens. (Not a fix for #119, still trying to figure that out)
-- Added Config for Surgery Kit cooldown in ticks.
-- Added Config for Facehuggers to give blindness when hugging. Disabled by default.
-- Temp disable Facehuggers from roof crawling due #120
-- Fixed Eggs opening for hugged or carried entites.
-- Fixed Classic Xeno playing crawling when it has the Levitation effect.
-- Added a floating animation to Sitting Idol for the item it's holding.
-- Classic Xenomorph will use the Execution now after carrying a mob for at least 40 seconds without putting in a nest.
-- Classic Xenomorph will now properly enter stasis when idle long enough.
+- Fix Config Lang for Mod Menu. (#124)
+- Tweak to animations for Classic Xeno.
