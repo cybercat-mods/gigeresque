@@ -149,28 +149,25 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		else
 			this.setPose(Pose.STANDING);
 
-		if (this.getTarget() != null) {
-			if (this.isVehicle()) {
-				var yOffset = this.getEyeY()
-						- ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY())
-								/ 2.0);
-				var e = this.getFirstPassenger().getX()
-						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				var f = this.getFirstPassenger().getZ()
-						+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				holdingCounter++;
-				if (holdingCounter == 760) {
-					this.getNavigation().stop();
-					this.setIsExecuting(true);
-					this.setAggressive(false);
-				}
-				if (holdingCounter >= 840) {
-					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
-					this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
-							0.0);
-					this.setIsExecuting(false);
-					holdingCounter = 0;
-				}
+		if (this.isVehicle()) {
+			var yOffset = this.getEyeY()
+					- ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY()) / 2.0);
+			var e = this.getFirstPassenger().getX()
+					+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+			var f = this.getFirstPassenger().getZ()
+					+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+			holdingCounter++;
+			if (holdingCounter == 760) {
+				this.getNavigation().stop();
+				this.setIsExecuting(true);
+				this.setAggressive(false);
+			}
+			if (holdingCounter >= 840) {
+				this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+				this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
+						0.0);
+				this.setIsExecuting(false);
+				holdingCounter = 0;
 			}
 		}
 	}
@@ -288,7 +285,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true))
 						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
-				new LookAtTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
 				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
 	}
 
@@ -304,7 +301,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 								|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 						new SetPlayerLookTarget<>().predicate(target -> target.isAlive()
 								&& !(((Player) target).isCreative() || ((Player) target).isSpectator())),
-						new SetRandomLookTarget<>()),
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(
 						entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true))
 						.runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
@@ -378,14 +375,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (getCurrentAttackType() == AlienAttackType.NONE)
-				if (this.isExecuting() == true && this.isVehicle() && this.isStatis() == false)
-					if (this.isVehicle())
-						return event.setAndContinue(GigAnimationsDefault.EXECUTION_CARRY);
-					else
-						return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
+				if (this.isExecuting() == true && !this.isVehicle() && this.isStatis() == false)
+					return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
 			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER
-					: this.isSearching ? GigAnimationsDefault.AMBIENT
-							: this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+					: this.isSearching && this.isVehicle() ? GigAnimationsDefault.AMBIENT
+							: this.isExecuting() == true && this.isVehicle() ? GigAnimationsDefault.EXECUTION_CARRY
+									: this.isInWater() ? GigAnimationsDefault.IDLE_WATER
+											: GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
 				if (this.level.isClientSide) {
@@ -424,8 +420,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				}
 			}
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-//			if (this.swinging && !this.isVehicle())
-//				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle()
 					&& this.isExecuting() == false)
 				return event.setAndContinue(RawAnimation.begin()
