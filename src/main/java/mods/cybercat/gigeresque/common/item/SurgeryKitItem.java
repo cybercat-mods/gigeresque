@@ -51,8 +51,8 @@ public class SurgeryKitItem extends Item {
 				entity.removeEffect(MobEffects.WEAKNESS);
 				entity.removeEffect(MobEffects.DIG_SLOWDOWN);
 				host.setBleeding(false);
-				if (host.getTicksUntilImpregnation() < GigeresqueConfig.getImpregnationTickTimer())
-					spawnParasite(entity);
+				spawnParasite(entity);
+				host.setTicksUntilImpregnation(-1);
 
 				host.removeParasite();
 				if (entity instanceof Player) {
