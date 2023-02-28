@@ -202,7 +202,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 				new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
 								|| entity instanceof ArmorStand || entity instanceof Bat)
-								|| !target.hasLineOfSight(entity)
+								|| !target.hasLineOfSight(entity) ||!(entity instanceof LivingEntity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
