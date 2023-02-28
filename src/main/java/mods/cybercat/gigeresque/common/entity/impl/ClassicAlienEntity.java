@@ -314,7 +314,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new InvalidateAttackTarget<>().invalidateIf((entity,
 						target) -> ((target instanceof AlienEntity || target instanceof Warden
 								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target)
+								|| !this.hasLineOfSight(target) ||!(entity instanceof LivingEntity)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
