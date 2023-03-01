@@ -49,7 +49,7 @@ public class Entities implements GigeresqueInitializer {
 	}
 
 	public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(
-			EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, 1.0f, 2.45f);
+			EntityIdentifiers.ALIEN.getPath(), ClassicAlienEntity::new, 0.9f, 2.45f);
 	public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(
 			EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, 2.0f, 2.0f);
 	public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(
