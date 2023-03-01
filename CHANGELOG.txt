@@ -1,4 +1,12 @@
-v.0.5.10
+v.0.5.11
 
-- Fix Config Lang for Mod Menu. (#124)
-- Tweak to animations for Classic Xeno.
+- Adjust Surgery Kit.
+- Fixes #126 crash.
+- Cartographer Level 5 will now also generate maps.
+- Added living entity check to targeting.
+- Death check on eggs. 
+- Death check on huggers. 
+- Adds a lives_without_oxygen tag for all aliens.
+- Add tweak for y level of lights killing task.
+- Tweak to Classic Xeno to go down 1 block wide paths.
+- Add tweak for y level of Classic Xeno putting entities in a nest to high.
