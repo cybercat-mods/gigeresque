@@ -56,6 +56,7 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
@@ -496,7 +497,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				new InvalidateAttackTarget<>().invalidateIf((entity,
 						target) -> ((target instanceof AlienEntity || target instanceof Warden
 								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target) ||!(entity instanceof LivingEntity)
+								|| !this.hasLineOfSight(target) || !(entity instanceof LivingEntity)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
@@ -572,6 +573,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
+		if (!(var5 instanceof IronGolem))
+			this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
 	}
 }
