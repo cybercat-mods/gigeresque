@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -58,13 +59,19 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
 						if (level.getBlockState(test).isAir()) {
-							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-							((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
-							target.setPos(Vec3.atBottomCenterOf(testPos));
-							target.removeVehicle();
-							entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-							level.setBlockAndUpdate(testPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-							level.setBlockAndUpdate(testPos.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							var yDiff = Mth.abs(entity.getBlockY()
+									- lightSourceLocation.stream().findFirst().get().getFirst().getY());
+							if (yDiff < 2) {
+								BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+								((Eggmorphable) target)
+										.setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
+								target.setPos(Vec3.atBottomCenterOf(testPos));
+								target.removeVehicle();
+								entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+								level.setBlockAndUpdate(testPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+								level.setBlockAndUpdate(testPos.above(),
+										GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							}
 						}
 				}
 	}
