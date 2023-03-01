@@ -10,6 +10,7 @@ import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -33,6 +34,13 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
 		return !entity.isAggressive();
+	}
+	
+	@Override
+	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
+		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
+		return yDiff < 4;
 	}
 
 	@Override
