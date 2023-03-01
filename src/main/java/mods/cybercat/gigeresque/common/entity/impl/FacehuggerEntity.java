@@ -302,7 +302,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
 					|| (EntityUtils.isFacehuggerAttached(target))
 					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-					&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive();
+					&& ConfigAccessor.isTargetHostable(target) && target.isAlive();
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
 				this.attachToHost(this.getTarget());
 		}
@@ -466,7 +466,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						|| ((Host) target).hasParasite() || target.getMobType() == MobType.UNDEAD
 						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && target.isAlive()
+						&& ConfigAccessor.isTargetHostable(target) && target.isAlive()
 						&& entity.hasLineOfSight(target)),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
 				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
@@ -501,6 +501,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
 								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+								|| !ConfigAccessor.isTargetHostable(target)
 								|| (EntityUtils.isFacehuggerAttached(target))
 								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& !target.isAlive())),
