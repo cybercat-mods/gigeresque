@@ -304,7 +304,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					|| (EntityUtils.isFacehuggerAttached(target))
 					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 					&& ConfigAccessor.isTargetHostable(target) && target.isAlive();
-			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist)
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist && !this.isDeadOrDying())
 				this.attachToHost(this.getTarget());
 		}
 //		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
