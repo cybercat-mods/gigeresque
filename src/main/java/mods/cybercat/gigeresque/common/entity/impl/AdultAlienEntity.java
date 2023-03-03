@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -261,11 +262,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
-			if (getStatisTimer() == 500 || this.isStatis() == true)
+			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120000, 10, false, false, false));
+			}
 		} else {
 			setStatisTimer(0);
 			statisCounter = 0;
+			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			setIsStatis(false);
 		}
 
