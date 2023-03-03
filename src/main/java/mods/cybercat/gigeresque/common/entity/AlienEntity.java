@@ -16,6 +16,7 @@ import com.mojang.serialization.Dynamic;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
@@ -34,10 +35,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Marker;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ambient.Bat;
@@ -347,6 +350,12 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (livingEntity.getType() == EntityType.WARDEN)
 			return false;
 		if (livingEntity instanceof Bat)
+			return false;
+		if (entity instanceof Marker)
+			return false;
+		if (entity instanceof AreaEffectCloud)
+			return false;
+		if (ConfigAccessor.isTargetBlacklisted(this, entity))
 			return false;
 		if (EntityUtils.isFacehuggerAttached(livingEntity))
 			return false;
