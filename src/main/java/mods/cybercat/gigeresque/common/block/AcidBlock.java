@@ -167,7 +167,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 			var blockToEat = pos.below();
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-				if (canGrief && !world.getBlockState(blockToEat).is(GigTags.ACID_RESISTANT)) {
+				if (canGrief == true && !world.getBlockState(blockToEat).is(GigTags.ACID_RESISTANT)) {
 					world.setBlockAndUpdate(blockToEat, Blocks.AIR.defaultBlockState());
 					world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH,
 							SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,
