@@ -18,6 +18,7 @@ import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -260,7 +261,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		}
 
 		if (!this.level.isClientSide) {
-			if (source != DamageSource.OUT_OF_WORLD) {
+			if (source != DamageSource.OUT_OF_WORLD || source != GigDamageSources.ACID) {
 				if (getAcidDiameter() == 1)
 					generateAcidPool(0, 0);
 				else {

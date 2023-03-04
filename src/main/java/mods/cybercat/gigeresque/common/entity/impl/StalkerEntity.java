@@ -204,9 +204,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
 			Entity var6, float var7) {
-		if (this.isAggressive())
-			return;
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
+		this.setAggressive(true);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.9F, 0));
 	}
 
@@ -222,12 +221,14 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			default -> AlienAttackType.NORMAL;
 			});
 
-		if (!this.isDeadOrDying() && this.isAggressive()
-				&& this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
+			this.level.removeBlock(this.blockPosition(), false);
+
+		if (!this.isDeadOrDying() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition(),
-						blockPosition().relative(getMotionDirection()).above(2))) {
+				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
+						blockPosition().relative(getDirection()).above(2))) {
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS)) {
 						if (!level.isClientSide)
 							this.level.removeBlock(testPos, false);
@@ -248,7 +249,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 									0.9f + random.nextFloat() * 0.15f, false);
 						}
 					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
-							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+							&& this.blockPosition() != testPos && !level.getBlockState(testPos).isAir()
+							&& (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(GigDamageSources.ACID, 5);
