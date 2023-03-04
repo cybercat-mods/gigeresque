@@ -144,7 +144,7 @@ if (file('key.properties').exists()) {
             	optionalDependency 'modmenu'
             	optionalDependency 'dripsounds-fabric'
             	optionalDependency 'sound-physics-remastered'
-            	optionalDependency 'aeronautics'
+            	optionalDependency 'ad-astra'
         	}
         	mainArtifact(remapJar)
 
