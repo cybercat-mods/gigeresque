@@ -202,7 +202,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 				new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
 								|| entity instanceof ArmorStand || entity instanceof Bat)
-								|| !target.hasLineOfSight(entity) ||!(entity instanceof LivingEntity)
+								|| !target.hasLineOfSight(entity) || !(entity instanceof LivingEntity)
 								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
@@ -240,20 +240,20 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity,
-						target) -> ((target instanceof AlienEntity || target instanceof Warden
-								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target)
-								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(target))
-								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& !target.isAlive())),
-				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
-				new AnimatableMeleeAttack(10));
+		return BrainActivityGroup
+				.fightTasks(
+						new InvalidateAttackTarget<>().invalidateIf((entity,
+								target) -> ((target instanceof AlienEntity || target instanceof Warden
+										|| target instanceof ArmorStand || target instanceof Bat)
+										|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
+												.anyMatch(AlienEntity.class::isInstance))
+										|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+										|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+										|| (EntityUtils.isFacehuggerAttached(target))
+										|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+												&& !target.isAlive())),
+						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
+						new AnimatableMeleeAttack(10));
 	}
 
 	@Override
@@ -270,7 +270,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
-					&& this.isStatis() == false && !this.swinging) {
+					&& this.isStatis() == false && !this.swinging)
 				if (!this.isInWater() && this.isExecuting() == false)
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -282,11 +282,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 						else
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
-			} else if (getCurrentAttackType() == AlienAttackType.NONE)
-				if (this.isStatis() == true || this.isNoAi() && !isDead)
-					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-			return event.setAndContinue(
-					this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER
+					: this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level.isClientSide)

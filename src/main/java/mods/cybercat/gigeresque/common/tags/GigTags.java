@@ -20,9 +20,12 @@ public class GigTags {
 			Constants.modResource("dungeon_blocks"));
 	public static final TagKey<Block> DUNGEON_STAIRS = TagKey.create(Registry.BLOCK_REGISTRY,
 			Constants.modResource("dungeon_stairs"));
+	public static final TagKey<Block> WEAK_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY,
+			Constants.modResource("weak_block"));
 
 	/* ITEMS */
-	public static final TagKey<Item> BUSTER_FOOD = TagKey.create(Registry.ITEM_REGISTRY, Constants.modResource("buster_food"));
+	public static final TagKey<Item> BUSTER_FOOD = TagKey.create(Registry.ITEM_REGISTRY,
+			Constants.modResource("buster_food"));
 
 	/* DUNGEONS */
 	public static final TagKey<Structure> GIG_EXPLORER_MAPS = TagKey.create(Registry.STRUCTURE_REGISTRY,
