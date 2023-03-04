@@ -72,6 +72,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class,
 			EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class,
+			EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
 			.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	protected final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
@@ -89,6 +91,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected int attackProgress = 0;
 	public int holdingCounter = 0;
 	public int breakingCounter = 0;
+	public int biteCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
@@ -121,6 +124,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	public void setIsExecuting(boolean isExecuting) {
 		entityData.set(IS_EXECUTION, isExecuting);
+	}
+
+	public boolean isBiting() {
+		return entityData.get(IS_HEADBITE);
+	}
+
+	public void setIsBiting(boolean isBiting) {
+		entityData.set(IS_HEADBITE, isBiting);
 	}
 
 	public boolean isBreaking() {
@@ -200,6 +211,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(IS_CLIMBING, false);
 		entityData.define(IS_BREAKING, false);
 		entityData.define(IS_EXECUTION, false);
+		entityData.define(IS_HEADBITE, false);
 		entityData.define(IS_STATIS, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 		// this.entityData.define(CLIENT_ANGER_LEVEL, 0);
@@ -214,6 +226,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		nbt.putBoolean("isCrawling", isCrawling());
 		nbt.putBoolean("isBreaking", isBreaking());
 		nbt.putBoolean("isExecuting", isExecuting());
+		nbt.putBoolean("isHeadBite", isBiting());
 		nbt.putBoolean("isStatis", isStatis());
 	}
 
@@ -232,6 +245,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			setIsBreaking(nbt.getBoolean("isBreaking"));
 		if (nbt.contains("isExecuting"))
 			setIsExecuting(nbt.getBoolean("isExecuting"));
+		if (nbt.contains("isHeadBite"))
+			setIsExecuting(nbt.getBoolean("isHeadBite"));
 		if (nbt.contains("isStatis"))
 			setIsStatis(nbt.getBoolean("isStatis"));
 	}

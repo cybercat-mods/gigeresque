@@ -84,12 +84,13 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 			return;
 
 		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
-		var list2 = target.level.getBlockStatesIfLoaded(target.getBoundingBox().inflate(2.0, 2.0, 2.0));
 		var random = new SplittableRandom();
 		var randomPhase = random.nextInt(0, 100);
-		if ((list.anyMatch(NEST) && randomPhase >= 50) && !list2.anyMatch(NEST)
-				&& ConfigAccessor.isTargetHostable(target)) {
+		if ((list.anyMatch(NEST) && randomPhase >= 50) && ConfigAccessor.isTargetHostable(target)) {
 			entity.grabTarget(target);
+		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.10)) && randomPhase >= 80) {
+			entity.grabTarget(target);
+			entity.setIsBiting(true);
 		} else {
 			if (!entity.isVehicle()) {
 				entity.doHurtTarget(target);
