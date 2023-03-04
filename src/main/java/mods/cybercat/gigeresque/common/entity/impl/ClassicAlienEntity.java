@@ -232,6 +232,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 //				return super.doHurtTarget(target);
 //			}
 			}
+		this.heal(1.0833f);
 		return super.doHurtTarget(target);
 	}
 

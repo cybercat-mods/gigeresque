@@ -178,6 +178,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 //				return super.doHurtTarget(target);
 //			}
 			}
+		this.heal(1.0833f);
 		return super.doHurtTarget(target);
 	}
 

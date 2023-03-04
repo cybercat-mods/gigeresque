@@ -282,6 +282,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 				return super.doHurtTarget(target);
 			}
 			}
+		this.heal(1.0833f);
 		return super.doHurtTarget(target);
 
 	}
