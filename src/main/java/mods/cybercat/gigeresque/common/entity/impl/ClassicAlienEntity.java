@@ -164,6 +164,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			}
 			if (holdingCounter >= 840) {
 				this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+				this.heal(50);
 				if (this.level.isClientSide)
 					this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
 							0.0);
