@@ -1,5 +1,6 @@
-package mods.cybercat.gigeresque.common.block;
+package mods.cybercat.gigeresque.common.block.storage;
 
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -19,11 +20,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class InvisAlienChest2Block extends Block {
+public class SittingIdolInvisBlock extends Block {
 
 	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
-	public InvisAlienChest2Block() {
+	public SittingIdolInvisBlock() {
 		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.GLOW_LICHEN).strength(5.0f, 8.0f)
 				.nonOpaque().noLootTable());
 	}
