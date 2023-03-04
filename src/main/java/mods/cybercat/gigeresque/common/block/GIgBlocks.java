@@ -4,7 +4,9 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusInvisBlock;
 import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
+import mods.cybercat.gigeresque.common.block.storage.SittingIdolInvisBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
@@ -48,8 +50,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 	public static final AcidBlock ACID_BLOCK = new AcidBlock(
 			FabricBlockSettings.of(Materials.ACID).nonOpaque().noLootTable());
 
-	public static final InvisAlienChestBlock ALIEN_STORAGE_BLOCK_INVIS = new InvisAlienChestBlock();
-	public static final InvisAlienChest2Block ALIEN_STORAGE_BLOCK_INVIS2 = new InvisAlienChest2Block();
+	public static final AlienSarcophagusInvisBlock ALIEN_STORAGE_BLOCK_INVIS = new AlienSarcophagusInvisBlock();
+	public static final SittingIdolInvisBlock ALIEN_STORAGE_BLOCK_INVIS2 = new SittingIdolInvisBlock();
 
 	public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock();
 	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
