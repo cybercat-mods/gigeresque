@@ -1,13 +1,5 @@
-v.0.5.12
+v.0.5.13
 
-- Tweak Acid Block game rule check.
-- Aliens no longer track Markers or AreaEffectClouds with sounds.
-- Xenos that go into stasis will no gain slow movement effect, which removes itself when it leaves statis. This will fix it looking around when in stasis.
-- Large Aliens will now break "weak"* blocks when trying to pathfind to it's target. Thanks to FerretShift#6773 for their help to get this working nicely! 
-- Large Aliens will now make itself bleed on non-weak blocks that aren't acid resistant blocks** to make them break down over time to make itself an opening in order to get it's pr
-- Large Aliens now heal slightly when damaging other mobs
-- Classic Xenos will now heal half health whenever they head bite.
-- Classic Xenos will now have a small chance of head biting low health targets.
-
-*Weak blocks are configured via the block tag weak_block.json
-** Acid resistant blocks are configured via the block tag acid_resistant.json
+- Aliens no longer drop acid on their feet.
+- Aliens will always try to break out of an area if above half health.
+- Aliens now gain aggression when tracking sounds.
