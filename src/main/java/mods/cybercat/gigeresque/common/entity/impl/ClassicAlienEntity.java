@@ -314,7 +314,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				new InvalidateAttackTarget<>().invalidateIf((entity,
 						target) -> ((target instanceof AlienEntity || target instanceof Warden
 								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target) ||!(entity instanceof LivingEntity)
+								|| !(entity instanceof LivingEntity)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
@@ -379,7 +379,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (this.isExecuting() == true && !this.isVehicle() && this.isStatis() == false)
 					return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
 			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER
-					: this.isSearching && this.isVehicle() ? GigAnimationsDefault.AMBIENT
+					: this.isSearching == true && !this.isVehicle() && !this.isAggressive()
+							? GigAnimationsDefault.AMBIENT
 							: this.isExecuting() == true && this.isVehicle() ? GigAnimationsDefault.EXECUTION_CARRY
 									: this.isInWater() ? GigAnimationsDefault.IDLE_WATER
 											: GigAnimationsDefault.IDLE_LAND);

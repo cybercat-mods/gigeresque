@@ -240,11 +240,11 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
-		return BrainActivityGroup
-				.fightTasks(
-						new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity
-								|| target instanceof Warden || target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target) ||!(entity instanceof LivingEntity)
+		return BrainActivityGroup.fightTasks(
+				new InvalidateAttackTarget<>().invalidateIf((entity,
+						target) -> ((target instanceof AlienEntity || target instanceof Warden
+								|| target instanceof ArmorStand || target instanceof Bat)
+								|| !(entity instanceof LivingEntity)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
@@ -252,8 +252,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 								|| (EntityUtils.isFacehuggerAttached(target))
 								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& !target.isAlive())),
-						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
-						new AnimatableMeleeAttack(10));
+				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.runnerXenoAttackSpeed),
+				new AnimatableMeleeAttack(10));
 	}
 
 	@Override
@@ -270,7 +270,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
-					&& this.isStatis() == false && !this.swinging) {
+					&& this.isStatis() == false && !this.swinging)
 				if (!this.isInWater() && this.isExecuting() == false)
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -282,11 +282,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 						else
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
-			} else if (getCurrentAttackType() == AlienAttackType.NONE)
-				if (this.isStatis() == true || this.isNoAi() && !isDead)
-					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-			return event.setAndContinue(
-					this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER
+					: this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level.isClientSide)

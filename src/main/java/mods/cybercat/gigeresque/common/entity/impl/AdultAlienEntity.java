@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -14,6 +15,8 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +27,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,6 +46,7 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -82,6 +88,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected long searchingCooldown = 0L;
 	protected int attackProgress = 0;
 	public int holdingCounter = 0;
+	public int breakingCounter = 0;
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
@@ -264,7 +271,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
-				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120000, 10, false, false, false));
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120000, 100, false, false, false));
 			}
 		} else {
 			setStatisTimer(0);
@@ -272,6 +279,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			setIsStatis(false);
 		}
+
+		if (this.isAggressive() && this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN))
+			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 
 		// Hissing Logic
 		if (!level.isClientSide
@@ -307,6 +317,43 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 				}
 			}
 		}
+
+		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive()
+				&& this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+			breakingCounter++;
+			if (breakingCounter > 10)
+				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition(),
+						blockPosition().relative(getMotionDirection()).above(2))) {
+					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS)) {
+						if (!level.isClientSide)
+							this.level.removeBlock(testPos, false);
+						this.swing(swingingArm);
+						breakingCounter = 0;
+						if (level.isClientSide()) {
+							for (int i = 2; i < 10; i++) {
+								level.addAlwaysVisibleParticle(Particles.ACID,
+										this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
+												* (this.getRandom().nextBoolean() ? -1 : 1),
+										this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
+										this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
+												* (this.getRandom().nextBoolean() ? -1 : 1),
+										0.0, -0.15, 0.0);
+							}
+							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
+									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
+									0.9f + random.nextFloat() * 0.15f, false);
+						}
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
+							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+						if (!level.isClientSide)
+							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
+						this.hurt(GigDamageSources.ACID, 5);
+						breakingCounter = -90;
+					}
+				}
+			if (breakingCounter >= 25)
+				breakingCounter = 0;
+		}
 	}
 
 	@Override
@@ -321,16 +368,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	@Override
-	public boolean wasKilled(ServerLevel world, LivingEntity other) {
-		if (!level.isClientSide)
-			this.heal(1.0833f);
-		return super.wasKilled(world, other);
-	}
-
-	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION));
-		return this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION);
+//		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION));
+//		return this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION);
+		return false;
 	}
 
 	@Override
@@ -393,6 +434,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity,
 			Entity var6, float var7) {
+		if (this.isAggressive())
+			return;
 		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
 	}

@@ -40,7 +40,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
-		return yDiff < 4;
+		return yDiff < 4 && !entity.isAggressive();
 	}
 
 	@Override
