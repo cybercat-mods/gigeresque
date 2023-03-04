@@ -233,11 +233,11 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
 						blockPosition().relative(getDirection()).above(2))) {
-					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS)) {
+					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
 							this.level.removeBlock(testPos, false);
 						this.swing(swingingArm);
-						breakingCounter = 0;
+						breakingCounter = -90;
 						if (level.isClientSide()) {
 							for (int i = 2; i < 10; i++) {
 								level.addAlwaysVisibleParticle(Particles.ACID,
@@ -252,8 +252,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
 									0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
-							&& this.blockPosition() != testPos && !level.getBlockState(testPos).isAir()
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir()
 							&& (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
