@@ -156,20 +156,37 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
 			var f = this.getFirstPassenger().getZ()
 					+ ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-			holdingCounter++;
-			if (holdingCounter == 760) {
-				this.getNavigation().stop();
-				this.setIsExecuting(true);
-				this.setAggressive(false);
-			}
-			if (holdingCounter >= 840) {
-				this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
-				this.heal(50);
-				if (this.level.isClientSide)
-					this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15,
-							0.0);
-				this.setIsExecuting(false);
-				holdingCounter = 0;
+			if (this.isBiting()) {
+				biteCounter++;
+				if (biteCounter == 5) {
+					this.getNavigation().stop();
+					this.setAggressive(false);
+				}
+				if (biteCounter >= 85) {
+					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					this.heal(50);
+					if (this.level.isClientSide)
+						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
+								-0.15, 0.0);
+					this.setIsBiting(false);
+					biteCounter = 0;
+				}
+			} else {
+				holdingCounter++;
+				if (holdingCounter == 760) {
+					this.getNavigation().stop();
+					this.setIsExecuting(true);
+					this.setAggressive(false);
+				}
+				if (holdingCounter >= 840) {
+					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					this.heal(50);
+					if (this.level.isClientSide)
+						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
+								-0.15, 0.0);
+					this.setIsExecuting(false);
+					holdingCounter = 0;
+				}
 			}
 		}
 	}
