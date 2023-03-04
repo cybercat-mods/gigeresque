@@ -304,6 +304,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			}
 			}
 
+		this.heal(1.0833f);
 		target.hurt(DamageSource.mobAttack(this), additionalDamage);
 
 		return super.doHurtTarget(target);
