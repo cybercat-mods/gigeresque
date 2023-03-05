@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 
@@ -36,6 +37,7 @@ public class BuildNestTask<E extends AdultAlienEntity> extends DelayedBehaviour<
 	protected boolean checkExtraStartConditions(ServerLevel level, E alien) {
 		return !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth()
 				&& !alien.level.canSeeSky(alien.blockPosition())
+				&& !alien.level.getBlockState(alien.blockPosition()).is(Blocks.SOUL_SAND)
 				&& alien.level.getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5;
 	}
 
