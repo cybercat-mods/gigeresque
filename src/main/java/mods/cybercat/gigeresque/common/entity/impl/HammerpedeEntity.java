@@ -108,6 +108,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override

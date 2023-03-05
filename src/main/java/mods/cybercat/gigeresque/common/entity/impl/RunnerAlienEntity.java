@@ -195,6 +195,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override

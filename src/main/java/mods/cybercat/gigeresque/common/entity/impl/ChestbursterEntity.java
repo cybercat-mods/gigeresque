@@ -194,6 +194,7 @@ public class ChestbursterEntity extends AlienEntity
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override

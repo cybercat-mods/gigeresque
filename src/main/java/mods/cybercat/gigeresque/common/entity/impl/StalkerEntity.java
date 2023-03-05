@@ -129,6 +129,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override
