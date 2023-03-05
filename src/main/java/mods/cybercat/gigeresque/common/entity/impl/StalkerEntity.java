@@ -225,7 +225,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.level.removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isDeadOrDying() && !this.isInWater()
+				&& this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
@@ -249,8 +250,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
 									0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir()
-							&& (getHealth() >= (getMaxHealth() * 0.50))) {
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
+							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(GigDamageSources.ACID, 5);
