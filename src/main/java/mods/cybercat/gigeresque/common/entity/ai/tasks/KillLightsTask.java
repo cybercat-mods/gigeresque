@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.level.GameRules;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
@@ -40,7 +41,8 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
-		return yDiff < 4 && !entity.isAggressive();
+		var canGrief = entity.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+		return yDiff < 4 && !entity.isAggressive() && canGrief;
 	}
 
 	@Override
