@@ -38,7 +38,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -274,12 +273,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
-		var serverLevel = (ServerLevel) this.level;
 		super.customServerAiStep();
-		if (this.tickCount % 20 == 0) {
-			this.angerManagement.tick(serverLevel, this::canTargetEntity);
-			this.syncClientAngerLevel();
-		}
 	}
 
 	@Override

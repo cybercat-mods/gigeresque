@@ -166,6 +166,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override

@@ -107,6 +107,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
+		super.customServerAiStep();
 	}
 
 	@Override
