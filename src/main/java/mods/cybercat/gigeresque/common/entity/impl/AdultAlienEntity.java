@@ -347,7 +347,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
 							this.level.removeBlock(testPos, false);
-						this.swing(swingingArm);
+						if (this.swingingArm != null)
+							this.swing(swingingArm);
 						breakingCounter = -90;
 						if (level.isClientSide()) {
 							for (int i = 2; i < 10; i++) {
