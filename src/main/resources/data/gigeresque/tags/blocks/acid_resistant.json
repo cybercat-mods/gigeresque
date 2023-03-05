@@ -70,6 +70,9 @@
 		"minecraft:obsidian",
 		"minecraft:nether_portal",
 		"minecraft:netherite_block",
+		"minecraft:barrier",
+		"minecraft:water",
+		"minecarft:lava",
 		"minecraft:respawn_anchor"
 	]
 }
