@@ -22,7 +22,7 @@ public class NestResinWebFullBlock extends Block {
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
 		if (!(entity instanceof AlienEntity)
-				&& !(entity instanceof Player && (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
+				|| !(entity instanceof Player && (((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 				&& entity instanceof LivingEntity && ConfigAccessor.isTargetHostable(entity) && !((Host)entity).hasParasite()) {
 			entity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
 			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
