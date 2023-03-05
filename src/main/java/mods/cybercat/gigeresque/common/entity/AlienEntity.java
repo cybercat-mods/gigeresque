@@ -76,7 +76,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
-	private AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
+	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 
 	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
@@ -165,7 +165,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		return this.entityData.get(CLIENT_ANGER_LEVEL);
 	}
 
-	private void syncClientAngerLevel() {
+	protected void syncClientAngerLevel() {
 		this.entityData.set(CLIENT_ANGER_LEVEL, this.getActiveAnger());
 	}
 

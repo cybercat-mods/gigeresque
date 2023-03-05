@@ -428,7 +428,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	/*
 	 * SOUNDS
 	 */
-
 	@Override
 	public SoundEvent getHurtSound(DamageSource source) {
 		return GigSounds.ALIEN_HURT;
