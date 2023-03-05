@@ -286,12 +286,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
-				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120000, 100, false, false, false));
+	            this.xxa = 0.0f;
+	            this.zza = 0.0f;
+	            this.yHeadRot = 0.0f;
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, true));
 			}
 		} else {
 			setStatisTimer(0);
 			statisCounter = 0;
-			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			setIsStatis(false);
 		}
 
