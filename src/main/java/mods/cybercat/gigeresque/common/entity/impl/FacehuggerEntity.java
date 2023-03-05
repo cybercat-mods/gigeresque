@@ -276,8 +276,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			var vehicle = this.getVehicle();
 			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof Player
 					&& (((Player) vehicle).isCreative() || ((Player) vehicle).isSpectator())) {
-				if (((Player) host).hasEffect(MobEffects.BLINDNESS))
-					((Player) host).removeEffect(MobEffects.BLINDNESS);
+				if (((Player) vehicle).hasEffect(MobEffects.BLINDNESS))
+					((Player) vehicle).removeEffect(MobEffects.BLINDNESS);
 				this.stopRiding();
 				detachFromHost(true);
 				setIsInfertile(true);
