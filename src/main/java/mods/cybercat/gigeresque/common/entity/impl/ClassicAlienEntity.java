@@ -127,7 +127,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			attackProgress = 10;
 
 		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			if (this.isCrawling() || this.isInWater())
+			if (this.isCrawling() || this.wasEyeInWater)
 				setCurrentAttackType(switch (random.nextInt(5)) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
 				case 1 -> AlienAttackType.CLAW_RIGHT;
@@ -375,7 +375,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead
 					&& this.isStatis() == false) {
-				if (this.isOnGround() && !this.isInWater() && this.isExecuting() == false) {
+				if (this.isOnGround() && !this.wasEyeInWater && this.isExecuting() == false) {
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (!this.isCrawling())
@@ -383,7 +383,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 							return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
 						else
 							return event.setAndContinue(GigAnimationsDefault.WALK);
-				} else if (this.isInWater() && this.isExecuting() == false && !this.isVehicle())
+				} else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
 					if (this.isAggressive() && !this.isVehicle())
 						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 					else
@@ -402,7 +402,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					: this.isSearching == true && !this.isVehicle() && !this.isAggressive()
 							? GigAnimationsDefault.AMBIENT
 							: this.isExecuting() == true && this.isVehicle() ? GigAnimationsDefault.EXECUTION_CARRY
-									: this.isInWater() ? GigAnimationsDefault.IDLE_WATER
+									: this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER
 											: GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
