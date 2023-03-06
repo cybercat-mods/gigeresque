@@ -53,12 +53,13 @@ public class DNAStatusEffect extends MobEffect {
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
 		var randomPhase = entity.getRandom().nextInt(0, 50);
+		var randomPhase2 = entity.getRandom().nextInt(0, 2);
 		Entity summon;
 		if (!(entity instanceof AlienEntity))
 			if (randomPhase > 25) {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					if (ConfigAccessor.isTargetSmallMutantHost(entity)) {
-						if (randomPhase >= 25)
+						if (randomPhase2 == 1)
 							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
 						else
 							summon = new PopperEntity(Entities.MUTANT_POPPER, entity.level);
@@ -77,7 +78,7 @@ public class DNAStatusEffect extends MobEffect {
 					return;
 				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
 					if (ConfigAccessor.isTargetSmallMutantHost(entity)) {
-						if (randomPhase > 25)
+						if (randomPhase2 == 1)
 							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
 						else
 							summon = new PopperEntity(Entities.MUTANT_POPPER, entity.level);
