@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import java.util.List;
-import java.util.SplittableRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -84,11 +83,10 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends De
 			return;
 
 		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
-		var random = new SplittableRandom();
-		var randomPhase = random.nextInt(0, 100);
+		var randomPhase = entity.getRandom().nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && ConfigAccessor.isTargetHostable(target)) {
 			entity.grabTarget(target);
-		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.10)) && randomPhase >= 80) {
+		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80) {
 			entity.grabTarget(target);
 			entity.setIsBiting(true);
 		} else {
