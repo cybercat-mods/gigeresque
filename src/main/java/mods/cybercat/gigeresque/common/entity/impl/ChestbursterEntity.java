@@ -77,7 +77,8 @@ public class ChestbursterEntity extends AlienEntity
 			EntityDataSerializers.BOOLEAN);
 	public static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = item -> {
 		ItemStack itemStack = item.getItem();
-		return itemStack.is(GigTags.BUSTER_FOOD) && item.isAlive() && !item.hasPickUpDelay();
+		return (itemStack.is(GigTags.BUSTER_FOOD) || itemStack.getItem().isEdible()) && item.isAlive()
+				&& !item.hasPickUpDelay();
 	};
 	public int bloodRendering = 0;
 	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
