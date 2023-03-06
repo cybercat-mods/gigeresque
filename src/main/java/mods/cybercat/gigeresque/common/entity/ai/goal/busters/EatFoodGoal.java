@@ -41,7 +41,7 @@ public class EatFoodGoal extends Goal {
 			if (this.cooldown == 1)
 				this.chestburster.setEatingStatus(true);
 			if (this.cooldown == 15) {
-				list.get(0).getItem().shrink(amountToEat);
+				list.get(0).getItem().finishUsingItem(chestburster.level, chestburster);
 				chestburster.playSound(chestburster.getEatingSound(list.get(0).getItem()), 1.0f, 1.0f);
 
 				chestburster.grow(chestburster, amountToEat * 1200 * 2.0f);
