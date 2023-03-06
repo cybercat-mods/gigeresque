@@ -50,6 +50,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -148,7 +149,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
 				new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
 				new UnreachableTargetSensor<>(), new HurtBySensor<>());
@@ -254,8 +255,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
 									0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir()
-							&& (getHealth() >= (getMaxHealth() * 0.50))) {
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
+							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(GigDamageSources.ACID, 5);

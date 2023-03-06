@@ -42,6 +42,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -214,7 +215,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7),
 				new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
 				new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());

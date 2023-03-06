@@ -49,6 +49,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -211,7 +212,7 @@ public class ChestbursterEntity extends AlienEntity
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7),
 				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 
