@@ -61,6 +61,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
@@ -304,7 +305,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					|| (EntityUtils.isFacehuggerAttached(target))
 					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 					&& ConfigAccessor.isTargetHostable(target) && target.isAlive();
-			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist && !this.isDeadOrDying())
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist
+					&& !this.isDeadOrDying())
 				this.attachToHost(this.getTarget());
 		}
 //		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
@@ -472,7 +474,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 						&& entity.hasLineOfSight(target)),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
 				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 

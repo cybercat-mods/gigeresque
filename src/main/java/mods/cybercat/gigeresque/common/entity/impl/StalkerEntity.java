@@ -50,6 +50,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -148,7 +149,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
 				new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
 						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
 				new UnreachableTargetSensor<>(), new HurtBySensor<>());

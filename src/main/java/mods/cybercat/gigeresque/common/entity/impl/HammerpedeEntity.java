@@ -36,6 +36,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -125,8 +126,9 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 								|| (EntityUtils.isFacehuggerAttached(entity))
 								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
 										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>()
-						.setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
+				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7),
+				new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15)
+						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new HurtBySensor<>());
 	}
 
@@ -153,7 +155,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 				new InvalidateAttackTarget<>().invalidateIf((entity,
 						target) -> ((target instanceof AlienEntity || target instanceof Warden
 								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !this.hasLineOfSight(target) ||!(entity instanceof LivingEntity)
+								|| !this.hasLineOfSight(target) || !(entity instanceof LivingEntity)
 								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
 										.anyMatch(AlienEntity.class::isInstance))
 								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
