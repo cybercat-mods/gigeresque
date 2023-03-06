@@ -1,16 +1,3 @@
-v.0.5.14
+v.0.5.15
 
-- Fixes #133 crash.
-- Should fully fix #119
-- Fixes #132 of xenos getting stuck in nest.
-- Tweaks acid placement, which fixes #138
-- Fixes #134 of Aliens building nests on soul sand regardless of light/sky check. Soul Sand is blacklisted for nest building.
-- Fixes #135/#138 of xenos placing in water.
-- Fixes Horses knocking off huggers.
-- Makes the Light Killing goal respect Mob Grief gamerule.
-- Fixes #136 by locking head movenment of xenos when in stasis, will always face 0,0.
-- Fixes #139 crash.
-- DNA effect tweaked for spawning hammerpedes or popper.
-- Added lava to Alien Replenlents.
-- Added Aliens to Ad Adtra acid rain resistant tag.
-- Tweak swimming animations for attacking and water.
+- Fixes #140 crash.
