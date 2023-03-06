@@ -31,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -347,8 +348,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
 							this.level.removeBlock(testPos, false);
-						if (this.swingingArm != null)
-							this.swing(swingingArm);
+						this.swing(InteractionHand.MAIN_HAND);
 						breakingCounter = -90;
 						if (level.isClientSide()) {
 							for (int i = 2; i < 10; i++) {
