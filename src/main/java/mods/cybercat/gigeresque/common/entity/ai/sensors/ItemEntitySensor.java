@@ -6,7 +6,6 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -22,10 +21,10 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(GigMemoryTypes.FOOD_ITEMS.get());
 
 	public ItemEntitySensor() {
-		setScanRate(entity -> 3);
+		setScanRate(entity -> 15);
 		setPredicate((item, entity) -> {
 			ItemStack itemStack = item.getItem();
-			return itemStack.is(GigTags.BUSTER_FOOD) && item.isAlive() && !item.hasPickUpDelay();
+			return itemStack.getItem().isEdible() && item.isAlive() && !item.hasPickUpDelay();
 		});
 	}
 

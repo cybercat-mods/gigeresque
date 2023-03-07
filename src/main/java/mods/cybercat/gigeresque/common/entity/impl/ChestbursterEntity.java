@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.animatable.GeoEntity;
@@ -13,10 +12,10 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.ai.goal.busters.EatFoodGoal;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
@@ -41,7 +40,6 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -75,15 +73,11 @@ public class ChestbursterEntity extends AlienEntity
 			EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(ChestbursterEntity.class,
 			EntityDataSerializers.BOOLEAN);
-	public static final Predicate<ItemEntity> PICKABLE_DROP_FILTER = item -> {
-		ItemStack itemStack = item.getItem();
-		return (itemStack.is(GigTags.BUSTER_FOOD) || itemStack.getItem().isEdible()) && item.isAlive()
-				&& !item.hasPickUpDelay();
-	};
 	public int bloodRendering = 0;
 	private final GroundPathNavigation landNavigation = new CrawlerNavigation(this, level);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	protected String hostId = null;
+	public int eatingCounter = 0;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
@@ -160,6 +154,12 @@ public class ChestbursterEntity extends AlienEntity
 			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
+		if (this.isEating() == true) 
+			eatingCounter++;
+		if (eatingCounter >= 20) {
+			this.setEatingStatus(false);
+			eatingCounter = 0;
+		}
 		if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200)
 			this.setBirthStatus(false);
 	}
@@ -208,6 +208,7 @@ public class ChestbursterEntity extends AlienEntity
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
+				new EatFoodTask<ChestbursterEntity>(0),
 				new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
@@ -220,11 +221,6 @@ public class ChestbursterEntity extends AlienEntity
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
 				new SetWalkTargetToAttackTarget<>().speedMod(1.2F));
-	}
-
-	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new EatFoodGoal(this));
 	}
 
 	/*
