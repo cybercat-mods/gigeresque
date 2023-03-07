@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
@@ -153,6 +154,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
+				new EatFoodTask<ChestbursterEntity>(0),
 				new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
