@@ -150,6 +150,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		else
 			this.setPose(Pose.STANDING);
 
+		if (this.isExecuting())
+			this.setDeltaMovement(0, 0, 0);
+
 		if (this.isVehicle()) {
 			var yOffset = this.getEyeY()
 					- ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY()) / 2.0);
@@ -161,25 +164,29 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				biteCounter++;
 				if (biteCounter == 5) {
 					this.getNavigation().stop();
+					this.setDeltaMovement(0, 0, 0);
+					this.setIsExecuting(true);
 					this.setAggressive(false);
 				}
-				if (biteCounter >= 85) {
+				if (biteCounter >= 88) {
 					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
 					this.heal(50);
 					if (this.level.isClientSide)
 						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
 								-0.15, 0.0);
 					this.setIsBiting(false);
+					this.setIsExecuting(false);
 					biteCounter = 0;
 				}
 			} else {
 				holdingCounter++;
 				if (holdingCounter == 760) {
 					this.getNavigation().stop();
+					this.setDeltaMovement(0, 0, 0);
 					this.setIsExecuting(true);
 					this.setAggressive(false);
 				}
-				if (holdingCounter >= 840) {
+				if (holdingCounter >= 843) {
 					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
 					this.heal(50);
 					if (this.level.isClientSide)
@@ -308,7 +315,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
-				new MoveToWalkTarget<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true));
+				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
+						.stopIf(entity -> this.isExecuting()));
 	}
 
 	@Override
@@ -324,9 +332,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						new SetPlayerLookTarget<>().predicate(target -> target.isAlive()
 								&& !(((Player) target).isCreative() || ((Player) target).isSpectator())),
 						new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(
-						entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true))
-						.runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
+				new OneRandomBehaviour<>(
+						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting())
+								.stopIf(entity -> this.isExecuting()),
+						new Idle<>()
+								.startCondition(entity -> (!this.isAggressive()
+										|| this.entityData.get(FLEEING_FIRE).booleanValue() == true))
+								.runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
 	}
 
 	@Override
@@ -356,14 +368,21 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		if (passenger instanceof LivingEntity) {
 			var mob = (LivingEntity) passenger;
 			SplittableRandom random = new SplittableRandom();
-			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, true, true));
+			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, true, true));
 			var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
 			var g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
-			passenger.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
-					this.getY() + (double) (this.isExecuting() == true ? random.nextFloat(0.74F, 0.75f)
-							: random.nextFloat(0.14F, 0.15F)),
+			var y1 = random.nextFloat(0.14F, 0.15F);
+			var y3 = random.nextFloat(0.44F, 0.45F);
+			var y = random.nextFloat(0.74F, 0.75f);
+			var y2 = random.nextFloat(1.14F, 1.15f);
+			mob.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f),
+					this.getY() + (double) (this.isExecuting() == true ? (passenger.getBbHeight() < 1.4 ? y2 : y)
+							: (passenger.getBbHeight() < 1.4 ? y3 : y1)),
 					this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
 			mob.yBodyRot = this.yBodyRot;
+			mob.xxa = this.xxa;
+			mob.zza = this.zza;
+			mob.yya = this.yya;
 		}
 	}
 
