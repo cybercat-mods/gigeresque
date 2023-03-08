@@ -235,7 +235,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 						blockPosition().relative(getDirection()).above(2))) {
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
-							this.level.removeBlock(testPos, false);
+							this.level.destroyBlock(testPos, true, null, 512);
 						this.swing(InteractionHand.MAIN_HAND);
 						breakingCounter = -90;
 						if (level.isClientSide()) {
