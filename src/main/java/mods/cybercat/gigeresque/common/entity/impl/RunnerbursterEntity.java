@@ -18,6 +18,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -28,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -140,7 +142,8 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 						|| (EntityUtils.isFacehuggerAttached(target))
 						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
 						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
-				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7),
+				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
+						.setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
 				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
 						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
@@ -153,8 +156,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new EatFoodTask<ChestbursterEntity>(0),
+		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(),
 				new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
 								|| target instanceof Player && ((Player) target).isCreative()),
