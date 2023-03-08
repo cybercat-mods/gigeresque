@@ -57,7 +57,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 				var world = entity.level;
 				var random = entity.getRandom();
 				entity.swing(InteractionHand.MAIN_HAND);
-				world.removeBlock(lightSourceLocation.stream().findFirst().get().getFirst(), false);
+				world.destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
 				if (!world.isClientSide()) {
 					for (int i = 0; i < 2; i++) {
 						var e = random.nextGaussian() * 0.02;
