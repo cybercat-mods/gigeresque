@@ -336,7 +336,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
-				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle()
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
