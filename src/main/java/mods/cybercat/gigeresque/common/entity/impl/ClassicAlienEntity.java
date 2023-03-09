@@ -93,6 +93,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
+		if (this.tickCount % 10 == 0)
+			this.refreshDimensions();
+
 		if (isEffectiveAi() && this.isInWater()) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
@@ -101,6 +104,16 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 		} else
 			super.travel(movementInput);
+	}
+
+	@Override
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
+	}
+
+	@Override
+	public void refreshDimensions() {
+		super.refreshDimensions();
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -264,7 +277,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
+		return this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f) * (this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
 	}
 
 	@Override

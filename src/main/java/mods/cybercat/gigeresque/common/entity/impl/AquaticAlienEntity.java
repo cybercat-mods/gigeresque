@@ -156,7 +156,12 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return this.wasEyeInWater ? super.getDimensions(pose).scale(1.0f, 0.5f) : super.getDimensions(pose);
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
+	}
+
+	@Override
+	public void refreshDimensions() {
+		super.refreshDimensions();
 	}
 
 	@Override
