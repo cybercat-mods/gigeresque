@@ -1,3 +1,7 @@
-v.0.5.18
+v.0.5.19
 
-- Tweak Headbiting more, should fix timer and animation.
+- Aliens now cause the blocks they break when not using acid to drop their block if there is one.
+- Bursters now break and eat crops.
+- Aliens can now lock their stasis view but will still turn when tracking sounds.
+- Aliens hitbox changes size when in water to be flat.
+- Add check so stasis Aliens don't build nests.
