@@ -316,8 +316,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if (level.isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0
-				&& !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+		if (level.isClientSide
+				&& (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater()
+						&& !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
