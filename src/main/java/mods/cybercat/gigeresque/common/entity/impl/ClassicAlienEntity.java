@@ -44,6 +44,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -335,7 +336,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
-				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle()
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
 						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),

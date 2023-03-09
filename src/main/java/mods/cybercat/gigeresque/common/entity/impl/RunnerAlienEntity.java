@@ -229,8 +229,8 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
-				new BuildNestTask(90).stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true)
-						.stopIf(target -> (this.isAggressive() || this.isVehicle())),
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis()
+						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
 				new FirstApplicableBehaviour<RunnerAlienEntity>(new TargetOrRetaliate<>(),
 						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
