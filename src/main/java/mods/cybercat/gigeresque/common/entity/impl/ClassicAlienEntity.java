@@ -44,6 +44,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -93,6 +94,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
+		if (this.tickCount % 10 == 0)
+			this.refreshDimensions();
+
 		if (isEffectiveAi() && this.isInWater()) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
@@ -101,6 +105,16 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 		} else
 			super.travel(movementInput);
+	}
+
+	@Override
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
+	}
+
+	@Override
+	public void refreshDimensions() {
+		super.refreshDimensions();
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
