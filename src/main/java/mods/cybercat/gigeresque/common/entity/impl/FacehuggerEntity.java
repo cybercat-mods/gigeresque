@@ -314,7 +314,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		}
 //		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
 //		&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
-		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
+//		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
 	@Override
