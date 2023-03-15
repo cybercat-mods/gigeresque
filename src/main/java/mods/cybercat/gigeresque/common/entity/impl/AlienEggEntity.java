@@ -156,10 +156,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
 			hatchProgress++;
 
-		if (hatchProgress == 15L)
+		if (hatchProgress == 40L)
 			if (!level.isClientSide)
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				this.getCommandSenderWorld().playSound(null, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE,
+						1.0F, 1.0F);
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {
 			setIsHatching(false);
@@ -290,6 +290,11 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			if (isHatching() && !this.isDeadOrDying())
 				event.getController().setAnimation(GigAnimationsDefault.HATCHING);
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("hatching"))
+				if (this.level.isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
 		}));
 	}
 
