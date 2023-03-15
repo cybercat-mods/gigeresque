@@ -45,7 +45,7 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 				&& entity.hasLineOfSight(target)
 				&& (target.getVehicle() != null
 						&& !target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-				&& !EntityUtils.isFacehuggerAttached(target);
+				&& !EntityUtils.isFacehuggerAttached(target) && !entity.isInWater();
 	}
 
 	@Override
