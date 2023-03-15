@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
@@ -65,6 +66,7 @@ import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.AvoidSun;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -109,7 +111,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f)
+				: this.isCrawling() ? EntityDimensions.scalable(0.9f, 0.9f) : super.getDimensions(pose);
 	}
 
 	@Override
@@ -278,7 +281,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f) * (this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
+		return this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)
+				* (this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
 	}
 
 	@Override
@@ -324,7 +328,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(
+		return BrainActivityGroup.coreTasks(new AvoidSun<>(), new FindDarknessTask<>().cooldownFor(entity -> 20),
 				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true))
 						.whenStarting(entity -> entity.setFleeingStatus(false)),
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
@@ -350,7 +354,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting())
 								.stopIf(entity -> this.isExecuting()),
 						new Idle<>()
-								.startCondition(entity -> (!this.isAggressive()
+								.startCondition(entity -> (!this.isAggressive() || !this.level.isDay()
 										|| this.entityData.get(FLEEING_FIRE).booleanValue() == true))
 								.runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
 	}

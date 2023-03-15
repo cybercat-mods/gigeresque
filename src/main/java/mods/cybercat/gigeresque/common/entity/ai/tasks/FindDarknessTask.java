@@ -39,10 +39,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		if (!(entity.level.canSeeSky(entity.blockPosition())
-				&& entity.level.getLightEmission(entity.blockPosition()) <= 3))
-			return false;
-		if (entity.isAggressive())
+		if (!level.canSeeSky(entity.blockPosition()))
 			return false;
 
 		this.hidePos = getHidePos(entity);
@@ -52,7 +49,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier, 0));
+		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, 2.5F, 0));
 	}
 
 	@Override
@@ -84,9 +81,9 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 		var randomsource = entity.getRandom();
 		var entityPos = entity.blockPosition();
 
-		for (int i = 0; i < 10; ++i) {
-			var hidePos = entityPos.offset(randomsource.nextInt(20) - 10, randomsource.nextInt(6) - 3,
-					randomsource.nextInt(20) - 10);
+		for (int i = 0; i < 50; ++i) {
+			var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
+					randomsource.nextInt(20) - 50);
 
 			if (!entity.level.canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
 				return Vec3.atBottomCenterOf(hidePos);
