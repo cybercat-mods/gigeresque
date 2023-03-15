@@ -150,6 +150,9 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		if (this.isNoAi())
+			return;
+		
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
 			hatchProgress++;
 
