@@ -341,6 +341,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.5": {
+					"effect": "hatching"
+				}
 			}
 		},
 		"hatched": {
