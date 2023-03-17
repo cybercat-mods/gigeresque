@@ -1,7 +1,8 @@
-v.0.5.19
+v.0.5.20
 
-- Aliens now cause the blocks they break when not using acid to drop their block if there is one.
-- Bursters now break and eat crops.
-- Aliens can now lock their stasis view but will still turn when tracking sounds.
-- Aliens hitbox changes size when in water to be flat.
-- Add check so stasis Aliens don't build nests.
+- Added 5 new rooms to dungeons, credit to Shift for these!
+- Fixes #145, Eggs respect the No AI check now.
+- Tweaked the eggs sound opening SFX timing. 
+- Fixes #144, Adds commmand blocks and structure blocks to acid resistant tag.
+- Fixes #146, Facehuggers no longer leap in water.
+- Classic Xenos will now randomly seek out dark spots in the world to hide. 
