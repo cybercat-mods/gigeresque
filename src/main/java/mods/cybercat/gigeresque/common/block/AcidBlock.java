@@ -49,8 +49,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
 	AcidBlock(Properties settings) {
 		super(settings);
-		registerDefaultState(
-				(getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
+		registerDefaultState((getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
 	}
 
 	private void scheduleTickIfNotScheduled(Level world, BlockPos pos) {
@@ -105,8 +104,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
-			BlockPos pos, BlockPos neighborPos) {
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
 		if (!world.isClientSide() && state.getValue(WATERLOGGED))
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
@@ -136,13 +134,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity,
-			ItemStack stack) {
+	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
 	}
 
 	@Override
-	public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack,
-			boolean dropExperience) {
+	public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean dropExperience) {
 	}
 
 	@Override
@@ -155,8 +151,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 			world.addAlwaysVisibleParticle(Particles.ACID, posX, posY, posZ, 0.0, 0.0, 0.0);
 		}
 		if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
-			world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-					0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+			world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 	}
 
 	@Override
@@ -169,9 +164,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
 				if (canGrief == true && !world.getBlockState(blockToEat).is(GigTags.ACID_RESISTANT)) {
 					world.setBlockAndUpdate(blockToEat, Blocks.AIR.defaultBlockState());
-					world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH,
-							SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f,
-							false);
+					world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 				}
 			}
 		}
@@ -186,8 +179,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
 	public static boolean canFallThrough(BlockState state) {
 		var material = state.getMaterial();
-		return (state.isAir() || state.is(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid()
-				&& !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
+		return (state.isAir() || state.is(BlockTags.FIRE) || material.isReplaceable()) && !material.isLiquid() && !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
 	}
 
 	private void dealAcidDamage(BlockState state, Entity entity) {

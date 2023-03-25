@@ -42,8 +42,7 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 		}
 
 		@Override
-		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-				int newViewerCount) {
+		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
 			IdolStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
@@ -118,8 +117,7 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 			this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
 	}
 
-	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-			int newViewerCount) {
+	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
 		var block = state.getBlock();
 		world.blockEvent(pos, block, 1, newViewerCount);
 		if (oldViewerCount != newViewerCount)

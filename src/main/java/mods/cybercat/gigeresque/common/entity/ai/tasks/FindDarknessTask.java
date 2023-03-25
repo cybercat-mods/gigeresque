@@ -18,9 +18,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-			Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
-			Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
 
 	protected float speedModifier = 1;
 
@@ -62,8 +60,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 		if (walkTarget == null)
 			return false;
 
-		return walkTarget.getTarget().currentBlockPosition().equals(new BlockPos(this.hidePos))
-				&& !entity.getNavigation().isDone();
+		return walkTarget.getTarget().currentBlockPosition().equals(new BlockPos(this.hidePos)) && !entity.getNavigation().isDone();
 	}
 
 	@Override
@@ -82,8 +79,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 		var entityPos = entity.blockPosition();
 
 		for (int i = 0; i < 50; ++i) {
-			var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
-					randomsource.nextInt(20) - 50);
+			var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3, randomsource.nextInt(20) - 50);
 
 			if (!entity.level.canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
 				return Vec3.atBottomCenterOf(hidePos);

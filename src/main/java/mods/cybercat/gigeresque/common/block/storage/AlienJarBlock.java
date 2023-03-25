@@ -37,16 +37,11 @@ public class AlienJarBlock extends BaseEntityBlock {
 
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
-	private static final VoxelShape OUTLINE_SHAPE = Stream.of(Block.box(5.5, 0, 5.5, 10.5, 3, 10.5),
-			Block.box(5, 3, 5, 11, 9, 11), Block.box(4.5, 9, 4.5, 11.5, 16, 11.5),
-			Block.box(4.5, 12, 4.5, 11.5, 16, 11.5), Block.box(5, 16, 5, 11, 18, 11))
-			.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	private static final VoxelShape OUTLINE_SHAPE = Stream.of(Block.box(5.5, 0, 5.5, 10.5, 3, 10.5), Block.box(5, 3, 5, 11, 9, 11), Block.box(4.5, 9, 4.5, 11.5, 16, 11.5), Block.box(4.5, 12, 4.5, 11.5, 16, 11.5), Block.box(5, 16, 5, 11, 18, 11)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public AlienJarBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK)
-				.strength(5.0f, 8.0f).nonOpaque());
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE,
-				StorageStates.CLOSED));
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
 	}
 
 	@Override
@@ -65,8 +60,7 @@ public class AlienJarBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide && world.getBlockEntity(pos)instanceof JarStorageEntity jarStorageEntity)
 			player.openMenu(jarStorageEntity);
 		return InteractionResult.SUCCESS;

@@ -30,41 +30,35 @@ public class FluidRenderHandlers implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING,
-				Constants.modResource("black_fluid"));
-		BlockRenderLayerMap.INSTANCE.putFluids(RenderType.solid(), GigFluids.BLACK_FLUID_STILL,
-				GigFluids.BLACK_FLUID_FLOWING);
+		setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING, Constants.modResource("black_fluid"));
+		BlockRenderLayerMap.INSTANCE.putFluids(RenderType.solid(), GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING);
 	}
 
 	private void setupFluidRendering(Fluid still, Fluid flowing, ResourceLocation textureFluidId) {
-		var stillSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
-				"block/" + textureFluidId.getPath() + "_still");
-		var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(),
-				"block/" + textureFluidId.getPath() + "_flow");
+		var stillSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
+		var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
 
 		var fluidId = BuiltInRegistries.FLUID.getKey(still);
 		var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 		var fluidSprites = new TextureAtlasSprite[2];
 
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
-				.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-					@Override
-					public void onResourceManagerReload(ResourceManager manager) {
-						var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
-						fluidSprites[0] = atlas.apply(stillSpriteId);
-						fluidSprites[1] = atlas.apply(flowingSpriteId);
-					}
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+			@Override
+			public void onResourceManagerReload(ResourceManager manager) {
+				var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
+				fluidSprites[0] = atlas.apply(stillSpriteId);
+				fluidSprites[1] = atlas.apply(flowingSpriteId);
+			}
 
-					@Override
-					public ResourceLocation getFabricId() {
-						return listenerId;
-					}
-				});
+			@Override
+			public ResourceLocation getFabricId() {
+				return listenerId;
+			}
+		});
 
 		var renderHandler = new FluidRenderHandler() {
 			@Override
-			public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos,
-					FluidState state) {
+			public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 				return fluidSprites;
 			}
 		};

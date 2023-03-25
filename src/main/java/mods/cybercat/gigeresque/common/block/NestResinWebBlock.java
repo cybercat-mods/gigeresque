@@ -35,10 +35,8 @@ public class NestResinWebBlock extends Block {
 	public static final BooleanProperty SOUTH = PipeBlock.SOUTH;
 	public static final BooleanProperty WEST = PipeBlock.WEST;
 
-	public static final Map<Direction, BooleanProperty> FACING_PROPERTIES = PipeBlock.PROPERTY_BY_DIRECTION.entrySet()
-			.stream().filter(entry -> entry.getKey() != Direction.DOWN).collect(Util.toMap());
-	public static final EnumProperty<NestResinWebVariant> VARIANTS = EnumProperty.create("nest_resin_web_variant",
-			NestResinWebVariant.class);
+	public static final Map<Direction, BooleanProperty> FACING_PROPERTIES = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter(entry -> entry.getKey() != Direction.DOWN).collect(Util.toMap());
+	public static final EnumProperty<NestResinWebVariant> VARIANTS = EnumProperty.create("nest_resin_web_variant", NestResinWebVariant.class);
 
 	private static final VoxelShape UP_SHAPE = box(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
 	private static final VoxelShape EAST_SHAPE = box(0.0, 0.0, 0.0, 1.0, 16.0, 16.0);
@@ -74,10 +72,8 @@ public class NestResinWebBlock extends Block {
 
 	public NestResinWebBlock(Properties settings) {
 		super(settings);
-		registerDefaultState(getStateDefinition().any().setValue(UP, false).setValue(NORTH, false).setValue(EAST, false)
-				.setValue(SOUTH, false).setValue(WEST, false).setValue(VARIANTS, NestResinWebVariant.ONE));
-		shapesByState = getStateDefinition().getPossibleStates().stream()
-				.collect(Collectors.toMap(Function.identity(), NestResinWebBlock::getShapeForState));
+		registerDefaultState(getStateDefinition().any().setValue(UP, false).setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false).setValue(VARIANTS, NestResinWebVariant.ONE));
+		shapesByState = getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), NestResinWebBlock::getShapeForState));
 	}
 
 	@Override
@@ -152,8 +148,7 @@ public class NestResinWebBlock extends Block {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
-			BlockPos pos, BlockPos neighborPos) {
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
 		if (direction == Direction.DOWN)
 			return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 		else {
@@ -165,8 +160,7 @@ public class NestResinWebBlock extends Block {
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
 		var blockState = context.getLevel().getBlockState(context.getClickedPos());
-		return blockState.is(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size()
-				: super.canBeReplaced(state, context);
+		return blockState.is(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size() : super.canBeReplaced(state, context);
 	}
 
 	@Nullable
@@ -181,9 +175,7 @@ public class NestResinWebBlock extends Block {
 				var booleanProperty = getFacingProperty(direction);
 				var bl2 = bl && blockState.getValue(booleanProperty);
 				if (!bl2 && shouldHaveSide(ctx.getLevel(), ctx.getClickedPos(), direction))
-					return blockState2.setValue(booleanProperty, true).setValue(VARIANTS,
-							Arrays.stream(NestResinWebVariant.values()).toList()
-									.get(new Random().nextInt(NestResinWebVariant.values().length)));
+					return blockState2.setValue(booleanProperty, true).setValue(VARIANTS, Arrays.stream(NestResinWebVariant.values()).toList().get(new Random().nextInt(NestResinWebVariant.values().length)));
 			}
 		}
 		return bl ? blockState2 : null;
@@ -197,12 +189,9 @@ public class NestResinWebBlock extends Block {
 	@Override
 	public BlockState rotate(BlockState state, Rotation rotation) {
 		return switch (rotation) {
-		case CLOCKWISE_180 -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST))
-				.setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
-		case COUNTERCLOCKWISE_90 -> state.setValue(NORTH, state.getValue(EAST)).setValue(EAST, state.getValue(SOUTH))
-				.setValue(SOUTH, state.getValue(WEST)).setValue(WEST, state.getValue(NORTH));
-		case CLOCKWISE_90 -> state.setValue(NORTH, state.getValue(WEST)).setValue(EAST, state.getValue(NORTH))
-				.setValue(SOUTH, state.getValue(EAST)).setValue(WEST, state.getValue(SOUTH));
+		case CLOCKWISE_180 -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST)).setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
+		case COUNTERCLOCKWISE_90 -> state.setValue(NORTH, state.getValue(EAST)).setValue(EAST, state.getValue(SOUTH)).setValue(SOUTH, state.getValue(WEST)).setValue(WEST, state.getValue(NORTH));
+		case CLOCKWISE_90 -> state.setValue(NORTH, state.getValue(WEST)).setValue(EAST, state.getValue(NORTH)).setValue(SOUTH, state.getValue(EAST)).setValue(WEST, state.getValue(SOUTH));
 		default -> state;
 		};
 	}

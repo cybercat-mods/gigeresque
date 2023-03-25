@@ -25,8 +25,7 @@ import net.tslat.smartbrainlib.util.RandomUtil;
 
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList
-			.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 
 	@Override
@@ -59,18 +58,15 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
 						if (level.getBlockState(test).isAir()) {
-							var yDiff = Mth.abs(entity.getBlockY()
-									- lightSourceLocation.stream().findFirst().get().getFirst().getY());
+							var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
 							if (yDiff < 2) {
 								BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-								((Eggmorphable) target)
-										.setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
+								((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
 								target.setPos(Vec3.atBottomCenterOf(testPos));
 								target.removeVehicle();
 								entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
 								level.setBlockAndUpdate(testPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-								level.setBlockAndUpdate(testPos.above(),
-										GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+								level.setBlockAndUpdate(testPos.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 							}
 						}
 				}

@@ -40,13 +40,10 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, Sheep sheepEntity,
-			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
-		if (!sheepEntity.isSheared() && sheepEntity instanceof Eggmorphable eggmorphable
-				&& eggmorphable.isEggmorphing()) {
+	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, Sheep sheepEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+		if (!sheepEntity.isSheared() && sheepEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
 			this.getParentModel().copyPropertiesTo(this.model);
-			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, SHEEP_FUR_LOCATION, matrixStack,
-					vertexConsumerProvider, light, sheepEntity, f, g, h, j, k, l);
+			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, SHEEP_FUR_LOCATION, matrixStack, vertexConsumerProvider, light, sheepEntity, f, g, h, j, k, l);
 		}
 	}
 }

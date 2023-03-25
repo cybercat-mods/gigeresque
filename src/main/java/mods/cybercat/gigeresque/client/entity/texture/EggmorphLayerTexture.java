@@ -20,8 +20,7 @@ public class EggmorphLayerTexture implements AutoCloseable {
 			public void run() {
 				try {
 					var baseImage = NativeImage.read(resourceManager.getResourceOrThrow(base).open());
-					var layerImage = NativeImage
-							.read(resourceManager.getResourceOrThrow(EntityTextures.EGGMORPH_OVERLAY).open());
+					var layerImage = NativeImage.read(resourceManager.getResourceOrThrow(EntityTextures.EGGMORPH_OVERLAY).open());
 					texture = new DynamicTexture(new NativeImage(layerImage.getWidth(), layerImage.getHeight(), true));
 					var height = layerImage.getHeight();
 					var width = layerImage.getWidth();

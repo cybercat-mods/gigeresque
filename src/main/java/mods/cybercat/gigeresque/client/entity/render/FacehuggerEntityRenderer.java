@@ -26,39 +26,19 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	public FacehuggerEntityRenderer(EntityRendererProvider.Context context) {
 		super(context, new FacehuggerEntityModel());
 		this.shadowRadius = 0.2f;
-		headDistances.put(EntityType.SHEEP, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
-						- facehugger.getBbWidth() + 0.4,
-				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.385,
-				calcStandardOffsetY(facehugger) - 0.05));
-		headDistances.put(EntityType.COW, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
-						- facehugger.getBbWidth() + 0.4,
-				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41,
-				calcStandardOffsetY(facehugger) - 0.05));
-		headDistances.put(EntityType.PIG,
-				(facehugger, host) -> new TransformData(0.0,
-						((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
-								- facehugger.getBbWidth() + 0.4,
-						host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41, // Distance from face
-						calcStandardOffsetY(facehugger) - 0.05 // Distance from head
-				));
-		headDistances.put(EntityType.WOLF, (facehugger, host) -> new TransformData(0.0,
-				((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
-						- facehugger.getBbWidth() + 0.4,
-				host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.54,
-				calcStandardOffsetY(facehugger) - 0.15));
-		headDistances.put(EntityType.VILLAGER,
-				(facehugger, host) -> new TransformData(0.0, 0.0, 0.0, 0.36, calcStandardOffsetY(facehugger)));
-		headDistances.put(EntityType.DOLPHIN,
-				(facehugger, host) -> new TransformData(0.0, -0.23, 0.0, 0.80, calcStandardOffsetY(facehugger)));
-		headDistances.put(EntityType.PLAYER,
-				(facehugger, host) -> new TransformData(0.0, 0.25, 0.0, 0.36, calcStandardOffsetY(facehugger)));
+		headDistances.put(EntityType.SHEEP, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.385, calcStandardOffsetY(facehugger) - 0.05));
+		headDistances.put(EntityType.COW, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41, calcStandardOffsetY(facehugger) - 0.05));
+		headDistances.put(EntityType.PIG, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41, // Distance from face
+				calcStandardOffsetY(facehugger) - 0.05 // Distance from head
+		));
+		headDistances.put(EntityType.WOLF, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.54, calcStandardOffsetY(facehugger) - 0.15));
+		headDistances.put(EntityType.VILLAGER, (facehugger, host) -> new TransformData(0.0, 0.0, 0.0, 0.36, calcStandardOffsetY(facehugger)));
+		headDistances.put(EntityType.DOLPHIN, (facehugger, host) -> new TransformData(0.0, -0.23, 0.0, 0.80, calcStandardOffsetY(facehugger)));
+		headDistances.put(EntityType.PLAYER, (facehugger, host) -> new TransformData(0.0, 0.25, 0.0, 0.36, calcStandardOffsetY(facehugger)));
 	}
 
 	@Override
-	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack,
-			MultiBufferSource bufferIn, int packedLightIn) {
+	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
 		if (entity.isCrawling()) {
 			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
@@ -68,13 +48,11 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(),
-					entity.level.getBlockState(entity.blockPosition().north()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().north()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(),
-					entity.level.getBlockState(entity.blockPosition().south()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().south()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
@@ -93,22 +71,17 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true) {
 			poseStack.pushPose();
-			poseStack.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F,
-					animatable.tickCount < 5 ? 0 : 1F);
+			poseStack.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F);
 			poseStack.popPose();
 		}
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
-				packedOverlay, red, green, blue, alpha);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
-	protected void applyRotations(FacehuggerEntity facehugger, PoseStack matrixStackIn, float ageInTicks,
-			float rotationYaw, float partialTicks) {
+	protected void applyRotations(FacehuggerEntity facehugger, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
 		if (facehugger.isAlive() && facehugger.isAttachedToHost()) {
 			var host = (LivingEntity) facehugger.getVehicle();
 			if (host == null)
@@ -132,13 +105,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	}
 
 	private TransformData getTransformData(FacehuggerEntity facehugger, Entity host) {
-		return headDistances
-				.computeIfAbsent(host.getType(),
-						entityType -> (facehugger1, host1) -> new TransformData(0.0, 0.0, 0.0,
-								((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset()
-										- facehugger.getBbWidth() + host.getBbWidth(),
-								calcStandardOffsetY(facehugger)))
-				.invoke(facehugger, host);
+		return headDistances.computeIfAbsent(host.getType(), entityType -> (facehugger1, host1) -> new TransformData(0.0, 0.0, 0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + host.getBbWidth(), calcStandardOffsetY(facehugger))).invoke(facehugger, host);
 	}
 
 	private double calcStandardOffsetY(FacehuggerEntity facehugger) {

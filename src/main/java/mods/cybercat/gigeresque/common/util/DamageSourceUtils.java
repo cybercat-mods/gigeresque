@@ -7,7 +7,6 @@ public class DamageSourceUtils {
 	}
 
 	public static boolean isDamageSourceNotPuncturing(DamageSource source) {
-		return source.isExplosion() || source.isFire() || source.isMagic() || source.isFall()
-				|| source.isDamageHelmet();
+		return source.isExplosion() || source.isFire() || source.isMagic() || source.isFall() || source.isDamageHelmet();
 	}
 }

@@ -34,9 +34,7 @@ public class EntityUtils {
 		if ((entity instanceof Player) && !(((Player) entity).isCreative() || ((Player) entity).isSpectator()))
 			return true;
 
-		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengers().isEmpty()
-				&& ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-				&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
+		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengers().isEmpty() && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
 	}
 
 	public static boolean isEggmorphable(Entity entity) {
@@ -49,18 +47,11 @@ public class EntityUtils {
 		if (ConfigAccessor.isTargetWhitelisted(ClassicAlienEntity.class, entity))
 			return true;
 
-		var weakCondition = !(entity instanceof LivingEntity)
-				|| (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f)
-				|| ((LivingEntity) entity).getHealth() <= 4f;
+		var weakCondition = !(entity instanceof LivingEntity) || (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f) || ((LivingEntity) entity).getHealth() <= 4f;
 
-		var threatCondition = !(entity instanceof LivingEntity)
-				|| ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem
-				|| ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
+		var threatCondition = !(entity instanceof LivingEntity) || ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem || ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
 
-		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity)
-				&& ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-				&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition
-				&& !threatCondition;
+		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity) && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition && !threatCondition;
 	}
 
 	public static boolean isFacehuggerAttached(Entity entity) {

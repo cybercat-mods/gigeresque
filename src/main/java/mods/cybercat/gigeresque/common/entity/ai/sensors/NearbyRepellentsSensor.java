@@ -19,8 +19,7 @@ import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class NearbyRepellentsSensor<E extends LivingEntity> extends PredicateSensor<BlockState, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList
-			.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get());
 
 	protected SquareRadius radius = new SquareRadius(1, 1);
 
@@ -65,8 +64,7 @@ public class NearbyRepellentsSensor<E extends LivingEntity> extends PredicateSen
 	protected void doTick(ServerLevel level, E entity) {
 		List<Pair<BlockPos, BlockState>> blocks = new ObjectArrayList<>();
 
-		for (BlockPos pos : BlockPos.betweenClosed(entity.blockPosition().subtract(this.radius.toVec3i()),
-				entity.blockPosition().offset(this.radius.toVec3i()))) {
+		for (BlockPos pos : BlockPos.betweenClosed(entity.blockPosition().subtract(this.radius.toVec3i()), entity.blockPosition().offset(this.radius.toVec3i()))) {
 			BlockState state = level.getBlockState(pos);
 
 			if (this.predicate().test(state, entity))

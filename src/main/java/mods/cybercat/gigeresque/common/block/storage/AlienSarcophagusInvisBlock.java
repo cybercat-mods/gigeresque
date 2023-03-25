@@ -25,19 +25,16 @@ public class AlienSarcophagusInvisBlock extends Block {
 	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
 	public AlienSarcophagusInvisBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.GLOW_LICHEN).strength(5.0f, 8.0f)
-				.nonOpaque().noLootTable());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.GLOW_LICHEN).strength(5.0f, 8.0f).nonOpaque().noLootTable());
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide) {
 			var radius = new Vec3i(2, 2, 2);
 			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
-					if (!world.isClientSide
-							&& world.getBlockEntity(testPos)instanceof AlienStorageEntity idolStorageEntity)
+					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof AlienStorageEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
 				}

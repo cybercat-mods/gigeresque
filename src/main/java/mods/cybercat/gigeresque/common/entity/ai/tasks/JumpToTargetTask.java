@@ -18,9 +18,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class JumpToTargetTask<E extends AdultAlienEntity> extends DelayedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-			Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
-			Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
 	private static final double MAX_LEAP_DISTANCE = 3.0;
 
 	@Nullable
@@ -39,8 +37,7 @@ public class JumpToTargetTask<E extends AdultAlienEntity> extends DelayedBehavio
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 		var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
-		return this.target != null && entity.isOnGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3
-				&& !(entity.getBlockY() > target.getBlockY()) && !entity.isCrawling();
+		return this.target != null && entity.isOnGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3 && !(entity.getBlockY() > target.getBlockY()) && !entity.isCrawling();
 	}
 
 	@Override

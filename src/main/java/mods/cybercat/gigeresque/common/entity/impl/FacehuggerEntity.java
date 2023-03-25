@@ -101,21 +101,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 //	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
-	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
-			false);
+	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	public float ticksAttachedToHost = -1.0f;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(FacehuggerEntity.class,
-			EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, Level world) {
 		super(type, world);
@@ -123,16 +117,11 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.facehuggerHealth)
-				.add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0)
-				.add(Attributes.ATTACK_DAMAGE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.facehuggerHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
 	}
 
 	@Override
@@ -225,8 +214,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		this.startRiding(validHost);
 		validHost.setSpeed(0.0f);
 		if (GigeresqueConfig.facehuggerGivesBlindness == true)
-			validHost.addEffect(
-					new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
+			validHost.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
 	}
 
 	@Override
@@ -259,17 +247,14 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			var host = (Host) this.getVehicle();
 
 			if (host != null) {
-				((LivingEntity) getVehicle())
-						.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer()
-						&& host.doesNotHaveParasite()) {
+				((LivingEntity) getVehicle()).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
+				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
 					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
 					host.hasParasite();
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
 					if (!level.isClientSide) {
-						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-								GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 					}
 					setIsInfertile(true);
 					this.unRide();
@@ -278,8 +263,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			}
 
 			var vehicle = this.getVehicle();
-			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof Player
-					&& (((Player) vehicle).isCreative() || ((Player) vehicle).isSpectator())) {
+			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof Player && (((Player) vehicle).isCreative() || ((Player) vehicle).isSpectator())) {
 				if (((Player) vehicle).hasEffect(MobEffects.BLINDNESS))
 					((Player) vehicle).removeEffect(MobEffects.BLINDNESS);
 				this.stopRiding();
@@ -299,17 +283,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			this.setEggSpawnState(false);
 		if (this.getTarget() != null) {
 			var target = this.getTarget();
-			var huggerchecklist = !((target instanceof AlienEntity || target instanceof Warden
-					|| target instanceof ArmorStand)
-					|| (target.getVehicle() != null
-							&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-					|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-					|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-					|| (EntityUtils.isFacehuggerAttached(target))
-					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-					&& ConfigAccessor.isTargetHostable(target) && target.isAlive();
-			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist
-					&& !this.isDeadOrDying())
+			var huggerchecklist = !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
+					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && ConfigAccessor.isTargetHostable(target) && target.isAlive();
+			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist && !this.isDeadOrDying())
 				this.attachToHost(this.getTarget());
 		}
 //		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
@@ -390,8 +366,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public void stopRiding() {
 		var vehicle = this.getVehicle();
-		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive()
-				&& ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
+		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
 		setIsInfertile(true);
 		super.stopRiding();
@@ -399,10 +374,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation
-				: this.isCrawling() ? landNavigation :
+		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : this.isCrawling() ? landNavigation :
 //					this.isNoGravity() ? roofNavigation : 
-						landNavigation;
+				landNavigation;
 		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ?
 //						roofMoveControl : this.isCrawling() ? 
 				landMoveControl : landMoveControl;
@@ -464,21 +438,11 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>()
-				.setPredicate((target, entity) -> !((target instanceof AlienEntity || target instanceof Warden
-						|| target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem)
-						|| (target.getVehicle() != null
-								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-						|| ((Host) target).hasParasite() || target.getMobType() == MobType.UNDEAD
-						|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
-						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& ConfigAccessor.isTargetHostable(target) && target.isAlive()
-						&& entity.hasLineOfSight(target)),
-				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
-				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target,
+						entity) -> !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && ConfigAccessor.isTargetHostable(target) && target.isAlive() && entity.hasLineOfSight(target)),
+				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -488,31 +452,13 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity,
-						target) -> ((target instanceof AlienEntity || target instanceof Warden
-								|| target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem)
-								|| !this.hasLineOfSight(target) || !(entity instanceof LivingEntity)
-								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-								|| !ConfigAccessor.isTargetHostable(target)
-								|| (EntityUtils.isFacehuggerAttached(target))
-								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& !target.isAlive())),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || !this.hasLineOfSight(target) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity)
+				|| ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !ConfigAccessor.isTargetHostable(target) || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
 	}
 
 	@Override
@@ -527,11 +473,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying())
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
 				if (this.entityData.get(ATTACKING) == false && event.isMoving())
 					return event.setAndContinue(GigAnimationsDefault.SWIM);
 				else if (this.entityData.get(ATTACKING) == true && event.isMoving())
@@ -542,20 +486,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
 			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
 			}
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false
-					&& this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false
-					&& (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking()
-					&& !this.isDeadOrDying()) {
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false && (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			}
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling()
-					&& !this.isDeadOrDying()) {
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling() && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			}
@@ -563,8 +502,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
 				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
 		}));
@@ -576,8 +514,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
 		if (!(var6 instanceof IronGolem))
 			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));

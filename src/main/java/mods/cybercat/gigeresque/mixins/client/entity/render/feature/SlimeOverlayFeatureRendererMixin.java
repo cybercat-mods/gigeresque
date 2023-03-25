@@ -36,14 +36,12 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
-	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T entity, float f,
-			float g, float h, float j, float k, float l, CallbackInfo ci) {
+	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T entity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (entity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
 			this.model.prepareMobModel(entity, f, g, h);
 			this.model.setupAnim(entity, f, g, j, k, l);
 			this.getParentModel().copyPropertiesTo(this.model);
-			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTextureLocation(entity), matrixStack,
-					vertexConsumerProvider, light, entity, f, g, h, j, k, l);
+			EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTextureLocation(entity), matrixStack, vertexConsumerProvider, light, entity, f, g, h, j, k, l);
 		}
 	}
 }

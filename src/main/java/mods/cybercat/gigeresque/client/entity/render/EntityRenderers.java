@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class EntityRenderers implements GigeresqueInitializer {
-	
+
 	@Override
 	public void initialize() {
 		EntityRendererRegistry.register(Entities.ALIEN, AlienEntityRenderer::new);
@@ -27,11 +27,8 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.MUTANT_POPPER, PopperEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.MUTANT_HAMMERPEDE, HammerpedeEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
-		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1,
-				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
-		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,
-				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
-		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3,
-				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
+		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
 	}
 }

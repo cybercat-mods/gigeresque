@@ -17,8 +17,7 @@ public class BloodParticleFactory implements ParticleProvider<SimpleParticleType
 	}
 
 	@Override
-	public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e,
-			double f, double g, double h, double i) {
+	public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
 		return new BloodParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
 	}
 }

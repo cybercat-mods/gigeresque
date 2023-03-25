@@ -18,21 +18,13 @@ public class ConfigAccessor {
 
 	private synchronized static Map<ResourceLocation, List<String>> getWhitelistMappings() {
 		if (whitelistMappings == null)
-			whitelistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienWhitelist,
-					EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienWhitelist,
-					EntityIdentifiers.FACEHUGGER, GigeresqueConfig.facehuggerWhitelist, EntityIdentifiers.RUNNER_ALIEN,
-					GigeresqueConfig.runnerWhitelist);
+			whitelistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienWhitelist, EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienWhitelist, EntityIdentifiers.FACEHUGGER, GigeresqueConfig.facehuggerWhitelist, EntityIdentifiers.RUNNER_ALIEN, GigeresqueConfig.runnerWhitelist);
 		return whitelistMappings;
 	}
 
 	private synchronized static Map<ResourceLocation, List<String>> getBlacklistMappings() {
 		if (blacklistMappings == null)
-			blacklistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienBlacklist,
-					EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienBlacklist,
-					EntityIdentifiers.FACEHUGGER, GigeresqueConfig.facehuggerBlacklist, EntityIdentifiers.RUNNER_ALIEN,
-					GigeresqueConfig.runnerBlacklist,EntityIdentifiers.MUTANT_POPPER,
-					GigeresqueConfig.smallMutantHosts,EntityIdentifiers.MUTANT_HAMMERPEDE,
-					GigeresqueConfig.smallMutantHosts,EntityIdentifiers.MUTANT_STALKER,
+			blacklistMappings = Map.of(EntityIdentifiers.ALIEN, GigeresqueConfig.alienBlacklist, EntityIdentifiers.AQUATIC_ALIEN, GigeresqueConfig.aquaticAlienBlacklist, EntityIdentifiers.FACEHUGGER, GigeresqueConfig.facehuggerBlacklist, EntityIdentifiers.RUNNER_ALIEN, GigeresqueConfig.runnerBlacklist, EntityIdentifiers.MUTANT_POPPER, GigeresqueConfig.smallMutantHosts, EntityIdentifiers.MUTANT_HAMMERPEDE, GigeresqueConfig.smallMutantHosts, EntityIdentifiers.MUTANT_STALKER,
 					GigeresqueConfig.largeMutantHosts);
 		return blacklistMappings;
 	}
@@ -59,8 +51,7 @@ public class ConfigAccessor {
 		var waterEntries = GigeresqueConfig.aquaticAlienHosts;
 		var runnerEntries = GigeresqueConfig.runnerHosts;
 		var targetIdentifier = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
-		return normalEntries.contains(targetIdentifier.toString()) || waterEntries.contains(targetIdentifier.toString())
-				|| runnerEntries.contains(targetIdentifier.toString());
+		return normalEntries.contains(targetIdentifier.toString()) || waterEntries.contains(targetIdentifier.toString()) || runnerEntries.contains(targetIdentifier.toString());
 	}
 
 	public static boolean isTargetSmallMutantHost(Entity target) {
@@ -105,12 +96,9 @@ public class ConfigAccessor {
 	private static void processReversedMorphMappings() {
 		HashMap<String, String> map = new HashMap<>();
 
-		var internalMap = Map.of(EntityIdentifiers.ALIEN.toString(), GigeresqueConfig.alienHosts,
-				EntityIdentifiers.AQUATIC_ALIEN.toString(), GigeresqueConfig.aquaticAlienHosts,
-				EntityIdentifiers.RUNNER_ALIEN.toString(), GigeresqueConfig.runnerHosts);
+		var internalMap = Map.of(EntityIdentifiers.ALIEN.toString(), GigeresqueConfig.alienHosts, EntityIdentifiers.AQUATIC_ALIEN.toString(), GigeresqueConfig.aquaticAlienHosts, EntityIdentifiers.RUNNER_ALIEN.toString(), GigeresqueConfig.runnerHosts);
 
-		internalMap.forEach((morphTo, morphFromSet) -> morphFromSet
-				.forEach(morphFrom -> map.computeIfAbsent(morphFrom, (it) -> morphTo)));
+		internalMap.forEach((morphTo, morphFromSet) -> morphFromSet.forEach(morphFrom -> map.computeIfAbsent(morphFrom, (it) -> morphTo)));
 		reversedMorphMappings = map;
 	}
 

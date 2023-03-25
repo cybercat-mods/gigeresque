@@ -45,10 +45,8 @@ public class CrawlerNavigation extends GroundPathNavigation {
 		}
 		final Vec3 base = entityPos.add(-this.mob.getBbWidth() * 0.5F, 0.0F, -this.mob.getBbWidth() * 0.5F);
 		final Vec3 max = base.add(this.mob.getBbWidth(), this.mob.getBbHeight(), this.mob.getBbWidth());
-		if (this.tryShortcut(path, new Vec3(this.mob.getX(), this.mob.getY(), this.mob.getZ()), pathLength, base,
-				max)) {
-			if (this.isAt(path, 0.5F)
-					|| this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * 0.5F)) {
+		if (this.tryShortcut(path, new Vec3(this.mob.getX(), this.mob.getY(), this.mob.getZ()), pathLength, base, max)) {
+			if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * 0.5F)) {
 				this.mob.getLookControl().setLookAt(path.getNextEntityPos(this.mob));
 				path.setNextNodeIndex(path.getNextNodeIndex() + 1);
 			}
@@ -60,15 +58,12 @@ public class CrawlerNavigation extends GroundPathNavigation {
 	public void tick() {
 		super.tick();
 		if (this.getTargetPos() != null)
-			this.mob.getLookControl().setLookAt(this.getTargetPos().getX(), this.getTargetPos().getY(),
-					this.getTargetPos().getZ());
+			this.mob.getLookControl().setLookAt(this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ());
 	}
 
 	private boolean isAt(Path path, float threshold) {
 		final Vec3 pathPos = path.getNextEntityPos(this.mob);
-		return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold
-				&& Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold
-				&& Math.abs(this.mob.getY() - pathPos.y) < 1.0D;
+		return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold && Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold && Math.abs(this.mob.getY() - pathPos.y) < 1.0D;
 	}
 
 	private boolean atElevationChange(Path path) {
@@ -152,17 +147,14 @@ public class CrawlerNavigation extends GroundPathNavigation {
 						if (!block.isPathfindable(this.level, pos, PathComputationType.LAND))
 							return false;
 					}
-					BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob, 1, 1,
-							1, true, true);
+					BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob, 1, 1, 1, true, true);
 					if (below == BlockPathTypes.WATER || below == BlockPathTypes.LAVA || below == BlockPathTypes.OPEN)
 						return false;
-					BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob, 1, y1 - y0,
-							1, true, true);
+					BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob, 1, y1 - y0, 1, true, true);
 					float priority = this.mob.getPathfindingMalus(in);
 					if (priority < 0.0F || priority >= 8.0F)
 						return false;
-					if (in == BlockPathTypes.DAMAGE_FIRE || in == BlockPathTypes.DANGER_FIRE
-							|| in == BlockPathTypes.DAMAGE_OTHER)
+					if (in == BlockPathTypes.DAMAGE_FIRE || in == BlockPathTypes.DANGER_FIRE || in == BlockPathTypes.DAMAGE_OTHER)
 						return false;
 				}
 			}

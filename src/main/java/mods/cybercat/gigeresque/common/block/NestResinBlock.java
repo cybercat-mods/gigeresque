@@ -64,10 +64,7 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return context instanceof EntityCollisionContext
-				&& ((EntityCollisionContext) context).getEntity() instanceof AlienEntity
-						? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS))
-						: LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+		return context instanceof EntityCollisionContext && ((EntityCollisionContext) context).getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
 	}
 
 	@Override
@@ -95,8 +92,7 @@ public class NestResinBlock extends Block {
 		var isSoulSand = blockState.is(Blocks.SOUL_SAND);
 		if (!isIce && !isPackedIce && !isBarrier) {
 			if (!isHoney && !isSoulSand)
-				return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP)
-						|| blockState.is(this) && blockState.getValue(LAYERS) == 8;
+				return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP) || blockState.is(this) && blockState.getValue(LAYERS) == 8;
 			else
 				return true;
 		} else
@@ -104,10 +100,8 @@ public class NestResinBlock extends Block {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world,
-			BlockPos pos, BlockPos neighborPos) {
-		return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState()
-				: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+		return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 	}
 
 	@Override

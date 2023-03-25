@@ -24,8 +24,7 @@ public class AlienPathFinder extends PathFinder {
 
 	@Nullable
 	@Override
-	public Path findPath(PathNavigationRegion regionIn, Mob mob, Set<BlockPos> targetPositions, float maxRange,
-			int accuracy, float searchDepthMultiplier) {
+	public Path findPath(PathNavigationRegion regionIn, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
 		Path path = super.findPath(regionIn, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier);
 		return path == null ? null : new PatchedPath(path);
 	}

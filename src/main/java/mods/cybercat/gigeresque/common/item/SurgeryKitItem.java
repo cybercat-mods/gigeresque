@@ -29,8 +29,7 @@ public class SurgeryKitItem extends Item {
 	}
 
 	@Override
-	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity,
-			InteractionHand interactionHand) {
+	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
 		tryRemoveParasite(itemStack, livingEntity);
 		player.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
 		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));

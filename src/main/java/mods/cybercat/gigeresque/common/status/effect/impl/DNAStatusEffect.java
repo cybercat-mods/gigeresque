@@ -119,8 +119,7 @@ public class DNAStatusEffect extends MobEffect {
 				var xspeed = random.nextGaussian() * 0.02;
 				var yspeed = random.nextGaussian() * 0.02;
 				var zspeed = random.nextGaussian() * 0.02;
-				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(),
-						((double) entity.getZ()) + 0.5, 1, xspeed, yspeed, zspeed, 0.15000000596046448);
+				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, xspeed, yspeed, zspeed, 0.15000000596046448);
 			}
 		}
 	}

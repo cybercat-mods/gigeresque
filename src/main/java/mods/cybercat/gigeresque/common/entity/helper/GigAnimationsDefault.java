@@ -32,8 +32,7 @@ public class GigAnimationsDefault {
 	public static final RawAnimation RUSH_SLITHER = RawAnimation.begin().thenLoop("rush_slither");
 
 	/* EGG ANIMATIONS */
-	public static final RawAnimation HATCHING = RawAnimation.begin().then("hatch", LoopType.PLAY_ONCE)
-			.thenPlayAndHold("hatched");
+	public static final RawAnimation HATCHING = RawAnimation.begin().then("hatch", LoopType.PLAY_ONCE).thenPlayAndHold("hatched");
 	public static final RawAnimation HATCHED = RawAnimation.begin().thenLoop("hatched");
 	public static final RawAnimation HATCHED_EMPTY = RawAnimation.begin().thenLoop("hatched_empty");
 	public static final RawAnimation HATCH_LEAP = RawAnimation.begin().then("hatch_leap", LoopType.PLAY_ONCE);

@@ -20,8 +20,7 @@ public class Particles implements GigeresqueInitializer {
 		registerParticle("blood", BLOOD, BloodParticleFactory::new);
 	}
 
-	private void registerParticle(String path, SimpleParticleType type,
-			ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory) {
+	private void registerParticle(String path, SimpleParticleType type, ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory) {
 		Registry.register(BuiltInRegistries.PARTICLE_TYPE, Constants.modResource(path), type);
 		ParticleFactoryRegistry.getInstance().register(type, factory);
 	}

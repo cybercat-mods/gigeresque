@@ -12,8 +12,7 @@ public class BloodParticle extends TextureSheetParticle {
 	private boolean reachedGround;
 	private final SpriteSet spriteProvider;
 
-	BloodParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i,
-			SpriteSet spriteProvider) {
+	BloodParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
 		super(clientWorld, d, e, f);
 		xd = g;
 		yd = h;

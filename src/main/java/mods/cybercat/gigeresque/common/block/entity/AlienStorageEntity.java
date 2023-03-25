@@ -42,8 +42,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 		}
 
 		@Override
-		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-				int newViewerCount) {
+		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
 			AlienStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
@@ -118,8 +117,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 			this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
 	}
 
-	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-			int newViewerCount) {
+	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
 		var block = state.getBlock();
 		world.blockEvent(pos, block, 1, newViewerCount);
 		if (oldViewerCount != newViewerCount)

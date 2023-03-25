@@ -30,8 +30,7 @@ public abstract class BlackFluid extends FlowingFluid {
 	}
 
 	@Override
-	public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid,
-			Direction direction) {
+	public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid, Direction direction) {
 		return false;
 	}
 

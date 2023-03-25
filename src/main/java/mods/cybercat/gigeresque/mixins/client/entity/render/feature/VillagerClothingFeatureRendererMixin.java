@@ -28,8 +28,7 @@ import net.minecraft.world.entity.npc.VillagerDataHolder;
  */
 @Environment(EnvType.CLIENT)
 @Mixin(VillagerProfessionLayer.class)
-public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntity & VillagerDataHolder, M extends EntityModel<T> & VillagerHeadModel>
-		extends RenderLayer<T, M> {
+public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntity & VillagerDataHolder, M extends EntityModel<T> & VillagerHeadModel> extends RenderLayer<T, M> {
 
 	private VillagerClothingFeatureRendererMixin(RenderLayerParent<T, M> context) {
 		super(context);
@@ -38,16 +37,11 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
 	@Shadow
 	protected abstract ResourceLocation getResourceLocation(String keyType, ResourceLocation keyId);
 
-	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;" + "Lnet/minecraft/client/renderer"
-			+ "/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("TAIL"))
-	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity,
-			float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;" + "Lnet/minecraft/client/renderer" + "/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("TAIL"))
+	private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
 		if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
 			var entityModel = this.getParentModel();
-			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel,
-					getResourceLocation("type",
-							BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())),
-					matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
+			EggmorphFeatureRenderer.renderEggmorphedModel(entityModel, getResourceLocation("type", BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())), matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
 		}
 	}
 }

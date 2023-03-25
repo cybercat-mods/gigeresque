@@ -31,7 +31,7 @@ public class CustomSkullBlock extends AbstractSkullBlock {
 		super(type, settings);
 		registerDefaultState(getStateDefinition().any().setValue(ROTATION, 0));
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		return SHAPE;

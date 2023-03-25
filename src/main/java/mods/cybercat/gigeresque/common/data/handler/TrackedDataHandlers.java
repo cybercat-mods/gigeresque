@@ -13,7 +13,7 @@ public class TrackedDataHandlers implements GigeresqueInitializer {
 	private static TrackedDataHandlers instance;
 
 	synchronized public static TrackedDataHandlers getInstance() {
-		if (instance == null) 
+		if (instance == null)
 			instance = new TrackedDataHandlers();
 		return instance;
 	}

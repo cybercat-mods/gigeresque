@@ -19,8 +19,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList
-			.of(Pair.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -36,7 +35,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
 		return !entity.isAggressive();
 	}
-	
+
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
@@ -63,11 +62,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 						var e = random.nextGaussian() * 0.02;
 						var f = random.nextGaussian() * 0.02;
 						var g = random.nextGaussian() * 0.02;
-						((ServerLevel) world).sendParticles(ParticleTypes.POOF,
-								((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5,
-								lightSourceLocation.stream().findFirst().get().getFirst().getY(),
-								((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e,
-								f, g, 0.15000000596046448);
+						((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5, lightSourceLocation.stream().findFirst().get().getFirst().getY(), ((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e, f, g, 0.15000000596046448);
 					}
 				}
 			}
@@ -75,8 +70,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	}
 
 	private void startMovingToTarget(E alien, BlockPos targetPos) {
-		alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(),
-				((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
+		alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(), ((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
 	}
 
 }

@@ -76,12 +76,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerbusterHealth)
-				.add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerbusterAttackDamage)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerbusterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerbusterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	@Override
@@ -132,21 +127,11 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
 	@Override
 	public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<ChestbursterEntity>()
-				.setPredicate((target, entity) -> !((target instanceof AlienEntity || target instanceof Warden
-						|| target instanceof ArmorStand || target instanceof Creeper || target instanceof IronGolem)
-						|| (target.getVehicle() != null
-								&& target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-						|| (target instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-						|| target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-						|| (EntityUtils.isFacehuggerAttached(target))
-						|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS))
-						&& !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
-				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
-						.setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
-				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target,
+						entity) -> !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Creeper || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) entity).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
+								|| (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
+				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -156,19 +141,12 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(),
-				new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AnimatableMeleeAttack(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AnimatableMeleeAttack(20));
 	}
 
 	/*
@@ -183,8 +161,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (((this.getTarget() != null && this.doHurtTarget(getTarget()))
-					|| (this.entityData.get(EAT) == true)) && !this.isDeadOrDying())
+			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (this.entityData.get(EAT) == true)) && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.CHOMP);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
@@ -201,8 +178,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		if (this.isDeadOrDying())
 			return;
 		if (this.isVehicle())

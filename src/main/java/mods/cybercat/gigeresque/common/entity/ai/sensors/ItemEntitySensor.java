@@ -25,9 +25,7 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
 		setScanRate(entity -> 15);
 		setPredicate((item, entity) -> {
 			ItemStack itemStack = item.getItem();
-			return (itemStack.getItem().isEdible() || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS)
-					|| itemStack.is(Items.BEETROOT_SEEDS) || itemStack.is(Items.MELON_SEEDS)
-					|| itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
+			return (itemStack.getItem().isEdible() || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(Items.BEETROOT_SEEDS) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
 		});
 	}
 
@@ -43,8 +41,7 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		List<ItemEntity> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7),
-				target -> target instanceof ItemEntity projectile && predicate().test(projectile, entity));
+		List<ItemEntity> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof ItemEntity projectile && predicate().test(projectile, entity));
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));

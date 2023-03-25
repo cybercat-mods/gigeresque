@@ -24,8 +24,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList
-			.of(Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 	protected final float speed;
 
 	public FleeFireTask(float speed) {
@@ -61,8 +60,7 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	@Nullable
 	private Vec3 getPanicPos(PathfinderMob pathfinder, ServerLevel level) {
 		Optional<Vec3> optional;
-		if (pathfinder.isOnFire()
-				&& (optional = this.lookForWater(level, pathfinder).map(Vec3::atBottomCenterOf)).isPresent())
+		if (pathfinder.isOnFire() && (optional = this.lookForWater(level, pathfinder).map(Vec3::atBottomCenterOf)).isPresent())
 			return optional.get();
 		return LandRandomPos.getPos(pathfinder, 15, 4);
 	}
@@ -71,8 +69,7 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 		var blockPos2 = entity.blockPosition();
 		if (!level.getBlockState(blockPos2).getCollisionShape(level, blockPos2).isEmpty())
 			return Optional.empty();
-		return BlockPos.findClosestMatch(blockPos2, 5, 1,
-				blockPos -> level.getFluidState((BlockPos) blockPos).is(FluidTags.WATER));
+		return BlockPos.findClosestMatch(blockPos2, 5, 1, blockPos -> level.getFluidState((BlockPos) blockPos).is(FluidTags.WATER));
 	}
 
 }

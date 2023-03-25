@@ -3,6 +3,9 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoRenderer;
+import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
 import net.fabricmc.api.EnvType;
@@ -10,9 +13,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 
 @Environment(EnvType.CLIENT)
 public class BusterBloodFeatureRenderer extends GeoRenderLayer<ChestbursterEntity> {
@@ -22,14 +22,10 @@ public class BusterBloodFeatureRenderer extends GeoRenderLayer<ChestbursterEntit
 	}
 
 	@Override
-	public void render(PoseStack poseStack, ChestbursterEntity animatable, BakedGeoModel bakedModel,
-			RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick,
-			int packedLight, int packedOverlay) {
+	public void render(PoseStack poseStack, ChestbursterEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 		var uv = animatable.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
 		var rendertype = RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD);
 		if (!(animatable.getGrowth() >= 1200))
-			renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype,
-					bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f,
-					((1200 - animatable.getBlood()) / 1200));
+			renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype, bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f, ((1200 - animatable.getBlood()) / 1200));
 	}
 }

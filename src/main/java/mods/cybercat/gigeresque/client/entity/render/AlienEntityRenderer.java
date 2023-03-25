@@ -22,8 +22,7 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 	}
 
 	@Override
-	public void render(ClassicAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack,
-			MultiBufferSource bufferIn, int packedLightIn) {
+	public void render(ClassicAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
 		var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		if (entity.isCrawling()) {
@@ -35,13 +34,11 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(),
-					entity.level.getBlockState(entity.blockPosition().north()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().north()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(),
-					entity.level.getBlockState(entity.blockPosition().south()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().south()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}

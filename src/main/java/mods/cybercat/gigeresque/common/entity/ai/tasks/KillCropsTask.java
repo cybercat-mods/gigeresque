@@ -18,8 +18,7 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList
-			.of(Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -61,8 +60,7 @@ public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 	}
 
 	private void startMovingToTarget(E alien, BlockPos targetPos) {
-		alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(),
-				((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
+		alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(), ((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
 	}
 
 }

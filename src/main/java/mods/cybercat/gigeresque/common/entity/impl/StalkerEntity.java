@@ -82,16 +82,14 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<StalkerEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
-			.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
 	public int breakingCounter = 0;
 
 	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
 		maxUpStep = 1.5f;
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
 	}
 
@@ -100,20 +98,17 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null
-					&& this.entityData.get(STATE) == 0)
+			if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && this.entityData.get(STATE) == 0)
 				if (animationSpeedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead
-					&& this.entityData.get(STATE) == 0)
+			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && this.entityData.get(STATE) == 0)
 				return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
 			else if (this.entityData.get(STATE) >= 1 && !isDead)
-				return event.setAndContinue(RawAnimation.begin()
-						.then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
+				return event.setAndContinue(RawAnimation.begin().then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
 	}
@@ -138,22 +133,9 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	public List<ExtendedSensor<StalkerEntity>> getSensors() {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden
-								|| entity instanceof ArmorStand || entity instanceof Bat)
-								|| !target.hasLineOfSight(entity)
-								|| (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding()
-								|| ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(entity))
-								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& entity.isAlive() && entity.hasLineOfSight(target))),
-				new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
-				new NearbyRepellentsSensor<StalkerEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7)
-						.setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
-				new UnreachableTargetSensor<>(), new HurtBySensor<>());
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (entity instanceof AlienEggEntity) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity))
+								|| (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && entity.isAlive() && entity.hasLineOfSight(target))),
+				new NearbyBlocksSensor<StalkerEntity>().setRadius(7), new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -163,50 +145,22 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle()
-						|| this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.15f),
-						new Idle<>().startCondition(entity -> !this.isAggressive())
-								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.15f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity,
-						target) -> ((target instanceof AlienEntity || target instanceof Warden
-								|| target instanceof ArmorStand || target instanceof Bat)
-								|| !(entity instanceof LivingEntity)
-								|| (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers()
-										.anyMatch(AlienEntity.class::isInstance))
-								|| (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-								|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(target))
-								|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-										&& !target.isAlive())),
-				new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.stalkerAttackSpeed),
-				new AnimatableMeleeAttack(20)
-						.whenStarting(entity -> this.setAttackingState(this.getRandom().nextInt(0, 3)))
-						.whenStopping(entity -> this.setAttackingState(0)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite()
+				|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.stalkerAttackSpeed), new AnimatableMeleeAttack(20).whenStarting(entity -> this.setAttackingState(this.getRandom().nextInt(0, 3))).whenStopping(entity -> this.setAttackingState(0)));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.stalkerXenoHealth)
-				.add(Attributes.ARMOR, GigeresqueConfig.stalkerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
-				.add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.stalkerAttackDamage)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.stalkerXenoHealth).add(Attributes.ARMOR, GigeresqueConfig.stalkerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.stalkerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
 		this.setAggressive(true);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.9F, 0));
@@ -227,12 +181,10 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.level.removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && !this.isInWater()
-				&& this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isDeadOrDying() && !this.isInWater() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().above().relative(getDirection()),
-						blockPosition().relative(getDirection()).above(2))) {
+				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().above().relative(getDirection()), blockPosition().relative(getDirection()).above(2))) {
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
 							this.level.destroyBlock(testPos, true, null, 512);
@@ -240,20 +192,11 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 						breakingCounter = -90;
 						if (level.isClientSide()) {
 							for (int i = 2; i < 10; i++) {
-								level.addAlwaysVisibleParticle(Particles.ACID,
-										this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
-												* (this.getRandom().nextBoolean() ? -1 : 1),
-										this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
-										this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
-												* (this.getRandom().nextBoolean() ? -1 : 1),
-										0.0, -0.15, 0.0);
+								level.addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
 							}
-							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
-									0.9f + random.nextFloat() * 0.15f, false);
+							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
-							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(GigDamageSources.ACID, 5);

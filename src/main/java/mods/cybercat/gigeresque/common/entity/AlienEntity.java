@@ -65,14 +65,10 @@ import net.minecraft.world.phys.AABB;
 
 public abstract class AlienEntity extends Monster implements GigVibrationListenerConfig {
 
-	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData
-			.defineId(AlienEntity.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class,
-			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
@@ -82,11 +78,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		super(entityType, world);
 		setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
 		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-		if (navigation != null) {
+		if (navigation != null)
 			navigation.setCanFloat(true);
-		}
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(
-				new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), GigeresqueConfig.xenoMaxSoundRange, this));
+		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), GigeresqueConfig.xenoMaxSoundRange, this));
 	}
 
 	@Override
@@ -139,26 +133,21 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		GigVibrationListener.codec(this).encodeStart(NbtOps.INSTANCE, this.dynamicGameEventListener.getListener())
-				.resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
-		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement)
-				.resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
+		GigVibrationListener.codec(this).encodeStart(NbtOps.INSTANCE, this.dynamicGameEventListener.getListener()).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
+		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("anger")) {
-			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger")))
-					.resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
-						this.angerManagement = angerManagement;
-					});
+			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
+				this.angerManagement = angerManagement;
+			});
 			this.syncClientAngerLevel();
 		}
 		if (compound.contains("listener", 10))
-			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener")))
-					.resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener
-							.updateListener((GigVibrationListener) vibrationListener, this.level));
+			GigVibrationListener.codec(this).parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(LOGGER::error).ifPresent(vibrationListener -> this.dynamicGameEventListener.updateListener((GigVibrationListener) vibrationListener, this.level));
 	}
 
 	public int getClientAngerLevel() {
@@ -219,8 +208,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		var searcharea = this.level.getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D));
 		if (!level.isClientSide && this.tickCount % Constants.TPS == 0)
 			searcharea.forEach(e -> {
-				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB)
-						|| e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
+				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
 					this.heal(0.5833f);
 			});
 	}
@@ -242,9 +230,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (posState.getBlock() == Blocks.WATER)
 			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-		if (!(posState.getBlock() instanceof AirBlock)
-				&& !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT)))
-				&& !(posState.getBlock() instanceof TorchBlock))
+		if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
 			return;
 		level.setBlockAndUpdate(pos, newState);
 	}
@@ -369,8 +355,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		var list2 = livingEntity.level.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
 		if (list2.anyMatch(NEST))
 			return false;
-		if (livingEntity.getVehicle() != null
-				&& livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
 			return false;
 		if (livingEntity instanceof AlienEntity)
 			return false;
@@ -387,12 +372,11 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
 			return false;
 		Entity entity = var5.sourceEntity();
-		return !(entity instanceof LivingEntity) || this.canTargetEntity((LivingEntity)entity);
+		return !(entity instanceof LivingEntity) || this.canTargetEntity((LivingEntity) entity);
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		if (this.isDeadOrDying())
 			return;
 		if (this.isVehicle())

@@ -32,8 +32,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
 	}
 
 	@Inject(method = { "interactOn" }, at = { @At("HEAD") }, cancellable = true)
-	protected InteractionResult stopPlayerUsing(Entity entity, InteractionHand hand,
-			CallbackInfoReturnable<InteractionResult> callbackInfo) {
+	protected InteractionResult stopPlayerUsing(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
 		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
 			callbackInfo.setReturnValue(InteractionResult.FAIL);
 		return callbackInfo.getReturnValue();

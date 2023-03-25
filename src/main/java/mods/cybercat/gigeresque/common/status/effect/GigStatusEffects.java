@@ -23,8 +23,7 @@ public class GigStatusEffects implements GigeresqueInitializer {
 		return instance;
 	}
 
-	public static final MobEffect TRAUMA = new TraumaStatusEffect().addAttributeModifier(Attributes.MAX_HEALTH,
-			"5e5ac802-7542-4418-b56e-548913950563", -0.5, AttributeModifier.Operation.MULTIPLY_BASE);
+	public static final MobEffect TRAUMA = new TraumaStatusEffect().addAttributeModifier(Attributes.MAX_HEALTH, "5e5ac802-7542-4418-b56e-548913950563", -0.5, AttributeModifier.Operation.MULTIPLY_BASE);
 
 	public static final MobEffect ACID = new AcidStatusEffect();
 

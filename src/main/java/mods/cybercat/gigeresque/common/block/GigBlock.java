@@ -7,7 +7,7 @@ public class GigBlock extends Block {
 	public GigBlock(Properties settings) {
 		super(settings);
 	}
-	
+
 	@Override
 	public boolean isPossibleToRespawnInThis() {
 		return false;

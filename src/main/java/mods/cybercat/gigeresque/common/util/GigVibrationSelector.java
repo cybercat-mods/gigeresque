@@ -8,12 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class GigVibrationSelector {
-	public static final Codec<GigVibrationSelector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			GigVibrationInfo.CODEC.optionalFieldOf("event")
-					.forGetter(vibrationSelector -> vibrationSelector.currentVibrationData.map(Pair::getLeft)),
-			(Codec.LONG.fieldOf("tick")).forGetter(
-					vibrationSelector -> vibrationSelector.currentVibrationData.map(Pair::getRight).orElse(-1L)))
-			.apply(instance, GigVibrationSelector::new));
+	public static final Codec<GigVibrationSelector> CODEC = RecordCodecBuilder.create(instance -> instance.group(GigVibrationInfo.CODEC.optionalFieldOf("event").forGetter(vibrationSelector -> vibrationSelector.currentVibrationData.map(Pair::getLeft)), (Codec.LONG.fieldOf("tick")).forGetter(vibrationSelector -> vibrationSelector.currentVibrationData.map(Pair::getRight).orElse(-1L))).apply(instance, GigVibrationSelector::new));
 	private Optional<Pair<GigVibrationInfo, Long>> currentVibrationData;
 
 	public GigVibrationSelector(Optional<GigVibrationInfo> optional, long l) {
@@ -45,8 +40,7 @@ public class GigVibrationSelector {
 		if (vibrationInfo.distance() > vibrationInfo2.distance())
 			return false;
 
-		return GigVibrationListener.getGameEventFrequency(vibrationInfo.gameEvent()) > GigVibrationListener
-				.getGameEventFrequency(vibrationInfo2.gameEvent());
+		return GigVibrationListener.getGameEventFrequency(vibrationInfo.gameEvent()) > GigVibrationListener.getGameEventFrequency(vibrationInfo2.gameEvent());
 	}
 
 	public Optional<GigVibrationInfo> chosenCandidate(long l) {

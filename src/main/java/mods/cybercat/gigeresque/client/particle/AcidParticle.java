@@ -10,8 +10,7 @@ public class AcidParticle extends TextureSheetParticle {
 	private boolean reachedGround;
 	private final SpriteSet spriteProvider;
 
-	public AcidParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i,
-			SpriteSet spriteProvider) {
+	public AcidParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
 		super(clientWorld, d, e, f);
 		xd = g;
 		yd = h;
