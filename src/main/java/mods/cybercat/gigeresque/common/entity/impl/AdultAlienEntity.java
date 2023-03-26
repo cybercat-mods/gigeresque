@@ -15,7 +15,6 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import net.minecraft.core.BlockPos;
@@ -86,7 +85,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
-		maxUpStep = 2.5f;
+		setMaxUpStep(2.5f);
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -344,7 +343,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
-						this.hurt(GigDamageSources.ACID, 5);
+						this.hurt(damageSources().generic(), 5);
 						breakingCounter = -90;
 					}
 				}
@@ -356,10 +355,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		var multiplier = 1.0f;
-		if (source.isFire())
+		if (source == damageSources().onFire())
 			multiplier = 2.0f;
-		else if (source.isProjectile())
-			multiplier = 0.5f;
 
 		return super.hurt(source, amount * multiplier);
 	}

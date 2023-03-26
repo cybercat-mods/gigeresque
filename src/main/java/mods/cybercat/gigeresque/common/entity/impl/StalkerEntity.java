@@ -22,7 +22,6 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
@@ -35,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -88,7 +86,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
-		maxUpStep = 1.5f;
+		setMaxUpStep(1.5f);
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
 	}
@@ -99,7 +97,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && this.entityData.get(STATE) == 0)
-				if (animationSpeedOld >= 0.35F)
+				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
@@ -199,7 +197,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
-						this.hurt(GigDamageSources.ACID, 5);
+						this.hurt(damageSources().generic(), 5);
 						breakingCounter = -90;
 					}
 				}
@@ -222,7 +220,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 				return super.doHurtTarget(target);
 			}
 			case HEAVY -> {
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			}

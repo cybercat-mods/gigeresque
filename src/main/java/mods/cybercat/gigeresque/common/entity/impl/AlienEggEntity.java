@@ -219,10 +219,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source != DamageSource.OUT_OF_WORLD)
-			if (source.getDirectEntity() != null || source != DamageSource.IN_WALL && !this.isHatched())
+		if (source != damageSources().outOfWorld())
+			if (source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
 				setIsHatching(true);
-		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
+		return source == damageSources().inWall() ? false : super.hurt(source, amount);
 	}
 
 	@Override

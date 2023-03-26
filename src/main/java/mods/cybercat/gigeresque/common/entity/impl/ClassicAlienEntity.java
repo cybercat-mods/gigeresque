@@ -34,14 +34,12 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -178,7 +176,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					this.setAggressive(false);
 				}
 				if (biteCounter >= 88) {
-					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
 					this.heal(50);
 					if (this.level.isClientSide)
 						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
@@ -195,7 +193,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					this.setAggressive(false);
 				}
 				if (holdingCounter >= 843) {
-					this.getFirstPassenger().hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
 					this.heal(50);
 					if (this.level.isClientSide)
 						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
@@ -226,7 +224,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 2 -> {
@@ -234,7 +232,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 3 -> {
@@ -242,7 +240,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 4 -> {
@@ -250,7 +248,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 //			case 5 -> {
@@ -352,7 +350,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false) {
 				if (this.isOnGround() && !this.wasEyeInWater && this.isExecuting() == false) {
-					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
+					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (!this.isCrawling())
 						if (this.isVehicle())

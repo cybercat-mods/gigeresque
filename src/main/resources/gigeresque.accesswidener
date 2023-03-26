@@ -8,3 +8,4 @@ accessible field net/minecraft/server/level/ServerEntity tickCount I
 accessible field net/minecraft/server/level/ServerEntity updateInterval I
 accessible field net/minecraft/world/entity/Entity xRot F
 accessible field net/minecraft/world/entity/Entity yRot F
+accessible field net/minecraft/world/entity/WalkAnimationState speedOld F

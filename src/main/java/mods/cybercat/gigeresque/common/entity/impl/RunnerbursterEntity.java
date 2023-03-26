@@ -157,7 +157,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !isDead)
-				if (animationSpeedOld >= 0.35F)
+				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);

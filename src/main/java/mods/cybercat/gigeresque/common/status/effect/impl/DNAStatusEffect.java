@@ -9,7 +9,6 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.StalkerEntity;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -72,7 +71,7 @@ public class DNAStatusEffect extends MobEffect {
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
 					}
-					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
@@ -91,19 +90,19 @@ public class DNAStatusEffect extends MobEffect {
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
 					}
-					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					return;
 				}
 			} else {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
-					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
 				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					entity.hurt(GigDamageSources.DNA, Integer.MAX_VALUE);
+					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;

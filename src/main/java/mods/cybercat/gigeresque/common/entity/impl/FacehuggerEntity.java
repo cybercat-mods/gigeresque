@@ -113,7 +113,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, Level world) {
 		super(type, world);
-		maxUpStep = 1.5f;
+		setMaxUpStep(1.5f);
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -258,7 +258,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					}
 					setIsInfertile(true);
 					this.unRide();
-					this.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+					this.hurt(damageSources().outOfWorld(), Float.MAX_VALUE);
 				}
 			}
 
@@ -322,7 +322,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
 			detachFromHost(true);
 
-		if ((isAttachedToHost() || isInfertile()) && (source == DamageSource.DROWN || source == DamageSource.IN_WALL))
+		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown() || source == damageSources().inWall()))
 			return false;
 
 		return super.hurt(source, amount);
@@ -490,7 +490,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
 			}
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false && (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
+			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			}

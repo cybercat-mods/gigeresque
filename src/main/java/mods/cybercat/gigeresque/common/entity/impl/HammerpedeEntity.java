@@ -69,7 +69,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	public HammerpedeEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
-		maxUpStep = 1.5f;
+		setMaxUpStep(1.5f);
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
 	}

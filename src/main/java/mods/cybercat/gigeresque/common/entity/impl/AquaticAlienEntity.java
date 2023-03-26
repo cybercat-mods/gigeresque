@@ -26,14 +26,12 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -92,7 +90,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
 		super(type, world);
-		maxUpStep = 1.0f;
+		setMaxUpStep(1.0f);
 
 		navigation = swimNavigation;
 		moveControl = swimMoveControl;
@@ -262,7 +260,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					this.setAggressive(false);
 				}
 				if (holdingCounter == 850) {
-					target.hurt(GigDamageSources.EXECUTION, Float.MAX_VALUE);
+					target.hurt(damageSources().generic(), Float.MAX_VALUE);
 					target.level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsExecuting(false);
 					holdingCounter = 0;
@@ -272,7 +270,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			}
 
 		this.heal(1.0833f);
-		target.hurt(DamageSource.mobAttack(this), additionalDamage);
+		target.hurt(damageSources().mobAttack(this), additionalDamage);
 
 		return super.doHurtTarget(target);
 	}

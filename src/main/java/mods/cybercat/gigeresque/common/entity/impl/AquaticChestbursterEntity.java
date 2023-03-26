@@ -41,7 +41,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 
 	public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
 		super(type, world);
-		maxUpStep = 1.0f;
+		setMaxUpStep(1.0f);
 
 		navigation = swimNavigation;
 		moveControl = swimMoveControl;
@@ -109,13 +109,13 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead && animationSpeedOld > 0.15F)
+			if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
 				if (this.isUnderWater())
-					if (animationSpeedOld >= 0.35F)
+					if (walkAnimation.speedOld >= 0.35F)
 						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 					else
 						return event.setAndContinue(GigAnimationsDefault.SWIM);
-				else if (animationSpeedOld >= 0.35F)
+				else if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);

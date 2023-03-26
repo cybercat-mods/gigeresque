@@ -120,7 +120,7 @@ public class GigVibrationListener implements GameEventListener {
 				--this.travelTimeInTicks;
 				if (this.travelTimeInTicks <= 0) {
 					this.travelTimeInTicks = 0;
-					this.config.onSignalReceive(serverLevel, this, new BlockPos(this.currentVibration.pos()), this.currentVibration.gameEvent(), this.currentVibration.getEntity(serverLevel).orElse(null), this.currentVibration.getProjectileOwner(serverLevel).orElse(null), this.currentVibration.distance());
+					this.config.onSignalReceive(serverLevel, this, BlockPos.containing(this.currentVibration.pos()), this.currentVibration.gameEvent(), this.currentVibration.getEntity(serverLevel).orElse(null), this.currentVibration.getProjectileOwner(serverLevel).orElse(null), this.currentVibration.distance());
 					this.currentVibration = null;
 				}
 			}
@@ -147,7 +147,7 @@ public class GigVibrationListener implements GameEventListener {
 		if (optional.isEmpty())
 			return false;
 		var vec32 = optional.get();
-		if (!this.config.shouldListen(serverLevel, this, new BlockPos(vec3), gameEvent, context))
+		if (!this.config.shouldListen(serverLevel, this, BlockPos.containing(vec3), gameEvent, context))
 			return false;
 		if (GigVibrationListener.isOccluded(serverLevel, vec3, vec32))
 			return false;

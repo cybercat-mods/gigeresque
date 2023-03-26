@@ -71,7 +71,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
 	public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
-		maxUpStep = 1.5f;
+		setMaxUpStep(1.5f);
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
 	}
@@ -81,7 +81,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0)
-				if (animationSpeedOld >= 0.35F)
+				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);

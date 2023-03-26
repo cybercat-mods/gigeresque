@@ -36,9 +36,9 @@
 	"depends": {
 		"fabricloader": ">=0.14.11",
 		"fabric": "*",
-		"minecraft": "1.19.3",
+		"minecraft": "1.19.4",
 		"azurelib": ">=1.0.6",
-		"smartbrainlib": ">=1.7.4",
+		"smartbrainlib": ">=1.9",
 		"java": ">=17"
 	},
 	"accessWidener": "gigeresque.accesswidener"

@@ -23,7 +23,6 @@ import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -100,7 +99,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
 	public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity)) && (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
+		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity)) && (source == damageSources().drown() || source == damageSources().inWall())) {
 			callbackInfo.setReturnValue(false);
 			callbackInfo.cancel();
 		}
@@ -169,7 +168,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 			level.addFreshEntity(egg);
 			hasEggSpawned = true;
-			hurt(GigDamageSources.EGGMORPHING, Float.MAX_VALUE);
+			hurt(damageSources().generic(), Float.MAX_VALUE);
 		}
 	}
 
@@ -187,7 +186,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 		if (ticksUntilImpregnation == 0L) {
 			if (tickCount % Constants.TPS == 0L)
-				this.hurt(GigDamageSources.CHESTBURSTING, this.getMaxHealth() / 8f);
+				this.hurt(damageSources().generic(), this.getMaxHealth() / 8f);
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
 				var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType());

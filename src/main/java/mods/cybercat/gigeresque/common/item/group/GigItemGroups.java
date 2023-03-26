@@ -12,7 +12,7 @@ public class GigItemGroups {
 	public static void init() {
 	}
 
-	public static final CreativeModeTab GENERAL = FabricItemGroup.builder(Constants.modResource("items")).icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab GENERAL = FabricItemGroup.builder(Constants.modResource("items")).icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG)).displayItems((context, entries) -> {
 		entries.accept(GigItems.BLACK_FLUID_BUCKET);
 		entries.accept(GigItems.SURGERY_KIT);
 		entries.accept(GigItems.EGG_SPAWN_EGG);
@@ -28,7 +28,7 @@ public class GigItemGroups {
 		entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG);
 	}).build();
 
-	public static final CreativeModeTab BLOCKS = FabricItemGroup.builder(Constants.modResource("blocks")).icon(() -> new ItemStack(GIgBlocks.NEST_RESIN_WEB)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab BLOCKS = FabricItemGroup.builder(Constants.modResource("blocks")).icon(() -> new ItemStack(GIgBlocks.NEST_RESIN_WEB)).displayItems((context, entries) -> {
 		entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_1);
 		entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_2);
 		entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_3);

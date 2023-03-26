@@ -36,16 +36,14 @@ public class InGameOverlayRendererMixin {
 	private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
 		if (!client.player.isSpectator()) {
 			var d = client.player.getEyeY() - 0.1111111119389534D;
-			var blockPos = new BlockPos(client.player.getX(), d, client.player.getZ());
+			var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
 			var fluidState = client.player.level.getFluidState(blockPos);
 
 			if (fluidState.createLegacyBlock().getBlock() == GIgBlocks.BLACK_FLUID)
 				renderBlackFluidOverlay(client, matrices);
 
-			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable
-					&& eggmorphable.isEggmorphing()) {
-				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer()
-						- eggmorphable.getTicksUntilEggmorphed()) / GigeresqueConfig.getEggmorphTickTimer();
+			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
+				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / GigeresqueConfig.getEggmorphTickTimer();
 				renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
 			}
 		}
@@ -53,7 +51,6 @@ public class InGameOverlayRendererMixin {
 
 	private static void renderBlackFluidOverlay(Minecraft client, PoseStack matrices) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		var f = client.player.getLightLevelDependentMagicValue();
@@ -74,7 +71,6 @@ public class InGameOverlayRendererMixin {
 
 	private static void renderEggmorphOverlay(Minecraft client, PoseStack matrices, float progress) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.enableTexture();
 		RenderSystem.setShaderTexture(0, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		var f = client.player.getLightLevelDependentMagicValue();

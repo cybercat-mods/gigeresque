@@ -60,7 +60,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 		if (walkTarget == null)
 			return false;
 
-		return walkTarget.getTarget().currentBlockPosition().equals(new BlockPos(this.hidePos)) && !entity.getNavigation().isDone();
+		return walkTarget.getTarget().currentBlockPosition().equals(BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
 	}
 
 	@Override

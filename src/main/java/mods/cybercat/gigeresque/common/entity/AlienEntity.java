@@ -18,7 +18,6 @@ import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.EntityUtils;
@@ -237,17 +236,17 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	@Override
 	public void die(DamageSource source) {
-		if (DamageSourceUtils.isDamageSourceNotPuncturing(source)) {
+		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources())) {
 			super.die(source);
 			return;
 		}
-		if (source == DamageSource.OUT_OF_WORLD) {
+		if (source == damageSources().outOfWorld()) {
 			super.die(source);
 			return;
 		}
 
 		if (!this.level.isClientSide) {
-			if (source != DamageSource.OUT_OF_WORLD || source != GigDamageSources.ACID) {
+			if (source != damageSources().outOfWorld() || source != damageSources().generic()) {
 				if (getAcidDiameter() == 1)
 					generateAcidPool(0, 0);
 				else {
@@ -271,10 +270,10 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
 		}
 
-		if (DamageSourceUtils.isDamageSourceNotPuncturing(source))
+		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-		if (!this.level.isClientSide && source != DamageSource.OUT_OF_WORLD) {
+		if (!this.level.isClientSide && source != damageSources().outOfWorld()) {
 			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4))

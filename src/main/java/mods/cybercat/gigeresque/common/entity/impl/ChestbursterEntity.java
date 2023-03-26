@@ -235,8 +235,8 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead && animationSpeedOld > 0.15F)
-				if (animationSpeedOld >= 0.35F)
+			if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
+				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);

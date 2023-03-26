@@ -29,7 +29,6 @@ import mods.cybercat.gigeresque.common.util.EntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -136,7 +135,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 2 -> {
@@ -144,7 +143,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 3 -> {
@@ -152,7 +151,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 			case 4 -> {
@@ -160,7 +159,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(DamageSource.mobAttack(this), additionalDamage);
+				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 //			case 5 -> {
@@ -234,9 +233,9 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
 				if (!this.isInWater() && this.isExecuting() == false)
-					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
+					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
-					else if (this.isExecuting() == false && animationSpeedOld < 0.35F || (!this.isCrawling() && !this.onGround))
+					else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround))
 						return event.setAndContinue(GigAnimationsDefault.WALK);
 					else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
 						if (this.isAggressive() && !this.isVehicle())
