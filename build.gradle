@@ -32,7 +32,7 @@ repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com" }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url "https://dl.cloudsmith.io/public/azuredoom-mods/geckolib/maven/" }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://maven.gegy.dev' }
