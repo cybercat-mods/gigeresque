@@ -9,7 +9,7 @@ import net.minecraft.world.item.SpawnEggItem;
 public class GigSpawnEgg extends SpawnEggItem {
 
 	public GigSpawnEgg(EntityType<? extends Mob> type, int primaryColor, int secondaryColor) {
-		super(type, primaryColor, secondaryColor, new Item.Properties().stacksTo(1).tab(GigItemGroups.GENERAL));
+		super(type, primaryColor, secondaryColor, new Item.Properties().stacksTo(64).tab(GigItemGroups.GENERAL));
 	}
 
 }
