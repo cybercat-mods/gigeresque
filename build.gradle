@@ -32,7 +32,7 @@ repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com" }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url "https://dl.cloudsmith.io/public/azuredoom-mods/geckolib/maven/" }
     maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
@@ -51,7 +51,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.6'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.7'
 	modImplementation "maven.modrinth:midnightlib:1.2.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.2.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
