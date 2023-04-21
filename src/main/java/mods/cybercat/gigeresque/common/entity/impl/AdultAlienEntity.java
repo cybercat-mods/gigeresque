@@ -283,7 +283,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 		// Statis Logic
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing() && !this.level.isDay())) {
+		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
 			if (getStatisTimer() == 500 || this.isStatis() == true) {
 				setIsStatis(true);
