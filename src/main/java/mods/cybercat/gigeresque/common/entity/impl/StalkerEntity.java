@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.impl;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -16,7 +17,6 @@ import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.CrawlerNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
@@ -84,7 +84,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
 			.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	private final CrawlerNavigation landNavigation = new CrawlerNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
 	public int breakingCounter = 0;
 
 	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
