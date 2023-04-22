@@ -317,6 +317,17 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		return super.doHurtTarget(target);
 	}
 
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f) * (this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
 	/*
 	 * ANIMATIONS
 	 */
