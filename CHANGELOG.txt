@@ -1,3 +1,5 @@
-v.0.5.22
+v.0.5.23
 
-- Updated Midnight Lib version shadowed.
+- Fixes statis not triggering.
+- Moves more navigation to AzureLib.
+- Adjusts reach of Aqua melee.
