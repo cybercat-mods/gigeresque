@@ -17,6 +17,7 @@ import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.util.MobSpawn;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
 public class Gigeresque implements ModInitializer {
 	public static GigeresqueConfig config;
@@ -39,5 +40,9 @@ public class Gigeresque implements ModInitializer {
 		GigStructures.registerStructureFeatures();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
 		AzureLib.initialize();
+		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_BLOCK, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_WEB, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_WEB_CROSS, 20, 5);
 	}
 }
