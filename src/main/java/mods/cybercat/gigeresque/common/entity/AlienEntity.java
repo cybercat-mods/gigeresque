@@ -77,6 +77,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
+	public int attackstatetimer = 0;
 
 	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
