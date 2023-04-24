@@ -44,6 +44,8 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -87,7 +89,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.entityData.get(STATE) == 1 && !isDead)
+			else if (event.getAnimatable().getAttckingState() == 1 && !isDead)
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
@@ -97,6 +99,24 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return cache;
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.getTarget() != null && !this.level.isClientSide()) {
+			if (this.getCommandSenderWorld().getEntities(this, new AABB(this.blockPosition()).inflate(3D)).contains(this.getTarget())) {
+				this.attackstatetimer++;
+				if (this.onGround && this.attackstatetimer >= 5) {
+					var vec3d2 = new Vec3(this.getTarget().getX() - this.getX(), 0.0, this.getTarget().getZ() - this.getZ());
+					vec3d2 = vec3d2.normalize().scale(0.2).add(this.getDeltaMovement().scale(0.2));
+					this.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+					this.attackstatetimer = -80;
+				}
+			}
+		} else {
+			this.attackstatetimer = 0;
+		}
 	}
 
 	@Override
@@ -130,8 +150,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<PopperEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !this.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite()
-				|| ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AttackExplodeTask(20).whenStarting(entity -> this.setAttackingState(1)).whenStopping(entity -> this.setAttackingState(0)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !this.hasLineOfSight(target) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
+				|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AttackExplodeTask(20));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
