@@ -147,5 +147,10 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
 		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
 	}
+	
+	@Override
+	protected int getAcidDiameter() {
+		return 1;
+	}
 
 }
