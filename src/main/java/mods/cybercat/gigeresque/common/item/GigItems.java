@@ -3,16 +3,19 @@ package mods.cybercat.gigeresque.common.item;
 import mod.azure.azurelib.items.AzureSpawnEgg;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public class GigItems {
 
 	public static void init() {
 	}
 
-	public static final GigBucket BLACK_FLUID_BUCKET = registerItem("black_fluid_bucket", new GigBucket());
+	public static final BucketItem BLACK_FLUID_BUCKET = registerItem("black_fluid_bucket", new BucketItem(GigFluids.BLACK_FLUID_STILL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
 	public static final SurgeryKitItem SURGERY_KIT = registerItem("surgery_kit", new SurgeryKitItem());
 

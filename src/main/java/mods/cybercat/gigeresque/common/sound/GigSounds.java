@@ -13,9 +13,8 @@ public class GigSounds implements GigeresqueInitializer {
 	private static GigSounds instance;
 
 	synchronized public static GigSounds getInstance() {
-		if (instance == null) {
+		if (instance == null) 
 			instance = new GigSounds();
-		}
 		return instance;
 	}
 

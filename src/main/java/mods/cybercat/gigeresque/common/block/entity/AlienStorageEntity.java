@@ -48,10 +48,8 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
-			if (player.containerMenu instanceof ChestMenu) {
-				var inventory = ((ChestMenu) player.containerMenu).getContainer();
-				return inventory == AlienStorageEntity.this;
-			}
+			if (player.containerMenu instanceof ChestMenu menu) 
+				return menu.getContainer() == AlienStorageEntity.this;
 			return false;
 		}
 	};
@@ -118,8 +116,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 	}
 
 	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
-		var block = state.getBlock();
-		world.blockEvent(pos, block, 1, newViewerCount);
+		world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
 		if (oldViewerCount != newViewerCount)
 			if (newViewerCount > 0)
 				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));

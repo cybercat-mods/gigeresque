@@ -106,7 +106,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		for (BlockPos testPos : BlockPos.betweenClosed(pos, pos.above(2)))
+		for (var testPos : BlockPos.betweenClosed(pos, pos.above(2)))
 			if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
 				return false;
 		return true;
