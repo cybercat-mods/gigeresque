@@ -299,7 +299,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new AvoidSun<>(), new FindDarknessTask<>().cooldownFor(entity -> 20), new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
+		return BrainActivityGroup.coreTasks(new AvoidSun<>(), new FindDarknessTask<>().cooldownFor(entity -> 20).startCondition(mob -> !this.isAggressive()), new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
 				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
 
@@ -307,7 +307,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && !(((Player) target).isCreative() || ((Player) target).isSpectator())), new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()), new Idle<>().startCondition(entity -> (!this.isAggressive() || !this.level.isDay() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()), new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
 	}
 
 	@Override
