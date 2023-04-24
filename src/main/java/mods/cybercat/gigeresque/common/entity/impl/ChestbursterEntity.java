@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
@@ -36,7 +37,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.AnimalPanic;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -63,17 +63,12 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
-public class ChestbursterEntity extends AlienEntity
-		implements GeoEntity, Growable, SmartBrainOwner<ChestbursterEntity> {
+public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable, SmartBrainOwner<ChestbursterEntity> {
 
-	private static final EntityDataAccessor<Float> BLOOD = SynchedEntityData.defineId(ChestbursterEntity.class,
-			EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(ChestbursterEntity.class,
-			EntityDataSerializers.FLOAT);
-	public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(ChestbursterEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(ChestbursterEntity.class,
-			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> BLOOD = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
 	public int bloodRendering = 0;
 	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -87,11 +82,7 @@ public class ChestbursterEntity extends AlienEntity
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.chestbursterHealth)
-				.add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE, 5.0)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.chestbursterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE, 5.0).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	public float getBlood() {
@@ -195,34 +186,22 @@ public class ChestbursterEntity extends AlienEntity
 
 	@Override
 	public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
-						.setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
-				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
-						.setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AnimalPanic(2.0f), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(),
-				new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.2F));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.2F));
 	}
 
 	/*
@@ -271,8 +250,7 @@ public class ChestbursterEntity extends AlienEntity
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
 				if (this.level.isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
 		}));
@@ -284,8 +262,7 @@ public class ChestbursterEntity extends AlienEntity
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
 		if (var6 instanceof ItemEntity)
 			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
