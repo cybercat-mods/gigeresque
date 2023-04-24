@@ -28,8 +28,8 @@ public interface Growable {
 			if (newEntity == null)
 				return;
 			newEntity.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-			if (newEntity instanceof RunnerbursterEntity)
-				((RunnerbursterEntity) newEntity).setBirthStatus(false);
+			if (newEntity instanceof RunnerbursterEntity runnerBurster)
+				runnerBurster.setBirthStatus(false);
 			world.addFreshEntity(newEntity);
 			entity.remove(Entity.RemovalReason.DISCARDED);
 		}
