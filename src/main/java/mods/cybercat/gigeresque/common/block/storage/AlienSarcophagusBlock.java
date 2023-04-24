@@ -41,10 +41,8 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	BlockPos[] blockPoss;
 
 	public AlienSarcophagusBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK)
-				.strength(5.0f, 8.0f).nonOpaque());
-		this.registerDefaultState(
-				this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
 	}
 
 	@Override
@@ -63,8 +61,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide && world.getBlockEntity(pos)instanceof AlienStorageEntity alienStorageEntity)
 			player.openMenu(alienStorageEntity);
 		return InteractionResult.SUCCESS;
@@ -109,7 +106,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		for (BlockPos testPos : BlockPos.betweenClosed(pos, pos.above(2)))
+		for (var testPos : BlockPos.betweenClosed(pos, pos.above(2)))
 			if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
 				return false;
 		return true;

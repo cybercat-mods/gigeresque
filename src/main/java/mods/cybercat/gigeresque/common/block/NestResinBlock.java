@@ -38,13 +38,10 @@ public class NestResinBlock extends Block {
 
 	private static List<VoxelShape> interpolateShapes(boolean divide, boolean includeEmptyVoxelShape) {
 		ArrayList<VoxelShape> list = new ArrayList<>();
-		if (includeEmptyVoxelShape) {
+		if (includeEmptyVoxelShape) 
 			list.add(Shapes.empty());
-		}
-		for (int i = 0; i < 8; i++) {
-			var minY = divide ? (i * 2.0) / 2.0 : i * 2.0;
-			list.add(box(0.0, 0.0, 0.0, 16.0, minY, 16.0));
-		}
+		for (var i = 0; i < 8; i++) 
+			list.add(box(0.0, 0.0, 0.0, 16.0, divide ? (i * 2.0) / 2.0 : i * 2.0, 16.0));
 		return list;
 	}
 
@@ -126,10 +123,9 @@ public class NestResinBlock extends Block {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
 		var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-		if (blockState.is(this)) {
-			var i = blockState.getValue(LAYERS);
-			return blockState.setValue(LAYERS, Math.min(8, i + 1));
-		} else
+		if (blockState.is(this))
+			return blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1));
+		else
 			return super.getStateForPlacement(ctx);
 	}
 

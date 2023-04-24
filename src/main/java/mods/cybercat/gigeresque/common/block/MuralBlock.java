@@ -21,14 +21,12 @@ public class MuralBlock extends GigBlock {
 	}
 
 	@Override
-	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity,
-			ItemStack stack) {
+	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
 		world.setBlock(pos, GIgBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
 		var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
 		areaEffectCloudEntity.setRadius(1.0F);
 		areaEffectCloudEntity.setDuration(60);
-		areaEffectCloudEntity
-				.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
 		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
 		world.addFreshEntity(areaEffectCloudEntity);
 		super.playerDestroy(world, player, pos, state, blockEntity, stack);

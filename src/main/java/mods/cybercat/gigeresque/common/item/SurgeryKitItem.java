@@ -56,8 +56,7 @@ public class SurgeryKitItem extends Item {
 				host.setTicksUntilImpregnation(-1);
 
 				host.removeParasite();
-				if (entity instanceof Player) {
-					Player playerentity = (Player) entity;
+				if (entity instanceof Player playerentity) {
 					playerentity.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
 					stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 				}

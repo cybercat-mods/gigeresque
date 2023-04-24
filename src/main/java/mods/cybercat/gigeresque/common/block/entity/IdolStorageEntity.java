@@ -42,17 +42,14 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 		}
 
 		@Override
-		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-				int newViewerCount) {
+		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
 			IdolStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
-			if (player.containerMenu instanceof ChestMenu) {
-				var inventory = ((ChestMenu) player.containerMenu).getContainer();
-				return inventory == IdolStorageEntity.this;
-			}
+			if (player.containerMenu instanceof ChestMenu menu)
+				return menu.getContainer() == IdolStorageEntity.this;
 			return false;
 		}
 	};
@@ -118,10 +115,8 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 			this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
 	}
 
-	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount,
-			int newViewerCount) {
-		var block = state.getBlock();
-		world.blockEvent(pos, block, 1, newViewerCount);
+	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+		world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
 		if (oldViewerCount != newViewerCount)
 			if (newViewerCount > 0)
 				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
