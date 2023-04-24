@@ -161,11 +161,11 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (this.entityData.get(EAT) == true)) && !this.isDeadOrDying())
+			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (event.getAnimatable().isEating() == true)) && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.CHOMP);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (this.entityData.get(BIRTHED) == true)
+			else if (event.getAnimatable().isBirthed() == true)
 				return event.setAndContinue(GigAnimationsDefault.BIRTH);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
