@@ -1,6 +1,12 @@
-v.0.5.23
+v.0.5.24
 
-- Fixes statis not triggering.
-- Moves more navigation to AzureLib.
-- Adjusts reach of Aqua melee.
-- Adjusts eggs total
+- All nest blocks proper burn now.
+- Acid damages items.
+- Panic has a check to make sure not aggressive.
+- Hammerpede attack animation fixed.
+- Popper attack animation fixed.
+- Fix very rare data mismatch crash on the controllers.
+- Stalker attack animation fixed, ranged tweaked as well.
+- Tweak checks Classic Alien finding dark.
+- Moved all aliens with melee attacks not the Classic to new attack system.
+- General code cleanup part 1 of ???
