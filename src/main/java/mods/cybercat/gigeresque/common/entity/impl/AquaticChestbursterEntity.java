@@ -118,12 +118,12 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);
-			else if (this.entityData.get(EAT) == true && !this.isDeadOrDying())
+			else if (event.getAnimatable().isEating() == true && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.CHOMP);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else {
-				if (this.tickCount < 5 && this.entityData.get(BIRTHED) == true)
+				if (this.tickCount < 5 && event.getAnimatable().isBirthed() == true)
 					return event.setAndContinue(GigAnimationsDefault.BIRTH);
 				else {
 					if (this.isUnderWater())
