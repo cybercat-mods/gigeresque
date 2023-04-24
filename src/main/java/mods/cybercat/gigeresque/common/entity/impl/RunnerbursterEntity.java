@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
@@ -36,7 +37,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.AnimalPanic;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -136,7 +136,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AnimalPanic(2.0f), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
 	}
 
 	@Override

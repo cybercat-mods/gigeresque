@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -29,7 +30,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.AnimalPanic;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Monster;
@@ -121,7 +121,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<HammerpedeEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AnimalPanic(2.0f), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
 	}
 
 	@Override
