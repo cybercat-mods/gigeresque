@@ -12,7 +12,6 @@ import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
@@ -169,12 +168,6 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 		registerItemBlock("nest_resin_web", NEST_RESIN_WEB);
 		registerItemBlock("nest_resin_web_cross", NEST_RESIN_WEB_CROSS);
-
-		// Flammability;
-		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN, 5, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_BLOCK, 5, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB, 5, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(NEST_RESIN_WEB_CROSS, 5, 5);
 
 		Registry.register(Registry.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
