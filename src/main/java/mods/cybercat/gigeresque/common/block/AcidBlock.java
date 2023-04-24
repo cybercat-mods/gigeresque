@@ -16,6 +16,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -205,5 +206,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return world.getBlockState(pos).isAir();
+	}
+
+	@Override
+	public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+		if (entity instanceof ItemEntity itemEntity)
+			itemEntity.getItem().setDamageValue(itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
 	}
 }
