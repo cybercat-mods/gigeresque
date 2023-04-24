@@ -183,5 +183,10 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 600, 0));
 		this.level.addFreshEntity(areaEffectCloudEntity);
 	}
+	
+	@Override
+	protected int getAcidDiameter() {
+		return 1;
+	}
 
 }
