@@ -23,6 +23,8 @@ public class GigAnimationsDefault {
 	public static final RawAnimation SWIM = RawAnimation.begin().thenLoop("swim");
 	public static final RawAnimation RUSH_SWIM = RawAnimation.begin().thenLoop("rush_swim");
 	public static final RawAnimation RUN = RawAnimation.begin().thenLoop("run");
+	public static final RawAnimation RUNNING = RawAnimation.begin().thenLoop("running");
+	public static final RawAnimation MOVING = RawAnimation.begin().thenLoop("moving");
 	public static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
 	public static final RawAnimation WALK_HOSTILE = RawAnimation.begin().thenLoop("walk_hostile");
 	public static final RawAnimation WALK_CARRYING = RawAnimation.begin().thenLoop("walk_carrying");

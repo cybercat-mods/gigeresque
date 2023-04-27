@@ -99,14 +99,14 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && this.entityData.get(STATE) == 0)
+			if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && event.getAnimatable().getAttckingState() == 0)
 				if (animationSpeedOld >= 0.35F)
-					return event.setAndContinue(GigAnimationsDefault.RUN);
+					return event.setAndContinue(GigAnimationsDefault.RUNNING);
 				else
-					return event.setAndContinue(GigAnimationsDefault.WALK);
+					return event.setAndContinue(GigAnimationsDefault.MOVING);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && this.entityData.get(STATE) == 0)
+			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
 				return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
 			else if (event.getAnimatable().getAttckingState() == 1 && !isDead)
 				return event.setAndContinue(RawAnimation.begin().then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
@@ -147,7 +147,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	public BrainActivityGroup<StalkerEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.15f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.9f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
