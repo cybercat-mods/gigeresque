@@ -59,30 +59,20 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
-	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.FLOAT);
-	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.FLOAT);
-	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData
-			.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
+	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
+	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	protected final AzureNavigation landNavigation = new AzureNavigation(this, level);
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
-	protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
-			false);
+	protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f, false);
 	protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
@@ -265,8 +255,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty,
-			MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
 		if (spawnReason != MobSpawnType.NATURAL)
 			setGrowth(getMaxGrowth());
 		return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
@@ -302,8 +291,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 
 		// Hissing Logic
-		if (!level.isClientSide
-				&& (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
+		if (!level.isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20)
@@ -316,9 +304,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if (level.isClientSide
-				&& (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater()
-						&& !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+		if (level.isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater() && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -340,12 +326,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.level.removeBlock(this.blockPosition(), false);
 
-		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !this.isInWater()
-				&& this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !this.isInWater() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().above().relative(getDirection()),
-						blockPosition().relative(getDirection()).above(2))) {
+				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().above().relative(getDirection()), blockPosition().relative(getDirection()).above(2))) {
 					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
 						if (!level.isClientSide)
 							this.level.destroyBlock(testPos, true, null, 512);
@@ -353,20 +337,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 						breakingCounter = -90;
 						if (level.isClientSide()) {
 							for (int i = 2; i < 10; i++) {
-								level.addAlwaysVisibleParticle(Particles.ACID,
-										this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
-												* (this.getRandom().nextBoolean() ? -1 : 1),
-										this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
-										this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5)
-												* (this.getRandom().nextBoolean() ? -1 : 1),
-										0.0, -0.15, 0.0);
+								level.addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
 							}
-							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-									SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
-									0.9f + random.nextFloat() * 0.15f, false);
+							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT)
-							&& !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 						if (!level.isClientSide)
 							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(GigDamageSources.ACID, 5);
@@ -443,8 +418,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	public void grabTarget(Entity entity) {
-		if (entity == this.getTarget() && !entity.hasPassenger(this)
-				&& !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
+		if (entity == this.getTarget() && !entity.hasPassenger(this) && !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
 			entity.startRiding(this, true);
 			this.setAggressive(false);
 			if (entity instanceof ServerPlayer)
@@ -453,10 +427,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
 		this.setAggressive(true);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+		var1.broadcastEntityEvent(this, (byte) 61);
 	}
 }
