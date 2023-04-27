@@ -27,7 +27,6 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
@@ -65,7 +64,6 @@ import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.AvoidSun;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -300,7 +298,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new AvoidSun<>(), new FindDarknessTask<>().cooldownFor(entity -> 20).startCondition(mob -> !this.isAggressive()), new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
+		return BrainActivityGroup.coreTasks(new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching),
 				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
 

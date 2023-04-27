@@ -381,7 +381,5 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return;
 		if (this.isVehicle())
 			return;
-		if (this.isAggressive())
-			return;
 	}
 }

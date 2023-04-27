@@ -428,5 +428,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
 		this.setAggressive(true);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+		var1.broadcastEntityEvent(this, (byte) 61);
 	}
 }
