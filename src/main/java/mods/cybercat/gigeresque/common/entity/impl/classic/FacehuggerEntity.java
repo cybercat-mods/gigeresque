@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.impl.classic;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -14,6 +15,7 @@ import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
@@ -35,6 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -56,7 +59,6 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -95,10 +97,10 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
-	private final WallClimberNavigation landNavigation = new WallClimberNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
 //	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
-//	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
+	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
@@ -288,9 +290,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist && !this.isDeadOrDying())
 				this.attachToHost(this.getTarget());
 		}
-//		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir()
-//		&& !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
-//		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
+		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
+		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
 	@Override
@@ -378,7 +379,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 //					this.isNoGravity() ? roofNavigation : 
 				landNavigation;
 		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ?
-//						roofMoveControl : this.isCrawling() ? 
+						roofMoveControl : this.isCrawling() ? 
 				landMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
@@ -421,8 +422,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && !this.isNoGravity());
-		return true;
+		setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS));
+		return this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) ? false : true;
 	}
 
 	@Override
