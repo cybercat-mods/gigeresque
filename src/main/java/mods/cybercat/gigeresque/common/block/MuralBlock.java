@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MuralBlock extends GigBlock {
 
 	public MuralBlock() {
-		super(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK));
+		super(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
 	}
 
 	@Override
