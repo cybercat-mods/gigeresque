@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.client.entity.model;
 
 import mod.azure.azurelib.model.DefaultedEntityGeoModel;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;

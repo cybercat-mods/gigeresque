@@ -1,0 +1,32 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true
+		},
+		"birth": {
+			"loop": true
+		},
+		"death": {
+			"loop": true
+		},
+		"chomp": {
+			"loop": true
+		},
+		"walk": {
+			"animation_length": 2,
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"1.0": {
+					"effect": "stepSoundkey"
+				}
+			}
+		},
+		"run": {
+			"loop": true
+		}
+	},
+	"azurelib_format_version": 2
+}

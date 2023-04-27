@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.util;
 
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.world.entity.Entity;

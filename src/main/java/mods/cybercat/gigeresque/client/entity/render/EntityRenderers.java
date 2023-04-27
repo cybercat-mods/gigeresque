@@ -27,6 +27,13 @@ public class EntityRenderers implements GigeresqueInitializer {
 		EntityRendererRegistry.register(Entities.MUTANT_POPPER, PopperEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.MUTANT_HAMMERPEDE, HammerpedeEntityRenderer::new);
 		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
+		EntityRendererRegistry.register(Entities.NEOBURSTER, NeobursterRenderer::new);
+		EntityRendererRegistry.register(Entities.NEOMORPH_ADOLESCENT, NeomorphAdolescentRenderer::new);
+		EntityRendererRegistry.register(Entities.NEOMORPH, NeomorphRenderer::new);
+		EntityRendererRegistry.register(Entities.SPITTER, SpitterRenderer::new);
+//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
+//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
+//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
 		BlockEntityRendererRegistry.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());

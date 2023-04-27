@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,6 +27,12 @@ public class GigItemGroups {
 		entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG);
 		entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG);
 		entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG);
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			entries.accept(GigItems.NEOBURSTER_SPAWN_EGG);
+			entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG);
+			entries.accept(GigItems.NEOMORPH_SPAWN_EGG);
+			entries.accept(GigItems.SPITTER_SPAWN_EGG);
+		}
 	}).build();
 
 	public static final CreativeModeTab BLOCKS = FabricItemGroup.builder(Constants.modResource("blocks")).icon(() -> new ItemStack(GIgBlocks.NEST_RESIN_WEB)).displayItems((context, entries) -> {

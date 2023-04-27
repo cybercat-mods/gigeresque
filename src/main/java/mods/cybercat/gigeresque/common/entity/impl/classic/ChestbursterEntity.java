@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.impl;
+package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;

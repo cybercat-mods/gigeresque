@@ -30,6 +30,14 @@ public class GigItems {
 	public static final AzureSpawnEgg MUTANT_POPPER_SPAWN_EGG = registerItem("popper_spawn_egg", new AzureSpawnEgg(Entities.MUTANT_POPPER, 0xdeeae9, 0x816d66));
 	public static final AzureSpawnEgg MUTANT_HAMMERPEDE_SPAWN_EGG = registerItem("hammerpede_spawn_egg", new AzureSpawnEgg(Entities.MUTANT_HAMMERPEDE, 0xe3e1d5, 0x826e66));
 	public static final AzureSpawnEgg MUTANT_STALKER_SPAWN_EGG = registerItem("stalker_spawn_egg", new AzureSpawnEgg(Entities.MUTANT_STALKER, 0xcdd7d8, 0x816d66));
+	public static final AzureSpawnEgg NEOBURSTER_SPAWN_EGG = registerItem("neoburster_spawn_egg", new AzureSpawnEgg(Entities.NEOBURSTER, 0xdccfca, 0xcbbcb6));
+	public static final AzureSpawnEgg NEOMORPH_ADOLESCENT_SPAWN_EGG = registerItem("neomorph_adolescent_spawn_egg", new AzureSpawnEgg(Entities.NEOMORPH_ADOLESCENT, 0xe6ddd9, 0xada1a2));
+	public static final AzureSpawnEgg NEOMORPH_SPAWN_EGG = registerItem("neomorph_spawn_egg", new AzureSpawnEgg(Entities.NEOMORPH, 0xfaf8f5, 0xa587a4));
+	public static final AzureSpawnEgg SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new AzureSpawnEgg(Entities.SPITTER, 0xccc737, 0x383a33));
+
+//	public static final AzureSpawnEgg CRUSHER_SPAWN_EGG = registerItem("crusher_spawn_egg", new AzureSpawnEgg(Entities.CRUSHER, 0x9d917b, 0x2d2f2c));
+//	public static final AzureSpawnEgg PRAETORIAN_SPAWN_EGG = registerItem("praetorian_spawn_egg", new AzureSpawnEgg(Entities.PRAETORIAN, 0x404345, 0x949597));
+//	public static final AzureSpawnEgg ULTRAMORTH_SPAWN_EGG = registerItem("ultramorth_spawn_egg", new AzureSpawnEgg(Entities.ULTRAMORTH, 0xa4adbc, 0x5a666b));
 
 	public static <I extends Item> I registerItem(String name, I item) {
 		return Registry.register(BuiltInRegistries.ITEM, Constants.modResource(name), item);

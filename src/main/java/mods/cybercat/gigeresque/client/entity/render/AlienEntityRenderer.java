@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
-import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;

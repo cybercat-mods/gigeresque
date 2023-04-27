@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.ChestbursterEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.BusterBloodFeatureRenderer;
-import mods.cybercat.gigeresque.common.entity.impl.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;

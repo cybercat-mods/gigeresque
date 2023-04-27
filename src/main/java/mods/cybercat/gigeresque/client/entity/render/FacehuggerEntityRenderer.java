@@ -9,7 +9,7 @@ import com.mojang.math.Axis;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
