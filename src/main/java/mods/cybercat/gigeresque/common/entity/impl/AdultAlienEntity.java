@@ -274,7 +274,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing())) {
 			setStatisTimer(statisCounter++);
-			if (getStatisTimer() == 500 || this.isStatis() == true) {
+			if (getStatisTimer() >= 500) {
 				setIsStatis(true);
 				this.xxa = 0.0f;
 				this.zza = 0.0f;
