@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.AquaticAlienEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

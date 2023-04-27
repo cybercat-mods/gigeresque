@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.client.entity.model;
 import mod.azure.azurelib.model.DefaultedEntityGeoModel;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;

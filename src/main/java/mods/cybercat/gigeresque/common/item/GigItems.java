@@ -18,28 +18,25 @@ public class GigItems {
 
 	public static final SurgeryKitItem SURGERY_KIT = registerItem("surgery_kit", new SurgeryKitItem());
 
-	public static final GigSpawnEgg ALIEN_SPAWN_EGG = registerItem("alien_spawn_egg",
-			new GigSpawnEgg(Entities.ALIEN, 0x404345, 0x949597));
-	public static final GigSpawnEgg AQUATIC_ALIEN_SPAWN_EGG = registerItem("aquatic_alien_spawn_egg",
-			new GigSpawnEgg(Entities.AQUATIC_ALIEN, 0x404345, 0x949597));
-	public static final GigSpawnEgg AQUATIC_CHESTBURSTER_SPAWN_EGG = registerItem("aquatic_chestburster_spawn_egg",
-			new GigSpawnEgg(Entities.AQUATIC_CHESTBURSTER, 0xDED29D, 0x2C2B27));
-	public static final GigSpawnEgg CHESTBURSTER_SPAWN_EGG = registerItem("chestburster_spawn_egg",
-			new GigSpawnEgg(Entities.CHESTBURSTER, 0xDED29D, 0x2C2B27));
-	public static final GigSpawnEgg EGG_SPAWN_EGG = registerItem("egg_spawn_egg",
-			new GigSpawnEgg(Entities.EGG, 0x554E45, 0x4D4932));
-	public static final GigSpawnEgg FACEHUGGER_SPAWN_EGG = registerItem("facehugger_spawn_egg",
-			new GigSpawnEgg(Entities.FACEHUGGER, 0xC7B986, 0x516B21));
-	public static final GigSpawnEgg RUNNER_ALIEN_SPAWN_EGG = registerItem("runner_alien_spawn_egg",
-			new GigSpawnEgg(Entities.RUNNER_ALIEN, 0x3E230B, 0x623C25));
-	public static final GigSpawnEgg RUNNERBURSTER_SPAWN_EGG = registerItem("runnerburster_spawn_egg",
-			new GigSpawnEgg(Entities.RUNNERBURSTER, 0xDED29D, 0x2C2B27));
-	public static final GigSpawnEgg MUTANT_POPPER_SPAWN_EGG = registerItem("popper_spawn_egg",
-			new GigSpawnEgg(Entities.MUTANT_POPPER, 0xdeeae9, 0x816d66));
-	public static final GigSpawnEgg MUTANT_HAMMERPEDE_SPAWN_EGG = registerItem("hammerpede_spawn_egg",
-			new GigSpawnEgg(Entities.MUTANT_HAMMERPEDE, 0xe3e1d5, 0x826e66));
-	public static final GigSpawnEgg MUTANT_STALKER_SPAWN_EGG = registerItem("stalker_spawn_egg",
-			new GigSpawnEgg(Entities.MUTANT_STALKER, 0xcdd7d8, 0x816d66));
+	public static final GigSpawnEgg ALIEN_SPAWN_EGG = registerItem("alien_spawn_egg", new GigSpawnEgg(Entities.ALIEN, 0x404345, 0x949597));
+	public static final GigSpawnEgg AQUATIC_ALIEN_SPAWN_EGG = registerItem("aquatic_alien_spawn_egg", new GigSpawnEgg(Entities.AQUATIC_ALIEN, 0x404345, 0x949597));
+	public static final GigSpawnEgg AQUATIC_CHESTBURSTER_SPAWN_EGG = registerItem("aquatic_chestburster_spawn_egg", new GigSpawnEgg(Entities.AQUATIC_CHESTBURSTER, 0xDED29D, 0x2C2B27));
+	public static final GigSpawnEgg CHESTBURSTER_SPAWN_EGG = registerItem("chestburster_spawn_egg", new GigSpawnEgg(Entities.CHESTBURSTER, 0xDED29D, 0x2C2B27));
+	public static final GigSpawnEgg EGG_SPAWN_EGG = registerItem("egg_spawn_egg", new GigSpawnEgg(Entities.EGG, 0x554E45, 0x4D4932));
+	public static final GigSpawnEgg FACEHUGGER_SPAWN_EGG = registerItem("facehugger_spawn_egg", new GigSpawnEgg(Entities.FACEHUGGER, 0xC7B986, 0x516B21));
+	public static final GigSpawnEgg RUNNER_ALIEN_SPAWN_EGG = registerItem("runner_alien_spawn_egg", new GigSpawnEgg(Entities.RUNNER_ALIEN, 0x3E230B, 0x623C25));
+	public static final GigSpawnEgg RUNNERBURSTER_SPAWN_EGG = registerItem("runnerburster_spawn_egg", new GigSpawnEgg(Entities.RUNNERBURSTER, 0xDED29D, 0x2C2B27));
+	public static final GigSpawnEgg MUTANT_POPPER_SPAWN_EGG = registerItem("popper_spawn_egg", new GigSpawnEgg(Entities.MUTANT_POPPER, 0xdeeae9, 0x816d66));
+	public static final GigSpawnEgg MUTANT_HAMMERPEDE_SPAWN_EGG = registerItem("hammerpede_spawn_egg", new GigSpawnEgg(Entities.MUTANT_HAMMERPEDE, 0xe3e1d5, 0x826e66));
+	public static final GigSpawnEgg MUTANT_STALKER_SPAWN_EGG = registerItem("stalker_spawn_egg", new GigSpawnEgg(Entities.MUTANT_STALKER, 0xcdd7d8, 0x816d66));
+//	public static final GigSpawnEgg NEOBURSTER_SPAWN_EGG = registerItem("neoburster_spawn_egg", new GigSpawnEgg(Entities.NEOBURSTER, 0xdccfca, 0xcbbcb6));
+//	public static final GigSpawnEgg NEOMORPH_ADOLESCENT_SPAWN_EGG = registerItem("neomorph_adolescent_spawn_egg", new GigSpawnEgg(Entities.NEOMORPH_ADOLESCENT, 0xe6ddd9, 0xada1a2));
+//	public static final GigSpawnEgg NEOMORPH_SPAWN_EGG = registerItem("neomorph_spawn_egg", new GigSpawnEgg(Entities.NEOMORPH, 0xfaf8f5, 0xa587a4));
+//	public static final GigSpawnEgg SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new GigSpawnEgg(Entities.SPITTER, 0xccc737, 0x383a33));
+
+//	public static final GigSpawnEgg CRUSHER_SPAWN_EGG = registerItem("crusher_spawn_egg", new GigSpawnEgg(Entities.CRUSHER, 0x9d917b, 0x2d2f2c));
+//	public static final GigSpawnEgg PRAETORIAN_SPAWN_EGG = registerItem("praetorian_spawn_egg", new GigSpawnEgg(Entities.PRAETORIAN, 0x404345, 0x949597));
+//	public static final GigSpawnEgg ULTRAMORTH_SPAWN_EGG = registerItem("ultramorth_spawn_egg", new GigSpawnEgg(Entities.ULTRAMORTH, 0xa4adbc, 0x5a666b));
 
 	public static <I extends Item> I registerItem(String name, I item) {
 		return Registry.register(Registry.ITEM, Constants.modResource(name), item);

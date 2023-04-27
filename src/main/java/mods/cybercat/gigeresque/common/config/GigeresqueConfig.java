@@ -141,6 +141,39 @@ public class GigeresqueConfig extends MidnightConfig {
 	@Entry
 	public static double facehuggerHealth = 20;
 
+	@Entry
+	public static double spitterXenoHealth = 60;
+
+	@Entry
+	public static double spitterXenoArmor = 2;
+
+	@Entry
+	public static double spitterAttackDamage = 5;
+
+	@Entry
+	public static double spitterRangeAttackDamage = 3;
+
+	@Entry
+	public static double neobursterXenoHealth = 60;
+
+	@Entry
+	public static double neobursterAttackDamage = 5;
+
+	@Entry
+	public static double neomorph_adolescentXenoHealth = 30;
+
+	@Entry
+	public static double neomorph_adolescentAttackDamage = 7;
+
+	@Entry
+	public static double neomorphXenoHealth = 60;
+
+	@Entry
+	public static double neomorphXenoArmor = 2;
+
+	@Entry
+	public static double neomorphAttackDamage = 9;
+
 	public static float getAlienGrowthMultiplier() {
 		return alienGrowthMultiplier;
 	}

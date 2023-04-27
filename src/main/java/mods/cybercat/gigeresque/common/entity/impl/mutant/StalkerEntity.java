@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.impl;
+package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.EntityUtils;

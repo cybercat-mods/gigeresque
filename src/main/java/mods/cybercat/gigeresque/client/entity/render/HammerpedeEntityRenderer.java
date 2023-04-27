@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.HammerpedeEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.HammerpedeEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

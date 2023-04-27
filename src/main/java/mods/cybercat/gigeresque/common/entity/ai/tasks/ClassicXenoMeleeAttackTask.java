@@ -11,7 +11,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.ConfigAccessor;
-import mods.cybercat.gigeresque.common.entity.impl.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;

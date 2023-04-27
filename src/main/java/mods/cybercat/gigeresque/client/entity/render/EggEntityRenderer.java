@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.model.EggEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

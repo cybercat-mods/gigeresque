@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.entity.impl.PopperEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity.RemovalReason;

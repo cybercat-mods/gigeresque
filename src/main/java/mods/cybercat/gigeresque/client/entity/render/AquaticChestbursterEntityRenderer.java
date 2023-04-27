@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import mods.cybercat.gigeresque.client.entity.model.AquaticChestbursterEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.AquaBusterBloodFeatureRenderer;
-import mods.cybercat.gigeresque.common.entity.impl.AquaticChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;

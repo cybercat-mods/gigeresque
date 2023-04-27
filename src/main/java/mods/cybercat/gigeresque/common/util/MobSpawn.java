@@ -4,7 +4,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.AlienEggEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
