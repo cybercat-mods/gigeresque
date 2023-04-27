@@ -3,7 +3,9 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks;
 import java.util.function.Consumer;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends ExtendedBehaviour<E> {
@@ -40,6 +42,13 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
 			doDelayedAction(entity);
 		}
 		entity.setAttackingState(1);
+		
+		if (entity instanceof PopperEntity)
+			if (entity.getTarget() != null) {
+				var vec3d2 = new Vec3(entity.getTarget().getX() - entity.getX(), 0.0, entity.getTarget().getZ() - entity.getZ());
+				vec3d2 = vec3d2.normalize().scale(0.2).add(entity.getDeltaMovement().scale(0.2));
+				entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+			}
 	}
 
 	@Override
