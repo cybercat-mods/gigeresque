@@ -378,9 +378,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : this.isCrawling() ? landNavigation :
 //					this.isNoGravity() ? roofNavigation : 
 				landNavigation;
-		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ?
-						roofMoveControl : this.isCrawling() ? 
-				landMoveControl : landMoveControl;
+		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ? roofMoveControl : this.isCrawling() ? landMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
 
 		if (isEffectiveAi() && this.isInWater()) {
@@ -405,9 +403,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public PathNavigation createNavigation(Level world) {
-		return this.isInWater() ? swimNavigation : this.isCrawling() ? landNavigation :
-//					this.isNoGravity() ? roofNavigation :
-				landNavigation;
+		return this.isInWater() ? swimNavigation : landNavigation;
 	}
 
 	@Override
