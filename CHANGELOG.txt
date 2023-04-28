@@ -1,12 +1,15 @@
-v.0.5.24
+v.0.5.25
 
-- All nest blocks proper burn now.
-- Acid damages items.
-- Panic has a check to make sure not aggressive.
-- Hammerpede attack animation fixed.
-- Popper attack animation fixed.
-- Fix very rare data mismatch crash on the controllers.
-- Stalker attack animation fixed, ranged tweaked as well.
-- Tweak checks Classic Alien finding dark.
-- Moved all aliens with melee attacks not the Classic to new attack system.
-- General code cleanup part 1 of ???
+- Hammerpede and Popper generate a smaller acid radius on death.
+- Poppers now always jump when attacking, fixing them clipping into the ground.
+- Add temp sounds to containers.
+- Fixes Aqua model to hitbox.
+- Fixes Aqua stasis not playing.
+- Fixes Runner stasis not playing.
+- Disables darkness finding system, breaks to many things.
+- Stalker animations fixed.
+- Adds blast resistance to dungeon blocks.
+- Tweaks stasis triggering.
+- Updates Azurelib, applying a tweak for Facehuggers crawling.
+- Renables Facehuggers crawling on the roof. 
+- Update some dungeon pieces for leaks.
