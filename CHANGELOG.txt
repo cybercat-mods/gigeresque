@@ -1,15 +1,3 @@
-v.0.5.25
+v.0.5.26
 
-- Hammerpede and Popper generate a smaller acid radius on death.
-- Poppers now always jump when attacking, fixing them clipping into the ground.
-- Add temp sounds to containers.
-- Fixes Aqua model to hitbox.
-- Fixes Aqua stasis not playing.
-- Fixes Runner stasis not playing.
-- Disables darkness finding system, breaks to many things.
-- Stalker animations fixed.
-- Adds blast resistance to dungeon blocks.
-- Tweaks stasis triggering.
-- Updates Azurelib, applying a tweak for Facehuggers crawling.
-- Renables Facehuggers crawling on the roof. 
-- Update some dungeon pieces for leaks.
+- New dungeons won't generate xenos glowing.
