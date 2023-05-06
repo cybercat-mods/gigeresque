@@ -11,7 +11,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -22,7 +21,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -285,8 +284,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			this.setEggSpawnState(false);
 		if (this.getTarget() != null) {
 			var target = this.getTarget();
-			var huggerchecklist = !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target))
-					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && ConfigAccessor.isTargetHostable(target) && target.isAlive();
+			var huggerchecklist = !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target))
+					|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && GigEntityUtils.isTargetHostable(target) && target.isAlive();
 			if (this.getBoundingBox().intersects(this.getTarget().getBoundingBox()) && huggerchecklist && !this.isDeadOrDying())
 				this.attachToHost(this.getTarget());
 		}
@@ -438,7 +437,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target,
 						entity) -> !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && ConfigAccessor.isTargetHostable(target) && target.isAlive() && entity.hasLineOfSight(target)),
+								|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && GigEntityUtils.isTargetHostable(target) && target.isAlive() && entity.hasLineOfSight(target)),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
@@ -455,7 +454,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || !this.hasLineOfSight(target) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity)
-				|| ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !ConfigAccessor.isTargetHostable(target) || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
+				|| ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !GigEntityUtils.isTargetHostable(target) || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(10));
 	}
 
 	@Override

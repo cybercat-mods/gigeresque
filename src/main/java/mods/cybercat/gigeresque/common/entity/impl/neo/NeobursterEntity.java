@@ -9,7 +9,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -24,15 +23,11 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
@@ -98,23 +93,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
 	@Override
 	public LivingEntity growInto() {
-		if (hostId == null)
-			return new ClassicAlienEntity(Entities.ALIEN, level);
-
-		var variantId = ConfigAccessor.getReversedMorphMappings().get(hostId);
-		if (variantId == null)
-			return new ClassicAlienEntity(Entities.ALIEN, level);
-		var identifier = new ResourceLocation(variantId);
-		var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(identifier).orElse(null);
-		if (entityType == null)
-			return new NeomorphAdolescentEntity(Entities.NEOMORPH_ADOLESCENT, level);
-		var entity = entityType.create(level);
-
-		if (hasCustomName())
-			if (entity != null)
-				entity.setCustomName(getCustomName());
-
-		return (LivingEntity) entity;
+		return new NeomorphAdolescentEntity(Entities.NEOMORPH_ADOLESCENT, level);
 	}
 
 	@Override
@@ -122,7 +101,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target,
 						entity) -> !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Creeper || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) entity).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-								|| (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && !ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, target) && !target.isAlive()),
+								|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && !target.isAlive()),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 

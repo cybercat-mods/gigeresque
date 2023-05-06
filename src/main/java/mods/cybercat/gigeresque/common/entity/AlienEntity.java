@@ -16,11 +16,10 @@ import com.mojang.serialization.Dynamic;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener.GigVibrationListenerConfig;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -342,9 +341,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return false;
 		if (entity instanceof AreaEffectCloud)
 			return false;
-		if (ConfigAccessor.isTargetBlacklisted(this, entity))
-			return false;
-		if (EntityUtils.isFacehuggerAttached(livingEntity))
+		if (GigEntityUtils.isFacehuggerAttached(livingEntity))
 			return false;
 		if (livingEntity.isInvulnerable())
 			return false;

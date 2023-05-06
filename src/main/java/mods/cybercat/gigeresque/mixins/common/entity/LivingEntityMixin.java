@@ -9,13 +9,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -24,10 +21,10 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -107,7 +104,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
 	void pushAway(CallbackInfo callbackInfo) {
-		if (this.isEggmorphing() && ConfigAccessor.isTargetHostable(this))
+		if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this))
 			callbackInfo.cancel();
 	}
 
@@ -122,8 +119,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				this.getCommandSenderWorld().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
 		}
 		if (!this.level.isClientSide)
-			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !ConfigAccessor.isTargetDNAImmune(this)) {
-				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(ConfigAccessor.isTargetDNAImmune(this)))
+			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {
+				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(GigEntityUtils.isTargetDNAImmune(this)))
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
 				if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
@@ -132,12 +129,12 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			}
 
 		if (!this.level.isClientSide)
-			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
+			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || this.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
 			}
-		if (ConfigAccessor.isTargetHostable(this)) {
+		if (GigEntityUtils.isTargetHostable(this)) {
 			handleEggingLogic();
 			handleHostLogic();
 		}
@@ -152,13 +149,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isPushable" }, at = { @At("RETURN") })
 	public boolean noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.isEggmorphing() && ConfigAccessor.isTargetHostable(this))
+		if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this))
 			return false;
 		return callbackInfo.getReturnValue();
 	}
 
 	private void handleEggingLogic() {
-		if (isEggmorphing() && ConfigAccessor.isTargetHostable(this) && !hasParasite())
+		if (isEggmorphing() && GigEntityUtils.isTargetHostable(this) && !hasParasite())
 			setTicksUntilEggmorphed(ticksUntilEggmorpth++);
 		else
 			resetEggmorphing();
@@ -189,19 +186,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				this.hurt(damageSources().generic(), this.getMaxHealth() / 8f);
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType());
-				var morphMappings = ConfigAccessor.getReversedMorphMappings();
-				var producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
+				ChestbursterEntity burster = new ChestbursterEntity(Entities.CHESTBURSTER, this.level);
+				if (this.getType().is(GigTags.RUNNER_HOSTS)) {
+					burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, this.level);
+					burster.setHostId("runner");
+				}
+				if (this.getType().is(GigTags.AQUATIC_HOSTS)) 
+					burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.level);
 
-				ChestbursterEntity burster = switch (producedVariant) {
-				case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.RUNNERBURSTER, this.level);
-				case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.level);
-				default -> new ChestbursterEntity(Entities.CHESTBURSTER, this.level);
-				};
-				if (level.isClientSide)
-					this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
-
-				burster.setHostId(identifier.toString());
 				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 
 				if (this.hasCustomName())
@@ -209,6 +201,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
 				burster.setBirthStatus(true);
 				this.level.addFreshEntity(burster);
+				if (level.isClientSide)
+					this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
 				hasParasiteSpawned = true;
 			}
 		}
@@ -266,14 +260,12 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		var pos = this.getFeetBlockState().getBlock();
 		var isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		var notAlien = !(((Object) this) instanceof AlienEntity);
-		var notHost = ConfigAccessor.isTargetHostable(this);
+		var notHost = GigEntityUtils.isTargetHostable(this);
 		if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator()))) && !(((Object) this) instanceof AlienEntity))
 			return false;
-		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this))
+		if (GigEntityUtils.isFacehuggerAttached(this))
 			return false;
-		if (EntityUtils.isFacehuggerAttached(this))
-			return false;
-		if (!ConfigAccessor.isTargetHostable(this))
+		if (!GigEntityUtils.isTargetHostable(this))
 			return false;
 		return notAlien && isCoveredInResin && notHost;
 	}

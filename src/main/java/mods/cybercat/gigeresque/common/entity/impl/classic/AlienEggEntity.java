@@ -6,13 +6,13 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -177,7 +177,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level.isClientSide && EntityUtils.isPotentialHost(entity))
+		if (!level.isClientSide && GigEntityUtils.isPotentialHost(entity))
 			setIsHatching(true);
 	}
 
@@ -230,11 +230,11 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		super.baseTick();
 		var aabb = new AABB(this.blockPosition().above()).inflate(GigeresqueConfig.alieneggHatchRange);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
-			if (!ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !(ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))) {
+			if (entity.isAlive()) {
+				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !entity.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientCreature) && ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
 						if (!(entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
-							if (EntityUtils.isPotentialHost(entity))
+							if (GigEntityUtils.isPotentialHost(entity))
 								setIsHatching(true);
 				}
 				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator())

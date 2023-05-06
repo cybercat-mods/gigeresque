@@ -3,13 +3,13 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 import java.awt.Color;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -57,7 +57,7 @@ public class DNAStatusEffect extends MobEffect {
 		if (!(entity instanceof AlienEntity))
 			if (randomPhase > 25) {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
-					if (ConfigAccessor.isTargetSmallMutantHost(entity)) {
+					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
 							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
 						else
@@ -65,7 +65,7 @@ public class DNAStatusEffect extends MobEffect {
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
-					} else if (ConfigAccessor.isTargetLargeMutantHost(entity)) {
+					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
 						summon = new StalkerEntity(Entities.MUTANT_STALKER, entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
@@ -75,8 +75,8 @@ public class DNAStatusEffect extends MobEffect {
 					return;
 				} else if (entity instanceof Creeper)
 					return;
-				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
-					if (ConfigAccessor.isTargetSmallMutantHost(entity)) {
+				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
+					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
 							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
 						else
@@ -84,7 +84,7 @@ public class DNAStatusEffect extends MobEffect {
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
-					} else if (ConfigAccessor.isTargetLargeMutantHost(entity)) {
+					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
 						summon = new StalkerEntity(Entities.MUTANT_STALKER, entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
@@ -101,7 +101,7 @@ public class DNAStatusEffect extends MobEffect {
 					return;
 				} else if (entity instanceof Creeper)
 					return;
-				else if (!(entity instanceof Player) && !(ConfigAccessor.isTargetDNAImmune(entity))) {
+				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
 					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
@@ -112,15 +112,9 @@ public class DNAStatusEffect extends MobEffect {
 	}
 
 	private void spawnEffects(Level world, LivingEntity entity) {
-		if (!world.isClientSide()) {
-			var random = entity.getRandom();
-			for (int i = 0; i < 2; i++) {
-				var xspeed = random.nextGaussian() * 0.02;
-				var yspeed = random.nextGaussian() * 0.02;
-				var zspeed = random.nextGaussian() * 0.02;
-				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, xspeed, yspeed, zspeed, 0.15000000596046448);
-			}
-		}
+		if (!world.isClientSide())
+			for (int i = 0; i < 2; i++)
+				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
 	}
 
 	private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {

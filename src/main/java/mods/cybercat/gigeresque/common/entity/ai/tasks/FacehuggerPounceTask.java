@@ -8,7 +8,7 @@ import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,7 +39,7 @@ public class FacehuggerPounceTask<E extends Mob> extends DelayedBehaviour<E> {
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 		var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
-		return target != null && entity.isOnGround() && entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3 && entity.hasLineOfSight(target) && (target.getVehicle() != null && !target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !EntityUtils.isFacehuggerAttached(target) && !entity.isInWater();
+		return target != null && entity.isOnGround() && entity.distanceTo(target) < MAX_LEAP_DISTANCE && yDiff < 3 && entity.hasLineOfSight(target) && (target.getVehicle() != null && !target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !GigEntityUtils.isFacehuggerAttached(target) && !entity.isInWater();
 	}
 
 	@Override

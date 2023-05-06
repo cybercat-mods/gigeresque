@@ -16,7 +16,7 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -379,7 +379,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	public boolean isCarryingEggmorphableTarget() {
-		return !getPassengers().isEmpty() && EntityUtils.isEggmorphable(this.getFirstPassenger());
+		return !getPassengers().isEmpty() && GigEntityUtils.isEggmorphable(this.getFirstPassenger());
 	}
 
 	@Override

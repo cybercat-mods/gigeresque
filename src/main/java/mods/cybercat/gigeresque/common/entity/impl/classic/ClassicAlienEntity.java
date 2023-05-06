@@ -35,7 +35,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.sounds.SoundSource;
@@ -291,7 +291,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (EntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7), new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
 				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(30).setPredicate((block, entity) -> block.is(GIgBlocks.NEST_RESIN_WEB_CROSS)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
@@ -315,7 +315,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				.fightTasks(
 						new InvalidateAttackTarget<>().invalidateIf((entity,
 								target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-										|| (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
+										|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
 						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))), new JumpToTargetTask<>(10), new ClassicXenoMeleeAttackTask(10).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
 	}
 
