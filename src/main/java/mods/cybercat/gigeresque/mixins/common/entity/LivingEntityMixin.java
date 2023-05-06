@@ -53,10 +53,8 @@ import net.minecraft.world.level.Level;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements Host, Eggmorphable {
 
-	private static final EntityDataAccessor<Boolean> IS_BLEEDING = SynchedEntityData.defineId(LivingEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Float> EGGMORPH_TICKS = SynchedEntityData.defineId(LivingEntity.class,
-			EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Boolean> IS_BLEEDING = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> EGGMORPH_TICKS = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.FLOAT);
 	public float ticksUntilImpregnation = -1.0f;
 	public float ticksUntilEggmorpth = -1.0f;
 	public boolean hasParasiteSpawned = false;
@@ -95,17 +93,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	private void handleStatusEffect(long offset, MobEffect statusEffect, Boolean checkStatusEffect) {
 		if (ticksUntilImpregnation < offset && (!checkStatusEffect || !hasEffect(statusEffect))) {
-			var amplifier = (int) (((Constants.TPD - (Constants.TPM * 8L)) - ticksUntilImpregnation)
-					/ (Constants.TPS * 30));
+			var amplifier = (int) (((Constants.TPD - (Constants.TPM * 8L)) - ticksUntilImpregnation) / (Constants.TPS * 30));
 			this.addEffect(new MobEffectInstance(statusEffect, (int) ticksUntilImpregnation, amplifier, true, true));
 		}
 	}
 
 	@Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
 	public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)
-				|| (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity))
-				&& (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
+		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity)) && (source == DamageSource.DROWN || source == DamageSource.IN_WALL)) {
 			callbackInfo.setReturnValue(false);
 			callbackInfo.cancel();
 		}
@@ -125,33 +120,20 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			var customZ = this.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
 
 			for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++)
-				this.getCommandSenderWorld().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0,
-						-0.15, 0.0);
+				this.getCommandSenderWorld().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
 		}
 		if (!this.level.isClientSide)
-			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL
-					|| this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING)
-					&& !ConfigAccessor.isTargetDNAImmune(this)) {
-				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player)
-						&& !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper)
-						&& !(ConfigAccessor.isTargetDNAImmune(this)))
-					this.addEffect(
-							new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
-				if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper
-						&& !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
+			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !ConfigAccessor.isTargetDNAImmune(this)) {
+				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(ConfigAccessor.isTargetDNAImmune(this)))
+					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
+				if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
-				if (!this.hasEffect(GigStatusEffects.DNA)
-						&& (((Object) this)instanceof Player playerEntity
-								&& !(playerEntity.isCreative() || this.isSpectator()))
-						&& !(((Object) this) instanceof AlienEntity))
-					this.addEffect(
-							new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
+				if (!this.hasEffect(GigStatusEffects.DNA) && (((Object) this)instanceof Player playerEntity && !(playerEntity.isCreative() || this.isSpectator())) && !(((Object) this) instanceof AlienEntity))
+					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
 			}
 
 		if (!this.level.isClientSide)
-			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator()))
-					|| level.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity)
-					|| ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
+			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
@@ -195,8 +177,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (hasParasite()) {
 			ticksUntilImpregnation = Math.max(ticksUntilImpregnation - 1.0F, 0f);
 
-			if (Boolean.TRUE.equals(!isBleeding()) && ticksUntilImpregnation >= 0
-					&& ticksUntilImpregnation < Constants.TPS * 30L)
+			if (Boolean.TRUE.equals(!isBleeding()) && ticksUntilImpregnation >= 0 && ticksUntilImpregnation < Constants.TPS * 30L)
 				setBleeding(true);
 
 			handleStatusEffect(Constants.TPM * 12L, MobEffects.HUNGER, false);
@@ -211,18 +192,15 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
 				var identifier = Registry.ENTITY_TYPE.getKey(this.getType());
 				var morphMappings = ConfigAccessor.getReversedMorphMappings();
-				var producedVariant = morphMappings.getOrDefault(identifier.toString(),
-						EntityIdentifiers.ALIEN.toString());
+				var producedVariant = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
 
 				ChestbursterEntity burster = switch (producedVariant) {
 				case Gigeresque.MOD_ID + ":runner_alien" -> new RunnerbursterEntity(Entities.RUNNERBURSTER, this.level);
-				case Gigeresque.MOD_ID
-						+ ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.level);
+				case Gigeresque.MOD_ID + ":aquatic_alien" -> new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.level);
 				default -> new ChestbursterEntity(Entities.CHESTBURSTER, this.level);
 				};
 				if (level.isClientSide)
-					this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING,
-							SoundSource.NEUTRAL, 2.0f, 1.0f, true);
+					this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
 
 				burster.setHostId(identifier.toString());
 				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
@@ -239,8 +217,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "isImmobile" }, at = { @At("RETURN") })
 	protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)
-				|| this.isEggmorphing() == true && !((Host) this).hasParasite())
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing() == true && !((Host) this).hasParasite())
 			return true;
 		return callbackInfo.getReturnValue();
 	}
@@ -291,8 +268,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		var isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		var notAlien = !(((Object) this) instanceof AlienEntity);
 		var notHost = ConfigAccessor.isTargetHostable(this);
-		if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())))
-				&& !(((Object) this) instanceof AlienEntity))
+		if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator()))) && !(((Object) this) instanceof AlienEntity))
 			return false;
 		if (ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, this))
 			return false;
