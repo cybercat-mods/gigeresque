@@ -172,14 +172,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 		return (state.isAir() || state.is(BlockTags.FIRE) || state.getMaterial().isReplaceable()) && !state.getMaterial().isLiquid() && !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
 	}
 
-	private void dealAcidDamage(BlockState state, Entity entity) {
-		if (entity instanceof LivingEntity livingEntity && !(entity instanceof AlienEntity) && !(entity instanceof WitherBoss))
-			livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
-	}
-
 	@Override
 	public void stepOn(Level world, BlockPos pos, BlockState state, Entity entity) {
-		this.dealAcidDamage(state, entity);
+		if (entity instanceof LivingEntity livingEntity)
+			if (!(livingEntity instanceof AlienEntity) && !(livingEntity instanceof WitherBoss))
+				livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
 		super.stepOn(world, pos, state, entity);
 	}
 
@@ -199,6 +196,9 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
 	@Override
 	public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+		if (entity instanceof LivingEntity livingEntity)
+			if (!(livingEntity instanceof AlienEntity) && !(livingEntity instanceof WitherBoss))
+				livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
 		if (entity instanceof ItemEntity itemEntity)
 			itemEntity.getItem().setDamageValue(itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
 	}
