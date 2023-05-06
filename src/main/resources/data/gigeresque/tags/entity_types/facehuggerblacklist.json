@@ -1,0 +1,32 @@
+{
+	"replace": false,
+	"values": [
+		"minecraft:blaze",
+		"minecraft:cave_spider",
+		"minecraft:chicken",
+		"minecraft:cod",
+		"minecraft:bee",
+		"minecraft:bat",
+		"minecraft:shulker",
+		"minecraft:creeper",
+		"minecraft:ender_dragon",
+		"minecraft:enderman",
+		"minecraft:endermite",
+		"minecraft:ghast",
+		"minecraft:glow_squid",
+		"minecraft:iron_golem",
+		"minecraft:magma_cube",
+		"minecraft:parrot",
+		"minecraft:pufferfish",
+		"minecraft:rabbit",
+		"minecraft:salmon",
+		"minecraft:slime",
+		"minecraft:silverfish",
+		"minecraft:snow_golem",
+		"minecraft:spider",
+		"minecraft:squid",
+		"minecraft:tropical_fish",
+		"minecraft:vex",
+		"minecraft:wither"
+	]
+}

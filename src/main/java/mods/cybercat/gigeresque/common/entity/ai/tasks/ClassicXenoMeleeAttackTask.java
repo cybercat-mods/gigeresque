@@ -10,8 +10,8 @@ import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,9 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends CustomDelayedMeleeBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-			Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-			Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
 
 	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
@@ -72,8 +70,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
 	@Override
 	protected void doDelayedAction(E entity) {
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-				this.attackIntervalSupplier.apply(entity));
+		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
 
 		if (this.target == null)
 			return;
@@ -83,7 +80,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
 		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
 		var randomPhase = entity.getRandom().nextInt(0, 100);
-		if ((list.anyMatch(NEST) && randomPhase >= 50) && ConfigAccessor.isTargetHostable(target)) {
+		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target)) {
 			entity.grabTarget(target);
 		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80) {
 			entity.grabTarget(target);

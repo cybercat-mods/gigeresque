@@ -19,7 +19,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -115,7 +115,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
 		return ObjectArrayList.of(
 				new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((entity, target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) entity).hasParasite() || (entity instanceof AlienEggEntity)
-						|| ((Host) entity).isBleeding() || ((Eggmorphable) entity).isEggmorphing() || (EntityUtils.isFacehuggerAttached(entity)) || (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && entity.isAlive() && entity.hasLineOfSight(target))),
+						|| ((Host) entity).isBleeding() || ((Eggmorphable) entity).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(entity)) || (entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && entity.isAlive() && entity.hasLineOfSight(target))),
 				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
 	}
 
@@ -132,7 +132,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public BrainActivityGroup<HammerpedeEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !this.hasLineOfSight(target) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-				|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (EntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new AlienMeleeAttack(15).attackInterval(entity -> 80));
+				|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new AlienMeleeAttack(15).attackInterval(entity -> 80));
 	}
 
 	@Override

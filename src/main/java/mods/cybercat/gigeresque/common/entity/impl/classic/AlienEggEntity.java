@@ -6,13 +6,13 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.util.EntityUtils;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -44,12 +44,9 @@ import net.minecraft.world.phys.AABB;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
-	private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(AlienEggEntity.class,
-			EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(AlienEggEntity.class,
-			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -64,8 +61,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		return 1;
 	}
 
-	public static boolean canSpawn(EntityType<? extends AlienEntity> type, ServerLevelAccessor world,
-			MobSpawnType reason, BlockPos pos, RandomSource random) {
+	public static boolean canSpawn(EntityType<? extends AlienEntity> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
 		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
@@ -74,10 +70,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.alieneggHealth)
-				.add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 0.0)
-				.add(Attributes.MOVEMENT_SPEED, 0.0);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.alieneggHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 0.0).add(Attributes.MOVEMENT_SPEED, 0.0);
 	}
 
 	public boolean isHatching() {
@@ -152,14 +145,13 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		super.tick();
 		if (this.isNoAi())
 			return;
-		
+
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
 			hatchProgress++;
 
 		if (hatchProgress == 40L)
 			if (!level.isClientSide)
-				this.getCommandSenderWorld().playSound(null, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE,
-						1.0F, 1.0F);
+				this.getCommandSenderWorld().playSound(null, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 1.0F, 1.0F);
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {
 			setIsHatching(false);
@@ -185,7 +177,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level.isClientSide && EntityUtils.isPotentialHost(entity))
+		if (!level.isClientSide && GigEntityUtils.isPotentialHost(entity))
 			setIsHatching(true);
 	}
 
@@ -238,15 +230,11 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		super.baseTick();
 		var aabb = new AABB(this.blockPosition().above()).inflate(GigeresqueConfig.alieneggHatchRange);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
-			if (!ConfigAccessor.isTargetBlacklisted(this, entity) && entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity)
-						&& !(ConfigAccessor.isTargetBlacklisted(FacehuggerEntity.class, entity))) {
-					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing()
-							&& !(entity instanceof AmbientCreature)
-							&& ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
-						if (!(entity.getVehicle() != null
-								&& entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
-							if (EntityUtils.isPotentialHost(entity))
+			if (entity.isAlive()) {
+				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !entity.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientCreature) && ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
+						if (!(entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
+							if (GigEntityUtils.isPotentialHost(entity))
 								setIsHatching(true);
 				}
 				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator())
@@ -293,8 +281,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hatching"))
 				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
 		}));
 	}
 
@@ -304,8 +291,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5,
-			Entity var6, float var7) {
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		if (this.isDeadOrDying())
 			return;
 	}

@@ -1,15 +1,14 @@
 package mods.cybercat.gigeresque.common.item;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.config.ConfigAccessor;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.EntityIdentifiers;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.Registry;
 import net.minecraft.world.InteractionHand;
@@ -30,8 +29,7 @@ public class SurgeryKitItem extends Item {
 	}
 
 	@Override
-	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity,
-			InteractionHand interactionHand) {
+	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
 		tryRemoveParasite(itemStack, livingEntity);
 		player.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
 		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
@@ -65,21 +63,19 @@ public class SurgeryKitItem extends Item {
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		var identifier = Registry.ENTITY_TYPE.getKey(entity.getType());
-		var morphMappings = ConfigAccessor.getReversedMorphMappings();
-
-		var runnerString = Entities.RUNNER_ALIEN.toString();
 		ChestbursterEntity burster;
 
-		var orDefault = morphMappings.getOrDefault(identifier.toString(), EntityIdentifiers.ALIEN.toString());
-		if (runnerString.equals(orDefault))
+		if (entity.getType().is(GigTags.RUNNER_HOSTS))
 			burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, entity.level);
-		else if (Entities.AQUATIC_ALIEN.toString().equals(orDefault))
+		else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
 			burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, entity.level);
 		else
 			burster = new ChestbursterEntity(Entities.CHESTBURSTER, entity.level);
 
-		burster.setHostId(identifier.toString());
+		if (entity.hasCustomName())
+			if (entity != null)
+				burster.setCustomName(entity.getCustomName());
+		burster.setHostId(Registry.ENTITY_TYPE.getKey(entity.getType()).toString());
 		burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 		entity.level.addFreshEntity(burster);
 	}
