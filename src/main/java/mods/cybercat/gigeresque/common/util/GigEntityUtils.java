@@ -1,7 +1,9 @@
 package mods.cybercat.gigeresque.common.util;
 
+import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -19,11 +21,14 @@ public class GigEntityUtils {
 	public static boolean isPotentialHost(Entity entity) {
 		if (entity == null)
 			return false;
+		if (!(entity instanceof LivingEntity))
+			return false;
+		if (entity instanceof AlienEntity)
+			return false;
 
 		var vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
 
-		if (entity.getType().is(GigTags.FACEHUGGER_BLACKLIST))
-			return false;
+		var facehuggerblacklisted = entity.getType().is(GigTags.FACEHUGGER_BLACKLIST);
 
 		if (entity instanceof Player playerEntity)
 			if (playerEntity.isCreative() || playerEntity.isSpectator())
@@ -31,22 +36,26 @@ public class GigEntityUtils {
 			else
 				return true;
 
-		return entity.isAlive() && entity instanceof LivingEntity && entity.getPassengers().isEmpty() && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
+		return entity.isAlive() && !facehuggerblacklisted && entity.getPassengers().isEmpty() && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
 	}
 
 	public static boolean isEggmorphable(Entity entity) {
 		if (entity == null)
 			return false;
+		if (!(entity instanceof LivingEntity))
+			return false;
+		if (entity instanceof AlienEntity)
+			return false;
+
 		var playerCondition = !(entity instanceof Player) || !((Player) entity).isCreative() && !entity.isSpectator();
 
-		if (entity.getType().is(GigTags.CLASSIC_HOSTS))
-			return true;
+		var hostable = entity.getType().is(GigTags.CLASSIC_HOSTS);
 
-		var weakCondition = !(entity instanceof LivingEntity) || (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f) || ((LivingEntity) entity).getHealth() <= 4f;
+		var weakCondition = (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f) || ((LivingEntity) entity).getHealth() <= 4f;
 
-		var threatCondition = !(entity instanceof LivingEntity) || ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem || ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
+		var threatCondition = ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem || ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
 
-		return entity.isAlive() && entity instanceof LivingEntity && !(entity instanceof AlienEntity) && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition && !threatCondition;
+		return entity.isAlive() && hostable && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition && !threatCondition;
 	}
 
 	public static boolean isFacehuggerAttached(Entity entity) {
@@ -65,11 +74,11 @@ public class GigEntityUtils {
 		return target.getType().is(GigTags.MUTANT_LARGE_HOSTS);
 	}
 
-	public static boolean isTargetAlienHost(Entity target) {
-		return target.getType().is(GigTags.CLASSIC_HOSTS);
-	}
-
 	public static boolean isTargetDNAImmune(Entity target) {
 		return target.getType().is(GigTags.DNAIMMUNE);
+	}
+
+	public static boolean convertToSpitter(LivingEntity target) {
+		return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > GigeresqueConfig.getImpregnationTickTimer() / 2);
 	}
 }
