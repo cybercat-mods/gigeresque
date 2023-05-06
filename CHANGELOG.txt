@@ -1,3 +1,13 @@
-v.0.5.26
+v.0.5.27
 
-- New dungeons won't generate xenos glowing.
+- Fixes acid not applying acid effect when walking on it. 
+- Removed configs for whitelist/blacklist entities into what type of entity.
+- Added datapack tags for setting mobs to what type of alien it can become. 
+	- aquaticalienthost controls what mobs can become Auqabursters which grow into Aqua Xenomorph.
+	- classicalienthost controls what mobs can become the Classic Xenomorph.
+	- runnerhost controls what mobs can become Runner aliens.
+	- smallmuntanthost controls what mobs can mutate into either Hammerpedes or Poppers
+	- largemutanthost controls what mobs can mutate into Stalkers.
+	- dnaimmune controls what mobs can't become inflected with DNA.
+	- facehuggerimmune controls what mobs can't be face hugged.
+- General clean up code to move more things to the new helper methods.
