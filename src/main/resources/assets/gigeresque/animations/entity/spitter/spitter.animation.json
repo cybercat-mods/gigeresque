@@ -1,0 +1,33 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true
+		},
+		"left_claw": {
+			"loop": true
+		},
+		"right_claw": {
+			"loop": true
+		},
+		"left_tail": {
+			"loop": true
+		},
+		"right_tail": {
+			"loop": true
+		},
+		"spit": {
+			"loop": true
+		},
+		"death": {
+			"loop": true
+		},
+		"walk": {
+			"loop": true
+		},
+		"run": {
+			"loop": true
+		}
+	},
+	"azurelib_format_version": 2
+}

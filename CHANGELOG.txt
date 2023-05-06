@@ -1,3 +1,5 @@
 v.0.5.26
 
 - New dungeons won't generate xenos glowing.
+**HotFix**
+- Fixes animation folder.
