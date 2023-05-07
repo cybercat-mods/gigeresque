@@ -25,7 +25,7 @@ public class AlienSarcophagusInvisBlock extends Block {
 	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
 	public AlienSarcophagusInvisBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.GLOW_LICHEN).strength(5.0f, 8.0f).nonOpaque().noLootTable());
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque().noLootTable());
 	}
 
 	@Override
