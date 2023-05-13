@@ -51,9 +51,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
   	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.2:1.0.17'
-	modImplementation "maven.modrinth:midnightlib:1.0.0-fabric"
-    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.0.0-fabric'
-	modImplementation ("com.terraformersmc:modmenu:4.1.2")
+    modImplementation "maven.modrinth:configuration:nGocYE6n"
+    shade group: 'maven.modrinth', name: 'configuration', version: 'nGocYE6n'
+    modImplementation "maven.modrinth:modmenu:4.2.0-beta.2"
 	modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
 	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.39'
 	modImplementation "curse.maven:HWG-448106:4065708"
@@ -63,7 +63,7 @@ shadowJar {
     configurations = [project.configurations.shade]
     from sourceSets.main.output
     duplicatesStrategy = 'exclude'
-    relocate 'eu.midnightdust', 'mod.azure.gigeresque.shadowed.midnightlib'
+    relocate 'dev.toma.configuration', 'mod.azure.gigeresque.shadowed.configuration'
     classifier 'dev'
 }
 

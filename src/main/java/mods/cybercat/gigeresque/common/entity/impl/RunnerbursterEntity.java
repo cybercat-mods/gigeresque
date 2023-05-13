@@ -9,8 +9,8 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
@@ -76,7 +76,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.runnerbusterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.runnerbusterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.runnerbusterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.runnerbusterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	 */
 	@Override
 	public float getGrowthMultiplier() {
-		return GigeresqueConfig.runnerbursterGrowthMultiplier;
+		return Gigeresque.config.runnerbursterGrowthMultiplier;
 	}
 
 	@Override

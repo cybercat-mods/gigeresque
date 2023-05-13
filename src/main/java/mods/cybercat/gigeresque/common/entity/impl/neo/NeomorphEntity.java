@@ -12,8 +12,8 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
@@ -184,11 +184,11 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 	@Override
 	public BrainActivityGroup<NeomorphEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite()
-				|| ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.stalkerAttackSpeed), new AlienMeleeAttack(20));
+				|| ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), new AlienMeleeAttack(20));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.neomorphXenoHealth).add(Attributes.ARMOR, GigeresqueConfig.neomorphXenoArmor).add(Attributes.ARMOR_TOUGHNESS, GigeresqueConfig.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.neomorphXenoHealth).add(Attributes.ARMOR, Gigeresque.config.neomorphXenoArmor).add(Attributes.ARMOR_TOUGHNESS, Gigeresque.config.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
 	}
 
 	@Override
@@ -255,7 +255,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case HEAVY -> GigeresqueConfig.stalkerTailAttackDamage;
+		case HEAVY -> Gigeresque.config.stalkerTailAttackDamage;
 		default -> 0.0f;
 		};
 

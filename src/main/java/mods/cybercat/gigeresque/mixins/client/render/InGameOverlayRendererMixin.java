@@ -15,8 +15,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,8 +44,8 @@ public class InGameOverlayRendererMixin {
 
 			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable
 					&& eggmorphable.isEggmorphing()) {
-				float eggmorphingProgress = (GigeresqueConfig.getEggmorphTickTimer()
-						- eggmorphable.getTicksUntilEggmorphed()) / GigeresqueConfig.getEggmorphTickTimer();
+				float eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer()
+						- eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
 				renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
 			}
 		}

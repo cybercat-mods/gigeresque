@@ -14,8 +14,8 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -103,13 +103,13 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.aquaticXenoHealth).add(Attributes.ARMOR, GigeresqueConfig.aquaticXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.2500000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE,
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.aquaticXenoHealth).add(Attributes.ARMOR, Gigeresque.config.aquaticXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.2500000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE,
 				0.85);
 	}
 
 	@Override
 	public float getGrowthMultiplier() {
-		return GigeresqueConfig.aquaticAlienGrowthMultiplier;
+		return Gigeresque.config.aquaticAlienGrowthMultiplier;
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> GigeresqueConfig.aquaticXenoTailAttackDamage;
+		case TAIL -> Gigeresque.config.aquaticXenoTailAttackDamage;
 		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
 		};

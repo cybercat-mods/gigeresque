@@ -25,9 +25,6 @@
 		],
 		"client": [
 			"mods.cybercat.gigeresque.client.GigeresqueClient"
-		],
-		"modmenu": [
-			"mods.cybercat.gigeresque.client.config.ModMenuGigeresque"
 		]
 	},
 	"mixins": [

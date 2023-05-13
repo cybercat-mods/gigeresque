@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import java.awt.Color;
 
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,6 +21,6 @@ public class AcidStatusEffect extends MobEffect {
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {
 		super.applyEffectTick(entity, amplifier);
-		entity.hurt(GigDamageSources.ACID, GigeresqueConfig.acidDamage);
+		entity.hurt(GigDamageSources.ACID, Gigeresque.config.acidDamage);
 	}
 }

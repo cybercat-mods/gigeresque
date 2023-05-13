@@ -17,8 +17,8 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
@@ -119,7 +119,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.classicXenoHealth).add(Attributes.ARMOR, GigeresqueConfig.classicXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE, GigeresqueConfig.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE,
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.classicXenoHealth).add(Attributes.ARMOR, Gigeresque.config.classicXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE,
 				1.0);
 	}
 
@@ -207,13 +207,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public float getGrowthMultiplier() {
-		return GigeresqueConfig.alienGrowthMultiplier;
+		return Gigeresque.config.alienGrowthMultiplier;
 	}
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> GigeresqueConfig.classicXenoTailAttackDamage;
+		case TAIL -> Gigeresque.config.classicXenoTailAttackDamage;
 		case EXECUTION -> Float.MAX_VALUE;
 		default -> 0.0f;
 		};
@@ -318,7 +318,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						new InvalidateAttackTarget<>().invalidateIf((entity,
 								target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
 										|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
-						new SetWalkTargetToAttackTarget<>().speedMod(GigeresqueConfig.classicXenoAttackSpeed).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))), new JumpToTargetTask<>(10), new ClassicXenoMeleeAttackTask(10).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
+						new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))), new JumpToTargetTask<>(10), new ClassicXenoMeleeAttackTask(10).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
 	}
 
 	@Override
