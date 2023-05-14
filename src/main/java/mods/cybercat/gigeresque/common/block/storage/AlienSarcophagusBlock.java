@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -90,7 +92,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	@Override
 	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
-			if (!testPos.equals(pos))
+			if (!testPos.equals(pos)) 
 				world.destroyBlock(testPos, false);
 		});
 		super.playerWillDestroy(world, pos, state, player);
@@ -116,5 +118,17 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		if (world.getBlockEntity(pos)instanceof AlienStorageEntity alienStorageEntity)
 			alienStorageEntity.tick();
+	}
+
+	@Override
+	public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+		if (blockState.is(blockState2.getBlock()))
+			return;
+		var blockEntity = level.getBlockEntity(blockPos);
+		if (blockEntity instanceof Container container) {
+			Containers.dropContents(level, blockPos, container);
+			level.updateNeighbourForOutputSignal(blockPos, this);
+		}
+		super.onRemove(blockState, level, blockPos, blockState2, bl);
 	}
 }

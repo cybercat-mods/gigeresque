@@ -55,9 +55,10 @@ public class AlienSarcophagusInvisBlock extends Block {
 		var radius = new Vec3i(2, 2, 2);
 		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 			BlockState testState;
-			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1))
+			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
 				world.destroyBlock(testPos, true);
-			else if (testState.is(this))
+				Block.dropResources(testState, world, testPos);
+			} else if (testState.is(this))
 				world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 		}
 	}
