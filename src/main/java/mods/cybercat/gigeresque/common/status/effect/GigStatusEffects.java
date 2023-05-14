@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.status.effect;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.status.effect.impl.AcidStatusEffect;
 import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.status.effect.impl.TraumaStatusEffect;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
@@ -29,10 +30,13 @@ public class GigStatusEffects implements GigeresqueInitializer {
 
 	public static final MobEffect DNA = new DNAStatusEffect();
 
+	public static final MobEffect SPORE = new SporeStatusEffect();
+
 	@Override
 	public void initialize() {
 		Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("trauma"), TRAUMA);
 		Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("acid"), ACID);
 		Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("dna_disintegration"), DNA);
+		Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("neo_spore"), SPORE);
 	}
 }

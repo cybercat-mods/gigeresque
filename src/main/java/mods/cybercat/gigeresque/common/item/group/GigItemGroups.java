@@ -45,6 +45,8 @@ public class GigItemGroups {
 		entries.accept(GIgBlocks.NEST_RESIN_BLOCK);
 		entries.accept(GIgBlocks.NEST_RESIN_WEB);
 		entries.accept(GIgBlocks.NEST_RESIN_WEB_CROSS);
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) 
+			entries.accept(GIgBlocks.SPORE_BLOCK);
 		entries.accept(GIgBlocks.ORGANIC_ALIEN_BLOCK);
 		entries.accept(GIgBlocks.ORGANIC_ALIEN_SLAB);
 		entries.accept(GIgBlocks.ORGANIC_ALIEN_STAIRS);

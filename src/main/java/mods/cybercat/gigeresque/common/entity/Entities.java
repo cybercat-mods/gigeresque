@@ -1,11 +1,11 @@
 package mods.cybercat.gigeresque.common.entity;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
+import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
@@ -74,12 +74,14 @@ public class Entities implements GigeresqueInitializer {
 	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1;
 	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2;
 	public static BlockEntityType<IdolStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_3;
+	public static BlockEntityType<SporeBlockEntity> SPORE_ENTITY;
 
 	@Override
 	public void initialize() {
-		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Gigeresque.MOD_ID + ":alien_storage_block_entity", FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Gigeresque.MOD_ID + ":alien_storage_jar_entity", FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Gigeresque.MOD_ID + ":sitting_idol_entity", FabricBlockEntityTypeBuilder.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity"), FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_jar_entity"), FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("sitting_idol_entity"), FabricBlockEntityTypeBuilder.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
+		SPORE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("neomorph_spore_pods"), FabricBlockEntityTypeBuilder.create(SporeBlockEntity::new, GIgBlocks.SPORE_BLOCK).build(null));
 		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
