@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.block.storage;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.material.Materials;
+import mods.cybercat.gigeresque.common.entity.Entities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +27,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -92,7 +95,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	@Override
 	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
-			if (!testPos.equals(pos)) 
+			if (!testPos.equals(pos))
 				world.destroyBlock(testPos, false);
 		});
 		super.playerWillDestroy(world, pos, state, player);
@@ -130,5 +133,10 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 			level.updateNeighbourForOutputSignal(blockPos, this);
 		}
 		super.onRemove(blockState, level, blockPos, blockState2, bl);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, AlienStorageEntity::tick);
 	}
 }

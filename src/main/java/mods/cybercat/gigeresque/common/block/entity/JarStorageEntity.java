@@ -33,7 +33,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 	private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
-	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
+	protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
 		@Override
 		protected void onOpen(Level world, BlockPos pos, BlockState state) {
@@ -52,7 +52,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
-			if (player.containerMenu instanceof ChestMenu menu) 
+			if (player.containerMenu instanceof ChestMenu menu)
 				return menu.getContainer() == JarStorageEntity.this;
 			return false;
 		}
@@ -150,5 +150,11 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, JarStorageEntity blockEntity) {
+		if (level != null)
+			if (!blockEntity.isRemoved())
+				blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
 	}
 }
