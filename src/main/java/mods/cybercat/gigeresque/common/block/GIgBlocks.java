@@ -44,6 +44,8 @@ public class GIgBlocks implements GigeresqueInitializer {
 	/*
 	 * NORMAL BLOCKS
 	 */
+	
+	public static final SporeBlock SPORE_BLOCK = new SporeBlock();
 
 	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of(Materials.ACID).nonOpaque().noLootTable());
 
@@ -147,7 +149,9 @@ public class GIgBlocks implements GigeresqueInitializer {
 
 		registerItemBlock("nest_resin_web", NEST_RESIN_WEB);
 		registerItemBlock("nest_resin_web_cross", NEST_RESIN_WEB_CROSS);
-
+		
+		Registry.register(Registry.BLOCK, Constants.modResource("neomorph_spore_pods"), SPORE_BLOCK);
+		Registry.register(Registry.ITEM, Constants.modResource("neomorph_spore_pods"), new mods.cybercat.gigeresque.common.item.GigBlockItem(SPORE_BLOCK, new FabricItemSettings().tab(GigItemGroups.BLOCKS)));
 		Registry.register(Registry.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);

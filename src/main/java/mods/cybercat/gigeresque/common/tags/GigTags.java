@@ -26,6 +26,7 @@ public class GigTags {
 	public static final TagKey<EntityType<?>> RUNNER_HOSTS = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("runnerhost"));
 	public static final TagKey<EntityType<?>> MUTANT_SMALL_HOSTS = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("smallmutanthost"));
 	public static final TagKey<EntityType<?>> MUTANT_LARGE_HOSTS = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("largemutanthost"));
+	public static final TagKey<EntityType<?>> NEOHOST = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("neohost"));
 	public static final TagKey<EntityType<?>> DNAIMMUNE = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("dnaimmune"));
 	public static final TagKey<EntityType<?>> FACEHUGGER_BLACKLIST = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, Constants.modResource("facehuggerblacklist"));
 }

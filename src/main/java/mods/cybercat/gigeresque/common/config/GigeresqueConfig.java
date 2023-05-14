@@ -32,6 +32,9 @@ public class GigeresqueConfig {
 	public float impregnationTickTimer = 9600.0f;
 
 	@Configurable
+	public int sporeTickTimer = 4800;
+
+	@Configurable
 	public float runnerAlienGrowthMultiplier = 1.0f;
 
 	@Configurable
@@ -198,6 +201,10 @@ public class GigeresqueConfig {
 
 	public float getImpregnationTickTimer() {
 		return impregnationTickTimer;
+	}
+
+	public int getSporeTickTimer() {
+		return sporeTickTimer;
 	}
 
 	public float getRunnerAlienGrowthMultiplier() {
