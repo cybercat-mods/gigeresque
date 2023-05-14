@@ -1,11 +1,3 @@
-v.0.5.28
+v.0.5.28HF
 
-- Moved from Midnight Lib to Configuration
-- Acid will now shirk stacks of items instead of the whole stack.
-- Acid no longer damages players in creative or spectator mode.
-- Fixed Idol/Sarcophagus particles on breaking.
-- Added default sounds to Idol/Sarcophagus
-- Removed grass from acid tag.
-- Idol/Sarcophagus/Jar now properly drop inventories on breaking.
-- Idol/Sarcophagus set needed extra blocks on /setblock now.
-- Sarcophagus/Jar animation tweak.
+- Updated required AzureLib to fix crashing at startup.
