@@ -380,10 +380,7 @@
 				{
 					"name": "left_arm_reposition",
 					"parent": "left_arm",
-					"pivot": [8.58058, 7.85197, 2.70224],
-					"cubes": [
-						{"origin": [10.58058, 6.85197, 7.70224], "size": [2, 2, 2], "uv": [10, 7]}
-					]
+					"pivot": [8.58058, 7.85197, 2.70224]
 				},
 				{
 					"name": "left_forearm2",

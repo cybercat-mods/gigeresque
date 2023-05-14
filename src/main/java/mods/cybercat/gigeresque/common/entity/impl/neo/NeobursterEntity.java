@@ -23,12 +23,14 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -75,7 +77,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
 	}
 
 	/*
@@ -112,12 +114,12 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(5), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AnimatableMeleeAttack(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(2.3F), new AnimatableMeleeAttack(20));
 	}
 
 	/*
@@ -127,10 +129,11 @@ public class NeobursterEntity extends RunnerbursterEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead)
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
+			if (velocityLength >= 0.000000001 && !isDead)
 				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
-				else
+				else 
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (event.getAnimatable().isEating() == true)) && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.CHOMP);
@@ -140,6 +143,13 @@ public class NeobursterEntity extends RunnerbursterEntity {
 				return event.setAndContinue(GigAnimationsDefault.BIRTH);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
+				if (this.level.isClientSide) 
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
+			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
+				if (this.level.isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
 		}));
 	}
 

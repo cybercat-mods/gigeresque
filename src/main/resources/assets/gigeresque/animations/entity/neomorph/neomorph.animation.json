@@ -1570,6 +1570,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "runstepSoundkey"
+				}
 			}
 		},
 		"hiss": {
@@ -2501,6 +2506,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.40": {
+					"effect": "hissSoundkey"
+				}
 			}
 		},
 		"left_claw": {
@@ -3143,6 +3153,11 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.44": {
+					"effect": "clawSoundkey"
 				}
 			}
 		},
@@ -3795,7 +3810,7 @@
 				}
 			},
 			"sound_effects": {
-				"0.08": {
+				"0.44": {
 					"effect": "clawSoundkey"
 				}
 			}
@@ -4579,6 +4594,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.44": {
+					"effect": "tailSoundkey"
+				}
 			}
 		},
 		"right_tail": {
@@ -5359,8 +5379,8 @@
 				}
 			},
 			"sound_effects": {
-				"0.08": {
-					"effect": "clawSoundkey"
+				"0.48": {
+					"effect": "tailSoundkey"
 				}
 			}
 		},
@@ -6611,6 +6631,11 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.48": {
+					"effect": "thudSoundkey"
 				}
 			}
 		}
