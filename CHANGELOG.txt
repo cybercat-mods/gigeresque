@@ -1,13 +1,11 @@
-v.0.5.27
+v.0.5.28
 
-- Fixes acid not applying acid effect when walking on it. 
-- Removed configs for whitelist/blacklist entities into what type of entity.
-- Added datapack tags for setting mobs to what type of alien it can become. 
-	- aquaticalienthost controls what mobs can become Auqabursters which grow into Aqua Xenomorph.
-	- classicalienthost controls what mobs can become the Classic Xenomorph.
-	- runnerhost controls what mobs can become Runner aliens.
-	- smallmuntanthost controls what mobs can mutate into either Hammerpedes or Poppers
-	- largemutanthost controls what mobs can mutate into Stalkers.
-	- dnaimmune controls what mobs can't become inflected with DNA.
-	- facehuggerimmune controls what mobs can't be face hugged.
-- General clean up code to move more things to the new helper methods.
+- Moved from Midnight Lib to Configuration
+- Acid will now shirk stacks of items instead of the whole stack.
+- Acid no longer damages players in creative or spectator mode.
+- Fixed Idol/Sarcophagus particles on breaking.
+- Added default sounds to Idol/Sarcophagus
+- Removed grass from acid tag.
+- Idol/Sarcophagus/Jar now properly drop inventories on breaking.
+- Idol/Sarcophagus set needed extra blocks on /setblock now.
+- Sarcophagus/Jar animation tweak.
