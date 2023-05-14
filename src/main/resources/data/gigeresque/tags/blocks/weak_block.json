@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:grass_block",
     "minecraft:mycelium",
     "minecraft:podzol",
     "minecraft:dirt",
@@ -11,7 +10,6 @@
     "minecraft:sand",
     "minecraft:red_sand",
     "minecraft:gravel",
-    "minecraft:grass_block",
     "minecraft:glass",
     "minecraft:white_stained_glass",
     "minecraft:orange_stained_glass",
