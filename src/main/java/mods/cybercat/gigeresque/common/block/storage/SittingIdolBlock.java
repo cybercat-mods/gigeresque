@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -116,5 +118,17 @@ public class SittingIdolBlock extends BaseEntityBlock {
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		if (world.getBlockEntity(pos)instanceof IdolStorageEntity idolStorageEntity)
 			idolStorageEntity.tick();
+	}
+
+	@Override
+	public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+		if (blockState.is(blockState2.getBlock()))
+			return;
+		var blockEntity = level.getBlockEntity(blockPos);
+		if (blockEntity instanceof Container container) {
+			Containers.dropContents(level, blockPos, container);
+			level.updateNeighbourForOutputSignal(blockPos, this);
+		}
+		super.onRemove(blockState, level, blockPos, blockState2, bl);
 	}
 }
