@@ -1507,7 +1507,7 @@
 				"0.0": {
 					"effect": "stepSoundkey"
 				},
-				"0.88": {
+				"0.72": {
 					"effect": "stepSoundkey"
 				}
 			}
@@ -1667,6 +1667,50 @@
 					"rotation": {
 						"vector": ["-15+math.sin(135+query.anim_time*640)*-20", 0, 0]
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "stepSoundkey"
+				},
+				"0.16": {
+					"effect": "stepSoundkey"
+				},
+				"0.56": {
+					"effect": "stepSoundkey"
+				},
+				"0.72": {
+					"effect": "stepSoundkey"
+				},
+				"1.12": {
+					"effect": "stepSoundkey"
+				},
+				"1.28": {
+					"effect": "stepSoundkey"
+				},
+				"1.68": {
+					"effect": "stepSoundkey"
+				},
+				"1.84": {
+					"effect": "stepSoundkey"
+				},
+				"2.24": {
+					"effect": "stepSoundkey"
+				},
+				"2.39": {
+					"effect": "stepSoundkey"
+				},
+				"2.79": {
+					"effect": "stepSoundkey"
+				},
+				"2.96": {
+					"effect": "stepSoundkey"
+				},
+				"3.35": {
+					"effect": "stepSoundkey"
+				},
+				"3.52": {
+					"effect": "stepSoundkey"
 				}
 			}
 		},
@@ -3314,6 +3358,11 @@
 							"vector": [14.98979, -0.68823, -3.72622]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"1.3": {
+					"effect": "thudSoundkey"
 				}
 			}
 		}

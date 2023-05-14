@@ -209,7 +209,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 	@Override
 	public BrainActivityGroup<NeomorphAdolescentEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite()
-				|| ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.runnerXenoAttackSpeed), new AlienMeleeAttack(10));
+				|| ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.5f), new AlienMeleeAttack(17));
 	}
 
 	/*
@@ -217,11 +217,12 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 	 */
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			var velocityLength = this.getDeltaMovement().horizontalDistance();
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
+			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
 				if (!this.isInWater() && this.isExecuting() == false)
 					if (animationSpeedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -234,13 +235,16 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
 			return event.setAndContinue(this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
+				if (this.level.isClientSide) 
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-		})).add(new AnimationController<>(this, "attackController", 1, event -> {
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
+//			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
+//				if (this.level.isClientSide)
+//					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.5F, true);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (event.getAnimatable().isBreaking() == true && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle() && this.isExecuting() == false)

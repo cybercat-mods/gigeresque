@@ -294,8 +294,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (!level.isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
 
-			if (hissingCooldown == 20)
+			if (hissingCooldown == 20) {
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 				setIsHissing(true);
+			}
 
 			if (hissingCooldown > 80) {
 				setIsHissing(false);
