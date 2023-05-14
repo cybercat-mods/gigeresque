@@ -141,9 +141,9 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (getChestState().equals(StorageStates.CLOSING))
+			if (getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")))
 				return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-			else if (getChestState().equals(StorageStates.OPENED))
+			else if (getChestState().equals(StorageStates.OPENED)&& !event.isCurrentAnimation(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")))
 				return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
 		}));
