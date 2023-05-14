@@ -6,10 +6,13 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,6 +26,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +37,7 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 	private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
-	private final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
+	protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
 		@Override
 		protected void onOpen(Level world, BlockPos pos, BlockState state) {
@@ -128,6 +132,14 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
 	}
 
+	public StorageStates getChestState() {
+		return this.getBlockState().getValue(IdolStorageEntity.CHEST_STATE);
+	}
+
+	public void setChestState(StorageStates state) {
+		this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(CHEST_STATE, state));
+	}
+
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
@@ -138,5 +150,17 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 		controllers.add(new AnimationController<>(this, event -> {
 			return PlayState.CONTINUE;
 		}));
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, IdolStorageEntity blockEntity) {
+		if (level != null) {
+			if (!blockEntity.level.isClientSide)
+				BlockPos.betweenClosed(pos, pos.relative((Direction) state.getValue(SittingIdolBlock.FACING), 2).above(2)).forEach(testPos -> {
+					if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS2))
+						level.setBlock(testPos, GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS2.defaultBlockState(), Block.UPDATE_ALL);
+				});
+			if (!blockEntity.isRemoved())
+				blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
+		}
 	}
 }
