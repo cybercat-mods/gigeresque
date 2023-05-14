@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -79,6 +79,6 @@ public class GigEntityUtils {
 	}
 
 	public static boolean convertToSpitter(LivingEntity target) {
-		return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > GigeresqueConfig.getImpregnationTickTimer() / 2);
+		return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
 	}
 }

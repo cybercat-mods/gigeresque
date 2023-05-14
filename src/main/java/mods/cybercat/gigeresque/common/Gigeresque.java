@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common;
 
-import eu.midnightdust.lib.config.MidnightConfig;
+import dev.toma.configuration.Configuration;
+import dev.toma.configuration.config.format.ConfigFormats;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
@@ -25,7 +26,7 @@ public class Gigeresque implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		MidnightConfig.init(MOD_ID, GigeresqueConfig.class);
+		config = Configuration.registerConfig(GigeresqueConfig.class, ConfigFormats.json()).getConfigInstance();
 
 		GigItems.init();
 		GigMemoryTypes.init();

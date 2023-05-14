@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
@@ -121,11 +121,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (!this.level.isClientSide)
 			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {
 				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(GigEntityUtils.isTargetDNAImmune(this)))
-					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
+					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
 				if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
 				if (!this.hasEffect(GigStatusEffects.DNA) && (((Object) this)instanceof Player playerEntity && !(playerEntity.isCreative() || this.isSpectator())) && !(((Object) this) instanceof AlienEntity))
-					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, GigeresqueConfig.getgooEffectTickTimer(), 0));
+					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
 			}
 
 		if (!this.level.isClientSide)
@@ -160,7 +160,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		else
 			resetEggmorphing();
 
-		if (getTicksUntilEggmorphed() == GigeresqueConfig.getEggmorphTickTimer() && !this.isDeadOrDying()) {
+		if (getTicksUntilEggmorphed() == Gigeresque.config.getEggmorphTickTimer() && !this.isDeadOrDying()) {
 			var egg = new AlienEggEntity(Entities.EGG, level);
 			egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 			level.addFreshEntity(egg);

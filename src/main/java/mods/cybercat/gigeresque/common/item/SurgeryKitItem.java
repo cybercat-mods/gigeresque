@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.item;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
@@ -24,13 +24,13 @@ import net.minecraft.world.level.Level;
 public class SurgeryKitItem extends Item {
 
 	public SurgeryKitItem() {
-		super(new Item.Properties().durability(GigeresqueConfig.maxSurgeryKitUses));
+		super(new Item.Properties().durability(Gigeresque.config.maxSurgeryKitUses));
 	}
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
 		tryRemoveParasite(itemStack, livingEntity);
-		player.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
+		player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
 		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
 		return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
 	}
@@ -54,7 +54,7 @@ public class SurgeryKitItem extends Item {
 
 				host.removeParasite();
 				if (entity instanceof Player playerentity) {
-					playerentity.getCooldowns().addCooldown(this, GigeresqueConfig.surgeryKitCooldownTicks);
+					playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
 					stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 				}
 				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));

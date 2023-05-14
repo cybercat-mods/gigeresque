@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -61,7 +61,7 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 							var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
 							if (yDiff < 2) {
 								BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-								((Eggmorphable) target).setTicksUntilEggmorphed(GigeresqueConfig.getEggmorphTickTimer());
+								((Eggmorphable) target).setTicksUntilEggmorphed(Gigeresque.config.getEggmorphTickTimer());
 								target.setPos(Vec3.atBottomCenterOf(testPos));
 								target.removeVehicle();
 								entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);

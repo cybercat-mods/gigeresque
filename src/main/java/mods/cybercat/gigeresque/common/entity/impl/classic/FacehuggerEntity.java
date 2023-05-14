@@ -10,8 +10,8 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
-import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
@@ -122,7 +122,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, GigeresqueConfig.facehuggerHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
+		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.facehuggerHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
 	}
 
 	@Override
@@ -214,8 +214,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		this.grabTarget(validHost);
 		this.startRiding(validHost);
 		validHost.setSpeed(0.0f);
-		if (GigeresqueConfig.facehuggerGivesBlindness == true)
-			validHost.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) GigeresqueConfig.facehuggerAttachTickTimer, 0));
+		if (Gigeresque.config.facehuggerGivesBlindness == true)
+			validHost.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
 	}
 
 	@Override
@@ -249,8 +249,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 			if (host != null) {
 				((LivingEntity) getVehicle()).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-				if (ticksAttachedToHost > GigeresqueConfig.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(GigeresqueConfig.getImpregnationTickTimer());
+				if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
+					host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer());
 					host.hasParasite();
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
