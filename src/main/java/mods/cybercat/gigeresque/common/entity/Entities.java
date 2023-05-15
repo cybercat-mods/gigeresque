@@ -54,7 +54,7 @@ public class Entities implements GigeresqueInitializer {
 	public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(), AquaticAlienEntity::new, 2.0f, 2.0f);
 	public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), AquaticChestbursterEntity::new, 0.5f, 0.25f);
 	public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(), ChestbursterEntity::new, 0.5f, 0.25f);
-	public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), AlienEggEntity::new, 0.7f, 0.7f);
+	public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), AlienEggEntity::new, 0.7f, 0.9f);
 	public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(), FacehuggerEntity::new, 0.5f, 0.3f);
 	public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(), RunnerAlienEntity::new, 1.25f, 1.75f);
 	public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(), RunnerbursterEntity::new, 0.5f, 0.5f);
