@@ -27,6 +27,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
@@ -132,12 +134,24 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	protected AABB makeBoundingBox() {
-		return super.makeBoundingBox();
+		return this.isHatched() ? this.getBoundingBox().inflate(1.7) : this.getBoundingBox().inflate(1.2);
 	}
 
 	@Override
-	public AABB getLocalBoundsForPose(Pose pose) {
-		return this.getBoundingBox().inflate(1);
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.isHatched() ? EntityDimensions.scalable(0.7f, 1.0f) : super.getDimensions(pose);
+	}
+
+	@Override
+	public void refreshDimensions() {
+		super.refreshDimensions();
+	}
+	
+	@Override
+	public void travel(Vec3 vec3) {
+		if (this.tickCount % 10 == 0)
+			this.refreshDimensions();
+		super.travel(vec3);
 	}
 
 	@Override
