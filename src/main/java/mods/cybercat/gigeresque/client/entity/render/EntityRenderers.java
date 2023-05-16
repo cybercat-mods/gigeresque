@@ -1,7 +1,10 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.render.blocks.JarRender;
+import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusGooRender;
+import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusHuggerRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusRender;
+import mods.cybercat.gigeresque.client.entity.render.blocks.SarcophagusSporeRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SittingIdolRender;
 import mods.cybercat.gigeresque.client.entity.render.blocks.SporeBlockRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -37,6 +40,9 @@ public class EntityRenderers implements GigeresqueInitializer {
 //		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
 		BlockEntityRenderers.register(Entities.SPORE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
 		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
+		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
+		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender());
+		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender());
 		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
 		BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
 	}

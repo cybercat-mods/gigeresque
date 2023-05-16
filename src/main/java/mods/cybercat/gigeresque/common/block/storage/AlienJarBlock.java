@@ -73,7 +73,7 @@ public class AlienJarBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new JarStorageEntity(pos, state);
+		return Entities.ALIEN_STORAGE_BLOCK_ENTITY_2.create(pos, state);
 	}
 
 	@Override

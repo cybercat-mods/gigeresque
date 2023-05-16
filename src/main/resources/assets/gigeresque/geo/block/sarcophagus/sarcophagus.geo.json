@@ -28,6 +28,14 @@
 					]
 				},
 				{
+					"name": "item",
+					"parent": "base",
+					"pivot": [0, 0.359, 2.26047],
+					"cubes": [
+						{"origin": [-1, 31.609, 2.01047], "size": [2, 2, 2], "uv": [44, 45]}
+					]
+				},
+				{
 					"name": "head",
 					"parent": "base",
 					"pivot": [0, 40.30643, 2.8831],
@@ -55,7 +63,6 @@
 					"name": "rDoor",
 					"parent": "base",
 					"pivot": [-3.64204, 28.93614, 1.92191],
-					"rotation": [0, 0, 0],
 					"cubes": [
 						{"origin": [-4, 38, -2], "size": [4, 3, 4], "uv": [77, 0], "mirror": true},
 						{"origin": [-6, 21, -3], "size": [6, 17, 5], "uv": [52, 0], "mirror": true},
@@ -87,7 +94,6 @@
 					"name": "lDoor",
 					"parent": "base",
 					"pivot": [3.64204, 28.93614, 1.92191],
-					"rotation": [0, 0, 0],
 					"cubes": [
 						{"origin": [0, 38, -2], "size": [4, 3, 4], "uv": [77, 0]},
 						{"origin": [0, 21, -3], "size": [6, 17, 5], "uv": [52, 0]},

@@ -74,7 +74,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new AlienStorageEntity(pos, state);
+		return Entities.ALIEN_STORAGE_BLOCK_ENTITY_1.create(pos, state);
 	}
 
 	@Override

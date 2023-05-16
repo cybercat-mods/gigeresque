@@ -3,6 +3,9 @@ package mods.cybercat.gigeresque.common.entity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
@@ -71,6 +74,9 @@ public class Entities implements GigeresqueInitializer {
 //	public static final EntityType<? extends UltramorpthEntity> ULTRAMORTH = registerAlienType(EntityIdentifiers.ULTRAMORTH.getPath(), UltramorpthEntity::new, 1.7f, 4.45f);
 
 	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1;
+	public static BlockEntityType<AlienStorageHuggerEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER;
+	public static BlockEntityType<AlienStorageGooEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_GOO;
+	public static BlockEntityType<AlienStorageSporeEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE;
 	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2;
 	public static BlockEntityType<IdolStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_3;
 	public static BlockEntityType<SporeBlockEntity> SPORE_ENTITY;
@@ -78,6 +84,9 @@ public class Entities implements GigeresqueInitializer {
 	@Override
 	public void initialize() {
 		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity"), FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_goo"), FabricBlockEntityTypeBuilder.create(AlienStorageGooEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_GOO).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_hugger"), FabricBlockEntityTypeBuilder.create(AlienStorageHuggerEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_spore"), FabricBlockEntityTypeBuilder.create(AlienStorageSporeEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_SPORE).build(null));
 		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_jar_entity"), FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
 		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("sitting_idol_entity"), FabricBlockEntityTypeBuilder.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
 		SPORE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Constants.modResource("neomorph_spore_pods"), FabricBlockEntityTypeBuilder.create(SporeBlockEntity::new, GIgBlocks.SPORE_BLOCK).build(null));

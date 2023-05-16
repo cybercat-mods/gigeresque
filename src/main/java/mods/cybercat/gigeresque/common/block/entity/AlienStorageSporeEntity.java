@@ -6,17 +6,22 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,44 +35,58 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public class AlienStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
+public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
 	private NonNullList<ItemStack> items = NonNullList.withSize(36, ItemStack.EMPTY);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
+	private boolean check = true;
 	protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
 		@Override
 		protected void onOpen(Level world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+			AlienStorageSporeEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
 		}
 
 		@Override
 		protected void onClose(Level world, BlockPos pos, BlockState state) {
-			AlienStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+			AlienStorageSporeEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
 		}
 
 		@Override
 		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
-			AlienStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
+			AlienStorageSporeEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
 		}
 
 		@Override
 		protected boolean isOwnContainer(Player player) {
 			if (player.containerMenu instanceof ChestMenu menu)
-				return menu.getContainer() == AlienStorageEntity.this;
+				return menu.getContainer() == AlienStorageSporeEntity.this;
 			return false;
 		}
 	};
 
-	public AlienStorageEntity(BlockPos pos, BlockState state) {
-		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, pos, state);
+	public AlienStorageSporeEntity(BlockPos pos, BlockState state) {
+		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE, pos, state);
+	}
+
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+
+	@Override
+	public CompoundTag getUpdateTag() {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putBoolean("spawnspore", checkSporestatus());
+		return nbt;
 	}
 
 	@Override
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
 		this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+		hasSpawnSpore(nbt.getBoolean("spawnspore"));
 		if (!this.tryLoadLootTable(nbt))
 			ContainerHelper.loadAllItems(nbt, this.items);
 	}
@@ -75,6 +94,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 	@Override
 	protected void saveAdditional(CompoundTag nbt) {
 		super.saveAdditional(nbt);
+		nbt.putBoolean("spawnspore", check);
 		if (!this.trySaveLootTable(nbt))
 			ContainerHelper.saveAllItems(nbt, this.items);
 	}
@@ -131,7 +151,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 	}
 
 	public StorageStates getChestState() {
-		return this.getBlockState().getValue(AlienStorageEntity.CHEST_STATE);
+		return this.getBlockState().getValue(AlienStorageSporeEntity.CHEST_STATE);
 	}
 
 	public void setChestState(StorageStates state) {
@@ -154,15 +174,38 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 		return this.cache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, AlienStorageEntity blockEntity) {
+	public void hasSpawnSpore(boolean spawn) {
+		check = spawn;
+	}
+
+	public boolean checkSporestatus() {
+		return check;
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, AlienStorageSporeEntity blockEntity) {
 		if (level != null) {
-			if (!blockEntity.level.isClientSide)
+			if (!blockEntity.getLevel().isClientSide()) {
 				BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
 					if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS))
 						level.setBlock(testPos, GIgBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
 				});
+				if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkSporestatus() == true) {
+					blockEntity.particleCloud();
+					blockEntity.hasSpawnSpore(false);
+					blockEntity.getLevel().playSound(null, pos, SoundEvents.SPLASH_POTION_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+				}
+			}
 			if (!blockEntity.isRemoved())
 				blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
 		}
+	}
+
+	public void particleCloud() {
+		var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5, worldPosition.getZ());
+		areaEffectCloudEntity.setRadius(2.0F);
+		areaEffectCloudEntity.setDuration(3);
+		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0));
+		this.level.addFreshEntity(areaEffectCloudEntity);
 	}
 }
