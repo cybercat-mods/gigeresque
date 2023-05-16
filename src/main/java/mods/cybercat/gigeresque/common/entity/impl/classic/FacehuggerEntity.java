@@ -468,28 +468,28 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && isInfertile() || this.isDeadOrDying())
+			if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == false && isInfertile() || this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
-				if (this.entityData.get(ATTACKING) == false && event.isMoving())
+			if (this.isUpsideDown() == false && this.isJumping() == false && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
+				if (this.isAttacking() == false && event.isMoving())
 					return event.setAndContinue(GigAnimationsDefault.SWIM);
-				else if (this.entityData.get(ATTACKING) == true && event.isMoving())
+				else if (this.isAttacking() == true && event.isMoving())
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 				else
 					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-			if (this.entityData.get(JUMPING) == true)
+			if (this.isJumping() == true)
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
-			if (this.entityData.get(EGGSPAWN) == true && !this.isDeadOrDying())
+			if (this.isEggSpawn() == true && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == true && !this.isDeadOrDying()) {
+			if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == true && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
 			}
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.entityData.get(ATTACKING) == false && this.entityData.get(EGGSPAWN) == false && (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
+			if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == false && this.isEggSpawn() == false && (animationSpeedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			}
-			if (this.entityData.get(UPSIDE_DOWN) == false && this.entityData.get(JUMPING) == false && this.isCrawling() && !this.isDeadOrDying()) {
+			if (this.isUpsideDown() == false && this.isJumping() == false && this.isCrawling() && !this.isDeadOrDying()) {
 				event.getController().setAnimationSpeed(1 + event.getAnimatable().getSpeed());
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			}
