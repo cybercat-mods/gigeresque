@@ -74,7 +74,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new AlienStorageEntity(pos, state);
+		return Entities.ALIEN_STORAGE_BLOCK_ENTITY_1.create(pos, state);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
 			if (!testPos.equals(pos))
-				world.destroyBlock(testPos, false);
+				world.destroyBlock(testPos, true);
 		});
 		super.playerWillDestroy(world, pos, state, player);
 	}

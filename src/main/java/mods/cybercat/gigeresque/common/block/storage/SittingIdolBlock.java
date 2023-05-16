@@ -74,7 +74,7 @@ public class SittingIdolBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new IdolStorageEntity(pos, state);
+		return Entities.ALIEN_STORAGE_BLOCK_ENTITY_3.create(pos, state);
 	}
 
 	@Override

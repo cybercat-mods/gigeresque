@@ -4,7 +4,10 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusGooBlock;
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusHuggerBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusInvisBlock;
+import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusSporeBlock;
 import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
 import mods.cybercat.gigeresque.common.block.storage.SittingIdolInvisBlock;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
@@ -53,6 +56,9 @@ public class GIgBlocks implements GigeresqueInitializer {
 	public static final SittingIdolInvisBlock ALIEN_STORAGE_BLOCK_INVIS2 = new SittingIdolInvisBlock();
 
 	public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock();
+	public static final AlienSarcophagusHuggerBlock ALIEN_STORAGE_BLOCK_1_HUGGER = new AlienSarcophagusHuggerBlock();
+	public static final AlienSarcophagusGooBlock ALIEN_STORAGE_BLOCK_1_GOO = new AlienSarcophagusGooBlock();
+	public static final AlienSarcophagusSporeBlock ALIEN_STORAGE_BLOCK_1_SPORE = new AlienSarcophagusSporeBlock();
 	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
 	public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock();
 //	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
@@ -154,6 +160,9 @@ public class GIgBlocks implements GigeresqueInitializer {
 		Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"), new mods.cybercat.gigeresque.common.item.GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
 		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
+		registerItemBlock("alien_storage_block1_hugger", ALIEN_STORAGE_BLOCK_1_HUGGER);
+		registerItemBlock("alien_storage_block1_goo", ALIEN_STORAGE_BLOCK_1_GOO);
+		registerItemBlock("alien_storage_block1_spore", ALIEN_STORAGE_BLOCK_1_SPORE);
 		registerItemBlock("alien_storage_block2", ALIEN_STORAGE_BLOCK_2);
 		registerItemBlock("alien_storage_block3", ALIEN_STORAGE_BLOCK_3);
 //		registerItemBlock("alien_storage_block4", ALIEN_STORAGE_BLOCK_4);
