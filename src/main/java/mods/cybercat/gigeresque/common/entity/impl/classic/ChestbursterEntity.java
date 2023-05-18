@@ -21,7 +21,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -221,7 +220,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = new RunnerbursterEntity(Entities.RUNNERBURSTER, level);
+		var entity = Entities.RUNNERBURSTER.create(level);
 		entity.hostId = this.hostId;
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());

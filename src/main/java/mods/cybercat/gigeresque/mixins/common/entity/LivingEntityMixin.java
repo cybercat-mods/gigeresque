@@ -13,8 +13,6 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
@@ -186,13 +184,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				this.hurt(damageSources().generic(), this.getMaxHealth() / 8f);
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				ChestbursterEntity burster = new ChestbursterEntity(Entities.CHESTBURSTER, this.level);
+				ChestbursterEntity burster = Entities.CHESTBURSTER.create(this.level);
 				if (this.getType().is(GigTags.RUNNER_HOSTS)) {
-					burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, this.level);
+					burster = Entities.RUNNERBURSTER.create(this.level);
 					burster.setHostId("runner");
 				}
 				if (this.getType().is(GigTags.AQUATIC_HOSTS)) 
-					burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, this.level);
+					burster = Entities.AQUATIC_CHESTBURSTER.create(this.level);
 
 				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 

@@ -95,7 +95,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
 	@Override
 	public LivingEntity growInto() {
-		return new NeomorphAdolescentEntity(Entities.NEOMORPH_ADOLESCENT, level);
+		return Entities.NEOMORPH_ADOLESCENT.create(level);
 	}
 
 	@Override

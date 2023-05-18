@@ -23,7 +23,6 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -108,9 +107,9 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 	public LivingEntity growInto() {
 		LivingEntity alien;
 		if (hostId == "runner")
-			alien = new RunnerAlienEntity(Entities.RUNNER_ALIEN, level);
+			alien = Entities.RUNNER_ALIEN.create(level);
 		else
-			alien = new ClassicAlienEntity(Entities.ALIEN, level);
+			alien = Entities.ALIEN.create(level);
 
 		return alien;
 	}

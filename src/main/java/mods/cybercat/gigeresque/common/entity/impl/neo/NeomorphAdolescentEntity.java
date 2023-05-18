@@ -17,6 +17,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -171,6 +172,11 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 	@Override
 	public float getMaxGrowth() {
 		return Constants.TPD / 2.0f;
+	}
+
+	@Override
+	public LivingEntity growInto() {
+		return Entities.NEOMORPH.create(level);
 	}
 
 	@Override
