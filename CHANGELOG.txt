@@ -1,11 +1,10 @@
-v.0.5.28
+v.0.5.29
 
-- Moved from Midnight Lib to Configuration
-- Acid will now shirk stacks of items instead of the whole stack.
-- Acid no longer damages players in creative or spectator mode.
-- Fixed Idol/Sarcophagus particles on breaking.
-- Added default sounds to Idol/Sarcophagus
-- Removed grass from acid tag.
-- Idol/Sarcophagus/Jar now properly drop inventories on breaking.
-- Idol/Sarcophagus set needed extra blocks on /setblock now.
-- Sarcophagus/Jar animation tweak.
+- Fixes crash in creative menu
+- Egg Hitbox adjusted, gets taller when hatched.
+- Fixed left over entityData calls over to the proper getter.
+- Fixed Huggers animations when leaping from eggs.
+- Huggers now use proper task for face hugger, fixing it missing the jumping to the host where before it just teleported.
+- Huggers can now be blocked with shields. 
+- Tweaked spacing/separation of dungeons to try and help with loading times. Still more work to be done here.
+- More WIP work done.
