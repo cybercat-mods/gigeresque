@@ -5,9 +5,6 @@ import java.awt.Color;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -60,14 +57,14 @@ public class DNAStatusEffect extends MobEffect {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
 						else
-							summon = new PopperEntity(Entities.MUTANT_POPPER, entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = new StalkerEntity(Entities.MUTANT_STALKER, entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
@@ -79,14 +76,14 @@ public class DNAStatusEffect extends MobEffect {
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = new HammerpedeEntity(Entities.MUTANT_HAMMERPEDE, entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
 						else
-							summon = new PopperEntity(Entities.MUTANT_POPPER, entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = new StalkerEntity(Entities.MUTANT_STALKER, entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.level);
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 						spawnEffects(entity.level, entity);
 						entity.level.addFreshEntity(summon);

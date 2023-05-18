@@ -177,7 +177,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			ticksOpen++;
 
 		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level.isClientSide && !this.isDeadOrDying()) {
-			var facehugger = new FacehuggerEntity(Entities.FACEHUGGER, level);
+			var facehugger = Entities.FACEHUGGER.create(level);
 			facehugger.moveTo(blockPosition().above(), getYRot(), getXRot());
 			facehugger.setDeltaMovement(0.0, 0.7, 0.0);
 			facehugger.setEggSpawnState(true);

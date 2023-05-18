@@ -96,7 +96,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 	@Override
 	public LivingEntity growInto() {
 
-		var entity = new NeomorphAdolescentEntity(Entities.NEOMORPH_ADOLESCENT, level);
+		var entity = Entities.NEOMORPH_ADOLESCENT.create(level);
 		entity.hostId = this.hostId;
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());

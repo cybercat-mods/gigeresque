@@ -70,7 +70,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = new AquaticAlienEntity(Entities.AQUATIC_ALIEN, level);
+		var entity = Entities.AQUATIC_ALIEN.create(level);
 
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
