@@ -30,12 +30,16 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -44,6 +48,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -181,6 +186,13 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	@Override
 	public float getGrowthMultiplier() {
 		return Gigeresque.config.runnerAlienGrowthMultiplier;
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
+		if (spawnReason != MobSpawnType.NATURAL)
+			setGrowth(getMaxGrowth());
+		return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
 	}
 
 	@Override
