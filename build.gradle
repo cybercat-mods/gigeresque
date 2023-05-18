@@ -43,7 +43,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.14'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.15'
 	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
