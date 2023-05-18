@@ -29,7 +29,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -37,9 +36,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
@@ -48,7 +45,6 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
@@ -251,13 +247,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public int getMaxFallDistance() {
 		return 9;
-	}
-
-	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-		if (spawnReason != MobSpawnType.NATURAL)
-			setGrowth(getMaxGrowth());
-		return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
 	}
 
 	@Override
