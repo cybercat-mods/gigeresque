@@ -1,0 +1,77 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"animation_length": 3.12,
+			"bones": {
+				"sporePod01": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"1.64": {
+							"vector": [1, 0.95, 1]
+						},
+						"3.12": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"sporePod2": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"2.48": {
+							"vector": [1, 0.95, 1]
+						},
+						"3.12": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"sporePod3": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"1.44": {
+							"vector": [1, 0.95, 1]
+						},
+						"3.12": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"sporePod4": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"2.16": {
+							"vector": [1, 0.95, 1]
+						},
+						"3.12": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"sporePod5": {
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"1.24": {
+							"vector": [1, 0.95, 1]
+						},
+						"3.12": {
+							"vector": [1, 1, 1]
+						}
+					}
+				}
+			}
+		}
+	},
+	"azurelib_format_version": 2
+}
