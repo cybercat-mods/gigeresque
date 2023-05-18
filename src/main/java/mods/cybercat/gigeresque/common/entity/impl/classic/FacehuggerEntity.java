@@ -447,7 +447,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				// Move to target
 				new SetWalkTargetToAttackTarget<>().speedMod(1.05F),
 				// Jump and attach to host.
-				new FacehuggerPounceTask(6).cooldownFor(e -> 60));
+				new FacehuggerPounceTask(6));
 	}
 
 	@Override
