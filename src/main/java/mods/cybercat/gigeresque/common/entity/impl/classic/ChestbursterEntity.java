@@ -162,6 +162,8 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 		nbt.putFloat("growth", getGrowth());
 		if (hostId != null)
 			nbt.putString("hostId", hostId);
+		nbt.putBoolean("is_eating", isEating());
+		nbt.putBoolean("is_birthed", isBirthed());
 	}
 
 	@Override
@@ -171,6 +173,10 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 			setGrowth(nbt.getFloat("growth"));
 		if (nbt.contains("hostId"))
 			hostId = nbt.getString("hostId");
+		if (nbt.contains("is_eating"))
+			setEatingStatus(nbt.getBoolean("is_eating"));
+		if (nbt.contains("is_birthed"))
+			setBirthStatus(nbt.getBoolean("is_birthed"));
 	}
 
 	@Override
