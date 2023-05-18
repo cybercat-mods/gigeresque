@@ -3,8 +3,6 @@ package mods.cybercat.gigeresque.common.item;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -44,7 +42,7 @@ public class SurgeryKitItem extends Item {
 
 	private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
 		var host = (Host) entity;
-		if (host.hasParasite())
+		if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE))
 			if (!entity.level.isClientSide) {
 				entity.removeEffect(MobEffects.HUNGER);
 				entity.removeEffect(MobEffects.WEAKNESS);
@@ -63,14 +61,17 @@ public class SurgeryKitItem extends Item {
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		ChestbursterEntity burster;
+		ChestbursterEntity burster = Entities.CHESTBURSTER.create(entity.level);
 
-		if (entity.getType().is(GigTags.RUNNER_HOSTS))
-			burster = new RunnerbursterEntity(Entities.RUNNERBURSTER, entity.level);
-		else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
-			burster = new AquaticChestbursterEntity(Entities.AQUATIC_CHESTBURSTER, entity.level);
-		else
-			burster = new ChestbursterEntity(Entities.CHESTBURSTER, entity.level);
+		if (!entity.hasEffect(GigStatusEffects.SPORE)) {
+			if (entity.getType().is(GigTags.RUNNER_HOSTS))
+				burster = Entities.RUNNERBURSTER.create(entity.level);
+			else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
+				burster = Entities.AQUATIC_CHESTBURSTER.create(entity.level);
+			else
+				burster = Entities.CHESTBURSTER.create(entity.level);
+		} else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE))
+			burster = Entities.NEOBURSTER.create(entity.level);
 
 		if (entity.hasCustomName())
 			if (entity != null)
