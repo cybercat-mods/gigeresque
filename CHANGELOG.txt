@@ -1,3 +1,9 @@
-v.0.5.28HF
+v.0.5.29
 
-- Updated required AzureLib to fix crashing at startup.
+- Egg Hitbox adjusted, gets taller when hatched.
+- Fixed left over entityData calls over to the proper getter.
+- Fixed Huggers animations when leaping from eggs.
+- Huggers now use proper task for face hugger, fixing it missing the jumping to the host where before it just teleported.
+- Huggers can now be blocked with shields. 
+- Tweaked spacing/separation of dungeons to try and help with loading times. Still more work to be done here.
+- More WIP work done.
