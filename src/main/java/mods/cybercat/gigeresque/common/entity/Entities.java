@@ -65,10 +65,10 @@ public class Entities implements GigeresqueInitializer {
 	public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), HammerpedeEntity::new, 1.4f, 0.75f);
 	public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(EntityIdentifiers.MUTANT_STALKER.getPath(), StalkerEntity::new, 1.25f, 1.75f);
 
-	public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(), NeobursterEntity::new, 1.0f, 0.75f);
-	public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), NeomorphAdolescentEntity::new, 1.15f, 1.65f);
-	public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), NeomorphEntity::new, 0.9f, 3.25f);
-	public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), SpitterEntity::new, 0.9f, 3.35f);
+	public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(), NeobursterEntity::new, 0.5f, 0.45f);
+	public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), NeomorphAdolescentEntity::new, 1.0f, 0.9f);
+	public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), NeomorphEntity::new, 0.9f, 2.55f);
+	public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), SpitterEntity::new, 0.9f, 2.0f);
 
 //	public static final EntityType<? extends CrusherEntity> CRUSHER = registerAlienType(EntityIdentifiers.CRUSHER.getPath(), CrusherEntity::new, 1.3f, 2.35f);
 //	public static final EntityType<? extends PraetorianEntity> PRAETORIAN = registerAlienType(EntityIdentifiers.PRAETORIAN.getPath(), PraetorianEntity::new, 1.3f, 3.45f);
