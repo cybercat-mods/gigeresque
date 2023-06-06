@@ -409,8 +409,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (entity == this.getTarget() && !entity.hasPassenger(this) && !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
 			entity.startRiding(this, true);
 			this.setAggressive(false);
-			if (entity instanceof ServerPlayer)
-				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
+			if (entity instanceof ServerPlayer player)
+				player.connection.send(new ClientboundSetPassengersPacket(entity));
 		}
 	}
 
