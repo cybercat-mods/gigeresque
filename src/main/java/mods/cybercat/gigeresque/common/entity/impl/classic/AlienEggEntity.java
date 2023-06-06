@@ -144,7 +144,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return this.isHatched() ? EntityDimensions.scalable(0.7f, 1.0f) : super.getDimensions(pose);
+		return (this.isHatched() && !this.isDeadOrDying()) ? EntityDimensions.scalable(0.7f, 1.0f) : this.isDeadOrDying() ? EntityDimensions.scalable(0.7f, 0.6f): super.getDimensions(pose);
 	}
 
 	@Override
