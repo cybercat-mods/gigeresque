@@ -134,6 +134,11 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	protected AABB makeBoundingBox() {
+		return super.makeBoundingBox();
+	}
+
+	@Override
+	public AABB getLocalBoundsForPose(Pose pose) {
 		return this.isHatched() ? this.getBoundingBox().inflate(1.7) : this.getBoundingBox().inflate(1.2);
 	}
 
