@@ -68,7 +68,7 @@ public class GigeresqueConfig {
 	public float classicXenoTailAttackDamage = 3;
 
 	@Configurable
-	public float classicXenoAttackSpeed = 3.0F;
+	public float classicXenoAttackSpeed = 3.5F;
 
 	@Configurable
 	public double aquaticXenoHealth = 90;
