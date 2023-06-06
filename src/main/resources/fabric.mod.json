@@ -34,7 +34,7 @@
 		"fabricloader": ">=0.14.11",
 		"fabric": "*",
 		"minecraft": "1.19.2",
-		"azurelib": ">=1.0.17",
+		"azurelib": ">=1.0.20",
 		"smartbrainlib": ">=1.7.4",
 		"java": ">=17"
 	},
