@@ -1,9 +1,11 @@
-v.0.5.29
+v.0.5.30
 
-- Egg Hitbox adjusted, gets taller when hatched.
-- Fixed left over entityData calls over to the proper getter.
-- Fixed Huggers animations when leaping from eggs.
-- Huggers now use proper task for face hugger, fixing it missing the jumping to the host where before it just teleported.
-- Huggers can now be blocked with shields. 
-- Tweaked spacing/separation of dungeons to try and help with loading times. Still more work to be done here.
-- More WIP work done.
+- Tweak Facehugger jumping.
+- Fixed broken NBT syncing on eating/birth statues. 
+- Fixed growing issue with WIP.
+- Tweaks WIP name.
+- Updates and requires latest Azurelib.
+- Make Facehuggers idle longer.
+- Alien Eggs now resize hitbox on closed, open, and dead status.
+- Classic Xenos default config value for attacking speed is increased by 0.5F.
+- Fixes #160, causing Xenos having issues escaping boxes.
