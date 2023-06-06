@@ -229,8 +229,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			entity.setSpeed(0.0f);
 			if (Gigeresque.config.facehuggerGivesBlindness == true)
 				entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
-			if (entity instanceof ServerPlayer)
-				((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
+			if (entity instanceof ServerPlayer player)
+				player.connection.send(new ClientboundSetPassengersPacket(entity));
 		}
 	}
 
