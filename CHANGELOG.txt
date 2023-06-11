@@ -1,12 +1,8 @@
-v.0.5.30
+v.0.5.31
 
-- Fixes Alien Eggs spawning underground and lagging the game.
-- Tweak Facehugger jumping.
-- Fixed broken NBT syncing on eating/birth statues. 
-- Fixed growing issue with WIP.
-- Tweaks WIP name.
-- Updates and requires latest Azurelib.
-- Make Facehuggers idle longer.
-- Alien Eggs now resize hitbox on closed, open, and dead status.
-- Classic Xenos default config value for attacking speed is increased by 0.5F.
-- Fixes #160, causing Xenos having issues escaping boxes.
+- Fixed running animation of WIP mob.
+- Fixed Aliens attacking mobs with resin only on the top half of their body.
+- Tweaked egg morphing placement. 
+- Removed egg biome config, moved to eggbiomes.json tag. 
+
+## LAST 1.19.2 PATCH OUTSIDE ANY CRASHING BUGS ##
