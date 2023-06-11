@@ -1461,7 +1461,7 @@
 				"right_foreleg3": {
 					"rotation": {
 						"0.0": {
-							"vector": [-2.5, 0, 0]
+							"vector": [25, 0, 0]
 						},
 						"0.12": {
 							"vector": [40, 0, 0]
@@ -1489,7 +1489,7 @@
 				"right_foreleg2": {
 					"rotation": {
 						"0.0": {
-							"vector": [16.5, 0, 0]
+							"vector": [-27.5, 0, 0]
 						},
 						"0.12": {
 							"vector": [-22.5, 0, 0]
@@ -1517,7 +1517,7 @@
 				"right_foreleg1": {
 					"rotation": {
 						"0.0": {
-							"vector": [3, 0, 0]
+							"vector": [47.5, 0, 0]
 						},
 						"0.12": {
 							"vector": [47.5, 0, 0]
