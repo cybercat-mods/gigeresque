@@ -28,26 +28,18 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -65,7 +57,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class NeobursterEntity extends RunnerbursterEntity {
 
@@ -94,7 +85,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
 	@Override
 	public LivingEntity growInto() {
-		return Entities.NEOMORPH_ADOLESCENT.create(level);
+		return Entities.NEOMORPH_ADOLESCENT.create(level());
 	}
 
 	@Override
@@ -102,7 +93,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 
@@ -132,7 +123,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 			if (velocityLength >= 0.000000001 && !isDead)
 				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
-				else 
+				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (event.getAnimatable().isEating() == true)) && !this.isDeadOrDying())
 				return event.setAndContinue(GigAnimationsDefault.CHOMP);
@@ -143,11 +134,11 @@ public class NeobursterEntity extends RunnerbursterEntity {
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
-				if (this.level.isClientSide) 
+			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
 			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
 		}));
 	}
@@ -155,18 +146,6 @@ public class NeobursterEntity extends RunnerbursterEntity {
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		if (this.isDeadOrDying())
-			return;
-		if (this.isVehicle())
-			return;
-		if (this.isAggressive())
-			return;
-		if (!(var6 instanceof IronGolem))
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 
 }

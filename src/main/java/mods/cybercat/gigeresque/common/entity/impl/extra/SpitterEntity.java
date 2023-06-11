@@ -22,19 +22,18 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
@@ -47,8 +46,6 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
@@ -57,10 +54,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -82,19 +75,18 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<SpitterEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(SpitterEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 	public int breakingCounter = 0;
 
 	public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
 		super(entityType, world);
 		setMaxUpStep(1.5f);
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
+		this.vibrationUser = new AzureVibrationUser(this, 1.9F);
 		navigation = landNavigation;
 	}
 
@@ -139,7 +131,7 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<SpitterEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<SpitterEntity>().setRadius(7), new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
@@ -165,17 +157,10 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.setAggressive(true);
-		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.9F, 0));
-	}
-
-	@Override
 	public void tick() {
 		super.tick();
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
 			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
@@ -184,26 +169,26 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 			default -> AlienAttackType.CLAW_LEFT_MOVING;
 			});
 
-		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
-			this.level.removeBlock(this.blockPosition(), false);
+		if (level().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
+			this.level().removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && !this.isInWater() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
-						if (!level.isClientSide)
-							this.level.destroyBlock(testPos, true, null, 512);
+					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
+						if (!level().isClientSide)
+							this.level().destroyBlock(testPos, true, null, 512);
 						this.swing(InteractionHand.MAIN_HAND);
 						breakingCounter = -90;
-						if (level.isClientSide()) {
+						if (level().isClientSide()) {
 							for (var i = 2; i < 10; i++)
-								level.addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
-							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+								level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
+							level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-						if (!level.isClientSide)
-							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
+					} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+						if (!level().isClientSide)
+							this.level().setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(damageSources().generic(), 5);
 						breakingCounter = -90;
 					}
@@ -239,7 +224,7 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide)
+		if (target instanceof LivingEntity && !level().isClientSide)
 			switch (getCurrentAttackType().genericAttackType) {
 			case NORMAL -> {
 				return super.doHurtTarget(target);

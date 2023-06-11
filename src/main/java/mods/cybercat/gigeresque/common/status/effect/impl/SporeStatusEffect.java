@@ -40,20 +40,20 @@ public class SporeStatusEffect extends MobEffect {
 
 	@Override
 	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
-		var neoBurster = Entities.NEOBURSTER.create(entity.level);
+		var neoBurster = Entities.NEOBURSTER.create(entity.level());
 		if (!(entity instanceof AlienEntity) && entity.getType().is(GigTags.NEOHOST)) {
 			if (!(entity instanceof Player)) {
 				neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-				spawnEffects(entity.level, entity);
-				entity.level.addFreshEntity(neoBurster);
+				spawnEffects(entity.level(), entity);
+				entity.level().addFreshEntity(neoBurster);
 				entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 				return;
 			}
 			if (entity instanceof Player playerEntity) {
 				if (!playerEntity.isSpectator() && !playerEntity.isCreative()) {
 					neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
-					spawnEffects(playerEntity.level, playerEntity);
-					playerEntity.level.addFreshEntity(neoBurster);
+					spawnEffects(playerEntity.level(), playerEntity);
+					playerEntity.level().addFreshEntity(neoBurster);
 					playerEntity.hurt(playerEntity.damageSources().generic(), Integer.MAX_VALUE);
 					return;
 				}

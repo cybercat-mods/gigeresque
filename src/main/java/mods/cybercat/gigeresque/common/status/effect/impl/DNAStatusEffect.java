@@ -56,17 +56,17 @@ public class DNAStatusEffect extends MobEffect {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
 						else
-							summon = Entities.MUTANT_POPPER.create(entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.level());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.level(), entity);
+						entity.level().addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = Entities.MUTANT_STALKER.create(entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.level());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.level(), entity);
+						entity.level().addFreshEntity(summon);
 					}
 					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					return;
@@ -75,17 +75,17 @@ public class DNAStatusEffect extends MobEffect {
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
 						else
-							summon = Entities.MUTANT_POPPER.create(entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.level());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.level(), entity);
+						entity.level().addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = Entities.MUTANT_STALKER.create(entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.level());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.level(), entity);
+						entity.level().addFreshEntity(summon);
 					}
 					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
 					return;
@@ -93,14 +93,14 @@ public class DNAStatusEffect extends MobEffect {
 			} else {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
-					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					var isInsideWaterBlock = entity.level().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
 					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
-					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					var isInsideWaterBlock = entity.level().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				}
@@ -116,15 +116,15 @@ public class DNAStatusEffect extends MobEffect {
 
 	private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 1);
+			lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 1);
 			if (lightBlockPos == null)
 				return;
-			var areaEffectCloudEntity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
+			var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
 			areaEffectCloudEntity.setRadius(2.0F);
 			areaEffectCloudEntity.setDuration(300);
 			areaEffectCloudEntity.setRadiusPerTick(0);
 			areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-			entity.level.addFreshEntity(areaEffectCloudEntity);
+			entity.level().addFreshEntity(areaEffectCloudEntity);
 		} else
 			lightBlockPos = null;
 	}

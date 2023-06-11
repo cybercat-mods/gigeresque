@@ -134,14 +134,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 		if (attackProgress > 0) {
 			attackProgress--;
-			if (!level.isClientSide && attackProgress <= 0)
+			if (!level().isClientSide && attackProgress <= 0)
 				setCurrentAttackType(AlienAttackType.NONE);
 		}
 
 		if (attackProgress == 0 && swinging)
 			attackProgress = 10;
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			if (this.isCrawling() || this.wasEyeInWater)
 				setCurrentAttackType(switch (random.nextInt(5)) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
@@ -182,8 +182,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (biteCounter >= 88) {
 					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
 					this.heal(50);
-					if (this.level.isClientSide)
-						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					if (this.level().isClientSide)
+						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsBiting(false);
 					this.setIsExecuting(false);
 					biteCounter = 0;
@@ -199,8 +199,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (holdingCounter >= 843) {
 					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
 					this.heal(50);
-					if (this.level.isClientSide)
-						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					if (this.level().isClientSide)
+						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsExecuting(false);
 					holdingCounter = 0;
 				}
@@ -228,7 +228,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide)
+		if (target instanceof LivingEntity && !level().isClientSide)
 			switch (getAttckingState()) {
 			case 1 -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
@@ -330,10 +330,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	}
 
 	@Override
-	public void positionRider(Entity passenger) {
-		super.positionRider(passenger);
-		if (passenger instanceof LivingEntity) {
-			var mob = (LivingEntity) passenger;
+	public void positionRider(Entity entity, MoveFunction moveFunction) {
+		super.positionRider(entity, moveFunction);
+		if (entity instanceof LivingEntity mob) {
 			SplittableRandom random = new SplittableRandom();
 			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, true, true));
 			var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
@@ -342,13 +341,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var y3 = random.nextFloat(0.44F, 0.45F);
 			var y = random.nextFloat(0.74F, 0.75f);
 			var y2 = random.nextFloat(1.14F, 1.15f);
-			mob.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f), this.getY() + (double) (this.isExecuting() == true ? (passenger.getBbHeight() < 1.4 ? y2 : y) : (passenger.getBbHeight() < 1.4 ? y3 : y1)), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
+			mob.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f), this.getY() + (double) (this.isExecuting() == true ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
 			mob.yBodyRot = this.yBodyRot;
 			mob.xxa = this.xxa;
 			mob.zza = this.zza;
 			mob.yya = this.yya;
 		}
-	}
+    }
 
 	/*
 	 * ANIMATIONS
@@ -358,7 +357,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false) {
-				if (this.isOnGround() && !this.wasEyeInWater && this.isExecuting() == false) {
+				if (this.onGround() && !this.wasEyeInWater && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (!this.isCrawling())
@@ -373,7 +372,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (!this.isInWater() && !this.isOnGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+			else if (!this.isInWater() && !this.onGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
@@ -383,32 +382,32 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.isExecuting() == true && this.isVehicle() ? GigAnimationsDefault.EXECUTION_CARRY : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("thudSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("biteSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HEADBITE, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("crunchSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
@@ -420,10 +419,10 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
 		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
@@ -433,7 +432,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 		}));
 	}

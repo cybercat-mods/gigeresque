@@ -116,8 +116,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++)
 				this.getCommandSenderWorld().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
 		}
-		if (!this.level.isClientSide)
-			if ((this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level.getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {
+		if (!this.level().isClientSide)
+			if ((this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {
 				if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(GigEntityUtils.isTargetDNAImmune(this)))
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
 				if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
@@ -126,8 +126,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 					this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
 			}
 
-		if (!this.level.isClientSide)
-			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level.getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || this.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+		if (!this.level().isClientSide)
+			if (((((Object) this)instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level().getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || this.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
 				removeParasite();
 				resetEggmorphing();
 				setBleeding(false);
@@ -159,9 +159,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			resetEggmorphing();
 
 		if (getTicksUntilEggmorphed() == Gigeresque.config.getEggmorphTickTimer() && !this.isDeadOrDying()) {
-			var egg = new AlienEggEntity(Entities.EGG, level);
+			var egg = new AlienEggEntity(Entities.EGG, level());
 			egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
-			level.addFreshEntity(egg);
+			level().addFreshEntity(egg);
 			hasEggSpawned = true;
 			hurt(damageSources().generic(), Float.MAX_VALUE);
 		}
@@ -184,13 +184,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				this.hurt(damageSources().generic(), this.getMaxHealth() / 8f);
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				ChestbursterEntity burster = Entities.CHESTBURSTER.create(this.level);
+				ChestbursterEntity burster = Entities.CHESTBURSTER.create(this.level());
 				if (this.getType().is(GigTags.RUNNER_HOSTS)) {
-					burster = Entities.RUNNERBURSTER.create(this.level);
+					burster = Entities.RUNNERBURSTER.create(this.level());
 					burster.setHostId("runner");
 				}
 				if (this.getType().is(GigTags.AQUATIC_HOSTS)) 
-					burster = Entities.AQUATIC_CHESTBURSTER.create(this.level);
+					burster = Entities.AQUATIC_CHESTBURSTER.create(this.level());
 
 				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 
@@ -198,9 +198,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 					burster.setCustomName(this.getCustomName());
 				burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
 				burster.setBirthStatus(true);
-				this.level.addFreshEntity(burster);
-				if (level.isClientSide)
-					this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
+				this.level().addFreshEntity(burster);
+				if (level().isClientSide)
+					this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
 				hasParasiteSpawned = true;
 			}
 		}
@@ -254,7 +254,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Override
 	public boolean isEggmorphing() {
-		var cameraBlock = this.level.getBlockState(this.blockPosition()).getBlock();
+		var cameraBlock = this.level().getBlockState(this.blockPosition()).getBlock();
 		var pos = this.getFeetBlockState().getBlock();
 		var isCoveredInResin = cameraBlock == GIgBlocks.NEST_RESIN_WEB_CROSS || pos == GIgBlocks.NEST_RESIN_WEB_CROSS;
 		var notAlien = !(((Object) this) instanceof AlienEntity);

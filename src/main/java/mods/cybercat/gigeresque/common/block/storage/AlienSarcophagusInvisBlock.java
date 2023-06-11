@@ -5,7 +5,6 @@ import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
-import mods.cybercat.gigeresque.common.block.material.Materials;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -28,7 +27,7 @@ public class AlienSarcophagusInvisBlock extends Block {
 	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
 	public AlienSarcophagusInvisBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque().noLootTable());
+		super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque().noLootTable());
 	}
 
 	@Override

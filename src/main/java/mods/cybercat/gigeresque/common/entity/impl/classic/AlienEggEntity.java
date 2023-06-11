@@ -20,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -39,8 +38,6 @@ import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -169,7 +166,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			hatchProgress++;
 
 		if (hatchProgress == 40L)
-			if (!level.isClientSide)
+			if (!level().isClientSide)
 				this.getCommandSenderWorld().playSound(this, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 1.0F, 1.0F);
 
 		if (hatchProgress >= MAX_HATCH_PROGRESS) {
@@ -181,12 +178,12 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		if (isHatched() && hasFacehugger())
 			ticksOpen++;
 
-		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level.isClientSide && !this.isDeadOrDying()) {
-			var facehugger = Entities.FACEHUGGER.create(level);
+		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
+			var facehugger = Entities.FACEHUGGER.create(level());
 			facehugger.moveTo(blockPosition().above(), getYRot(), getXRot());
 			facehugger.setDeltaMovement(0.0, 0.7, 0.0);
 			facehugger.setEggSpawnState(true);
-			level.addFreshEntity(facehugger);
+			level().addFreshEntity(facehugger);
 			setHasFacehugger(false);
 		}
 	}
@@ -196,7 +193,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level.isClientSide && GigEntityUtils.isPotentialHost(entity))
+		if (!level().isClientSide && GigEntityUtils.isPotentialHost(entity))
 			setIsHatching(true);
 	}
 
@@ -238,7 +235,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source != damageSources().outOfWorld())
+		if (source != damageSources().genericKill())
 			if (source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
 				setIsHatching(true);
 		return source == damageSources().inWall() ? false : super.hurt(source, amount);
@@ -299,7 +296,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hatching"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
 		}));
 	}
@@ -307,11 +304,5 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		if (this.isDeadOrDying())
-			return;
 	}
 }

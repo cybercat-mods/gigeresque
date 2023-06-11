@@ -37,7 +37,7 @@ public class InGameOverlayRendererMixin {
 		if (!client.player.isSpectator()) {
 			var d = client.player.getEyeY() - 0.1111111119389534D;
 			var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
-			var fluidState = client.player.level.getFluidState(blockPos);
+			var fluidState = client.player.level().getFluidState(blockPos);
 
 			if (fluidState.createLegacyBlock().getBlock() == GIgBlocks.BLACK_FLUID)
 				renderBlackFluidOverlay(client, matrices);

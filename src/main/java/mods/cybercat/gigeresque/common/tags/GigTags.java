@@ -6,6 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class GigTags {
@@ -33,4 +34,7 @@ public class GigTags {
 	
 	/* SPAWN BIOMES */
 	public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
+	
+	/* GAMEEVENT TAGS */
+	public static final TagKey<GameEvent> ALIEN_CAN_LISTEN = TagKey.create(Registries.GAME_EVENT, Constants.modResource("alien_can_listen"));
 }

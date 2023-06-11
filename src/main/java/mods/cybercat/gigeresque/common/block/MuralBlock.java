@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MuralBlock extends GigBlock {
 
 	public MuralBlock() {
-		super(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
+		super(FabricBlockSettings.of().strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
 	}
 
 	@Override

@@ -81,7 +81,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 		if (this.target.getCommandSenderWorld().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
-		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
+		var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
 		var randomPhase = entity.getRandom().nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target)) {
 			entity.grabTarget(target);

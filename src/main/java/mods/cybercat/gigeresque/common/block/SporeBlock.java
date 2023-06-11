@@ -14,14 +14,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SporeBlock extends BaseEntityBlock {
 
 	protected SporeBlock() {
-		super(FabricBlockSettings.of(Material.EGG).sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
+		super(FabricBlockSettings.of().sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
 	}
 
 	@Override

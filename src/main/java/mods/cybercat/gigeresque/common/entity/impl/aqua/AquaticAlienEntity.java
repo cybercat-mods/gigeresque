@@ -88,8 +88,8 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
+	private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level());
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
@@ -222,14 +222,14 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		if (attackProgress > 0) {
 			attackProgress--;
 
-			if (!level.isClientSide && attackProgress <= 0)
+			if (!level().isClientSide && attackProgress <= 0)
 				setCurrentAttackType(AlienAttackType.NONE);
 		}
 
 		if (attackProgress == 0 && swinging)
 			attackProgress = 10;
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
 			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
@@ -248,7 +248,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide)
+		if (target instanceof LivingEntity && !level().isClientSide)
 			switch (getCurrentAttackType().genericAttackType) {
 			case CLAW -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
@@ -275,7 +275,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				}
 				if (holdingCounter == 850) {
 					target.hurt(damageSources().generic(), Float.MAX_VALUE);
-					target.level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					target.level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsExecuting(false);
 					holdingCounter = 0;
 				}
@@ -333,13 +333,13 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			}
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDMOVE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.AQUA_LANDCLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
 			if (event.getAnimatable().isBreaking() == true && !this.isVehicle())
@@ -349,12 +349,12 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
@@ -366,7 +366,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}

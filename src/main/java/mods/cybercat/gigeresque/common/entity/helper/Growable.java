@@ -22,7 +22,7 @@ public interface Growable {
 	LivingEntity growInto();
 
 	default void growUp(LivingEntity entity) {
-		var world = entity.level;
+		var world = entity.level();
 		if (!world.isClientSide()) {
 			var newEntity = growInto();
 			if (newEntity == null)

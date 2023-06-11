@@ -36,6 +36,7 @@ repositories {
     maven { url 'https://maven.enginehub.org/repo/' }
     maven { url  = 'https://plugins.gradle.org/m2/' }
 	maven { url 'https://api.modrinth.com/maven' }
+	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -43,12 +44,12 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.18'
-	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.4:4.1.2'
-	modImplementation "curse.maven:HWG-448106:4458372"
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.20:1.0.9'
+	modImplementation ("com.terraformersmc:modmenu:7.0.0-beta.2")
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.20:1.11"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11"
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.20:4.2'
+	modImplementation "curse.maven:HWG-448106:4576234"
 }
 
 processResources {
@@ -106,7 +107,7 @@ if (file('key.properties').exists()) {
         	releaseType = "release"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.4")
+			addGameVersion("1.20")
 			addGameVersion("Fabric")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -143,10 +144,10 @@ if (file('key.properties').exists()) {
 		projectId = '2kXK3iBI' 
 		versionNumber = project.modVersion 
 		versionType = "beta"
-		versionName = 'Fabric/Quilt 1.19.4'
+		versionName = 'Fabric/Quilt 1.20'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.4']
+		gameVersions = ['1.20']
 		loaders = ['fabric','quilt']
 		dependencies { 
         	required.project "azurelib"

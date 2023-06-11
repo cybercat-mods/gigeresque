@@ -59,7 +59,7 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 0));
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-						if (level.getBlockState(test).isAir() && level.getBlockState(test.below()).getMaterial().isSolid()) {
+						if (level.getBlockState(test).isAir() && level.getBlockState(test.below()).isSolid()) {
 							var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
 							if (yDiff < 2) {
 								BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);

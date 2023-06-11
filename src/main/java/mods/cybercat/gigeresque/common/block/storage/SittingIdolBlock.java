@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.block.storage;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
-import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
@@ -46,7 +45,7 @@ public class SittingIdolBlock extends BaseEntityBlock {
 	BlockPos[] blockPoss;
 
 	public SittingIdolBlock() {
-		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+		super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
 	}
 

@@ -16,16 +16,14 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AttackExplodeTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -41,10 +39,6 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -68,12 +62,12 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<PopperEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 
 	public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
 		setMaxUpStep(1.5f);
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
+		this.vibrationUser = new AzureVibrationUser(this, 0.9F);
 		navigation = landNavigation;
 	}
 
@@ -81,14 +75,14 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.isOnGround())
+			if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
 				if (walkAnimation.speedOld >= 0.35F)
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (event.getAnimatable().getAttckingState() == 1 && !isDead && !this.isOnGround())
+			else if (event.getAnimatable().getAttckingState() == 1 && !isDead && !this.onGround())
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
@@ -121,7 +115,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<PopperEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<PopperEntity>().setRadius(7), new NearbyRepellentsSensor<PopperEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
 	}
 
@@ -146,12 +140,6 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
-	}
-
-	@Override
 	protected void tickDeath() {
 		super.tickDeath();
 		if (this.deathTime == 55) {
@@ -163,12 +151,12 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	}
 
 	public void explode() {
-		var areaEffectCloudEntity = new AreaEffectCloud(this.level, this.getX(), this.getY() + 1, this.getZ());
+		var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY() + 1, this.getZ());
 		areaEffectCloudEntity.setRadius(2.0F);
 		areaEffectCloudEntity.setDuration(30);
 		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
 		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 600, 0));
-		this.level.addFreshEntity(areaEffectCloudEntity);
+		this.level().addFreshEntity(areaEffectCloudEntity);
 	}
 
 	@Override

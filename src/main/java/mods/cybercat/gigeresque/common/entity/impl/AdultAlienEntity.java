@@ -13,6 +13,7 @@ import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -23,7 +24,6 @@ import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -40,17 +40,12 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
@@ -63,8 +58,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	protected final AzureNavigation landNavigation = new AzureNavigation(this, level);
-	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
+	protected final AzureNavigation landNavigation = new AzureNavigation(this, level());
+	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
 	protected final MoveControl landMoveControl = new MoveControl(this);
 	protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
 	protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f, false);
@@ -82,6 +77,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
 		setMaxUpStep(2.5f);
+        this.vibrationUser = new AzureVibrationUser(this, 2.5F);
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -252,10 +248,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && this.isAlive())
+		if (!level().isClientSide && this.isAlive())
 			grow(this, 1 * getGrowthMultiplier());
 
-		if (!level.isClientSide && this.isVehicle())
+		if (!level().isClientSide && this.isVehicle())
 			this.setAggressive(false);
 
 		// Statis Logic
@@ -279,7 +275,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 
 		// Hissing Logic
-		if (!level.isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
+		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isStatis() == false)) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -294,7 +290,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if (level.isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater() && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater() && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -313,27 +309,27 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			}
 		}
 
-		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
-			this.level.removeBlock(this.blockPosition(), false);
+		if (level().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
+			this.level().removeBlock(this.blockPosition(), false);
 
-		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !this.isInWater() && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
-						if (!level.isClientSide)
-							this.level.destroyBlock(testPos, true, null, 512);
+					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
+						if (!level().isClientSide)
+							this.level().destroyBlock(testPos, true, null, 512);
 						this.swing(InteractionHand.MAIN_HAND);
 						breakingCounter = -90;
-						if (level.isClientSide()) {
+						if (level().isClientSide()) {
 							for (int i = 2; i < 10; i++) {
-								level.addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
+								level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
 							}
-							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+							level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-						if (!level.isClientSide)
-							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
+					} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+						if (!level().isClientSide)
+							this.level().setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
 						this.hurt(damageSources().generic(), 5);
 						breakingCounter = -90;
 					}
@@ -412,13 +408,5 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (entity instanceof ServerPlayer player)
 				player.connection.send(new ClientboundSetPassengersPacket(entity));
 		}
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
-		this.setAggressive(true);
-		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
-		var1.broadcastEntityEvent(this, (byte) 61);
 	}
 }

@@ -19,32 +19,25 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillCropsTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -61,7 +54,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable, SmartBrainOwner<ChestbursterEntity> {
 
@@ -70,14 +62,14 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
 	public int bloodRendering = 0;
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	protected String hostId = null;
 	public int eatingCounter = 0;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
-
+        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
 		navigation = landNavigation;
 	}
 
@@ -142,7 +134,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && this.isAlive()) {
+		if (!level().isClientSide && this.isAlive()) {
 			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
@@ -226,7 +218,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = Entities.RUNNERBURSTER.create(level);
+		var entity = Entities.RUNNERBURSTER.create(level());
 		entity.hostId = this.hostId;
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
@@ -255,7 +247,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
@@ -265,12 +257,5 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (var6 instanceof ItemEntity)
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 }

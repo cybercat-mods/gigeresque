@@ -18,11 +18,11 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -31,7 +31,6 @@ import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -54,8 +53,6 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -65,10 +62,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -91,13 +84,12 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
-//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
+//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level());
 	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
@@ -114,10 +106,10 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, Level world) {
 		super(type, world);
 		setMaxUpStep(1.5f);
+        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -249,12 +241,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					host.hasParasite();
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
-					if (!level.isClientSide) {
+					if (!level().isClientSide) {
 						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 					}
 					setIsInfertile(true);
 					this.unRide();
-					this.hurt(damageSources().outOfWorld(), Float.MAX_VALUE);
+					this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
 				}
 			}
 
@@ -277,7 +269,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		}
 		if (this.isEggSpawn() == true && this.tickCount > 30)
 			this.setEggSpawnState(false);
-		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
+		this.setNoGravity(!this.level().getBlockState(this.blockPosition().above()).isAir() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
@@ -403,8 +395,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean onClimbable() {
-		setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-		return this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive() ? false : true;
+		setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
+		return this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive() ? false : true;
 	}
 
 	@Override
@@ -423,7 +415,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
@@ -489,7 +481,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
@@ -499,12 +491,5 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (!(var6 instanceof IronGolem))
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 }

@@ -73,7 +73,7 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
 		if (itemLocation.stream().findFirst().get().blockPosition().closerToCenterThan(entity.position(), 1.2)) {
 			entity.getNavigation().stop();
 			entity.setEatingStatus(true);
-			itemLocation.stream().findFirst().get().getItem().finishUsingItem(entity.level, entity);
+			itemLocation.stream().findFirst().get().getItem().finishUsingItem(entity.level(), entity);
 			itemLocation.stream().findFirst().get().getItem().shrink(1);
 			entity.grow(entity, 2400.0f);
 		}

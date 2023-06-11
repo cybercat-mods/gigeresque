@@ -25,22 +25,22 @@ public class NestBuildingHelper {
 			for (int z = -1; z <= 1; z++) {
 				for (int y = -1; y <= 3; y++) {
 					var blockPos = alien.blockPosition().offset(x, y, z);
-					var nestBlockData = getNestBlockData(alien.level, blockPos);
+					var nestBlockData = getNestBlockData(alien.level(), blockPos);
 					if (nestBlockData == null)
 						continue;
 
-					if (alien.getLevel().getLightEmission(alien.blockPosition()) < 8) {
+					if (alien.level().getLightEmission(alien.blockPosition()) < 8) {
 						var random = new SplittableRandom();
 						var randomPhase = random.nextInt(0, 100);
 						var resinBlock = GIgBlocks.NEST_RESIN.defaultBlockState();
 						if (nestBlockData.isFloor())
 							if (randomPhase <= 70)
-								alien.level.setBlockAndUpdate(blockPos, resinBlock);
+								alien.level().setBlockAndUpdate(blockPos, resinBlock);
 							else
-								alien.level.setBlockAndUpdate(blockPos, resinBlock);
+								alien.level().setBlockAndUpdate(blockPos, resinBlock);
 
 						if (nestBlockData.isCorner())
-							alien.level.setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							alien.level().setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 
 						if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
 							var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.defaultBlockState()
@@ -51,9 +51,9 @@ public class NestBuildingHelper {
 									.setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage())
 									.setValue(NestResinWebBlock.VARIANTS, NestResinWebVariant.values()[new Random()
 											.nextInt(NestResinWebVariant.values().length)]);
-							alien.level.setBlockAndUpdate(blockPos, nestResinWebState);
+							alien.level().setBlockAndUpdate(blockPos, nestResinWebState);
 						}
-						if (alien.level.isClientSide)
+						if (alien.level().isClientSide)
 							alien.playSound(SoundEvents.HONEY_BLOCK_STEP);
 					}
 				}

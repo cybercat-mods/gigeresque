@@ -31,8 +31,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -70,7 +70,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = Entities.AQUATIC_ALIEN.create(level);
+		var entity = Entities.AQUATIC_ALIEN.create(level());
 
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
@@ -135,7 +135,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 			}
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
 	}
