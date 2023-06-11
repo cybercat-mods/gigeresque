@@ -35,14 +35,13 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -106,9 +105,9 @@ public class NeobursterEntity extends RunnerbursterEntity {
 	@Override
 	public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target,
-						entity) -> !((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Creeper || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) entity).isBleeding() || target.getMobType() == MobType.UNDEAD || ((Eggmorphable) target).isEggmorphing()
-								|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && !target.isAlive()),
+				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((entity,
+						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
+								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
 				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
 	}
 

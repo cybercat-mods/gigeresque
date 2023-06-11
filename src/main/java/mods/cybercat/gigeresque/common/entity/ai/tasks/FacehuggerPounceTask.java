@@ -59,7 +59,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 		this.target = BrainUtils.getTargetOfEntity(entity);
 		var huggerchecklist = !((this.target instanceof AlienEntity || this.target instanceof Warden || this.target instanceof ArmorStand) || (this.target.getVehicle() != null && this.target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (this.target instanceof AlienEggEntity) || ((Host) this.target).isBleeding() || this.target.getMobType() == MobType.UNDEAD || ((Eggmorphable) this.target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(this.target))
 				|| (this.target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) && GigEntityUtils.isTargetHostable(this.target) && this.target.isAlive();
-		return huggerchecklist && entity.isWithinMeleeAttackRange(this.target);
+		return huggerchecklist && entity.isWithinMeleeAttackRange(this.target) && !this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override
@@ -79,9 +79,12 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 		if (this.target == null)
 			return;
 
+		if (this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
+			return;
+
 		if (!entity.isWithinMeleeAttackRange(this.target))
 			return;
-		
+
 		if (entity.distanceTo(this.target) < 1.1F)
 			return;
 

@@ -54,7 +54,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target);
+		return BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(NEST);
 	}
 
 	@Override
@@ -76,6 +76,9 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 			return;
 
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+			return;
+
+		if (this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
 		var list = entity.level.getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));

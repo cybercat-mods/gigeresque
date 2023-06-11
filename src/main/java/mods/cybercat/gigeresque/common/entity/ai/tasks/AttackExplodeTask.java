@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -50,7 +51,7 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
+		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override
@@ -72,6 +73,9 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
 			return;
 
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+			return;
+
+		if (this.target.getLevel().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
 		var random = new SplittableRandom();
