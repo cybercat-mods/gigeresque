@@ -220,9 +220,6 @@ public class GigeresqueConfig {
 	}
 
 	@Configurable
-	public String[] alienegg_biomes = { "" };
-
-	@Configurable
 	public int alienegg_spawn_weight = 10;
 	@Configurable
 	public int alienegg_min_group = 1;

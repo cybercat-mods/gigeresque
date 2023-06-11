@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -29,4 +30,7 @@ public class GigTags {
 	public static final TagKey<EntityType<?>> NEOHOST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("neohost"));
 	public static final TagKey<EntityType<?>> DNAIMMUNE = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("dnaimmune"));
 	public static final TagKey<EntityType<?>> FACEHUGGER_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("facehuggerblacklist"));
+	
+	/* SPAWN BIOMES */
+	public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
 }
