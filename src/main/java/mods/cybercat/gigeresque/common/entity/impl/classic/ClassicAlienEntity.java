@@ -331,7 +331,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public void positionRider(Entity entity, MoveFunction moveFunction) {
-		super.positionRider(entity, moveFunction);
 		if (entity instanceof LivingEntity mob) {
 			SplittableRandom random = new SplittableRandom();
 			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, true, true));
