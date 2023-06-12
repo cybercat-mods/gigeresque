@@ -42,7 +42,6 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerLevel;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
-import net.minecraft.world.entity.monster.warden.WardenAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
@@ -213,12 +212,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 	@Override
 	public void tick() {
 		super.tick();
-        if (this.level() instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) 
         	AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
-            if (this.isPersistenceRequired() || this.requiresCustomPersistence()) {
-                WardenAi.setDigCooldown(this);
-            }
-        }
 		var searcharea = this.level().getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D));
 		if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
 			searcharea.forEach(e -> {
