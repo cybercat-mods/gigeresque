@@ -23,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -77,6 +78,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 
 	public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
 		super(type, world);
+        this.vibrationUser = new AzureVibrationUser(this, 1.5F);
 	}
 
 	@Override

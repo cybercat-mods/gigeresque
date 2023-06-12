@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -53,6 +54,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
 		super(type, world);
+        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
 	}
 
 	@Override

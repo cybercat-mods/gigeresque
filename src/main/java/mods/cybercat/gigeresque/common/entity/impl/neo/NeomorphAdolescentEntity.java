@@ -25,6 +25,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -78,6 +79,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 
 	public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
 		super(entityType, world);
+        this.vibrationUser = new AzureVibrationUser(this, 1.35F);
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

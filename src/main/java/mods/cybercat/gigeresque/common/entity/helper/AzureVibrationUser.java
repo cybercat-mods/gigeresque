@@ -18,15 +18,12 @@ import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class AzureVibrationUser implements VibrationSystem.User {
 	private final AlienEntity mob;
@@ -58,24 +55,24 @@ public class AzureVibrationUser implements VibrationSystem.User {
 	public boolean canTriggerAvoidVibration() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isValidVibration(GameEvent gameEvent, Context context) {
-        if (!gameEvent.is(this.getListenableEvents())) 
-            return false;
-        
-        var entity = context.sourceEntity();
-        if (entity != null) {
-            if (entity.isSpectator()) 
-                return false;
-            if (entity.isSteppingCarefully() && gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) 
-                return false;
-            if (entity.dampensVibrations()) 
-                return false;
-        }
-        if (context.affectedState() != null) 
-            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GIgBlocks.ACID_BLOCK);
-        return true;
+		if (!gameEvent.is(this.getListenableEvents()))
+			return false;
+
+		var entity = context.sourceEntity();
+		if (entity != null) {
+			if (entity.isSpectator())
+				return false;
+			if (entity.isSteppingCarefully() && gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))
+				return false;
+			if (entity.dampensVibrations())
+				return false;
+		}
+		if (context.affectedState() != null)
+			return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GIgBlocks.ACID_BLOCK);
+		return true;
 	}
 
 	@Override
@@ -92,15 +89,13 @@ public class AzureVibrationUser implements VibrationSystem.User {
 			return;
 		if (this.mob.isVehicle())
 			return;
-		if (this.mob.getBrain().getMemory(MemoryModuleType.WALK_TARGET).isPresent())
-			return;
 		if (this.mob instanceof AdultAlienEntity adult) {
 			adult.setAggressive(true);
-			BrainUtils.setMemory(adult, MemoryModuleType.WALK_TARGET, new WalkTarget(blockPos, this.moveSpeed, 0));
+			mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 			serverLevel.broadcastEntityEvent(adult, (byte) 61);
 		}
 		if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity)
 			if (!(entity2 instanceof IronGolem))
-				BrainUtils.setMemory(this.mob, MemoryModuleType.WALK_TARGET, new WalkTarget(blockPos, this.moveSpeed, 0));
+				mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 	}
 }
