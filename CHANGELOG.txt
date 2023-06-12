@@ -1,3 +1,7 @@
-v.0.5.33
+v.0.5.34
 
-- Fixes crash when holding entity for 1.20 changes.
+- Fixes crash with non-brain entities. 
+- Updated for 1.20.1*
+
+*Smart Brain Lib has a bug with it's version setting for Minecraft and locked itself to 1.20. Waiting on dev for fix but for now you can download this via file and thorw in your configs folder to bypass this.
+https://gist.github.com/AzureDoom/c241d7ba28a16c99945e9eaf2288e14c
