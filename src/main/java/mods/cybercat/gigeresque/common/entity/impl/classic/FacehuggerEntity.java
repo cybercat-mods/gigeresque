@@ -404,7 +404,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public boolean onClimbable() {
 		setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-		return this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive() ? false : true;
+		return this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive() || (this.fallDistance > 0.1 && !this.isEggSpawn()) ? false : true;
 	}
 
 	@Override
