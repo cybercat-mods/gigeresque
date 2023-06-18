@@ -1,14 +1,17 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.StalkerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
@@ -21,6 +24,11 @@ public class StalkerEntityRenderer extends GeoEntityRenderer<StalkerEntity> {
 	@Override
 	protected float getDeathMaxRotation(StalkerEntity entityLivingBaseIn) {
 		return 0.0F;
+	}
+
+	@Override
+	public void actuallyRender(PoseStack poseStack, StalkerEntity animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? 0.1F : 1.0F);
 	}
 
 	@Override
