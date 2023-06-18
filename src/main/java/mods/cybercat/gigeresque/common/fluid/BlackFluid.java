@@ -2,8 +2,10 @@ package mods.cybercat.gigeresque.common.fluid;
 
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -73,6 +75,46 @@ public abstract class BlackFluid extends FlowingFluid {
 	@Override
 	protected int getDropOff(LevelReader world) {
 		return 2;
+	}
+
+	@Override
+	protected void randomTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
+		int i = randomSource.nextInt(50);
+		if (i > 40) 
+			for (var j = 0; j < 10; ++j) {
+				if (!level.isLoaded(blockPos = blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
+					return;
+				if (this.isSporeReplaceable(level, blockPos)) {
+					if (!this.hasSporeReplacements(level, blockPos))
+						continue;
+					if (!level.getBlockState(blockPos).is(GIgBlocks.BLACK_FLUID))
+						level.setBlockAndUpdate(blockPos, GIgBlocks.SPORE_BLOCK.defaultBlockState());
+					return;
+				}
+				if (!level.getBlockState(blockPos).blocksMotion())
+					continue;
+				return;
+			}
+	}
+
+	private boolean hasSporeReplacements(LevelReader levelReader, BlockPos blockPos) {
+		for (var direction : Direction.values()) {
+			if (!this.isSporeReplaceable(levelReader, blockPos.relative(direction)))
+				continue;
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isSporeReplaceable(LevelReader levelReader, BlockPos blockPos) {
+		if (blockPos.getY() >= levelReader.getMinBuildHeight() && blockPos.getY() < levelReader.getMaxBuildHeight() && !levelReader.hasChunkAt(blockPos))
+			return false;
+		return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE);
+	}
+
+	@Override
+	protected boolean isRandomlyTicking() {
+		return true;
 	}
 
 	static class Flowing extends BlackFluid {

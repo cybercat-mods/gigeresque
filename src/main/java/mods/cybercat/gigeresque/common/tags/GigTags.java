@@ -18,6 +18,7 @@ public class GigTags {
 	public static final TagKey<Block> DUNGEON_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("dungeon_blocks"));
 	public static final TagKey<Block> DUNGEON_STAIRS = TagKey.create(Registries.BLOCK, Constants.modResource("dungeon_stairs"));
 	public static final TagKey<Block> WEAK_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("weak_block"));
+	public static final TagKey<Block> SPORE_REPLACE = TagKey.create(Registries.BLOCK, Constants.modResource("spore_replace"));
 
 	/* DUNGEONS */
 	public static final TagKey<Structure> GIG_EXPLORER_MAPS = TagKey.create(Registries.STRUCTURE, Constants.modResource("gig_explorer_maps"));
