@@ -1,0 +1,11 @@
+{
+	"values": [
+		"#minecraft:crops",
+		"#minecraft:leaves",
+		"#minecraft:small_flowers",
+		"#minecraft:tall_flowers",
+		"#minecraft:flowers",
+		"#minecraft:saplings",
+		"#replaceable_plants"
+	]
+}
