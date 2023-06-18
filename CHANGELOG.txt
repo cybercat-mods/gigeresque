@@ -1,6 +1,13 @@
-v.0.5.31
+v.0.5.35
 
-- Fixed running animation of WIP mob.
-- Fixed Aliens attacking mobs with resin only on the top half of their body.
-- Tweaked egg morphing placement. 
-- Removed egg biome config, moved to eggbiomes.json tag. 
+- Fixes Facehuggers slow falling outside egg spawns.
+- Stalkers applies Slowness and Mining effects on hits.
+- Stalkers jump towards entities.
+- Stalkers can wall climb like Facehuggers.
+- Stalkers Bravo Six Going Dark
+- java.awt.Color -> mod.azure.azurelib.core.object.Color
+- Black Fluid can now rarely replace blocks in spore_replace tag with Spore blocks.
+- Spore blocks particles changed.
+- Fixes swimming animations.
+
+Place node that neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
