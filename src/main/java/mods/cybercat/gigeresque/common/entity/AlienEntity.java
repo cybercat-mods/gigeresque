@@ -356,6 +356,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return false;
 		if (livingEntity instanceof AlienEntity)
 			return false;
+		if (this.isAggressive())
+			return false;
 		return true;
 	}
 
