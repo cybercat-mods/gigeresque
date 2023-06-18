@@ -1,7 +1,13 @@
-v.0.5.34
+v.0.5.35
 
-- Fixes crash with non-brain entities. 
-- Updated for 1.20.1*
+- Fixes Facehuggers slow falling outside egg spawns.
+- Stalkers applies Slowness and Mining effects on hits.
+- Stalkers jump towards entities.
+- Stalkers can wall climb like Facehuggers.
+- Stalkers Bravo Six Going Dark
+- java.awt.Color -> mod.azure.azurelib.core.object.Color
+- Black Fluid can now rarely replace blocks in spore_replace tag with Spore blocks.
+- Spore blocks particles changed.
+- Fixes swimming animations.
 
-*Smart Brain Lib has a bug with it's version setting for Minecraft and locked itself to 1.20. Waiting on dev for fix but for now you can download this via file and thorw in your configs folder to bypass this.
-https://gist.github.com/AzureDoom/c241d7ba28a16c99945e9eaf2288e14c
+Place node that neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
