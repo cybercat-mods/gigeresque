@@ -17,6 +17,6 @@ public class StalkerEntityModel extends DefaultedEntityGeoModel<StalkerEntity> {
 
 	@Override
 	public RenderType getRenderType(StalkerEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
+		return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? RenderType.entityTranslucentCull(getTextureResource(animatable)) : RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }
