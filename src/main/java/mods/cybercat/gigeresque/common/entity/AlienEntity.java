@@ -368,6 +368,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 			return false;
 		if (livingEntity instanceof AlienEntity)
 			return false;
+		if (this.isAggressive())
+			return false;
 		return true;
 	}
 }
