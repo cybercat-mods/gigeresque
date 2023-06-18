@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -84,6 +85,11 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
 		if (entity instanceof NeomorphEntity neo) {
 			entity.getNavigation().stop();
 			neo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+		}
+
+		if (entity instanceof StalkerEntity) {
+			this.target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, true, true));
+			this.target.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 1, true, true));
 		}
 
 		entity.doHurtTarget(this.target);
