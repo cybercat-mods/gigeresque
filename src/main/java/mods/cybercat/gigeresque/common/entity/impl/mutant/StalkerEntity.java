@@ -17,11 +17,13 @@ import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.LeapAtTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -30,18 +32,24 @@ import mods.cybercat.gigeresque.common.util.GigVibrationListener;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ambient.Bat;
@@ -56,6 +64,7 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -82,7 +91,11 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
+	private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(StalkerEntity.class, EntityDataSerializers.BOOLEAN);
 	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
+	private final MoveControl landMoveControl = new MoveControl(this);
+	private final LookControl landLookControl = new LookControl(this);
 	public int breakingCounter = 0;
 
 	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
@@ -90,6 +103,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		setMaxUpStep(1.5f);
 		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
+		moveControl = landMoveControl;
+		lookControl = landLookControl;
 	}
 
 	@Override
@@ -208,6 +223,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			if (breakingCounter >= 25)
 				breakingCounter = 0;
 		}
+		this.setNoGravity(!this.getLevel().getBlockState(this.blockPosition().above()).isAir() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
+		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
 	@Override
@@ -252,10 +269,57 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		entityData.set(CURRENT_ATTACK_TYPE, value);
 	}
 
+	public boolean isCrawling() {
+		return entityData.get(IS_CLIMBING);
+	}
+
+	public void setIsCrawling(boolean isHissing) {
+		entityData.set(IS_CLIMBING, isHissing);
+	}
+
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
+		entityData.define(IS_CLIMBING, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
+		nbt.putBoolean("isCrawling", isCrawling());
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
+		if (nbt.contains("isCrawling"))
+			setIsCrawling(nbt.getBoolean("isCrawling"));
+	}
+
+	@Override
+	public boolean onClimbable() {
+		setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
+		return this.getLevel().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive() || this.fallDistance > 0.1 ? false : true;
+	}
+
+	@Override
+	public void travel(Vec3 movementInput) {
+		this.moveControl = this.isNoGravity() ? roofMoveControl : landMoveControl;
+
+		if (isEffectiveAi() && this.isInWater()) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.9));
+			if (getTarget() == null)
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+		} else
+			super.travel(movementInput);
+	}
+
+	@Override
+	public boolean isPathFinding() {
+		return false;
 	}
 
 }
