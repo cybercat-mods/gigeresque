@@ -44,6 +44,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 
@@ -150,11 +151,11 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
+		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-		if (isEffectiveAi() && this.isInWater()) {
+		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.9));
@@ -290,7 +291,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !this.isInWater() && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
+		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isStatis() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
@@ -312,7 +313,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (level().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
 
-		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isStatis() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
@@ -350,8 +351,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-//		setIsCrawling(this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION));
-//		return this.horizontalCollision && this.isAggressive() && !this.isInWater() && !this.hasEffect(MobEffects.LEVITATION);
+//		setIsCrawling(this.horizontalCollision && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.hasEffect(MobEffects.LEVITATION));
+//		return this.horizontalCollision && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.hasEffect(MobEffects.LEVITATION);
 		return false;
 	}
 
@@ -362,7 +363,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public PathNavigation createNavigation(Level world) {
-		return (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
+		return (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
 	}
 
 	public boolean isCarryingEggmorphableTarget() {

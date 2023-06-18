@@ -63,6 +63,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -354,11 +355,11 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : this.isNoGravity() ? roofMoveControl : landMoveControl;
-		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
+		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isNoGravity() ? roofMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-		if (isEffectiveAi() && this.isInWater()) {
+		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.9));
@@ -380,7 +381,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public PathNavigation createNavigation(Level world) {
-		return this.isInWater() ? swimNavigation : landNavigation;
+		return (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? swimNavigation : landNavigation;
 	}
 
 	@Override

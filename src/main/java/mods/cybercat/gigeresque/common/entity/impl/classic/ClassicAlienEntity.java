@@ -62,6 +62,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -94,14 +95,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		this.navigation = (this.isUnderWater() || this.isInWater()) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || this.isInWater()) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.wasEyeInWater || this.isInWater()) ? swimLookControl : landLookControl;
+		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
 		if (this.tickCount % 10 == 0)
 			this.refreshDimensions();
 
-		if (isEffectiveAi() && this.isInWater()) {
+		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(0.5));
@@ -278,7 +279,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f) * (this.getBbWidth() * (this.isInWater() ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
+		return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f) * (this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
 	}
 
 	@Override
@@ -371,7 +372,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (!this.isInWater() && !this.onGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+			else if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.onGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);

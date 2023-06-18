@@ -52,6 +52,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -241,7 +242,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
-				if (!this.isInWater() && this.isExecuting() == false)
+				if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false)
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
@@ -251,7 +252,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 						else
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
-			return event.setAndContinue(this.isInWater() ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
 				if (this.level().isClientSide) 
@@ -277,7 +278,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		})).add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !this.isInWater())
+			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))
 				return event.setAndContinue(GigAnimationsDefault.HISS);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
