@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import java.awt.Color;
-
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -18,7 +17,7 @@ import net.minecraft.world.level.Level;
 public class SporeStatusEffect extends MobEffect {
 
 	public SporeStatusEffect() {
-		super(MobEffectCategory.HARMFUL, Color.black.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.BLACK.getColor());
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import java.awt.Color;
-
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -9,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class AcidStatusEffect extends MobEffect {
 	public AcidStatusEffect() {
-		super(MobEffectCategory.HARMFUL, Color.green.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.GREEN.getColor());
 	}
 
 	@Override

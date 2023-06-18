@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import java.awt.Color;
-
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -26,7 +25,7 @@ public class DNAStatusEffect extends MobEffect {
 	private BlockPos lightBlockPos = null;
 
 	public DNAStatusEffect() {
-		super(MobEffectCategory.HARMFUL, Color.darkGray.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.DARK_GRAY.getColor());
 	}
 
 	@Override

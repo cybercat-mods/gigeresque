@@ -1,13 +1,12 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import java.awt.Color;
-
+import mod.azure.azurelib.core.object.Color;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
 public class TraumaStatusEffect extends MobEffect {
 	public TraumaStatusEffect() {
-		super(MobEffectCategory.HARMFUL, Color.red.getRGB());
+		super(MobEffectCategory.HARMFUL, Color.RED.getColor());
 	}
 
 	@Override
