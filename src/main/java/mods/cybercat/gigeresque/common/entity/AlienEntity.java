@@ -34,6 +34,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -198,6 +200,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void tick() {
 		super.tick();
+
+        if (this.getNavigation().isDone() && !this.isAggressive()) 
+			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
 
 		var level = this.level;
 		if (level instanceof ServerLevel) {
