@@ -61,7 +61,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
@@ -420,10 +419,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
-		if (!(this instanceof NeomorphAdolescentEntity) || !(this instanceof NeomorphEntity)) {
-			this.setAggressive(true);
+		if (!(this instanceof NeomorphAdolescentEntity) || !(this instanceof NeomorphEntity))
 			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
-			var1.broadcastEntityEvent(this, (byte) 61);
-		}
 	}
 }

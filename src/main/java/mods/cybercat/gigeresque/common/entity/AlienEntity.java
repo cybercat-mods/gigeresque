@@ -59,6 +59,7 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.AABB;
@@ -69,11 +70,13 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 	public int attackstatetimer = 0;
+	protected int slowticks = 0;
 
 	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
@@ -120,6 +123,14 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	public void setAttackingState(int time) {
 		this.entityData.set(STATE, time);
+	}
+
+	public boolean isCrawling() {
+		return entityData.get(IS_CLIMBING);
+	}
+
+	public void setIsCrawling(boolean isHissing) {
+		entityData.set(IS_CLIMBING, isHissing);
 	}
 
 	@Override
@@ -200,18 +211,15 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void tick() {
 		super.tick();
-
-        if (this.getNavigation().isDone() && !this.isAggressive()) 
+		slowticks++;
+		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8))) { 
 			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
-
-		var level = this.level;
-		if (level instanceof ServerLevel) {
-			var serverLevel = (ServerLevel) level;
+			slowticks = -60;
+        }
+		if (this.getLevel() instanceof ServerLevel serverLevel) 
 			this.dynamicGameEventListener.getListener().tick(serverLevel);
-		}
-		var searcharea = this.level.getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D));
-		if (!level.isClientSide && this.tickCount % Constants.TPS == 0)
-			searcharea.forEach(e -> {
+		if (!this.getLevel().isClientSide && this.tickCount % Constants.TPS == 0)
+			this.level.getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D)).forEach(e -> {
 				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
 					this.heal(0.5833f);
 			});

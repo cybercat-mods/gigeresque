@@ -180,7 +180,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.setAggressive(true);
 		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.9F, 0));
 	}
 
