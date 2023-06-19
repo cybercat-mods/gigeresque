@@ -1,13 +1,12 @@
-v.0.5.35
+v.0.5.36
 
-- Fixes Facehuggers slow falling outside egg spawns.
-- Stalkers applies Slowness and Mining effects on hits.
-- Stalkers jump towards entities.
-- Stalkers can wall climb like Facehuggers.
-- Stalkers Bravo Six Going Dark
-- java.awt.Color -> mod.azure.azurelib.core.object.Color
-- Black Fluid can now rarely replace blocks in spore_replace tag with Spore blocks.
-- Spore blocks particles changed.
-- Fixes swimming animations.
+- Adjust Stalkers walking trigger for invis
+- Neoburster shadow size fix.
+- Neoburster walking around speed slowed down.
+- Fixes neo adolescent animations.
+- Neo Adolescent speed tweaks
+- Neomorph speed tweaks
+- Tweak Aquatic speed check
+- Spinning after moving to a sound is now tweaked, shouldn't happen anymore but may happen rarely for like a second.
 
-Place node that neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
+Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
