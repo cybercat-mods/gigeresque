@@ -128,7 +128,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		if (isEffectiveAi() && (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());
-			setDeltaMovement(getDeltaMovement().scale(!this.wasTouchingWater ? 0.25 : 0.65));
+			setDeltaMovement(getDeltaMovement().scale(!((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) ? 0.25 : 0.65));
 			if (getTarget() == null) {
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 			}
