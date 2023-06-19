@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -418,8 +419,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
 		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
-		this.setAggressive(true);
-		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
-		var1.broadcastEntityEvent(this, (byte) 61);
+		if (!(this instanceof NeomorphAdolescentEntity)) {
+			this.setAggressive(true);
+			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+			var1.broadcastEntityEvent(this, (byte) 61);
+		}
 	}
 }

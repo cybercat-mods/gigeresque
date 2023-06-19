@@ -33,17 +33,22 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
@@ -51,7 +56,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -72,6 +80,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<NeomorphAdolescentEntity> {
 
@@ -79,6 +88,24 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 
 	public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
 		super(entityType, world);
+	}
+
+	@Override
+	public void travel(Vec3 movementInput) {
+		this.navigation = (this.isUnderWater() || (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+		this.lookControl = (this.wasEyeInWater || (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+
+		if (isEffectiveAi() && (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.6));
+			if (getTarget() == null) {
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+			}
+		} else {
+			super.travel(movementInput);
+		}
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -219,8 +246,8 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 
 	@Override
 	public BrainActivityGroup<NeomorphAdolescentEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
-				new FirstApplicableBehaviour<NeomorphAdolescentEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())), new FirstApplicableBehaviour<NeomorphAdolescentEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
@@ -289,6 +316,14 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
+	}
+
+	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
+		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
+		this.setAggressive(true);
+		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, (this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) ? 1.9F : 2.65F, 0));
+		var1.broadcastEntityEvent(this, (byte) 61);
 	}
 
 }
