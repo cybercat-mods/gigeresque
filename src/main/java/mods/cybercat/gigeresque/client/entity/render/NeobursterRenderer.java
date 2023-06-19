@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 public class NeobursterRenderer extends GeoEntityRenderer<NeobursterEntity> {
 	public NeobursterRenderer(EntityRendererProvider.Context context) {
 		super(context, new NeobursterModel());
-		this.shadowRadius = 0.5f;
+		this.shadowRadius = 0.25f;
 	}
 
 	@Override
