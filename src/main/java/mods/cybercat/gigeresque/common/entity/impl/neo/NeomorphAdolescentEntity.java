@@ -242,20 +242,20 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
-				if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false)
+				if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
 					else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
 						return event.setAndContinue(GigAnimationsDefault.WALK);
-					else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
-						if (this.isAggressive() && !this.isVehicle())
-							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-						else
-							return event.setAndContinue(GigAnimationsDefault.SWIM);
+				} else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
+					if (this.isAggressive() && !this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+					else
+						return event.setAndContinue(GigAnimationsDefault.SWIM);
 			return event.setAndContinue((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
-				if (this.level().isClientSide) 
+			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level().isClientSide)
