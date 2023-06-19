@@ -89,11 +89,8 @@ public class AzureVibrationUser implements VibrationSystem.User {
 			return;
 		if (this.mob.isVehicle())
 			return;
-		if (this.mob instanceof AdultAlienEntity adult) {
-			adult.setAggressive(true);
-			mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
-			serverLevel.broadcastEntityEvent(adult, (byte) 61);
-		}
+		if (this.mob instanceof AdultAlienEntity adult) 
+			adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 		if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity)
 			if (!(entity2 instanceof IronGolem))
 				mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);

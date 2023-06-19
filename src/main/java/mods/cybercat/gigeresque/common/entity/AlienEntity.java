@@ -64,13 +64,15 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
-    private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
-    protected VibrationSystem.User vibrationUser;
-    private VibrationSystem.Data vibrationData;
+	private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
+	protected VibrationSystem.User vibrationUser;
+	private VibrationSystem.Data vibrationData;
 	public int attackstatetimer = 0;
+	protected int slowticks = 0;
 
 	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
@@ -78,9 +80,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
 		if (navigation != null)
 			navigation.setCanFloat(true);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.vibrationData = new VibrationSystem.Data();
-        this.dynamicGameEventListener = new DynamicGameEventListener<VibrationSystem.Listener>(new VibrationSystem.Listener(this));
+		this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+		this.vibrationData = new VibrationSystem.Data();
+		this.dynamicGameEventListener = new DynamicGameEventListener<VibrationSystem.Listener>(new VibrationSystem.Listener(this));
 	}
 
 	@Override
@@ -121,19 +123,27 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 		this.entityData.set(STATE, time);
 	}
 
-    public void increaseAngerAt(@Nullable Entity entity) {
-        this.increaseAngerAt(entity, 35, true);
-    }
+	public boolean isCrawling() {
+		return entityData.get(IS_CLIMBING);
+	}
 
-    @VisibleForTesting
-    public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
-        if (!this.isNoAi() && this.canTargetEntity(entity)) {
-            boolean bl2 = !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player);
-            int j = this.angerManagement.increaseAnger(entity, i);
-            if (entity instanceof Player && bl2 && AngerLevel.byAnger(j).isAngry()) 
-                this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-        }
-    }
+	public void setIsCrawling(boolean isHissing) {
+		entityData.set(IS_CLIMBING, isHissing);
+	}
+
+	public void increaseAngerAt(@Nullable Entity entity) {
+		this.increaseAngerAt(entity, 35, true);
+	}
+
+	@VisibleForTesting
+	public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
+		if (!this.isNoAi() && this.canTargetEntity(entity)) {
+			boolean bl2 = !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player);
+			int j = this.angerManagement.increaseAnger(entity, i);
+			if (entity instanceof Player && bl2 && AngerLevel.byAnger(j).isAngry())
+				this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+		}
+	}
 
 	@Override
 	public void defineSynchedData() {
@@ -147,7 +157,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-        VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag)tag));
+		VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
 		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
 	}
 
@@ -215,13 +225,15 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 	@Override
 	public void tick() {
 		super.tick();
-        if (this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) 
+		slowticks++;
+		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) {
 			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
-        if (this.level() instanceof ServerLevel serverLevel) 
-        	AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
-		var searcharea = this.level().getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D));
+			slowticks = -60;
+		}
+		if (this.level()instanceof ServerLevel serverLevel)
+			AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
 		if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
-			searcharea.forEach(e -> {
+			this.level().getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D)).forEach(e -> {
 				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
 					this.heal(0.5833f);
 			});
@@ -310,21 +322,21 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 		return super.hurt(source, amount);
 	}
 
-    @Override
-    public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
-        if (this.level() instanceof ServerLevel serverLevel) 
-            biConsumer.accept(this.dynamicGameEventListener, serverLevel);
-    }
+	@Override
+	public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+		if (this.level()instanceof ServerLevel serverLevel)
+			biConsumer.accept(this.dynamicGameEventListener, serverLevel);
+	}
 
-    @Override
-    public VibrationSystem.Data getVibrationData() {
-        return this.vibrationData;
-    }
+	@Override
+	public VibrationSystem.Data getVibrationData() {
+		return this.vibrationData;
+	}
 
-    @Override
-    public VibrationSystem.User getVibrationUser() {
-        return this.vibrationUser;
-    }
+	@Override
+	public VibrationSystem.User getVibrationUser() {
+		return this.vibrationUser;
+	}
 
 	/*
 	 * Enabled force condition propagation Lifted jumps to return sites

@@ -102,7 +102,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
 
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, Level world) {
 		super(type, world);
@@ -146,14 +145,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	public void setIsInfertile(boolean value) {
 		entityData.set(IS_INFERTILE, value);
-	}
-
-	public boolean isCrawling() {
-		return entityData.get(IS_CLIMBING);
-	}
-
-	public void setIsCrawling(boolean isHissing) {
-		entityData.set(IS_CLIMBING, isHissing);
 	}
 
 	public boolean isAttacking() {

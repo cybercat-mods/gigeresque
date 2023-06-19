@@ -54,7 +54,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
@@ -67,7 +66,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
-	protected boolean isSearching = false;
+	public boolean isSearching = false;
 	protected long searchingProgress = 0L;
 	protected long searchingCooldown = 0L;
 	protected int attackProgress = 0;
@@ -131,14 +130,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	public void setIsHissing(boolean isHissing) {
 		entityData.set(IS_HISSING, isHissing);
-	}
-
-	public boolean isCrawling() {
-		return entityData.get(IS_CLIMBING);
-	}
-
-	public void setIsCrawling(boolean isHissing) {
-		entityData.set(IS_CLIMBING, isHissing);
 	}
 
 	public float getGrowth() {
