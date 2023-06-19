@@ -240,26 +240,26 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 			if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
-				if (!(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false)
+				if (!(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
-					else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround))
+					else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.isOnGround()))
 						return event.setAndContinue(GigAnimationsDefault.WALK);
-					else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
-						if (this.isAggressive() && !this.isVehicle())
-							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-						else
-							return event.setAndContinue(GigAnimationsDefault.SWIM);
+				} else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
+					if (this.isAggressive() && !this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+					else
+						return event.setAndContinue(GigAnimationsDefault.SWIM);
 			return event.setAndContinue((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("thudSoundkey")) 
-				if (this.level.isClientSide) 
+			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
 //			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-//				if (this.level.isClientSide)
+//				if (this.level().isClientSide)
 //					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.5F, true);
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
 			if (event.getAnimatable().isBreaking() == true && !this.isVehicle())
@@ -269,10 +269,10 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		})).add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
@@ -281,7 +281,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 		}));
 	}
