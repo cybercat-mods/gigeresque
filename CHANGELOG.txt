@@ -1,12 +1,5 @@
-v.0.5.36
+v.0.5.37
 
-- Adjust Stalkers walking trigger for invis
-- Neoburster shadow size fix.
-- Neoburster walking around speed slowed down.
-- Fixes neo adolescent animations.
-- Neo Adolescent speed tweaks
-- Neomorph speed tweaks
-- Tweak Aquatic speed check
-- Spinning after moving to a sound is now tweaked, shouldn't happen anymore but may happen rarely for like a second.
+- Fixes datasync crash.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
