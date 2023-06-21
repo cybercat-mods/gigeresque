@@ -167,7 +167,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public void defineSynchedData() {
 		super.defineSynchedData();
 		entityData.define(IS_INFERTILE, false);
-		entityData.define(IS_CLIMBING, false);
 		entityData.define(EGGSPAWN, false);
 		entityData.define(ATTACKING, false);
 		entityData.define(JUMPING, false);
@@ -270,7 +269,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		super.addAdditionalSaveData(nbt);
 		nbt.putBoolean("isInfertile", isInfertile());
 		nbt.putFloat("ticksAttachedToHost", ticksAttachedToHost);
-		nbt.putBoolean("isCrawling", isCrawling());
 	}
 
 	@Override
@@ -280,8 +278,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			setIsInfertile(nbt.getBoolean("isInfertile"));
 		if (nbt.contains("ticksAttachedToHost"))
 			ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
-		if (nbt.contains("isCrawling"))
-			setIsCrawling(nbt.getBoolean("isCrawling"));
 	}
 
 	@Override

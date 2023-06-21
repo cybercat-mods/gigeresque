@@ -182,7 +182,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(GROWTH, 0.0f);
 		entityData.define(STATIS_TIMER, 0.0f);
 		entityData.define(IS_HISSING, false);
-		entityData.define(IS_CLIMBING, false);
 		entityData.define(IS_BREAKING, false);
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_HEADBITE, false);
@@ -197,7 +196,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		nbt.putFloat("growth", getGrowth());
 		nbt.putFloat("getStatisTimer", getStatisTimer());
 		nbt.putBoolean("isHissing", isHissing());
-		nbt.putBoolean("isCrawling", isCrawling());
 		nbt.putBoolean("isBreaking", isBreaking());
 		nbt.putBoolean("isExecuting", isExecuting());
 		nbt.putBoolean("isHeadBite", isBiting());
@@ -213,8 +211,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			setGrowth(nbt.getFloat("growth"));
 		if (nbt.contains("isHissing"))
 			setIsHissing(nbt.getBoolean("isHissing"));
-		if (nbt.contains("isCrawling"))
-			setIsCrawling(nbt.getBoolean("isCrawling"));
 		if (nbt.contains("isBreaking"))
 			setIsBreaking(nbt.getBoolean("isBreaking"));
 		if (nbt.contains("isExecuting"))
