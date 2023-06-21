@@ -136,8 +136,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
-		entityData.define(UPSIDE_DOWN, false);
-		entityData.define(FLEEING_FIRE, false);
+		this.entityData.define(UPSIDE_DOWN, false);
+		this.entityData.define(FLEEING_FIRE, false);
+		this.entityData.define(IS_CLIMBING, false);
 		this.entityData.define(STATE, 0);
 		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
@@ -145,6 +146,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
+		compound.putBoolean("isCrawling", isCrawling());
 		GigVibrationListener.codec(this).encodeStart(NbtOps.INSTANCE, this.dynamicGameEventListener.getListener()).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
 		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
 	}
@@ -152,6 +154,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
+		if (compound.contains("isCrawling"))
+			setIsCrawling(compound.getBoolean("isCrawling"));
 		if (compound.contains("anger")) {
 			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
 				this.angerManagement = angerManagement;

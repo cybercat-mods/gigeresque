@@ -34,7 +34,6 @@ import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -91,7 +90,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(StalkerEntity.class, EntityDataSerializers.BOOLEAN);
 	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
 	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
@@ -268,32 +266,20 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		entityData.set(CURRENT_ATTACK_TYPE, value);
 	}
 
-	public boolean isCrawling() {
-		return entityData.get(IS_CLIMBING);
-	}
-
-	public void setIsCrawling(boolean isHissing) {
-		entityData.set(IS_CLIMBING, isHissing);
-	}
-
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
-		entityData.define(IS_CLIMBING, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
-		nbt.putBoolean("isCrawling", isCrawling());
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("isCrawling"))
-			setIsCrawling(nbt.getBoolean("isCrawling"));
 	}
 
 	@Override
