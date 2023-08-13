@@ -17,7 +17,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 public class GigDungeonStructure extends Structure {
 
 	public static final Codec<GigDungeonStructure> CODEC = RecordCodecBuilder.<GigDungeonStructure>mapCodec(
-			instance -> instance.group(GigDungeonStructure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 101).fieldOf("size").forGetter(structure -> structure.size), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance,
+			instance -> instance.group(GigDungeonStructure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 16).fieldOf("size").forGetter(structure -> structure.size), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance,
 					GigDungeonStructure::new))
 			.codec();
 

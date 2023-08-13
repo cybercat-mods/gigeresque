@@ -6,7 +6,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_left_plug",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -15,7 +15,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_right_plug",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}

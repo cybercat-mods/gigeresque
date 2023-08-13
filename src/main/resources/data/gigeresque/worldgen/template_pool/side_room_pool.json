@@ -6,7 +6,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_long_hall",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -15,7 +15,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_elbowl_hall",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -24,7 +24,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_elbowr_hall",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -33,7 +33,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_3way_hall",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -42,7 +42,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_4way_hall",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -51,7 +51,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_altar",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -60,7 +60,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_pillar_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -69,7 +69,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_pit_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -78,7 +78,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_beacon_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -87,7 +87,7 @@
 			"weight": 10,
 			"element": {
 				"location": "gigeresque:aliendungeon_drop_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -96,7 +96,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_head_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -105,7 +105,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_ribs_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -114,7 +114,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_pond_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -123,7 +123,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_sundial_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -132,7 +132,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_hatch_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -141,7 +141,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_isitscience_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -150,7 +150,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_smallhubsecret_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -159,7 +159,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_eggdump_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
@@ -168,7 +168,7 @@
 			"weight": 1,
 			"element": {
 				"location": "gigeresque:aliendungeon_arenapitsmall_room",
-				"processors": "minecraft:empty",
+				"processors": "gigeresque:randomize_blocks",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
