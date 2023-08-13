@@ -1,12 +1,12 @@
 {
 	"structures": [
 		{
-			"structure": "gigeresque:gig_dungeon",
+			"structure": "gigeresque:sculk_gig_dungeon",
 			"weight": 1
 		}
 	],
 	"placement": {
-		"salt": 1234567881,
+		"salt": 1234567891,
 		"spacing": 50,
 		"separation": 15,
 		"type": "minecraft:random_spread"

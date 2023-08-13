@@ -11,9 +11,11 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 
 public class GigStructures {
 	public static StructureType<?> GIG_DUNGEON;
+	public static StructureType<?> SCULK_GIG_DUNGEON;
 
 	public static void registerStructureFeatures() {
 		GIG_DUNGEON = register(Constants.modResource("gig_dungeon"), GigDungeonStructure.CODEC);
+		SCULK_GIG_DUNGEON = register(Constants.modResource("sculk_gig_dungeon"), GigSculkDungeonStructure.CODEC);
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {

@@ -1,0 +1,177 @@
+{
+	"name": "gigeresque:sculk_side_room_pool",
+	"fallback": "gigeresque:sculk_plug_pool",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_long_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_elbowl_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_elbowr_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_3way_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_4way_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_altar",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_pillar_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_pit_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_beacon_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 10,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_drop_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_head_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_ribs_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_pond_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_sundial_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_hatch_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_isitscience_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_smallhubsecret_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_eggdump_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_arenapitsmall_room",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

@@ -1,0 +1,51 @@
+{
+	"name": "gigeresque:sculk_hallway_pool",
+	"fallback": "gigeresque:sculk_plug_pool",
+	"elements": [
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_long_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_elbowl_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_elbowr_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_3way_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		},
+		{
+			"weight": 1,
+			"element": {
+				"location": "gigeresque:sculk_aliendungeon_4way_hall",
+				"processors": "gigeresque:randomize_sculk_blocks",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}
