@@ -32,6 +32,7 @@ public class GigTags {
 	public static final TagKey<EntityType<?>> NEOHOST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("neohost"));
 	public static final TagKey<EntityType<?>> DNAIMMUNE = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("dnaimmune"));
 	public static final TagKey<EntityType<?>> FACEHUGGER_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("facehuggerblacklist"));
+	public static final TagKey<EntityType<?>> XENO_EXECUTE_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("xenoexecuteblacklist"));
 	
 	/* SPAWN BIOMES */
 	public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));

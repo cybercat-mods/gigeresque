@@ -11,6 +11,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -85,7 +86,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 		var randomPhase = entity.getRandom().nextInt(0, 100);
 		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target)) {
 			entity.grabTarget(target);
-		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80) {
+		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
 			entity.grabTarget(target);
 			entity.setIsBiting(true);
 		} else {
