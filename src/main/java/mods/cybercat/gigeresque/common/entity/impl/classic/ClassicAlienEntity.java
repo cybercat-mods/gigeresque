@@ -133,6 +133,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		
 		if (!this.isVehicle()) 
 			this.setIsExecuting(false);
+		
+		if (this.isExecuting())
+			this.setIsStatis(false);
 
 		// Attack logic
 
