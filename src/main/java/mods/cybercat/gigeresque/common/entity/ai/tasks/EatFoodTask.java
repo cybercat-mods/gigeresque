@@ -60,9 +60,9 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
 	@Override
 	protected void doDelayedAction(E entity) {
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		if (entity.getBrain().getMemory(GigMemoryTypes.FOOD_ITEMS.get()).orElse(null) == null)
+			return;
 		var itemLocation = entity.getBrain().getMemory(GigMemoryTypes.FOOD_ITEMS.get()).orElse(null);
-//		if (itemLocation == null)
-//			return;
 		if (itemLocation.stream().findFirst().get() == null)
 			return;
 
