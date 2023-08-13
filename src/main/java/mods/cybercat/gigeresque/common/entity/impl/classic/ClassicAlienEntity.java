@@ -130,6 +130,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public void tick() {
 		super.tick();
+		
+		if (!this.isVehicle()) 
+			this.setIsExecuting(false);
 
 		// Attack logic
 
@@ -301,24 +304,57 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public List<ExtendedSensor<ClassicAlienEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+		return ObjectArrayList.of(
+				// Player Sensor
+				new NearbyPlayersSensor<>(),
+				// Living Sensor
 				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
 								|| entity.getCommandSenderWorld().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
-				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7), new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				// Block Sensor
+				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7), 
+				// Fire Sensor
+				new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), 
+				// Lights Sensor
+				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				// Nest Sensor
 				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(30).setPredicate((block, entity) -> block.is(GIgBlocks.NEST_RESIN_WEB_CROSS)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching), new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
+		return BrainActivityGroup.coreTasks(
+				// Flee Fire
+				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), 
+				// Take target to nest
+				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), 
+				// Looks at target
+				new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching), 
+				// Move to target
+				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && !(((Player) target).isCreative() || ((Player) target).isSpectator())), new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()), new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
+		return BrainActivityGroup.idleTasks(
+				// Build Nest
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), 
+				// Kill Lights
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				// Do first
+				new FirstApplicableBehaviour<ClassicAlienEntity>(
+						// Targeting
+						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), 
+						// Look at players
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && !(((Player) target).isCreative() || ((Player) target).isSpectator())), 
+						// Look around randomly
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
+				// Random
+				new OneRandomBehaviour<>(
+						// Randomly walk around
+						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting() || !this.isStatis()), 
+						// Idle
+						new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
 	}
 
 	@Override
