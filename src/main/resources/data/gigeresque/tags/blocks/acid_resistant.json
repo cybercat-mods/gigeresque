@@ -76,6 +76,7 @@
 		"minecraft:chain_command_block",
 		"minecraft:repeating_command_block",
 		"minecraft:structure_block",
+		"minecraft:spawner",
 		"minecraft:structure_void"
 	]
 }
