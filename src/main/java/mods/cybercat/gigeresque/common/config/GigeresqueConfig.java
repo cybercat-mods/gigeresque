@@ -11,6 +11,12 @@ public class GigeresqueConfig {
 	public boolean facehuggerGivesBlindness = false;
 
 	@Configurable
+	public float alienblockHardness = 3.0f;
+
+	@Configurable
+	public float alienblockResistance = 6.0f;
+
+	@Configurable
 	public float alienGrowthMultiplier = 1.0f;
 
 	@Configurable
