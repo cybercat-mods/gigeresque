@@ -304,7 +304,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity target) {
-		return 3.5;
+		return 4.5;
 	}
 
 	@Override
