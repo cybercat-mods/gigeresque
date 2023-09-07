@@ -254,6 +254,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 				}
 			}
 		if (this.isPassedOut()) {
+			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
 			if (this.isAggressive()) {
 				this.triggerAnim("attackController", "wakeup");
 				this.setPassedOutStatus(false);
