@@ -38,6 +38,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -174,12 +175,12 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		if (this.isNoAi())
 			return;
 
-		if (this.isHatched() && this.isAlive()) 
+		if (this.isHatched() && this.isAlive())
 			if (!this.level().isClientSide)
 				this.setTicksUntilNest(ticksUntilNest++);
 		if (this.getTicksUntilNest() == 6000f) {
-			if (this.level().isClientSide && this.level().getGameTime() % 80L == 0L) 
-					this.level().addAlwaysVisibleParticle(ParticleTypes.POOF, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+			if (this.level().isClientSide && this.level().getGameTime() % 80L == 0L)
+				this.level().addAlwaysVisibleParticle(ParticleTypes.POOF, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
 			this.level().setBlockAndUpdate(this.blockPosition(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 			this.kill();
 		}
@@ -269,7 +270,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		var aabb = new AABB(this.blockPosition().above()).inflate(Gigeresque.config.alieneggHatchRange);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
 			if (entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !entity.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !(entity instanceof Warden) && !entity.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
 					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientCreature) && ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
 						if (!(entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
 							if (GigEntityUtils.isPotentialHost(entity))
