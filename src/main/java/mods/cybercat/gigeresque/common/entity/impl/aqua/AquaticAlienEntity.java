@@ -200,12 +200,8 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<AquaticAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>(), new FirstApplicableBehaviour<AquaticAlienEntity>(new TargetOrRetaliate<>(), 
-				new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), 
-				new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(
-						new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(!this.wasTouchingWater ? 0.75F : 1.5f).stopIf(entity -> this.isPassedOut()), 
-						new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>(), new FirstApplicableBehaviour<AquaticAlienEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(!this.wasTouchingWater ? 0.75F : 1.5f).stopIf(entity -> this.isPassedOut()), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override

@@ -338,7 +338,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Take target to nest
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				// Looks at target
-				new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(entity -> !this.isPassedOut() || !this.isSearching),
+				new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(entity -> !this.isPassedOut() || !this.isSearching || !this.isExecuting()),
 				// Move to target
 				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
@@ -355,9 +355,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						// Targeting
 						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 						// Look at players
-						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() || (target instanceof Player player && !player.isCreative())).stopIf(entity -> this.isPassedOut() || (entity instanceof Player player && player.isCreative())),
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 						// Look around randomly
-						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching)).stopIf(entity -> this.isPassedOut()),
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching)).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 				// Random
 				new OneRandomBehaviour<>(
 						// Randomly walk around
@@ -490,8 +490,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					if (event.getKeyframeData().getSound().matches("tailSoundkey"))
 						if (this.level().isClientSide)
 							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-					if (event.getKeyframeData().getSound().matches("crunchSoundkey")) 
-						if (this.level().isClientSide) 
+					if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+						if (this.level().isClientSide)
 							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}));
 		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {

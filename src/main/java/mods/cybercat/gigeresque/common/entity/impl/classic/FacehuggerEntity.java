@@ -106,7 +106,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	public FacehuggerEntity(EntityType<? extends FacehuggerEntity> type, Level world) {
 		super(type, world);
 		setMaxUpStep(1.5f);
-        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
+		this.vibrationUser = new AzureVibrationUser(this, 1.2F);
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
@@ -414,7 +414,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
 	}
 
 	@Override

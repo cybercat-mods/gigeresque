@@ -241,7 +241,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 						// Targeting
 						new TargetOrRetaliate<>(), 
 						// Look at players
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), 
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), 
 						// Look around randomly
 						new SetRandomLookTarget<>()), 
 				// Random

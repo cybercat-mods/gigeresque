@@ -16,6 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -93,8 +95,10 @@ public class AzureVibrationUser implements VibrationSystem.User {
 			adult.wakeupCounter++;
 			if (adult.isPassedOut() & adult.wakeupCounter == 1)
 				adult.triggerAnim("attackController", "wakeup");
-			if (adult.wakeupCounter == 2)
+			if (adult.wakeupCounter == 2) {
 				adult.triggerAnim("attackController", "alert");
+				adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 50, 100, false, false));
+			}
 			if (!adult.isPassedOut() & adult.wakeupCounter >= 3) {
 				adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 				adult.wakeupCounter = 0;

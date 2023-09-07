@@ -265,6 +265,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (this.tickCount < 2 && !this.isAggressive())
 				this.triggerAnim("attackController", "passout");
 		}
+		if (this.isAggressive())
+			if (!this.level().isClientSide)
+				this.passoutCounter = 0;
 
 		// Hissing Logic
 		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
