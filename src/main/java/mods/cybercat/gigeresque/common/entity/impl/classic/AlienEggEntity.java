@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -17,6 +18,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -47,14 +49,16 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> NEST_TICKS = SynchedEntityData.defineId(AlienEggEntity.class, EntityDataSerializers.FLOAT);
 	private long hatchProgress = 0L;
 	private long ticksOpen = 0L;
+	public float ticksUntilNest = -1.0f;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final long MAX_HATCH_PROGRESS = 50L;
 
 	public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
 		super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+		this.vibrationUser = new AzureVibrationUser(this, 0.0F);
 	}
 
 	@Override
@@ -98,12 +102,21 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		entityData.set(HAS_FACEHUGGER, value);
 	}
 
+	public float getTicksUntilNest() {
+		return entityData.get(NEST_TICKS);
+	}
+
+	public void setTicksUntilNest(float ticksUntilEggmorphed) {
+		this.entityData.set(NEST_TICKS, ticksUntilEggmorphed);
+	}
+
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
 		entityData.define(IS_HATCHING, false);
 		entityData.define(IS_HATCHED, false);
 		entityData.define(HAS_FACEHUGGER, true);
+		entityData.define(NEST_TICKS, -1.0f);
 	}
 
 	@Override
@@ -114,21 +127,18 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		nbt.putBoolean("hasFacehugger", hasFacehugger());
 		nbt.putLong("hatchProgress", hatchProgress);
 		nbt.putLong("ticksOpen", ticksOpen);
+		nbt.putFloat("ticksUntilEggmorphed", getTicksUntilNest());
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("isHatching"))
-			setIsHatching(nbt.getBoolean("isHatching"));
-		if (nbt.contains("isHatched"))
-			setIsHatched(nbt.getBoolean("isHatched"));
-		if (nbt.contains("hasFacehugger"))
-			setHasFacehugger(nbt.getBoolean("hasFacehugger"));
-		if (nbt.contains("hatchProgress"))
-			hatchProgress = nbt.getLong("hatchProgress");
-		if (nbt.contains("ticksOpen"))
-			ticksOpen = nbt.getLong("ticksOpen");
+		setIsHatching(nbt.getBoolean("isHatching"));
+		setIsHatched(nbt.getBoolean("isHatched"));
+		setHasFacehugger(nbt.getBoolean("hasFacehugger"));
+		hatchProgress = nbt.getLong("hatchProgress");
+		ticksOpen = nbt.getLong("ticksOpen");
+		setTicksUntilNest(nbt.getInt("ticksUntilEggmorphed"));
 	}
 
 	@Override
@@ -143,14 +153,14 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return (this.isHatched() && !this.isDeadOrDying()) ? EntityDimensions.scalable(0.7f, 1.0f) : this.isDeadOrDying() ? EntityDimensions.scalable(0.7f, 0.6f): super.getDimensions(pose);
+		return (this.isHatched() && !this.isDeadOrDying()) ? EntityDimensions.scalable(0.7f, 1.0f) : this.isDeadOrDying() ? EntityDimensions.scalable(0.7f, 0.6f) : super.getDimensions(pose);
 	}
 
 	@Override
 	public void refreshDimensions() {
 		super.refreshDimensions();
 	}
-	
+
 	@Override
 	public void travel(Vec3 vec3) {
 		if (this.tickCount % 10 == 0)
@@ -163,6 +173,16 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		super.tick();
 		if (this.isNoAi())
 			return;
+
+		if (this.isHatched() && this.isAlive()) 
+			if (!this.level().isClientSide)
+				this.setTicksUntilNest(ticksUntilNest++);
+		if (this.getTicksUntilNest() == 6000f) {
+			if (this.level().isClientSide && this.level().getGameTime() % 80L == 0L) 
+					this.level().addAlwaysVisibleParticle(ParticleTypes.POOF, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+			this.level().setBlockAndUpdate(this.blockPosition(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+			this.kill();
+		}
 
 		if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
 			hatchProgress++;
