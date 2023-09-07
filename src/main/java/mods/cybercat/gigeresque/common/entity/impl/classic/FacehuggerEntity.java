@@ -290,7 +290,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
 			detachFromHost(true);
 
-		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown() || source == damageSources().inWall()))
+		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
 
 		return super.hurt(source, amount);
