@@ -7,7 +7,10 @@ import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
@@ -79,13 +82,16 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 					return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (event.getAnimatable().getAttckingState() == 1 && !isDead)
-				return event.setAndContinue(GigAnimationsDefault.ATTACK);
 			else if (this.getTarget() != null && !event.isMoving() && !isDead)
 				return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
+			else if (this.isAggressive())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("attack", RawAnimation.begin().then("attack", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -106,8 +112,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyPlayersSensor<>(),
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
 				new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((entity,
 						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
 								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
@@ -127,7 +132,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public BrainActivityGroup<HammerpedeEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !this.hasLineOfSight(target) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding()
-				|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new AlienMeleeAttack(15).attackInterval(entity -> 80));
+				|| ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new AlienMeleeAttack(7).attackInterval(entity -> 80));
 	}
 
 	@Override

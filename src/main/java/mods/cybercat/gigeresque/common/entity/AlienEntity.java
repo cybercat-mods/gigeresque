@@ -13,6 +13,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 
+import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
@@ -58,7 +59,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.AABB;
 
-public abstract class AlienEntity extends Monster implements VibrationSystem {
+public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity {
 
 	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
@@ -88,6 +89,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem {
 	@Override
 	protected void tickDeath() {
 		++this.deathTime;
+		this.triggerAnim("livingController", "death");
 		if (this.deathTime == 150) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.tickDeath();

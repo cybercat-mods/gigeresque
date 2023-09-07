@@ -111,10 +111,12 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
 				return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
-			else if (event.getAnimatable().getAttckingState() == 1 && !isDead)
-				return event.setAndContinue(RawAnimation.begin().then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}));
+		}).triggerableAnim("attack_heavy", RawAnimation.begin().then("attack_heavy", LoopType.PLAY_ONCE)) // attack
+				.triggerableAnim("attack_normal", RawAnimation.begin().then("attack_normal", LoopType.PLAY_ONCE)) // attack
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
+		);
 	}
 
 	@Override
@@ -160,7 +162,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 						target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
 								|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
 				new LeapAtTargetTask<>(0), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), // move to
-				new AlienMeleeAttack(20));// attack
+				new AlienMeleeAttack(13));// attack
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

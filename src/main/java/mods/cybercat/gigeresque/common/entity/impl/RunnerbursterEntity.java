@@ -7,6 +7,7 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -142,8 +143,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (((this.getTarget() != null && this.doHurtTarget(getTarget())) || (event.getAnimatable().isEating() == true)) && !this.isDeadOrDying())
-				return event.setAndContinue(GigAnimationsDefault.CHOMP);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.entityData.get(BIRTHED) == true)
@@ -151,6 +150,9 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}));
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP));
 	}
 
 	@Override

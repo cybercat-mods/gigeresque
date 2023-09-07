@@ -29,7 +29,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -198,7 +197,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	public void addAdditionalSaveData(CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 		nbt.putFloat("growth", getGrowth());
-		nbt.putBoolean("passedout", this.isPassedOut());
+		nbt.putBoolean("isStasis", this.isPassedOut());
 		nbt.putBoolean("wakingup", this.isWakingUp());
 		nbt.putBoolean("isHissing", isHissing());
 		nbt.putBoolean("isBreaking", isBreaking());
@@ -209,22 +208,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		if (nbt.contains("getStatisTimer"))
-			setGrowth(nbt.getFloat("getStatisTimer"));
-		if (nbt.contains("growth"))
-			setGrowth(nbt.getFloat("growth"));
-		if (nbt.contains("isHissing"))
-			setIsHissing(nbt.getBoolean("isHissing"));
-		if (nbt.contains("isBreaking"))
-			setIsBreaking(nbt.getBoolean("isBreaking"));
-		if (nbt.contains("isExecuting"))
-			setIsExecuting(nbt.getBoolean("isExecuting"));
-		if (nbt.contains("isHeadBite"))
-			setIsExecuting(nbt.getBoolean("isHeadBite"));
-		if (nbt.contains("passedout"))
-			setPassedOutStatus(nbt.getBoolean("passedout"));
-		if (nbt.contains("wakingup"))
-			setWakingUpStatus(nbt.getBoolean("wakingup"));
+		setGrowth(nbt.getFloat("getStatisTimer"));
+		setGrowth(nbt.getFloat("growth"));
+		setIsHissing(nbt.getBoolean("isHissing"));
+		setIsBreaking(nbt.getBoolean("isBreaking"));
+		setIsExecuting(nbt.getBoolean("isExecuting"));
+		setIsExecuting(nbt.getBoolean("isHeadBite"));
+		setPassedOutStatus(nbt.getBoolean("isStasis"));
+		setWakingUpStatus(nbt.getBoolean("wakingup"));
 	}
 
 	@Override
@@ -250,27 +241,32 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 		// Passing and waking up logic
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
-		if ((velocityLength == 0 && !this.isVehicle() && !this.isSearching && !this.isHissing() && !this.isPassedOut())) {
-			if (!this.level().isClientSide)
-				this.passoutCounter++;
-//			AzureLib.LOGGER.info(this.passoutCounter);
-			if (this.passoutCounter >= 600) {
-				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
-				this.triggerAnim("attackController", "passout");
-				this.setPassedOutStatus(true);
+		if (!this.getTypeName().getString().equalsIgnoreCase("neomorph"))
+			if ((velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching && !this.isHissing() && !this.isPassedOut())) {
+				if (!this.level().isClientSide)
+					this.passoutCounter++;
+//				if (!this.level().isClientSide)
+//					AzureLib.LOGGER.info(this.passoutCounter);
+				if (this.passoutCounter >= 600) {
+					this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+					this.triggerAnim("attackController", "passout");
+					this.setPassedOutStatus(true);
+				}
 			}
-		}
-		if (this.isPassedOut())
-			if (this.isAggressive() && this.passoutCounter == 600) {
+		if (this.isPassedOut()) {
+			if (this.isAggressive()) {
 				this.triggerAnim("attackController", "wakeup");
 				this.setPassedOutStatus(false);
 				if (!this.level().isClientSide)
 					this.passoutCounter = -600;
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
 			}
+			if (this.tickCount < 2 && !this.isAggressive())
+				this.triggerAnim("attackController", "passout");
+		}
 
 		// Hissing Logic
-		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false)) {
+		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
 			hissingCooldown++;
 
 			if (hissingCooldown == 20) {
@@ -314,7 +310,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
 						if (!level().isClientSide)
 							this.level().destroyBlock(testPos, true, null, 512);
-						this.swing(InteractionHand.MAIN_HAND);
+						this.triggerAnim("attackController", "swipe");
 						breakingCounter = -90;
 						if (level().isClientSide()) {
 							for (int i = 2; i < 10; i++) {

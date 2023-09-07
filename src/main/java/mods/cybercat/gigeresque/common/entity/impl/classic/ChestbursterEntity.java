@@ -8,6 +8,7 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -69,7 +70,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
+        this.vibrationUser = new AzureVibrationUser(this, 0.7F);
 		navigation = landNavigation;
 	}
 
@@ -237,8 +238,6 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);
-			else if (event.getAnimatable().isEating() == true && !this.isDeadOrDying())
-				return event.setAndContinue(GigAnimationsDefault.CHOMP);
 			else if (isDead)
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.tickCount < 60 && event.getAnimatable().isBirthed() == true)
@@ -252,6 +251,9 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 				}
 			}
 		}));
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP));
 	}
 
 	@Override

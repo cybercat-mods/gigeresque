@@ -200,8 +200,12 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<AquaticAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>(), new FirstApplicableBehaviour<AquaticAlienEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(!this.wasTouchingWater ? 0.75F : 1.5f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>(), new FirstApplicableBehaviour<AquaticAlienEntity>(new TargetOrRetaliate<>(), 
+				new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), 
+				new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(
+						new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(!this.wasTouchingWater ? 0.75F : 1.5f).stopIf(entity -> this.isPassedOut()), 
+						new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
@@ -309,26 +313,26 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (this.isUnderWater() && this.wasTouchingWater) {
-				if (this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+				if (this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.SWIM);
 				else if (isDead)
 					return event.setAndContinue(GigAnimationsDefault.DEATH);
 				else
 					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else {
-				if (this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+				if (this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
-				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isStatis() == false)
+				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.CRAWL);
-				else if (isSearching && !this.isAggressive() && !isDead && this.isStatis() == false)
+				else if (isSearching && !this.isAggressive() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
 				else if (isDead)
 					return event.setAndContinue(GigAnimationsDefault.DEATH);
-				else if (this.isStatis() == true || this.isNoAi())
+				else if (this.isPassedOut() == true || this.isNoAi())
 					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-				else if (this.isStatis() == false)
+				else if (this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
 				return PlayState.CONTINUE;
 			}
@@ -342,36 +346,45 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
 				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-			if (event.getAnimatable().isBreaking() == true && !this.isVehicle())
-				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
-			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle() && this.isExecuting() == false)
-				return event.setAndContinue(RawAnimation.begin().then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
-				if (this.level().isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
-				if (this.level().isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-				}
-			}
-		})).add(new AnimationController<>(this, "hissController", 0, event -> {
-			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
-				return event.setAndContinue(GigAnimationsDefault.HISS);
+		}).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("idle", this.isUnderWater() && this.wasTouchingWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND2)) // idle
+				.add(new AnimationController<>(this, "attackController", 1, event -> {
+					return PlayState.STOP;
+				}).setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("clawSoundkey")) {
+						if (this.level().isClientSide) {
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						}
+					}
+					if (event.getKeyframeData().getSound().matches("tailSoundkey")) {
+						if (this.level().isClientSide) {
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						}
+					}
+				}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+						.triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
+						.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+						.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenPlayAndHold("stasis_enter")) // pass out
+						.triggerableAnim("passoutloop", RawAnimation.begin().thenPlayAndHold("stasis_enter")) // pass out
+						.triggerableAnim("wakeup", RawAnimation.begin().then("stasis_leave", LoopType.PLAY_ONCE).then("idle_land", LoopType.PLAY_ONCE)) // wake up
+						.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
+						.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("left_tail", RawAnimation.begin().then("left_tail", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("right_tail", RawAnimation.begin().then("right_tail", LoopType.PLAY_ONCE)) // attack
+				).add(new AnimationController<>(this, "hissController", 0, event -> {
+					var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+					if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+						return event.setAndContinue(GigAnimationsDefault.HISS);
 
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
-				if (this.level().isClientSide) {
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
-		}));
+					return PlayState.STOP;
+				}).setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("hissSoundkey")) {
+						if (this.level().isClientSide) {
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						}
+					}
+				}));
 	}
 
 	@Override

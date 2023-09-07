@@ -2,7 +2,6 @@
 	"format_version": "1.8.0",
 	"animations": {
 		"idle_land": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -354,7 +353,6 @@
 			}
 		},
 		"walk": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -4022,7 +4020,6 @@
 			}
 		},
 		"walk_carrying": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -4747,7 +4744,6 @@
 			}
 		},
 		"run": {
-			"loop": true,
 			"animation_length": 1,
 			"bones": {
 				"body": {
@@ -5561,7 +5557,6 @@
 			}
 		},
 		"crawl": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -7131,7 +7126,6 @@
 			}
 		},
 		"climb": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -8701,7 +8695,6 @@
 			}
 		},
 		"idle_water": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -8952,7 +8945,6 @@
 			}
 		},
 		"swim": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -9223,7 +9215,6 @@
 			}
 		},
 		"rush_swim": {
-			"loop": true,
 			"animation_length": 1,
 			"bones": {
 				"body": {
@@ -9548,7 +9539,6 @@
 			}
 		},
 		"kidnap": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"rArm01": {
@@ -17963,7 +17953,6 @@
 			}
 		},
 		"stasis_enter": {
-			"loop": "hold_on_last_frame",
 			"animation_length": 2,
 			"bones": {
 				"chest": {
@@ -19917,7 +19906,6 @@
 			}
 		},
 		"stasis_loop": {
-			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"body": {
@@ -20139,7 +20127,6 @@
 			}
 		},
 		"stasis_leave": {
-			"loop": "hold_on_last_frame",
 			"animation_length": 2,
 			"bones": {
 				"chest": {
@@ -21596,7 +21583,6 @@
 			}
 		},
 		"death": {
-			"loop": "hold_on_last_frame",
 			"animation_length": 10,
 			"bones": {
 				"body": {

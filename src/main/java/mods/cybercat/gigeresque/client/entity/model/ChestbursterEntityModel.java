@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ChestbursterEntityModel extends DefaultedEntityGeoModel<ChestbursterEntity> {
 
 	public ChestbursterEntityModel() {
-		super(Constants.modResource("chestburster/chestburster"), true);
+		super(Constants.modResource("chestburster/chestburster"), false);
 	}
 
 	@Override

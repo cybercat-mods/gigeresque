@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RunnerbursterEntityModel extends DefaultedEntityGeoModel<RunnerbursterEntity> {
 
 	public RunnerbursterEntityModel() {
-		super(Constants.modResource("runnerburster/runnerburster"), true);
+		super(Constants.modResource("runnerburster/runnerburster"), false);
 	}
 
 	@Override
