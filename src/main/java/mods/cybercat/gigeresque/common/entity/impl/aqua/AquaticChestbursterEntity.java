@@ -140,7 +140,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 		}));
 		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
 			return PlayState.STOP;
-		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP));
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

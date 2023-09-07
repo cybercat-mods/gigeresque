@@ -70,7 +70,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 0.7F);
+		this.vibrationUser = new AzureVibrationUser(this, 0.7F);
 		navigation = landNavigation;
 	}
 
@@ -253,7 +253,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 		}));
 		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
 			return PlayState.STOP;
-		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP));
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

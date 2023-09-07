@@ -90,6 +90,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 	protected void tickDeath() {
 		++this.deathTime;
 		this.triggerAnim("livingController", "death");
+		this.triggerAnim("attackController", "death");
 		if (this.deathTime == 150) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.tickDeath();

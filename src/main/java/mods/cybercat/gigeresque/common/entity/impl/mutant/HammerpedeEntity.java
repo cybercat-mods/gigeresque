@@ -91,7 +91,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 		}));
 		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
 			return PlayState.STOP;
-		}).triggerableAnim("attack", RawAnimation.begin().then("attack", LoopType.PLAY_ONCE)));
+		}).triggerableAnim("attack", RawAnimation.begin().then("attack", LoopType.PLAY_ONCE)).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

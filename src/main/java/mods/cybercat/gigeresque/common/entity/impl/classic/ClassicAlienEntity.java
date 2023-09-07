@@ -468,6 +468,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 			return PlayState.STOP;
 		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
 				.triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
 				.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenLoop("stasis_loop")) // pass out

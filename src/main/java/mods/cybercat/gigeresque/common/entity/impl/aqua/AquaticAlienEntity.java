@@ -362,6 +362,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						}
 					}
 				}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 						.triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
 						.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
 						.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenPlayAndHold("stasis_enter")) // pass out

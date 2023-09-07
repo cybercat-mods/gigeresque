@@ -300,6 +300,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 						return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 					return PlayState.STOP;
 				}).triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
+						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 						.triggerableAnim("alert", RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
 						.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenLoop("stasis_loop")) // pass out
 						.triggerableAnim("passoutloop", RawAnimation.begin().thenLoop("stasis_loop")) // pass out

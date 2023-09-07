@@ -159,6 +159,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 			return PlayState.STOP;
 		})
 				.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
 				.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
 				.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
