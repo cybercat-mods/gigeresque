@@ -6,6 +6,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -15,7 +16,6 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -173,8 +173,9 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			if (!this.level().isClientSide)
 				this.setTicksUntilNest(ticksUntilNest++);
 		if (this.getTicksUntilNest() == 6000f) {
-			if (this.level().isClientSide && this.level().getGameTime() % 80L == 0L)
-				this.level().addAlwaysVisibleParticle(ParticleTypes.POOF, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+			if (this.level().isClientSide)
+				for (var i = 0; i < 2; i++)
+					this.level().addAlwaysVisibleParticle(Particles.GOO, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
 			this.level().setBlockAndUpdate(this.blockPosition(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 			this.kill();
 		}
@@ -210,7 +211,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level().isClientSide && (entity instanceof LivingEntity living &&GigEntityUtils.faceHuggerTest(living)))
+		if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living)))
 			setIsHatching(true);
 	}
 
