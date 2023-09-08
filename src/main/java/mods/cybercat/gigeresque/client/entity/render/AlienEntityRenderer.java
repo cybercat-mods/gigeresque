@@ -54,4 +54,9 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 	protected float getDeathMaxRotation(ClassicAlienEntity entityLivingBaseIn) {
 		return 0;
 	}
+	
+	@Override
+	public float getMotionAnimThreshold(ClassicAlienEntity animatable) {
+		return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f: super.getMotionAnimThreshold(animatable);
+	}
 }
