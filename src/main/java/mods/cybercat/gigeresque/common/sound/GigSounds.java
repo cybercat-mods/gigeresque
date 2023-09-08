@@ -6,9 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
-public class GigSounds implements GigeresqueInitializer {
-	private GigSounds() {
-	}
+public record GigSounds() implements GigeresqueInitializer {
 
 	private static GigSounds instance;
 

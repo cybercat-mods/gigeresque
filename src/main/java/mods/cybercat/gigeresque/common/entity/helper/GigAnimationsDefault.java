@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity.helper;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.RawAnimation;
 
-public class GigAnimationsDefault {
+public record GigAnimationsDefault() {
 
 	public static final RawAnimation BIRTH = RawAnimation.begin().then("birth", LoopType.PLAY_ONCE);
 	public static final RawAnimation HISS = RawAnimation.begin().thenPlayXTimes("hiss", 1);

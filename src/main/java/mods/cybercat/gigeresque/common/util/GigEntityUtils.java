@@ -17,9 +17,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 
-public class GigEntityUtils {
-	public GigEntityUtils() {
-	}
+public record GigEntityUtils() {
 
 	public static boolean isFacehuggerAttached(Entity entity) {
 		return entity != null && entity.getPassengers().stream().anyMatch(it -> it instanceof FacehuggerEntity);

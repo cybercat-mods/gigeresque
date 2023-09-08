@@ -20,9 +20,7 @@ import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 import net.minecraft.resources.ResourceLocation;
 
-public class EntityIdentifiers {
-	private EntityIdentifiers() {
-	}
+public record EntityIdentifiers() {
 
 	public static final ResourceLocation ALIEN = Constants.modResource("alien");
 	public static final ResourceLocation AQUATIC_ALIEN = Constants.modResource("aquatic_alien");

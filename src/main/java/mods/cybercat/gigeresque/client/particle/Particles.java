@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-public class Particles implements GigeresqueInitializer {
+public record Particles() implements GigeresqueInitializer {
 	public static final SimpleParticleType ACID = FabricParticleTypes.simple();
 	public static final SimpleParticleType GOO = FabricParticleTypes.simple();
 	public static final SimpleParticleType BLOOD = FabricParticleTypes.simple();

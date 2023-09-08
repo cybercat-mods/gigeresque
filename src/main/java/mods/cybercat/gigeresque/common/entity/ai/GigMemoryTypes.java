@@ -14,7 +14,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.SBLConstants;
 
-public class GigMemoryTypes {
+public record GigMemoryTypes() {
 
 	public static void init() {
 	}

@@ -25,9 +25,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-public class GIgBlocks implements GigeresqueInitializer {
-	private GIgBlocks() {
-	}
+public record GIgBlocks() implements GigeresqueInitializer {
 
 	private static GIgBlocks instance;
 

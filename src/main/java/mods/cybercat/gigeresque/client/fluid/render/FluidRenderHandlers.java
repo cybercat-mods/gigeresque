@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 @Environment(EnvType.CLIENT)
-public class FluidRenderHandlers implements GigeresqueInitializer {
+public record FluidRenderHandlers() implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {

@@ -36,10 +36,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class Entities implements GigeresqueInitializer {
-	private Entities() {
-	}
-
+public record Entities() implements GigeresqueInitializer {
+	
 	private static Entities instance;
 
 	synchronized public static Entities getInstance() {

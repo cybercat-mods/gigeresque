@@ -6,9 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 
-public class TrackedDataHandlers implements GigeresqueInitializer {
-	private TrackedDataHandlers() {
-	}
+public record TrackedDataHandlers() implements GigeresqueInitializer {
 
 	private static TrackedDataHandlers instance;
 
