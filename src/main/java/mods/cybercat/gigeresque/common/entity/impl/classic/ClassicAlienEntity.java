@@ -34,6 +34,7 @@ import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -190,7 +191,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					this.setAggressive(false);
 				}
 				if (biteCounter >= 88) {
-					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(GigDamageSources.of(this.level(), GigDamageSources.EXECUTION), Integer.MAX_VALUE);
 					this.heal(50);
 					if (this.level().isClientSide)
 						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
@@ -209,7 +210,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					this.setAggressive(false);
 				}
 				if (holdingCounter >= 843) {
-					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(GigDamageSources.of(this.level(), GigDamageSources.EXECUTION), Integer.MAX_VALUE);
 					this.heal(50);
 					if (this.level().isClientSide)
 						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
@@ -248,6 +249,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
+				target.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), additionalDamage);
 				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
@@ -272,7 +274,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
+				target.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 //			case 5 -> {

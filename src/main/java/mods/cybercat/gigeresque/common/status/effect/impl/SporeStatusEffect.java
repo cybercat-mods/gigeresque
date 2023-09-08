@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.particles.ParticleTypes;
@@ -45,7 +46,7 @@ public class SporeStatusEffect extends MobEffect {
 				neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
 				spawnEffects(entity.level(), entity);
 				entity.level().addFreshEntity(neoBurster);
-				entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+				entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
 				return;
 			}
 			if (entity instanceof Player playerEntity) {
@@ -53,7 +54,7 @@ public class SporeStatusEffect extends MobEffect {
 					neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
 					spawnEffects(playerEntity.level(), playerEntity);
 					playerEntity.level().addFreshEntity(neoBurster);
-					playerEntity.hurt(playerEntity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
 					return;
 				}
 			}
@@ -63,7 +64,7 @@ public class SporeStatusEffect extends MobEffect {
 
 	private void spawnEffects(Level world, LivingEntity entity) {
 		if (!world.isClientSide())
-			for (int i = 0; i < 2; i++)
+			for (var i = 0; i < 2; i++)
 				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
 	}
 

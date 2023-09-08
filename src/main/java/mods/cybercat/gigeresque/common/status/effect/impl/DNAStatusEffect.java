@@ -4,6 +4,7 @@ import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
@@ -67,7 +68,7 @@ public class DNAStatusEffect extends MobEffect {
 						spawnEffects(entity.level(), entity);
 						entity.level().addFreshEntity(summon);
 					}
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
@@ -86,19 +87,19 @@ public class DNAStatusEffect extends MobEffect {
 						spawnEffects(entity.level(), entity);
 						entity.level().addFreshEntity(summon);
 					}
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					return;
 				}
 			} else {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					var isInsideWaterBlock = entity.level().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					var isInsideWaterBlock = entity.level().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
