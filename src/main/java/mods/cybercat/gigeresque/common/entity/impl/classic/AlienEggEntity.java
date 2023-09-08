@@ -13,10 +13,7 @@ import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -33,12 +30,9 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ambient.AmbientCreature;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -216,7 +210,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level().isClientSide && GigEntityUtils.isPotentialHost(entity))
+		if (!level().isClientSide && (entity instanceof LivingEntity living &&GigEntityUtils.faceHuggerTest(living)))
 			setIsHatching(true);
 	}
 
@@ -268,17 +262,12 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	public void baseTick() {
 		super.baseTick();
 		var aabb = new AABB(this.blockPosition().above()).inflate(Gigeresque.config.alieneggHatchRange);
-		this.getCommandSenderWorld().getEntities(this, aabb).forEach(entity -> {
-			if (entity.isAlive()) {
-				if (entity instanceof LivingEntity && !(entity instanceof Player) && !(entity instanceof AlienEntity) && !(entity instanceof Warden) && !entity.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
-					if (((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && !(entity instanceof AmbientCreature) && ((LivingEntity) entity).getMobType() != MobType.UNDEAD)
-						if (!(entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)))
-							if (GigEntityUtils.isPotentialHost(entity))
-								setIsHatching(true);
-				}
-				if (entity instanceof Player && !((Player) entity).isCreative() && !((Player) entity).isSpectator())
+		this.level().getEntitiesOfClass(LivingEntity.class, aabb).forEach(target -> {
+			if (target.isAlive())
+				if (GigEntityUtils.faceHuggerTest(target))
 					setIsHatching(true);
-			}
+				else if (target instanceof Player player && !(player.isCreative() || !player.isSpectator()))
+					setIsHatching(true);
 		});
 	}
 
