@@ -179,7 +179,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			if (this.isBiting()) {
 				biteCounter++;
 				if (biteCounter == 5) {
-					this.getNavigation().stop();
 					this.triggerAnim("livingController", "grab");
 					this.setDeltaMovement(0, 0, 0);
 					this.setIsExecuting(true);
@@ -198,7 +197,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			} else {
 				holdingCounter++;
 				if (holdingCounter == 760) {
-					this.getNavigation().stop();
 					this.triggerAnim("livingController", "grab");
 					this.setDeltaMovement(0, 0, 0);
 					this.setIsExecuting(true);
@@ -392,6 +390,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			mob.xxa = this.xxa;
 			mob.zza = this.zza;
 			mob.yya = this.yya;
+			mob.setSpeed(0);
 		}
 	}
 
@@ -462,7 +461,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			if (event.getAnimatable().isPassedOut())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 			return PlayState.STOP;
-		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
 				.triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
