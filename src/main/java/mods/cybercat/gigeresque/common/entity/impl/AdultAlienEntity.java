@@ -17,7 +17,6 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -358,10 +357,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public PathNavigation createNavigation(Level world) {
 		return (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-	}
-
-	public boolean isCarryingEggmorphableTarget() {
-		return !getPassengers().isEmpty() && GigEntityUtils.isEggmorphable(this.getFirstPassenger());
 	}
 
 	@Override
