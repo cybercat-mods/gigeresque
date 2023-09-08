@@ -73,8 +73,8 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 		if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
-		if (!entity.isWithinMeleeAttackRange(this.target))
-			return;
+//		if (!entity.isWithinMeleeAttackRange(this.target))
+//			return;
 
 //		if (entity.distanceTo(this.target) < 1.1F)
 //			return;

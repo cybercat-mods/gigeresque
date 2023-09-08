@@ -2,6 +2,7 @@
 	"replace": false,
 	"values": [
 		"minecraft:blaze",
+		"minecraft:cat",
 		"minecraft:cave_spider",
 		"minecraft:chicken",
 		"minecraft:cod",
@@ -27,6 +28,7 @@
 		"minecraft:squid",
 		"minecraft:tropical_fish",
 		"minecraft:vex",
+		"minecraft:frog",
 		"minecraft:wither"
 	]
 }
