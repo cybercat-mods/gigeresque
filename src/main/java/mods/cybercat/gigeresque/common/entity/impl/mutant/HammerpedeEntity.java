@@ -7,7 +7,6 @@ import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
@@ -79,8 +78,6 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 					return event.setAndContinue(GigAnimationsDefault.WALK);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.getTarget() != null && !event.isMoving() && !isDead)
 				return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
 			else if (this.isAggressive())
@@ -90,7 +87,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 		}));
 		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
 			return PlayState.STOP;
-		}).triggerableAnim("attack", RawAnimation.begin().then("attack", LoopType.PLAY_ONCE)).triggerableAnim("death", GigAnimationsDefault.DEATH));
+		}).triggerableAnim("attack", GigAnimationsDefault.ATTACK).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

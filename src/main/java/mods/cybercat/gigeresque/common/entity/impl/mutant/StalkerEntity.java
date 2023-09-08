@@ -106,13 +106,11 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 					return event.setAndContinue(GigAnimationsDefault.RUNNING);
 				else
 					return event.setAndContinue(GigAnimationsDefault.MOVING);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
 				return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}).triggerableAnim("attack_heavy", RawAnimation.begin().then("attack_heavy", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("attack_normal", RawAnimation.begin().then("attack_normal", LoopType.PLAY_ONCE)) // attack
+		}).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
+				.triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
 		);

@@ -313,8 +313,6 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.SWIM);
-				else if (isDead)
-					return event.setAndContinue(GigAnimationsDefault.DEATH);
 				else
 					return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else {
@@ -324,10 +322,6 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					return event.setAndContinue(GigAnimationsDefault.CRAWL);
 				else if (isSearching && !this.isAggressive() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
-				else if (isDead)
-					return event.setAndContinue(GigAnimationsDefault.DEATH);
-				else if (this.isPassedOut() == true || this.isNoAi())
-					return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
 				else if (this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
 				return PlayState.CONTINUE;
@@ -359,16 +353,16 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					}
 				}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
 						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-						.triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
+						.triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
 						.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
-						.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenPlayAndHold("stasis_enter")) // pass out
-						.triggerableAnim("passoutloop", RawAnimation.begin().thenPlayAndHold("stasis_enter")) // pass out
-						.triggerableAnim("wakeup", RawAnimation.begin().then("stasis_leave", LoopType.PLAY_ONCE).then("idle_land", LoopType.PLAY_ONCE)) // wake up
-						.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
-						.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("left_tail", RawAnimation.begin().then("left_tail", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_tail", RawAnimation.begin().then("right_tail", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+						.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+						.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.PLAY_ONCE)) // wake up
+						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+						.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+						.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+						.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
 				).add(new AnimationController<>(this, "hissController", 0, event -> {
 					var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 					if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)

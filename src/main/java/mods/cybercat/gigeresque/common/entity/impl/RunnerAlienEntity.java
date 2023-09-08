@@ -283,7 +283,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 							return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 						else
 							return event.setAndContinue(GigAnimationsDefault.SWIM);
-			return event.setAndContinue(this.isPassedOut() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND) // idle
 				.setSoundKeyframeHandler(event -> {
@@ -297,17 +297,17 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 					if (event.getAnimatable().isPassedOut())
 						return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 					return PlayState.STOP;
-				}).triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
+				}).triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
 						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-						.triggerableAnim("alert", RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
-						.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenLoop("stasis_loop")) // pass out
-						.triggerableAnim("passoutloop", RawAnimation.begin().thenLoop("stasis_loop")) // pass out
-						.triggerableAnim("wakeup", RawAnimation.begin().then("stasis_leave", LoopType.PLAY_ONCE).then("idle_land", LoopType.PLAY_ONCE)) // wake up
-						.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
-						.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("left_tail_basic", RawAnimation.begin().then("left_tail_basic", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_tail_basic", RawAnimation.begin().then("right_tail_basic", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("alert", GigAnimationsDefault.HISS) // reset hands
+						.triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+						.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+						.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then("idle_land", LoopType.PLAY_ONCE)) // wake up
+						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+						.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+						.triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
+						.triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
 						.setSoundKeyframeHandler(event -> {
 							if (event.getKeyframeData().getSound().matches("clawSoundkey"))
 								if (this.level().isClientSide)

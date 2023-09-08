@@ -37,8 +37,6 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -56,9 +54,6 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -197,7 +192,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsBiting(false);
 					this.setIsExecuting(false);
-					this.triggerAnim("attackController", "idle");
+					this.triggerAnim("attackController", "reset");
 					biteCounter = 0;
 				}
 			} else {
@@ -215,7 +210,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					if (this.level().isClientSide)
 						this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsExecuting(false);
-					this.triggerAnim("attackController", "idle");
+					this.triggerAnim("attackController", "reset");
 					holdingCounter = 0;
 				}
 			}
@@ -468,21 +463,21 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 			return PlayState.STOP;
 		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 4)) // trigger kidnap hands
+				.triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-				.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
-				.triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
-				.triggerableAnim("passout", RawAnimation.begin().then("stasis_enter", LoopType.PLAY_ONCE).thenLoop("stasis_loop")) // pass out
-				.triggerableAnim("passoutloop", RawAnimation.begin().thenLoop("stasis_loop")) // pass out
-				.triggerableAnim("wakeup", RawAnimation.begin().then("stasis_leave", LoopType.PLAY_ONCE).then("idle_land", LoopType.PLAY_ONCE)) // wake up
-				.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
-				.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("left_tail", RawAnimation.begin().then("left_tail", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_tail", RawAnimation.begin().then("right_tail", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("left_claw_basic", RawAnimation.begin().then("left_claw_basic", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_claw_basic", RawAnimation.begin().then("right_claw_basic", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("left_tail_basic", RawAnimation.begin().then("left_tail_basic", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_tail_basic", RawAnimation.begin().then("right_tail_basic", LoopType.PLAY_ONCE)) // attack
+				.triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+				.triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+				.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+				.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.PLAY_ONCE)) // wake up
+				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+				.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+				.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+				.triggerableAnim("left_claw_basic", GigAnimationsDefault.LEFT_CLAW_BASIC) // attack
+				.triggerableAnim("right_claw_basic", GigAnimationsDefault.RIGHT_CLAW_BASIC) // attack
+				.triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
+				.triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
 				.setSoundKeyframeHandler(event -> {
 					if (event.getKeyframeData().getSound().matches("clawSoundkey"))
 						if (this.level().isClientSide)

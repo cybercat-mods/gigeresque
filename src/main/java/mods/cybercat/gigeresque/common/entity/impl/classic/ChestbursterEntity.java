@@ -237,8 +237,6 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.tickCount < 60 && event.getAnimatable().isBirthed() == true)
 				return event.setAndContinue(GigAnimationsDefault.BIRTH);
 			else

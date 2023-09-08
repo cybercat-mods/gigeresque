@@ -85,7 +85,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 				return event.setAndContinue(GigAnimationsDefault.CHARGE);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}));
+		}).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

@@ -117,10 +117,6 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
-			if (event.getAnimatable().getAttckingState() == 1)
-				return event.setAndContinue(RawAnimation.begin().thenPlayXTimes(AlienAttackType.animationMappings.get(getCurrentAttackType()), 1));
-			if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isPassedOut() == false && !this.swinging)
 				if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
@@ -157,31 +153,30 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
 			return PlayState.STOP;
-		})
-				.triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+		}).triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-				.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
-				.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("left_tail", RawAnimation.begin().then("left_tail", LoopType.PLAY_ONCE)) // attack
-				.triggerableAnim("right_tail", RawAnimation.begin().then("right_tail", LoopType.PLAY_ONCE)) // attack
+				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+				.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+				.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
 				.setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level().isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level().isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-		})).add(new AnimationController<>(this, "hissController", 0, event -> {
-			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))
-				return event.setAndContinue(GigAnimationsDefault.HISS);
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-				if (this.level().isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-		}));
+					if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+						if (this.level().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+						if (this.level().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				})).add(new AnimationController<>(this, "hissController", 0, event -> {
+					var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+					if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))
+						return event.setAndContinue(GigAnimationsDefault.HISS);
+					return PlayState.STOP;
+				}).setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("hissSoundkey"))
+						if (this.level().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}));
 	}
 
 	@Override
@@ -202,9 +197,8 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public List<ExtendedSensor<NeomorphEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
-				new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -214,8 +208,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), 
-				new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.75f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 

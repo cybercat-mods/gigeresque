@@ -133,8 +133,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 					return event.setAndContinue(GigAnimationsDefault.RUN);
 				else
 					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.entityData.get(BIRTHED) == true)
 				return event.setAndContinue(GigAnimationsDefault.BIRTH);
 			else

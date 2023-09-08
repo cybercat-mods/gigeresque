@@ -259,8 +259,6 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
-			if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isPassedOut() == false && !this.swinging)
 				if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
@@ -288,12 +286,12 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 				})).add(new AnimationController<>(this, "attackController", 1, event -> {
 					return PlayState.STOP;
 				}).triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
-						.triggerableAnim("swipe", RawAnimation.begin().thenPlayXTimes("left_claw", 1)) // swipe
+						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
 						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-						.triggerableAnim("left_claw", RawAnimation.begin().then("left_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_claw", RawAnimation.begin().then("right_claw", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("left_tail", RawAnimation.begin().then("left_tail", LoopType.PLAY_ONCE)) // attack
-						.triggerableAnim("right_tail", RawAnimation.begin().then("right_tail", LoopType.PLAY_ONCE)) // attack
+						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+						.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+						.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+						.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
 						.setSoundKeyframeHandler(event -> {
 							if (event.getKeyframeData().getSound().matches("clawSoundkey"))
 								if (this.level().isClientSide)
