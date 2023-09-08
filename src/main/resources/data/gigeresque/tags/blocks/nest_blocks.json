@@ -1,0 +1,8 @@
+{
+  "values": [
+		"gigeresque:nest_resin",
+		"gigeresque:nest_resin_block",
+		"gigeresque:nest_resin_web",
+		"gigeresque:nest_resin_web_cross"
+  ]
+}

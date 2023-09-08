@@ -112,9 +112,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
 		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.level().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+				new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
 				new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
 	}
 

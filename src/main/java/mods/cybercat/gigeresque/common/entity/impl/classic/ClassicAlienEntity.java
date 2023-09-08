@@ -317,9 +317,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Player Sensor
 				new NearbyPlayersSensor<>(),
 				// Living Sensor
-				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getCommandSenderWorld().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
+				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
 				// Block Sensor
 				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
 				// Fire Sensor

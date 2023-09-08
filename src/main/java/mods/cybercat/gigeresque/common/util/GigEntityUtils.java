@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.util;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -10,52 +11,14 @@ import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.SwordItem;
 
 public class GigEntityUtils {
 	public GigEntityUtils() {
-	}
-
-	public static boolean isPotentialHost(Entity entity) {
-		if (entity == null)
-			return false;
-		if (!(entity instanceof LivingEntity))
-			return false;
-		if (entity instanceof AlienEntity)
-			return false;
-
-		var vehicleCondition = (entity.getVehicle() == null) || !(entity.getVehicle() instanceof AlienEntity);
-
-		var facehuggerblacklisted = entity.getType().is(GigTags.FACEHUGGER_BLACKLIST);
-
-		if (entity instanceof Player playerEntity)
-			if (playerEntity.isCreative() || playerEntity.isSpectator())
-				return false;
-			else
-				return true;
-
-		return entity.isAlive() && !facehuggerblacklisted && entity.getPassengers().isEmpty() && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && vehicleCondition;
-	}
-
-	public static boolean isEggmorphable(Entity entity) {
-		if (entity == null)
-			return false;
-		if (!(entity instanceof LivingEntity))
-			return false;
-		if (entity instanceof AlienEntity)
-			return false;
-
-		var playerCondition = !(entity instanceof Player) || !((Player) entity).isCreative() && !entity.isSpectator();
-
-		var hostable = entity.getType().is(GigTags.CLASSIC_HOSTS);
-
-		var weakCondition = (((LivingEntity) entity).getHealth() / ((LivingEntity) entity).getMaxHealth() < 0.25f) || ((LivingEntity) entity).getHealth() <= 4f;
-
-		var threatCondition = ((LivingEntity) entity).getUseItem().getItem() instanceof SwordItem || ((LivingEntity) entity).getUseItem().getItem() instanceof ProjectileWeaponItem;
-
-		return entity.isAlive() && hostable && ((Host) entity).doesNotHaveParasite() && ((Eggmorphable) entity).isNotEggmorphing() && ((LivingEntity) entity).getMobType() != MobType.UNDEAD && playerCondition && weakCondition && !threatCondition;
 	}
 
 	public static boolean isFacehuggerAttached(Entity entity) {
@@ -80,5 +43,21 @@ public class GigEntityUtils {
 
 	public static boolean convertToSpitter(LivingEntity target) {
 		return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
+	}
+
+	public static boolean faceHuggerTest(LivingEntity target) {
+		var huggerCheck = (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance));
+		var typeCheck = (target.getMobType() != MobType.UNDEAD && !(target.getType().is(GigTags.FACEHUGGER_BLACKLIST)));
+		var instanceofCheck = (target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof Player || target instanceof AmbientCreature);
+		return !instanceofCheck && typeCheck && !huggerCheck && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing();
+	}
+
+	public static boolean entityTest(LivingEntity target, AlienEntity self) {
+		var instanceofCheck = (target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat);
+		var huggerCheck = (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance));
+		var hostCheck = ((Host) target).isBleeding() || ((Host) target).hasParasite();
+		var crossCheck = target.level().getBlockStates(target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
+		var trueCheck = target.isAlive() && self.hasLineOfSight(target);
+		return !(instanceofCheck || huggerCheck || self.getFeetBlockState().is(GigTags.NEST_BLOCKS) || hostCheck || crossCheck || ((Eggmorphable) target).isEggmorphing() || self.isVehicle() || (GigEntityUtils.isFacehuggerAttached(target))) && !trueCheck;
 	}
 }
