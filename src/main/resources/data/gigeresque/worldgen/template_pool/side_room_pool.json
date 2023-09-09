@@ -153,5 +153,13 @@
       "projection" : "rigid",
       "element_type" : "minecraft:single_pool_element"
     }
+  }, {
+    "weight" : 1,
+    "element" : {
+      "location" : "gigeresque:aliendungeon_altar_room",
+      "processors" : "gigeresque:randomize_blocks",
+      "projection" : "rigid",
+      "element_type" : "minecraft:single_pool_element"
+    }
   } ]
 }
