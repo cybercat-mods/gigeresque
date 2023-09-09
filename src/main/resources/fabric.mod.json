@@ -33,7 +33,7 @@
 	"depends": {
 		"fabricloader": ">=0.14.21",
 		"fabric": "*",
-		"minecraft": ">=1.20.1",
+		"minecraft": "1.20.1",
 		"azurelib": ">=1.0.28",
 		"smartbrainlib": ">=1.11",
 		"java": ">=17"
