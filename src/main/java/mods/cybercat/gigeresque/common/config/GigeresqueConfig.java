@@ -9,6 +9,10 @@ public class GigeresqueConfig {
 
 	@Configurable
 	@Configurable.Synchronized
+	public boolean enableDevparticles = false;
+
+	@Configurable
+	@Configurable.Synchronized
 	public boolean facehuggerGivesBlindness = false;
 
 	@Configurable
