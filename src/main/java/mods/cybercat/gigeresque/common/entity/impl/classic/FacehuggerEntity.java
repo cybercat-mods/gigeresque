@@ -335,7 +335,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		var vehicle = this.getVehicle();
 		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
-		setIsInfertile(true);
+//		setIsInfertile(true);
 		super.stopRiding();
 	}
 
