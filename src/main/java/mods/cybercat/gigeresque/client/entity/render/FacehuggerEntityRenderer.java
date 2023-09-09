@@ -55,32 +55,39 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	@Override
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
 		if (entity.isCrawling() && !entity.isAttachedToHost()) {
-			if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().west()))) {
-				stack.mulPose(Axis.ZP.rotationDegrees(-90));
-				stack.translate(0, -0.2, 0);
-			}
-			if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition()))) {
-				stack.mulPose(Axis.ZP.rotationDegrees(-90));
-				stack.translate(0, -0.2, 0);
-			}
-			if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().north()))) {
-				stack.mulPose(Axis.XP.rotationDegrees(90));
-				stack.translate(0, -0.2, 0);
-			}
-			if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().south()))) {
-				stack.mulPose(Axis.XP.rotationDegrees(-90));
-				stack.translate(0, -0.2, 0);
-			}
-			if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().east()))) {
-				stack.mulPose(Axis.ZP.rotationDegrees(90));
-				stack.translate(0, -0.2, 0);
-			}
+			if (entity.level().getBlockState(entity.blockPosition().west()).isSolid())
+				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().west()))) {
+					stack.mulPose(Axis.ZP.rotationDegrees(-90));
+					stack.translate(0, -0.2, 0);
+				}
+			if (entity.level().getBlockState(entity.blockPosition()).isSolid())
+				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition()))) {
+					stack.mulPose(Axis.ZP.rotationDegrees(-90));
+					stack.translate(0, -0.2, 0);
+				}
+			if (entity.level().getBlockState(entity.blockPosition().north()).isSolid())
+				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().north()))) {
+					stack.mulPose(Axis.XP.rotationDegrees(90));
+					stack.translate(0, -0.2, 0);
+				}
+			if (entity.level().getBlockState(entity.blockPosition().south()).isSolid())
+				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().south()))) {
+					stack.mulPose(Axis.XP.rotationDegrees(-90));
+					stack.translate(0, -0.2, 0);
+				}
+			if (entity.level().getBlockState(entity.blockPosition().east()).isSolid())
+				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().east()))) {
+					stack.mulPose(Axis.ZP.rotationDegrees(90));
+					stack.translate(0, -0.2, 0);
+				}
 //			stack.mulPose(Axis.ZP.rotationDegrees(90));
 //			stack.translate(0, 0, 0);
 		}
 		if (entity.isNoGravity() && !entity.isCrawling() && !entity.isUnderWater()) {
-			stack.mulPose(Axis.ZP.rotationDegrees(180));
-			stack.translate(0, -0.6, 0);
+			if (entity.level().getBlockState(entity.blockPosition().above()).isSolid()) {
+				stack.mulPose(Axis.ZP.rotationDegrees(180));
+				stack.translate(0, -0.6, 0);
+			}
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
