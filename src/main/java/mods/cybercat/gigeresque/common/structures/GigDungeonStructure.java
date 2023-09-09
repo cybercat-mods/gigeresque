@@ -37,7 +37,7 @@ public class GigDungeonStructure extends Structure {
 	@Override
 	public Optional<GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
 		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(-28, 0);
+		int var = random.nextInt(-18, 0);
 		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), var, context.chunkPos().getMinBlockZ());
 
 		Optional<GenerationStub> structurePiecesGenerator = JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName, this.size, blockpos, false, Optional.empty(), this.maxDistanceFromCenter);
