@@ -11,7 +11,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
@@ -202,20 +201,18 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public void grabTarget(LivingEntity entity) {
-		if (entity == this.getTarget() && !entity.hasPassenger(this) && !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
-			this.startRiding(entity, true);
-			this.setAggressive(false);
-			entity.yBodyRot = this.yBodyRot;
-			entity.xxa = 0;
-			entity.zza = 0;
-			entity.yya = 0;
-			entity.yBodyRot = 0;
-			entity.setSpeed(0.0f);
-			if (Gigeresque.config.facehuggerGivesBlindness == true)
-				entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
-			if (entity instanceof ServerPlayer player)
-				player.connection.send(new ClientboundSetPassengersPacket(entity));
-		}
+		this.startRiding(entity, true);
+		this.setAggressive(false);
+		entity.yBodyRot = this.yBodyRot;
+		entity.xxa = 0;
+		entity.zza = 0;
+		entity.yya = 0;
+		entity.yBodyRot = 0;
+		entity.setSpeed(0.0f);
+		if (Gigeresque.config.facehuggerGivesBlindness == true)
+			entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
+		if (entity instanceof ServerPlayer player)
+			player.connection.send(new ClientboundSetPassengersPacket(entity));
 	}
 
 	@Override
