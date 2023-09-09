@@ -1,7 +1,3 @@
 {
-  "textures": [
-    "minecraft:generic_5",
-    "minecraft:generic_6",
-    "minecraft:generic_7"
-  ]
+  "textures" : [ "minecraft:generic_5", "minecraft:generic_6", "minecraft:generic_7" ]
 }
