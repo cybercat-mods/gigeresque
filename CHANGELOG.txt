@@ -1,27 +1,13 @@
-v.0.5.38
+v.0.5.39
 
-- Fixed Eggs not ignoring Wardens.
-- Fixed Attacking and eating animations not triggering.
-- Fixed Runner Blade z-fighting.
-- Fixed Aliens moving or looking in stasis. 
-- Fixed Xenos getting stuck if the mob they are carrying is killed.
-- Fixed Xneos getting confused in the Nether.
-- Fixed Facehuggers dying when a player being hugged disconnects.*
-- Tweaks made to Alien AI, to try and avoid overlapping.
-- Adds new dungeon variant: Sculk versions that spawn near the deep dark.
-- Adds new tag: xenoexecuteblacklist to blacklist mobs from being executed by Aliens.
-- Adds new config options for Gig Dungeon blocks hardness/resistance.
-- Adds spawners to acid resistant tag. 
-- Adds back custom damage sources and reimplements them.
-- Makes server configs sync to the client when you are connected to a server. Configs revert upon leaving the server.
-- Dungeons reworked to be smaller and more common. This fixes the /locate and map lag.
-- Xenos now require 3 sound hits before moving to a sound source.
-- Redid Stasis, now plays exit animation when leaving it.
-- Classic Xenos head now tracks entities.
-- Eggs that hatch will now age into nest blocks over time. - Thanks to LatentDesire for suggestion!
-- Completed Facehugger rendering for vanilla mobs.
-
-* The Facehugger simply stops riding the player and will jump back on when they rejoin if they are in the same spot.
+- Fixes Eggs opening when spawned due to broken check.
+- Fixes Dungeons missing a room.
+- Fixes Aliens bleeding on grass blocks.
+- Fixes Facehuggers rendering glitch with grass blocks.
+- Structures now spawn higher in the world.
+- Facehuggers now jump out of the eggs in a random direction instead of always straight up.
+- Tweaked Facehugger idle.
+- Added new config enabling particles for the aliens listening. Used for debugging.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
