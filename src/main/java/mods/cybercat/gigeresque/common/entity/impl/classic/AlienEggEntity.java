@@ -211,7 +211,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 	 */
 	@Override
 	public void doPush(Entity entity) {
-		if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living)))
+		if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living, this)))
 			setIsHatching(true);
 	}
 
@@ -265,7 +265,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		var aabb = new AABB(this.blockPosition().above()).inflate(Gigeresque.config.alieneggHatchRange);
 		this.level().getEntitiesOfClass(LivingEntity.class, aabb).forEach(target -> {
 			if (target.isAlive())
-				if (GigEntityUtils.faceHuggerTest(target))
+				if (GigEntityUtils.faceHuggerTest(target, this))
 					setIsHatching(true);
 				else if (target instanceof Player player && !(player.isCreative() || !player.isSpectator()))
 					setIsHatching(true);

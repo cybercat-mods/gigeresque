@@ -44,11 +44,8 @@ public record GigEntityUtils() {
 		return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
 	}
 
-	public static boolean faceHuggerTest(LivingEntity target) {
-		var huggerCheck = (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance));
-		var typeCheck = (target.getMobType() != MobType.UNDEAD && !(target.getType().is(GigTags.FACEHUGGER_BLACKLIST)));
-		var instanceofCheck = (target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof Player || target instanceof AmbientCreature);
-		return !instanceofCheck && typeCheck && !huggerCheck && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing();
+	public static boolean faceHuggerTest(LivingEntity target, AlienEntity self) {
+		return target instanceof LivingEntity && !(target instanceof Player) && !(target instanceof AlienEntity) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && !(target instanceof AmbientCreature) && ((LivingEntity) target).getMobType() != MobType.UNDEAD &&!(target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !GigEntityUtils.removeFaceHuggerTarget(target, self);
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
@@ -62,7 +59,7 @@ public record GigEntityUtils() {
 	}
 
 	public static boolean removeFaceHuggerTarget(LivingEntity target, AlienEntity self) {
-		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-				|| !GigEntityUtils.isTargetHostable(target) || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
+		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !GigEntityUtils.isTargetHostable(target) || (GigEntityUtils.isFacehuggerAttached(target))
+				|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
 	}
 }

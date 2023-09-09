@@ -50,7 +50,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return GigEntityUtils.faceHuggerTest(this.target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
+		return GigEntityUtils.faceHuggerTest(this.target, entity) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override
@@ -73,11 +73,8 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 		if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
-//		if (!entity.isWithinMeleeAttackRange(this.target))
-//			return;
-
-//		if (entity.distanceTo(this.target) < 1.1F)
-//			return;
+		if (entity.distanceTo(this.target) < 1.1F)
+			return;
 
 		if (!this.target.getUseItem().is(Items.SHIELD))
 			entity.grabTarget(this.target);
