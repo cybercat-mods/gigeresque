@@ -192,5 +192,6 @@
   "config.gigeresque.option.sporeTickTimer" : "Spire Tick Timer",
   "config.gigeresque.option.alienblockHardness" : "Dungeon Block Hardness",
   "config.gigeresque.option.alienblockResistance" : "Dungeon Block Resistance",
+  "config.gigeresque.option.enableDevparticles" : "Enable Dev Particles",
   "config.screen.gigeresque" : "Gigeresque Options"
 }
