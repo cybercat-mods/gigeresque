@@ -137,7 +137,6 @@ if (file('key.properties').exists()) {
 		projectId = '2kXK3iBI' 
 		versionNumber = project.modVersion 
 		versionType = "beta"
-		versionName = 'Fabric/Quilt 1.20.1'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.20.1']
