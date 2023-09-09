@@ -16,7 +16,6 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.Warden;
-import net.minecraft.world.entity.player.Player;
 
 public record GigEntityUtils() {
 
@@ -45,7 +44,7 @@ public record GigEntityUtils() {
 	}
 
 	public static boolean faceHuggerTest(LivingEntity target, AlienEntity self) {
-		return target instanceof LivingEntity && !(target instanceof Player) && !(target instanceof AlienEntity) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && !(target instanceof AmbientCreature) && ((LivingEntity) target).getMobType() != MobType.UNDEAD &&!(target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !GigEntityUtils.removeFaceHuggerTarget(target, self);
+		return target instanceof LivingEntity && !(target instanceof AlienEntity) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && !(target instanceof AmbientCreature) && ((LivingEntity) target).getMobType() != MobType.UNDEAD &&!(target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) && !GigEntityUtils.removeFaceHuggerTarget(target, self);
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
