@@ -57,7 +57,6 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.AABB;
 
 public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity {
 
@@ -237,11 +236,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
 			slowticks = -60;
 		}
-		if (this.level()instanceof ServerLevel serverLevel)
+		if (this.level() instanceof ServerLevel serverLevel)
 			AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
 		if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
-			this.level().getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D)).forEach(e -> {
-				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
+			this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
+				if (e.is(GigTags.NEST_BLOCKS))
 					this.heal(0.5833f);
 			});
 	}
@@ -331,7 +330,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
 	@Override
 	public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
-		if (this.level()instanceof ServerLevel serverLevel)
+		if (this.level() instanceof ServerLevel serverLevel)
 			biConsumer.accept(this.dynamicGameEventListener, serverLevel);
 	}
 
