@@ -174,10 +174,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		if (!this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
 			breakingCounter++;
 			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
-						if (!level().isClientSide)
-							this.level().destroyBlock(testPos, true, null, 512);
 						this.swing(InteractionHand.MAIN_HAND);
 						breakingCounter = -90;
 						if (level().isClientSide()) {
