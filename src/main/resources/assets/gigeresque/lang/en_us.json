@@ -189,5 +189,8 @@
   "config.gigeresque.option.neomorphXenoHealth" : "Neomorph Health",
   "config.gigeresque.option.neomorphXenoArmor" : "Neomorph Armor",
   "config.gigeresque.option.neomorphAttackDamage" : "Neomorph Attack Damage",
+  "config.gigeresque.option.sporeTickTimer" : "Spire Tick Timer",
+  "config.gigeresque.option.alienblockHardness" : "Dungeon Block Hardness",
+  "config.gigeresque.option.alienblockResistance" : "Dungeon Block Resistance",
   "config.screen.gigeresque" : "Gigeresque Options"
 }
