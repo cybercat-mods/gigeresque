@@ -22,6 +22,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -198,8 +199,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
 		if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
 			var facehugger = Entities.FACEHUGGER.create(level());
-			facehugger.moveTo(blockPosition().above(), getYRot(), getXRot());
-			facehugger.setDeltaMovement(0.0, 0.7, 0.0);
+			facehugger.setPos(this.position().x, this.position().y + 1, this.position().z);
+			facehugger.setDeltaMovement(Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f), 0.7, Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f));
 			facehugger.setEggSpawnState(true);
 			level().addFreshEntity(facehugger);
 			setHasFacehugger(false);
