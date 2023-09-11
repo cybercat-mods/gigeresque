@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.GameRules;
@@ -41,7 +40,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
 		var canGrief = entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-		return yDiff < 4 && !entity.isAggressive() && canGrief;
+		return !entity.isVehicle() && yDiff < 4 && !entity.isAggressive() && canGrief;
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 7.0)) {
 				var world = entity.level();
 				var random = entity.getRandom();
-				entity.swing(InteractionHand.MAIN_HAND);
+				entity.triggerAnim("attackController", "swipe");
 				world.destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
 				if (!world.isClientSide()) {
 					for (int i = 0; i < 2; i++) {
