@@ -9,7 +9,9 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import com.modrinth.minotaur.dependencies.ModDependency
 
-archivesBaseName = project.archivesBaseName
+base {
+    archivesName = project.modName
+}
 version = project.modVersion
 group = project.mavenGroup
 
@@ -17,7 +19,7 @@ repositories {
 	maven { url 'https://cfa2.cursemaven.com' }
 	maven { url 'https://maven.shedaniel.me/' }
 	maven { url 'https://maven.terraformersmc.com' }
-	maven {url 'https://libs.azuredoom.com:4443/mods'}
+	maven { url 'https://libs.azuredoom.com:4443/mods'}
 	maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
 	maven { url 'https://maven.blamejared.com' }
 	maven { url 'https://plugins.gradle.org/m2/' }
@@ -31,16 +33,13 @@ repositories {
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.officialMojangMappings()
-    // Fabric Req
-    modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    // Core Libs
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.20.1:1.0.28'
-	modImplementation 'com.terraformersmc:modmenu:7.2.1'
-	modImplementation 'net.tslat.smartbrainlib:SmartBrainLib-fabric-1.20:1.11'
-	modImplementation 'net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11'
-	// Used for Mixin
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.20.1:4.2.1'
+	modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
+  	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.20.1:4.2.2'
 }
 
 processResources {
@@ -96,11 +95,11 @@ if (file('key.properties').exists()) {
 
     	project {
         	apiKey = curseProp.getProperty('curseKey')
-        	id = "535416"
+        	id = project.curseforgeID
         	releaseType = "release"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.20.1")
+			addGameVersion(project.minecraftVersion)
 			addGameVersion("Fabric")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -121,7 +120,6 @@ if (file('key.properties').exists()) {
         	}
     	}
     	options {
-    		//debug = true
         	forgeGradleIntegration = false
     	}
     }
@@ -134,9 +132,8 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = '2kXK3iBI' 
+		projectId = project. modrinthID
 		versionNumber = project.modVersion 
-		versionType = "beta"
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.20.1']
