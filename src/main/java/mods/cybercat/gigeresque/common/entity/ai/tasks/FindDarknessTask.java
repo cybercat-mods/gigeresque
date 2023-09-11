@@ -42,7 +42,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 
 		this.hidePos = getHidePos(entity);
 
-		return this.hidePos != null;
+		return !entity.isVehicle() && !entity.isAggressive() && this.hidePos != null;
 	}
 
 	@Override

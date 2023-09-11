@@ -55,7 +55,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.getCommandSenderWorld().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(NEST);
+		return !entity.isVehicle() && BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.getCommandSenderWorld().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(NEST);
 	}
 
 	@Override

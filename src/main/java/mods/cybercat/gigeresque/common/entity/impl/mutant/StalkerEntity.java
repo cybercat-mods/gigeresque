@@ -44,8 +44,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -73,7 +72,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<StalkerEntity> {
 
@@ -157,9 +155,10 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.9F, 0));
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos blockPos, GameEvent var4, Entity var5, Entity entity2, float var7) {
+		super.onSignalReceive(var1, var2, blockPos, var4, var5, entity2, var7);
+		if (!(entity2 instanceof IronGolem))
+			this.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.9F);
 	}
 
 	@Override
@@ -177,7 +176,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		if (getLevel().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.getLevel().removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && !this.isInWater() && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
+		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {

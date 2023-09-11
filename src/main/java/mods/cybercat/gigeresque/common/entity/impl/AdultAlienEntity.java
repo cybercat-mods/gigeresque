@@ -14,8 +14,6 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -40,8 +38,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -52,7 +48,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.util.BrainUtils;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
@@ -313,7 +308,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (getLevel().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.getLevel().removeBlock(this.blockPosition(), false);
 
-		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isVehicle() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
@@ -372,10 +367,20 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity entity, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, entity, var6, var7);
-		if (!(this instanceof NeomorphAdolescentEntity) || !(this instanceof NeomorphEntity))
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 2.5F, 0));
+	public void onSignalReceive(ServerLevel serverLevel, GameEventListener var2, BlockPos blockPos, GameEvent var4, Entity entity, Entity entity2, float var7) {
+		super.onSignalReceive(serverLevel, var2, blockPos, var4, entity, entity2, var7);
+		this.wakeupCounter++;
+		if (this.isPassedOut() & this.wakeupCounter == 1)
+			this.triggerAnim("attackController", "wakeup");
+		if (this.wakeupCounter == 2) {
+			this.triggerAnim("attackController", "alert");
+			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 50, 100, false, false));
+		}
+		if (!this.isPassedOut() & this.wakeupCounter >= 3) {
+			this.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5F);
+			this.wakeupCounter = 0;
+		}
+		this.setAggressive(true);
 	}
 
 	/*

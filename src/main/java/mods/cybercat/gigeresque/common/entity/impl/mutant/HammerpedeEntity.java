@@ -28,6 +28,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -127,9 +128,10 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		this.getNavigation().moveTo(var3.getX(), var3.getY(), var3.getZ(), 0.9F);
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos blockPos, GameEvent var4, Entity var5, Entity entity2, float var7) {
+		super.onSignalReceive(var1, var2, blockPos, var4, var5, entity2, var7);
+		if (!(entity2 instanceof IronGolem))
+			this.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0.9F);
 	}
 
 	@Override

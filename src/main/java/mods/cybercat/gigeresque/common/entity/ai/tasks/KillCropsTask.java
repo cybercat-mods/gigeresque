@@ -32,7 +32,7 @@ public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return !entity.isAggressive();
+		return !entity.isVehicle() && !entity.isAggressive();
 	}
 
 	@Override

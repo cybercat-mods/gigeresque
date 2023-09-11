@@ -242,7 +242,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 		if (getLevel().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
 			this.getLevel().removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isVehicle() && !this.isDeadOrDying() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
