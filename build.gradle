@@ -12,7 +12,9 @@ import com.modrinth.minotaur.dependencies.ModDependency
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.modName
+base {
+    archivesName = project.modName
+}
 version = project.modVersion
 group = project.mavenGroup
 
