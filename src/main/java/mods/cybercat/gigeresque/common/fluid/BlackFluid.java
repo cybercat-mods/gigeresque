@@ -112,10 +112,10 @@ public abstract class BlackFluid extends FlowingFluid {
 		return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE);
 	}
 
-    @Override
-    protected boolean isRandomlyTicking() {
-        return true;
-    }
+	@Override
+	protected boolean isRandomlyTicking() {
+		return true;
+	}
 
 	static class Flowing extends BlackFluid {
 		@Override

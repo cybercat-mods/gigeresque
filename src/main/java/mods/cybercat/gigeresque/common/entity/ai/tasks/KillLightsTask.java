@@ -40,7 +40,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
-		var canGrief = entity.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+		var canGrief = entity.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
 		return yDiff < 4 && !entity.isAggressive() && canGrief;
 	}
 
@@ -53,7 +53,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 			if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
 				startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
 			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 7.0)) {
-				var world = entity.level;
+				var world = entity.getLevel();
 				var random = entity.getRandom();
 				entity.swing(InteractionHand.MAIN_HAND);
 				world.destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);

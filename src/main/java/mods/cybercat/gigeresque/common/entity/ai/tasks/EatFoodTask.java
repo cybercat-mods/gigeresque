@@ -60,20 +60,20 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
 	@Override
 	protected void doDelayedAction(E entity) {
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		if (entity.getBrain().getMemory(GigMemoryTypes.FOOD_ITEMS.get()).orElse(null) == null)
+			return;
 		var itemLocation = entity.getBrain().getMemory(GigMemoryTypes.FOOD_ITEMS.get()).orElse(null);
-//		if (itemLocation == null)
-//			return;
 		if (itemLocation.stream().findFirst().get() == null)
 			return;
 
-		if (!itemLocation.stream().findFirst().get().blockPosition().closerToCenterThan(entity.position(), 1.2)) {
-			BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(itemLocation.stream().findFirst().get().blockPosition(), 1.2F, 0));
-			entity.setEatingStatus(true);
-		}
+		if (!itemLocation.stream().findFirst().get().blockPosition().closerToCenterThan(entity.position(), 1.2)) 
+			BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(itemLocation.stream().findFirst().get().blockPosition(), 0.7F, 0));
+		
 		if (itemLocation.stream().findFirst().get().blockPosition().closerToCenterThan(entity.position(), 1.2)) {
 			entity.getNavigation().stop();
 			entity.setEatingStatus(true);
-			itemLocation.stream().findFirst().get().getItem().finishUsingItem(entity.level, entity);
+			entity.triggerAnim("attackController", "eat");
+			itemLocation.stream().findFirst().get().getItem().finishUsingItem(entity.getLevel(), entity);
 			itemLocation.stream().findFirst().get().getItem().shrink(1);
 			entity.grow(entity, 2400.0f);
 		}

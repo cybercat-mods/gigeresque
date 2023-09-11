@@ -8,9 +8,4 @@ public class GigBlock extends Block {
 		super(settings);
 	}
 
-	@Override
-	public boolean isPossibleToRespawnInThis() {
-		return false;
-	}
-
 }

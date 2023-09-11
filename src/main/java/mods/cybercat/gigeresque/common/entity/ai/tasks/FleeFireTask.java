@@ -37,6 +37,11 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	}
 
 	@Override
+	protected boolean checkExtraStartConditions(ServerLevel serverLevel, PathfinderMob pathfinderMob) {
+		return !pathfinderMob.isAggressive() || !pathfinderMob.getLevel().dimensionType().respawnAnchorWorks();
+	}
+
+	@Override
 	protected void start(ServerLevel level, PathfinderMob entity, long gameTime) {
 		entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
 		entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
@@ -50,11 +55,13 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	@Override
 	protected void tick(ServerLevel level, PathfinderMob owner, long gameTime) {
 		Vec3 vec3;
+		if (owner.getLevel().dimensionType().piglinSafe())
+			return;
 		if (owner.getNavigation().isDone() && (vec3 = this.getPanicPos(owner, level)) != null)
 			owner.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speed, 0));
 		if (owner.getFirstPassenger() != null)
 			owner.getFirstPassenger().removeVehicle();
-		owner.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+//		owner.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
 	}
 
 	@Nullable

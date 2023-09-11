@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.block.storage.AlienJarBlock;
 import mods.cybercat.gigeresque.common.block.storage.AlienSarcophagusBlock;
@@ -26,9 +27,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
-public class GIgBlocks implements GigeresqueInitializer {
-	private GIgBlocks() {
-	}
+public record GIgBlocks() implements GigeresqueInitializer {
 
 	private static GIgBlocks instance;
 
@@ -67,13 +66,13 @@ public class GIgBlocks implements GigeresqueInitializer {
 	public static final NestResinBlock NEST_RESIN = new NestResinBlock(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
 	public static final Block NEST_RESIN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
 	public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
-	public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(FabricBlockSettings.of(Materials.NEST_RESIN_WEB).sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
+	public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(FabricBlockSettings.of(Materials.NEST_RESIN).sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
 
-	public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
-	public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(3.0F, 6.0F).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-	public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(3.0F, 6.0F).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-	public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(3.0F, 6.0F).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-	public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK).requiresTool().strength(3.0F, 6.0F).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+	public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
+	public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+	public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+	public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.ROUGH_ALIEN_BLOCK).requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+	public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of(Materials.SINOUS_ALIEN_BLOCK).requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
 
 	public static final Block MURAL_ALIEN_BLOCK_1 = new MuralBlock();
 	public static final Block MURAL_ALIEN_BLOCK_2 = new MuralBlock();

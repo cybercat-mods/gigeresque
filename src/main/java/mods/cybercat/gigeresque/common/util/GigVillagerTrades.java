@@ -10,7 +10,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerTrades.TreasureMapForEmeralds;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 
-public class GigVillagerTrades {
+public record GigVillagerTrades() {
 
 	public static void addTrades() {
 		List<VillagerTrades.ItemListing> gig_trades = new ArrayList<>(Arrays.asList(VillagerTrades.TRADES.get(VillagerProfession.CARTOGRAPHER).get(4)));

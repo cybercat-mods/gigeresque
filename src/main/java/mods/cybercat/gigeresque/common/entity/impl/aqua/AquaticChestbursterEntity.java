@@ -5,6 +5,7 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -32,8 +33,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, getLevel());
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, getLevel());
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -71,7 +72,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = Entities.AQUATIC_ALIEN.create(level);
+		var entity = Entities.AQUATIC_ALIEN.create(getLevel());
 
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
@@ -120,10 +121,6 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);
-			else if (event.getAnimatable().isEating() == true && !this.isDeadOrDying())
-				return event.setAndContinue(GigAnimationsDefault.CHOMP);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else {
 				if (this.tickCount < 5 && event.getAnimatable().isBirthed() == true)
 					return event.setAndContinue(GigAnimationsDefault.BIRTH);
@@ -136,9 +133,12 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 			}
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override

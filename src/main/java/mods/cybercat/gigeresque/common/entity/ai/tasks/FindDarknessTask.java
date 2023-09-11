@@ -81,7 +81,7 @@ public class FindDarknessTask<E extends PathfinderMob> extends ExtendedBehaviour
 		for (int i = 0; i < 50; ++i) {
 			var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3, randomsource.nextInt(20) - 50);
 
-			if (!entity.level.canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
+			if (!entity.getLevel().canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
 				return Vec3.atBottomCenterOf(hidePos);
 		}
 

@@ -1,15 +1,13 @@
 {
-	"name": "gigeresque:gig_dungeon",
-	"fallback": "minecraft:empty",
-	"elements": [
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_main_room",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		}
-	]
+  "name" : "gigeresque:gig_dungeon",
+  "fallback" : "minecraft:empty",
+  "elements" : [ {
+    "weight" : 1,
+    "element" : {
+      "location" : "gigeresque:aliendungeon_main_room",
+      "processors" : "gigeresque:randomize_blocks",
+      "projection" : "rigid",
+      "element_type" : "minecraft:single_pool_element"
+    }
+  } ]
 }

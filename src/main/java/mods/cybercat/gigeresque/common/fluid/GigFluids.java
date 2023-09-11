@@ -7,9 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 
-public class GigFluids implements GigeresqueInitializer {
-	private GigFluids() {
-	}
+public record GigFluids() implements GigeresqueInitializer {
 
 	private static GigFluids instance;
 

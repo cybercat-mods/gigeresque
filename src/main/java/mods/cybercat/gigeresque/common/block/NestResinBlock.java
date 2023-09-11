@@ -10,6 +10,8 @@ import mods.cybercat.gigeresque.common.util.MathUtil;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -38,9 +40,9 @@ public class NestResinBlock extends Block {
 
 	private static List<VoxelShape> interpolateShapes(boolean divide, boolean includeEmptyVoxelShape) {
 		ArrayList<VoxelShape> list = new ArrayList<>();
-		if (includeEmptyVoxelShape) 
+		if (includeEmptyVoxelShape)
 			list.add(Shapes.empty());
-		for (var i = 0; i < 8; i++) 
+		for (var i = 0; i < 8; i++)
 			list.add(box(0.0, 0.0, 0.0, 16.0, divide ? (i * 2.0) / 2.0 : i * 2.0, 16.0));
 		return list;
 	}
@@ -126,6 +128,24 @@ public class NestResinBlock extends Block {
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(LAYERS);
+	}
+
+	@Override
+	public boolean isRandomlyTicking(BlockState state) {
+		return true;
+	}
+
+	@Override
+	public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
+//		var test = RandomUtil.getRandomPositionWithinRange(blockPos, 3, 1, 3, false, serverLevel);
+		if (serverLevel.getBlockState(blockPos).is(GIgBlocks.NEST_RESIN) )
+			if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
+				serverLevel.setBlockAndUpdate(blockPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
+//			else
+//				for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
+//					if (serverLevel.getBlockState(test).isAir() && serverLevel.getBlockState(test.below()).isSolid()) 
+//						serverLevel.setBlockAndUpdate(testPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
+		super.randomTick(blockState, serverLevel, blockPos, randomSource);
 	}
 
 	@Override

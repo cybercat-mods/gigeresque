@@ -10,6 +10,7 @@ import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
@@ -27,20 +28,15 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.common.util.GigVibrationListener;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -52,15 +48,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluids;
@@ -91,13 +82,12 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(NeomorphEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, getLevel());
 	public int breakingCounter = 0;
 
 	public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {
 		super(entityType, world);
 		setMaxUpStep(1.5f);
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 		navigation = landNavigation;
 	}
 
@@ -121,14 +111,10 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			var velocityLength = this.getDeltaMovement().horizontalDistance();
-			if (event.getAnimatable().getAttckingState() == 1)
-				return event.setAndContinue(RawAnimation.begin().thenPlayXTimes(AlienAttackType.animationMappings.get(getCurrentAttackType()), 1));
-			if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false && !this.swinging)
+			if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isPassedOut() == false && !this.swinging)
 				if (!(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -145,44 +131,49 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 				return event.setAndContinue((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("runstepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
 //			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-//				if (this.level.isClientSide)
+//				if (this.level().isClientSide)
 //					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
 			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-			if (event.getAnimatable().isBreaking() == true && !this.isVehicle())
-				return event.setAndContinue(GigAnimationsDefault.LEFT_CLAW);
 			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-		})).add(new AnimationController<>(this, "hissController", 0, event -> {
-			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8))
-				return event.setAndContinue(GigAnimationsDefault.HISS);
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-		}));
+		}).triggerableAnim("idle", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+				.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+				.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+				.setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				})).add(new AnimationController<>(this, "hissController", 0, event -> {
+					var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+					if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8))
+						return event.setAndContinue(GigAnimationsDefault.HISS);
+					return PlayState.STOP;
+				}).setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("hissSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}));
 	}
 
 	@Override
@@ -203,11 +194,8 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public List<ExtendedSensor<NeomorphEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
-				new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -217,14 +205,13 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.75f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<NeomorphEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite()
-				|| ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new AlienMeleeAttack(12).whenStopping(e -> this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new AlienMeleeAttack(12).whenStopping(e -> this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -243,7 +230,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 	public void tick() {
 		super.tick();
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+		if (!getLevel().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			setCurrentAttackType(switch (random.nextInt(5)) {
 			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
 			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
@@ -252,29 +239,30 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 			default -> AlienAttackType.CLAW_LEFT_MOVING;
 			});
 
-		if (level.getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
-			this.level.removeBlock(this.blockPosition(), false);
+		if (getLevel().getBlockState(this.blockPosition()).is(GIgBlocks.ACID_BLOCK))
+			this.getLevel().removeBlock(this.blockPosition(), false);
 
-		if (!this.isDeadOrDying() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isDeadOrDying() && !(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			breakingCounter++;
 			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (level.getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level.getBlockState(testPos).isAir()) {
-						if (!level.isClientSide)
-							this.level.destroyBlock(testPos, true, null, 512);
-						this.swing(InteractionHand.MAIN_HAND);
-						breakingCounter = -90;
-						if (level.isClientSide()) {
-							for (var i = 2; i < 10; i++)
-								level.addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
-							level.playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
+					if (!(getLevel().getBlockState(testPos).is(Blocks.GRASS) || getLevel().getBlockState(testPos).is(Blocks.TALL_GRASS)))
+						if (getLevel().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !getLevel().getBlockState(testPos).isAir()) {
+							if (!getLevel().isClientSide)
+								this.getLevel().destroyBlock(testPos, true, null, 512);
+							this.triggerAnim("attackController", "swipe");
+							breakingCounter = -90;
+							if (getLevel().isClientSide()) {
+								for (var i = 2; i < 10; i++)
+									getLevel().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
+								getLevel().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+							}
+						} else if (!getLevel().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !getLevel().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
+							if (!getLevel().isClientSide)
+								this.getLevel().setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
+							this.hurt(damageSources().generic(), 5);
+							breakingCounter = -90;
 						}
-					} else if (!level.getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level.getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-						if (!level.isClientSide)
-							this.level.setBlockAndUpdate(testPos.above(), GIgBlocks.ACID_BLOCK.defaultBlockState());
-						this.hurt(damageSources().generic(), 5);
-						breakingCounter = -90;
-					}
 				}
 			if (breakingCounter >= 25)
 				breakingCounter = 0;
@@ -300,7 +288,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide)
+		if (target instanceof LivingEntity && !getLevel().isClientSide)
 			switch (getAttckingState()) {
 			case 1 -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {

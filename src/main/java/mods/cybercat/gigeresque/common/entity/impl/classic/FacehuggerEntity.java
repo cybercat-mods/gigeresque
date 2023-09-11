@@ -11,7 +11,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
@@ -22,8 +21,6 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.common.util.GigVibrationListener;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -57,16 +54,12 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Fluid;
@@ -96,9 +89,9 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
-	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level);
-//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, getLevel());
+	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, getLevel());
+//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level());
 	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final MoveControl landMoveControl = new MoveControl(this);
 	private final LookControl landLookControl = new LookControl(this);
@@ -117,7 +110,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		navigation = landNavigation;
 		moveControl = landMoveControl;
 		lookControl = landLookControl;
-		this.dynamicGameEventListener = new DynamicGameEventListener<GigVibrationListener>(new GigVibrationListener(new EntityPositionSource(this, this.getEyeHeight()), 48, this));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -213,15 +205,18 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public void grabTarget(LivingEntity entity) {
-		if (entity == this.getTarget() && !entity.hasPassenger(this) && !(entity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)) {
-			this.startRiding(entity, true);
-			this.setAggressive(false);
-			entity.setSpeed(0.0f);
-			if (Gigeresque.config.facehuggerGivesBlindness == true)
-				entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
-			if (entity instanceof ServerPlayer player)
-				player.connection.send(new ClientboundSetPassengersPacket(entity));
-		}
+		this.startRiding(entity, true);
+		this.setAggressive(false);
+		entity.yBodyRot = this.yBodyRot;
+		entity.xxa = 0;
+		entity.zza = 0;
+		entity.yya = 0;
+		entity.yBodyRot = 0;
+		entity.setSpeed(0.0f);
+		if (Gigeresque.config.facehuggerGivesBlindness == true)
+			entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
+		if (entity instanceof ServerPlayer player)
+			player.connection.send(new ClientboundSetPassengersPacket(entity));
 	}
 
 	@Override
@@ -240,12 +235,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					host.hasParasite();
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
-					if (!level.isClientSide) {
+					if (!getLevel().isClientSide) {
 						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 					}
 					setIsInfertile(true);
 					this.unRide();
-					this.hurt(damageSources().outOfWorld(), Float.MAX_VALUE);
+					this.hurt(damageSources().generic(), Float.MAX_VALUE);
 				}
 			}
 
@@ -298,7 +293,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
 			detachFromHost(true);
 
-		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown() || source == damageSources().inWall()))
+		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
 
 		return super.hurt(source, amount);
@@ -312,7 +307,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity target) {
-		return 3.5;
+		return 4.5;
 	}
 
 	@Override
@@ -344,7 +339,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		var vehicle = this.getVehicle();
 		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
-		setIsInfertile(true);
+//		setIsInfertile(true);
 		super.stopRiding();
 	}
 
@@ -396,6 +391,13 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
+		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
+		if (!(var6 instanceof IronGolem))
+			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
+	}
+
+	@Override
 	protected Brain.Provider<?> brainProvider() {
 		return new SmartBrainProvider<>(this);
 	}
@@ -408,11 +410,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getLevel().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
-				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(),
+				new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -422,23 +421,12 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity,
-						target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-								|| !GigEntityUtils.isTargetHostable(target) || (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
-				// Move to target
-				new SetWalkTargetToAttackTarget<>().speedMod(1.05F),
-				// Jump and attach to host.
-				new FacehuggerPounceTask(6));
-	}
-
-	@Override
-	protected void registerGoals() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeFaceHuggerTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new FacehuggerPounceTask(6));
 	}
 
 	/*
@@ -477,7 +465,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
@@ -487,12 +475,5 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (!(var6 instanceof IronGolem))
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 }

@@ -42,7 +42,7 @@ public class SurgeryKitItem extends Item {
 	private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
 		var host = (Host) entity;
 		if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE))
-			if (!entity.level.isClientSide) {
+			if (!entity.getLevel().isClientSide) {
 				entity.removeEffect(MobEffects.HUNGER);
 				entity.removeEffect(MobEffects.WEAKNESS);
 				entity.removeEffect(MobEffects.DIG_SLOWDOWN);
@@ -60,23 +60,23 @@ public class SurgeryKitItem extends Item {
 	}
 
 	private void spawnParasite(LivingEntity entity) {
-		ChestbursterEntity burster = Entities.CHESTBURSTER.create(entity.level);
+		ChestbursterEntity burster = Entities.CHESTBURSTER.create(entity.getLevel());
 
 		if (!entity.hasEffect(GigStatusEffects.SPORE)) {
 			if (entity.getType().is(GigTags.RUNNER_HOSTS))
-				burster = Entities.RUNNERBURSTER.create(entity.level);
+				burster = Entities.RUNNERBURSTER.create(entity.getLevel());
 			else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
-				burster = Entities.AQUATIC_CHESTBURSTER.create(entity.level);
+				burster = Entities.AQUATIC_CHESTBURSTER.create(entity.getLevel());
 			else
-				burster = Entities.CHESTBURSTER.create(entity.level);
+				burster = Entities.CHESTBURSTER.create(entity.getLevel());
 		} else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE))
-			burster = Entities.NEOBURSTER.create(entity.level);
+			burster = Entities.NEOBURSTER.create(entity.getLevel());
 
 		if (entity.hasCustomName())
 			if (entity != null)
 				burster.setCustomName(entity.getCustomName());
 		burster.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
 		burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-		entity.level.addFreshEntity(burster);
+		entity.getLevel().addFreshEntity(burster);
 	}
 }

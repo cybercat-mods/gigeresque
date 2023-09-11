@@ -68,7 +68,8 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	@Override
 	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
 		if (age > MathUtil.clamp(world.random.nextInt(2) + 1, 1, 52)) {
-			world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+//			world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+			world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 			age = -1;
 		}
 		scheduleTickIfNotScheduled(world, pos);
@@ -77,11 +78,6 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	@Override
 	public boolean isRandomlyTicking(BlockState state) {
 		return true;
-	}
-
-	@Override
-	public boolean isPossibleToRespawnInThis() {
-		return false;
 	}
 
 	@Override
@@ -155,7 +151,8 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 			if (currentThickness >= 1) {
 				setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
 				if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && !world.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
-					world.setBlockAndUpdate(pos.below(), Blocks.AIR.defaultBlockState());
+//					world.setBlockAndUpdate(pos.below(), Blocks.AIR.defaultBlockState());
+					world.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
 					world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 				}
 			}
@@ -169,7 +166,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	public static boolean canFallThrough(BlockState state) {
-		return (state.isAir() || state.is(BlockTags.FIRE) || state.getMaterial().isReplaceable()) && !state.getMaterial().isLiquid() && !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
+		return (state.isAir() || state.is(BlockTags.FIRE)) && !state.getMaterial().isLiquid() && !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
 	}
 
 	@Override

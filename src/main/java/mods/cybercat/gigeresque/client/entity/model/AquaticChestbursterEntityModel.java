@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class AquaticChestbursterEntityModel extends DefaultedEntityGeoModel<AquaticChestbursterEntity> {
 
 	public AquaticChestbursterEntityModel() {
-		super(Constants.modResource("aquatic_chestburster/aquatic_chestburster"), true);
+		super(Constants.modResource("aquatic_chestburster/aquatic_chestburster"), false);
 	}
 
 	@Override

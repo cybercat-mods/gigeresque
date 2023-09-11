@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
+import mods.cybercat.gigeresque.common.block.material.Materials;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
@@ -14,14 +15,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SporeBlock extends BaseEntityBlock {
 
 	protected SporeBlock() {
-		super(FabricBlockSettings.of(Material.EGG).sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
+		super(FabricBlockSettings.of(Materials.ORGANIC_ALIEN_BLOCK).sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
 	}
 
 	@Override

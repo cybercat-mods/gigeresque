@@ -23,12 +23,12 @@ public abstract class CreeperMixin extends Monster {
 	@Inject(method = { "explodeCreeper" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
 		if (this.hasEffect(GigStatusEffects.DNA)) {
-			var areaEffectCloudEntity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+			var areaEffectCloudEntity = new AreaEffectCloud(this.getLevel(), this.getX(), this.getY(), this.getZ());
 			areaEffectCloudEntity.setRadius(5.0F);
 			areaEffectCloudEntity.setDuration(300);
 			areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
 			areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-			this.level.addFreshEntity(areaEffectCloudEntity);
+			this.getLevel().addFreshEntity(areaEffectCloudEntity);
 		}
 	}
 }

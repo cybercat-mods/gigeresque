@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 @Environment(EnvType.CLIENT)
-public class EntityRenderers implements GigeresqueInitializer {
+public record EntityRenderers() implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {

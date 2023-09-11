@@ -10,7 +10,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-public class GigItems {
+public record GigItems() {
 
 	public static void init() {
 	}

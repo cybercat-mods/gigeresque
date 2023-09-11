@@ -26,23 +26,23 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 		var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
 		if (entity.isCrawling()) {
-			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().west()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.getLevel().getBlockState(entity.blockPosition().west()))) {
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.getLevel().getBlockState(entity.blockPosition()))) {
 				stack.mulPose(Axis.ZP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().north()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.getLevel().getBlockState(entity.blockPosition().north()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().south()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.getLevel().getBlockState(entity.blockPosition().south()))) {
 				stack.mulPose(Axis.XP.rotationDegrees(-90));
 				stack.translate(0, -0.2, 0);
 			}
-			if (entity.isColliding(entity.blockPosition(), entity.level.getBlockState(entity.blockPosition().east()))) {
+			if (entity.isColliding(entity.blockPosition(), entity.getLevel().getBlockState(entity.blockPosition().east()))) {
 				stack.mulPose(Axis.ZP.rotationDegrees(90));
 				stack.translate(0, -0.2, 0);
 			}
@@ -53,5 +53,10 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 	@Override
 	protected float getDeathMaxRotation(ClassicAlienEntity entityLivingBaseIn) {
 		return 0;
+	}
+	
+	@Override
+	public float getMotionAnimThreshold(ClassicAlienEntity animatable) {
+		return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f: super.getMotionAnimThreshold(animatable);
 	}
 }

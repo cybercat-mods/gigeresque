@@ -6,7 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class EntityTextures {
+public record EntityTextures() {
 	private static final String BASE_URL = "textures";
 	private static final String BASE_ENTITY_URL = "%s/entity".formatted(BASE_URL);
 

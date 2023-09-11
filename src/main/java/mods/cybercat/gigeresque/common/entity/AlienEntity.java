@@ -13,6 +13,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 
+import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
@@ -48,6 +49,7 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerLevel;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -59,12 +61,11 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.AABB;
 
-public abstract class AlienEntity extends Monster implements GigVibrationListenerConfig {
+public abstract class AlienEntity extends Monster implements GigVibrationListenerConfig, GeoEntity {
 
 	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
@@ -73,8 +74,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
-	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
+	public DynamicGameEventListener<GigVibrationListener> dynamicGameEventListener;
 	public int attackstatetimer = 0;
 	protected int slowticks = 0;
 
@@ -90,6 +91,8 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	@Override
 	protected void tickDeath() {
 		++this.deathTime;
+		this.triggerAnim("livingController", "death");
+		this.triggerAnim("attackController", "death");
 		if (this.deathTime == 150) {
 			this.remove(Entity.RemovalReason.KILLED);
 			super.tickDeath();
@@ -131,6 +134,20 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	public void setIsCrawling(boolean isHissing) {
 		entityData.set(IS_CLIMBING, isHissing);
+	}
+
+	public void increaseAngerAt(@Nullable Entity entity) {
+		this.increaseAngerAt(entity, 35, true);
+	}
+
+	@VisibleForTesting
+	public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
+		if (!this.isNoAi() && this.canTargetEntity(entity)) {
+			boolean bl2 = !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player);
+			int j = this.angerManagement.increaseAnger(entity, i);
+			if (entity instanceof Player && bl2 && AngerLevel.byAnger(j).isAngry())
+				this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+		}
 	}
 
 	@Override
@@ -204,7 +221,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	@Override
 	protected void customServerAiStep() {
-		var serverLevel = (ServerLevel) this.level;
+		var serverLevel = (ServerLevel) this.getLevel();
 		super.customServerAiStep();
 		if (this.tickCount % 20 == 0) {
 			this.angerManagement.tick(serverLevel, this::canTargetEntity);
@@ -216,15 +233,15 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 	public void tick() {
 		super.tick();
 		slowticks++;
-		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8))) { 
+		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8))) {
 			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
 			slowticks = -60;
-        }
-		if (this.getLevel() instanceof ServerLevel serverLevel) 
+		}
+		if (this.getLevel() instanceof ServerLevel serverLevel)
 			this.dynamicGameEventListener.getListener().tick(serverLevel);
-		if (!this.getLevel().isClientSide && this.tickCount % Constants.TPS == 0)
-			this.level.getBlockStates(new AABB(this.blockPosition()).inflate(3D, 3D, 3D)).forEach(e -> {
-				if (e.is(GIgBlocks.NEST_RESIN_BLOCK) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB) || e.is(GIgBlocks.NEST_RESIN_WEB_CROSS))
+		if (!getLevel().isClientSide && this.tickCount % Constants.TPS == 0)
+			this.getLevel().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
+				if (e.is(GigTags.NEST_BLOCKS))
 					this.heal(0.5833f);
 			});
 	}
@@ -240,7 +257,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	private void generateAcidPool(int xOffset, int zOffset) {
 		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
-		var posState = level.getBlockState(pos);
+		var posState = getLevel().getBlockState(pos);
 		var newState = GIgBlocks.ACID_BLOCK.defaultBlockState();
 
 		if (posState.getBlock() == Blocks.WATER)
@@ -248,7 +265,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 		if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
 			return;
-		level.setBlockAndUpdate(pos, newState);
+		getLevel().setBlockAndUpdate(pos, newState);
 	}
 
 	@Override
@@ -257,13 +274,13 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			super.die(source);
 			return;
 		}
-		if (source == damageSources().outOfWorld()) {
+		if (source == damageSources().generic()) {
 			super.die(source);
 			return;
 		}
 
-		if (!this.level.isClientSide) {
-			if (source != damageSources().outOfWorld() || source != damageSources().generic()) {
+		if (!this.getLevel().isClientSide) {
+			if (source != damageSources().generic() || source != damageSources().generic()) {
 				if (getAcidDiameter() == 1)
 					generateAcidPool(0, 0);
 				else {
@@ -280,7 +297,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (!this.level.isClientSide) {
+		if (!this.getLevel().isClientSide) {
 			var attacker = source.getEntity();
 			if (attacker != null)
 				if (attacker instanceof LivingEntity)
@@ -290,7 +307,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-		if (!this.level.isClientSide && source != damageSources().outOfWorld()) {
+		if (!this.getLevel().isClientSide && source != damageSources().generic()) {
 			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4))
@@ -307,23 +324,41 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				level.setBlockAndUpdate(this.blockPosition(), newState);
+				getLevel().setBlockAndUpdate(this.blockPosition(), newState);
 		}
 		return super.hurt(source, amount);
 	}
 
 	@Override
 	public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
-		var level = this.level;
-		if (level instanceof ServerLevel) {
-			ServerLevel serverLevel = (ServerLevel) level;
+		if (this.getLevel() instanceof ServerLevel serverLevel)
 			biConsumer.accept(this.dynamicGameEventListener, serverLevel);
-		}
 	}
 
 	@Override
 	public boolean canTriggerAvoidVibration() {
 		return true;
+	}
+
+	@Override
+	public TagKey<GameEvent> getListenableEvents() {
+		return GameEventTags.WARDEN_CAN_LISTEN;
+	}
+
+	@Override
+	public boolean shouldListen(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Context var5) {
+		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
+			return false;
+		Entity entity = var5.sourceEntity();
+		return !(entity instanceof LivingEntity) || this.canTargetEntity((LivingEntity) entity);
+	}
+
+	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
+		if (this.isDeadOrDying())
+			return;
+		if (this.isVehicle())
+			return;
 	}
 
 	/*
@@ -334,7 +369,7 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (!(entity instanceof LivingEntity))
 			return false;
 		var livingEntity = (LivingEntity) entity;
-		if (this.level != entity.level)
+		if (this.getLevel() != entity.getLevel())
 			return false;
 		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
 			return false;
@@ -364,9 +399,9 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 			return false;
 		if (livingEntity.isDeadOrDying())
 			return false;
-		if (!this.level.getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
+		if (!this.getLevel().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
 			return false;
-		var list2 = livingEntity.level.getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
+		var list2 = livingEntity.getLevel().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
 		if (list2.anyMatch(NEST))
 			return false;
 		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
@@ -376,26 +411,5 @@ public abstract class AlienEntity extends Monster implements GigVibrationListene
 		if (this.isAggressive())
 			return false;
 		return true;
-	}
-
-	@Override
-	public TagKey<GameEvent> getListenableEvents() {
-		return GameEventTags.WARDEN_CAN_LISTEN;
-	}
-
-	@Override
-	public boolean shouldListen(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Context var5) {
-		if (this.isNoAi() || this.isDeadOrDying() || !level.getWorldBorder().isWithinBounds(var3) || this.isRemoved())
-			return false;
-		Entity entity = var5.sourceEntity();
-		return !(entity instanceof LivingEntity) || this.canTargetEntity((LivingEntity) entity);
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		if (this.isDeadOrDying())
-			return;
-		if (this.isVehicle())
-			return;
 	}
 }

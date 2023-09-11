@@ -5,7 +5,7 @@ import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 
-public class BlockRenderLayers implements GigeresqueInitializer {
+public record BlockRenderLayers() implements GigeresqueInitializer {
 	@Override
 	public void initialize() {
 		BlockRenderLayerMap.INSTANCE.putBlock(GIgBlocks.NEST_RESIN_WEB, RenderType.cutout());

@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
-public final class GigSensors {
+public final record GigSensors() {
 
 	public static void init() {
 	}

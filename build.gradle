@@ -1,12 +1,5 @@
-buildscript {
-    repositories {
-    	maven { url  = 'https://plugins.gradle.org/m2/' }
-        maven { url = 'https://maven.parchmentmc.org' }
-    }
-}
-
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -19,7 +12,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.archivesBaseName
+archivesBaseName = project.modName
 version = project.modVersion
 group = project.mavenGroup
 
@@ -27,28 +20,27 @@ repositories {
 	maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com" }
-    maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
-    maven { url "https://dl.cloudsmith.io/public/azuredoom-mods/geckolib/maven/" }
+	maven { url 'https://libs.azuredoom.com:4443/mods'}
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://maven.gegy.dev' }
     maven { url 'https://maven.enginehub.org/repo/' }
-    maven { url  = 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://plugins.gradle.org/m2/' }
 	maven { url 'https://api.modrinth.com/maven' }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraftVersion}"
+	minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.18'
-	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.4:4.1.2'
-	modImplementation "curse.maven:HWG-448106:4458372"
+	modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
+  	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.4:4.2'
 }
 
 processResources {
@@ -102,11 +94,11 @@ if (file('key.properties').exists()) {
 
     	project {
         	apiKey = curseProp.getProperty('curseKey')
-        	id = "535416"
+        	id = project.curseforgeID
         	releaseType = "release"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.4")
+			addGameVersion(project.minecraftVersion)
 			addGameVersion("Fabric")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -140,10 +132,8 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = '2kXK3iBI' 
+		projectId = project. modrinthID
 		versionNumber = project.modVersion 
-		versionType = "beta"
-		versionName = 'Fabric/Quilt 1.19.4'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.19.4']

@@ -1,15 +1,13 @@
 {
-	"name": "gigeresque:main_hallway_pool",
-	"fallback": "gigeresque:plug_pool",
-	"elements": [
-		{
-			"weight": 1,
-			"element": {
-				"location": "gigeresque:aliendungeon_short_hall",
-				"processors": "minecraft:empty",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		}
-	]
+  "name" : "gigeresque:main_hallway_pool",
+  "fallback" : "gigeresque:plug_pool",
+  "elements" : [ {
+    "weight" : 1,
+    "element" : {
+      "location" : "gigeresque:aliendungeon_short_hall",
+      "processors" : "gigeresque:randomize_blocks",
+      "projection" : "rigid",
+      "element_type" : "minecraft:single_pool_element"
+    }
+  } ]
 }

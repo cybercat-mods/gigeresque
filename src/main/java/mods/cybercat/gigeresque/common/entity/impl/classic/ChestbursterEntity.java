@@ -8,6 +8,7 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -40,7 +41,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -70,14 +70,13 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(ChestbursterEntity.class, EntityDataSerializers.BOOLEAN);
 	public int bloodRendering = 0;
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level);
+	private final AzureNavigation landNavigation = new AzureNavigation(this, getLevel());
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	protected String hostId = null;
 	public int eatingCounter = 0;
 
 	public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
 		super(type, world);
-
 		navigation = landNavigation;
 	}
 
@@ -142,7 +141,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level.isClientSide && this.isAlive()) {
+		if (!getLevel().isClientSide && this.isAlive()) {
 			setBlood(bloodRendering++);
 			grow(this, 1 * getGrowthMultiplier());
 		}
@@ -202,7 +201,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
@@ -226,11 +225,18 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	@Override
 	public LivingEntity growInto() {
-		var entity = Entities.RUNNERBURSTER.create(level);
+		var entity = Entities.RUNNERBURSTER.create(getLevel());
 		entity.hostId = this.hostId;
 		if (hasCustomName())
 			entity.setCustomName(this.getCustomName());
 		return entity;
+	}
+
+	@Override
+	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
+		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
+		if (var6 instanceof ItemEntity)
+			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 
 	/*
@@ -245,32 +251,24 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 					return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
 				else
 					return event.setAndContinue(GigAnimationsDefault.SLITHER);
-			else if (event.getAnimatable().isEating() == true && !this.isDeadOrDying())
-				return event.setAndContinue(GigAnimationsDefault.CHOMP);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
 			else if (this.tickCount < 60 && event.getAnimatable().isBirthed() == true)
 				return event.setAndContinue(GigAnimationsDefault.BIRTH);
 			else
 				return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 				}
 			}
 		}));
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onSignalReceive(ServerLevel var1, GameEventListener var2, BlockPos var3, GameEvent var4, Entity var5, Entity var6, float var7) {
-		super.onSignalReceive(var1, var2, var3, var4, var5, var6, var7);
-		if (var6 instanceof ItemEntity)
-			BrainUtils.setMemory(this, MemoryModuleType.WALK_TARGET, new WalkTarget(var3, 1.2F, 0));
 	}
 }

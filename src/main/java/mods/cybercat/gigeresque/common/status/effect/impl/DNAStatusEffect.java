@@ -4,6 +4,7 @@ import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
@@ -55,51 +56,51 @@ public class DNAStatusEffect extends MobEffect {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.getLevel());
 						else
-							summon = Entities.MUTANT_POPPER.create(entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.getLevel());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.getLevel(), entity);
+						entity.getLevel().addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = Entities.MUTANT_STALKER.create(entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.getLevel());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.getLevel(), entity);
+						entity.getLevel().addFreshEntity(summon);
 					}
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.getLevel(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
 					if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
 						if (randomPhase2 == 1)
-							summon = Entities.MUTANT_HAMMERPEDE.create(entity.level);
+							summon = Entities.MUTANT_HAMMERPEDE.create(entity.getLevel());
 						else
-							summon = Entities.MUTANT_POPPER.create(entity.level);
+							summon = Entities.MUTANT_POPPER.create(entity.getLevel());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.getLevel(), entity);
+						entity.getLevel().addFreshEntity(summon);
 					} else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-						summon = Entities.MUTANT_STALKER.create(entity.level);
+						summon = Entities.MUTANT_STALKER.create(entity.getLevel());
 						summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-						spawnEffects(entity.level, entity);
-						entity.level.addFreshEntity(summon);
+						spawnEffects(entity.getLevel(), entity);
+						entity.getLevel().addFreshEntity(summon);
 					}
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
+					entity.hurt(GigDamageSources.of(entity.getLevel(), GigDamageSources.DNA), Integer.MAX_VALUE);
 					return;
 				}
 			} else {
 				if (entity instanceof Player && !(((Player) entity).isCreative() || ((Player) entity).isSpectator())) {
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
-					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.hurt(GigDamageSources.of(entity.getLevel(), GigDamageSources.DNA), Integer.MAX_VALUE);
+					var isInsideWaterBlock = entity.getLevel().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				} else if (entity instanceof Creeper)
 					return;
 				else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-					entity.hurt(entity.damageSources().generic(), Integer.MAX_VALUE);
-					var isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.hurt(GigDamageSources.of(entity.getLevel(), GigDamageSources.DNA), Integer.MAX_VALUE);
+					var isInsideWaterBlock = entity.getLevel().isWaterAt(entity.blockPosition());
 					spawnGoo(entity, isInsideWaterBlock);
 					return;
 				}
@@ -115,15 +116,15 @@ public class DNAStatusEffect extends MobEffect {
 
 	private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 1);
+			lightBlockPos = findFreeSpace(entity.getLevel(), entity.blockPosition(), 1);
 			if (lightBlockPos == null)
 				return;
-			var areaEffectCloudEntity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
+			var areaEffectCloudEntity = new AreaEffectCloud(entity.getLevel(), entity.getX(), entity.getY(), entity.getZ());
 			areaEffectCloudEntity.setRadius(2.0F);
 			areaEffectCloudEntity.setDuration(300);
 			areaEffectCloudEntity.setRadiusPerTick(0);
 			areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-			entity.level.addFreshEntity(areaEffectCloudEntity);
+			entity.getLevel().addFreshEntity(areaEffectCloudEntity);
 		} else
 			lightBlockPos = null;
 	}

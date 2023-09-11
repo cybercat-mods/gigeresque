@@ -3,13 +3,16 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks;
 import java.util.function.Consumer;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
@@ -47,14 +50,46 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
 			doDelayedAction(entity);
 		}
 		entity.setAttackingState(1);
-		if (entity instanceof NeomorphAdolescentEntity neoA)
-			neoA.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false));
-
-		if (entity instanceof NeomorphEntity neo) {
-			neo.swing(entity.swingingArm);
-			entity.getNavigation().stop();
-			neo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+		if (entity instanceof ClassicAlienEntity classic) {
+			boolean basicCheck = classic.isCrawling() || classic.isInWater();
+			classic.triggerAnim("attackController", switch (classic.getRandom().nextInt(4)) {
+			case 0 -> basicCheck ? "left_claw_basic" : "left_claw";
+			case 1 -> basicCheck ? "right_claw_basic" : "right_claw";
+			case 2 -> basicCheck ? "left_tail_basic" : "left_tail";
+			case 3 -> basicCheck ? "right_tail_basic" : "right_tail";
+			default -> basicCheck ? "left_claw_basic" : "left_claw";
+			});
 		}
+		if (entity instanceof AquaticAlienEntity || entity instanceof NeomorphEntity || entity instanceof NeomorphAdolescentEntity) {
+			entity.triggerAnim("attackController", switch (entity.getRandom().nextInt(4)) {
+			case 0 -> "left_claw";
+			case 1 -> "right_claw";
+			case 2 -> "left_tail";
+			case 3 -> "right_tail";
+			default -> "left_claw";
+			});
+		}
+		if (entity instanceof StalkerEntity stalker) {
+			stalker.triggerAnim("livingController", switch (stalker.getRandom().nextInt(4)) {
+			case 0 -> "attack_normal";
+			case 1 -> "attack_heavy";
+			case 2 -> "attack_normal";
+			case 3 -> "attack_heavy";
+			default -> "attack_normal";
+			});
+		}
+		if (entity instanceof RunnerAlienEntity runner) {
+			runner.triggerAnim("attackController", switch (runner.getRandom().nextInt(4)) {
+			case 0 -> "left_claw";
+			case 1 -> "right_claw";
+			case 2 -> "left_tail_basic";
+			case 3 -> "right_tail_basic";
+			default -> "left_claw";
+			});
+		}
+
+		if (entity instanceof HammerpedeEntity hammer)
+			hammer.triggerAnim("attackController", "attack");
 
 		if (entity instanceof FacehuggerEntity hugger)
 			if (hugger.getTarget() != null) {
@@ -82,7 +117,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return this.delayFinishedAt >= entity.level.getGameTime();
+		return this.delayFinishedAt >= entity.getLevel().getGameTime();
 	}
 
 	@Override

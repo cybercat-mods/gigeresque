@@ -6,6 +6,6 @@
 		"#minecraft:tall_flowers",
 		"#minecraft:flowers",
 		"#minecraft:saplings",
-		"#replaceable_plants"
+		"#replaceable_by_trees"
 	]
 }

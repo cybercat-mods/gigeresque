@@ -34,10 +34,9 @@ import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -55,9 +54,6 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -131,20 +127,26 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public void tick() {
 		super.tick();
 
+		if (!this.isVehicle())
+			this.setIsExecuting(false);
+
+		if (this.isExecuting())
+			this.setPassedOutStatus(false);
+
 		// Attack logic
 
 		if (attackProgress > 0) {
 			attackProgress--;
-			if (!level.isClientSide && attackProgress <= 0)
+			if (!getLevel().isClientSide && attackProgress <= 0)
 				setCurrentAttackType(AlienAttackType.NONE);
 		}
 
 		if (attackProgress == 0 && swinging)
 			attackProgress = 10;
 
-		if (!level.isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
+		if (!getLevel().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
 			if (this.isCrawling() || this.wasEyeInWater)
-				setCurrentAttackType(switch (random.nextInt(5)) {
+				setCurrentAttackType(switch (random.nextInt(4)) {
 				case 0 -> AlienAttackType.CLAW_LEFT;
 				case 1 -> AlienAttackType.CLAW_RIGHT;
 				case 2 -> AlienAttackType.TAIL_LEFT;
@@ -152,7 +154,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				default -> AlienAttackType.CLAW_LEFT;
 				});
 			else
-				setCurrentAttackType(switch (random.nextInt(5)) {
+				setCurrentAttackType(switch (random.nextInt(4)) {
 				case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
 				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
 				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
@@ -172,37 +174,41 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var yOffset = this.getEyeY() - ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY()) / 2.0);
 			var e = this.getFirstPassenger().getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
 			var f = this.getFirstPassenger().getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
+			if (!this.isExecuting())
+				this.triggerAnim("attackController", "kidnap");
 			if (this.isBiting()) {
 				biteCounter++;
 				if (biteCounter == 5) {
-					this.getNavigation().stop();
+					this.triggerAnim("livingController", "grab");
 					this.setDeltaMovement(0, 0, 0);
 					this.setIsExecuting(true);
 					this.setAggressive(false);
 				}
 				if (biteCounter >= 88) {
-					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(GigDamageSources.of(this.getLevel(), GigDamageSources.EXECUTION), Integer.MAX_VALUE);
 					this.heal(50);
-					if (this.level.isClientSide)
-						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					if (this.getLevel().isClientSide)
+						this.getFirstPassenger().getLevel().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsBiting(false);
 					this.setIsExecuting(false);
+					this.triggerAnim("attackController", "reset");
 					biteCounter = 0;
 				}
 			} else {
 				holdingCounter++;
 				if (holdingCounter == 760) {
-					this.getNavigation().stop();
+					this.triggerAnim("livingController", "grab");
 					this.setDeltaMovement(0, 0, 0);
 					this.setIsExecuting(true);
 					this.setAggressive(false);
 				}
 				if (holdingCounter >= 843) {
-					this.getFirstPassenger().hurt(damageSources().generic(), Float.MAX_VALUE);
+					this.getFirstPassenger().hurt(GigDamageSources.of(this.getLevel(), GigDamageSources.EXECUTION), Integer.MAX_VALUE);
 					this.heal(50);
-					if (this.level.isClientSide)
-						this.getFirstPassenger().level.addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
+					if (this.getLevel().isClientSide)
+						this.getFirstPassenger().getLevel().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
 					this.setIsExecuting(false);
+					this.triggerAnim("attackController", "reset");
 					holdingCounter = 0;
 				}
 			}
@@ -229,13 +235,14 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 		default -> 0.0f;
 		};
 
-		if (target instanceof LivingEntity && !level.isClientSide)
+		if (target instanceof LivingEntity && !getLevel().isClientSide)
 			switch (getAttckingState()) {
 			case 1 -> {
 				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
 				}
+				target.hurt(GigDamageSources.of(target.getLevel(), GigDamageSources.XENO), additionalDamage);
 				target.hurt(damageSources().mobAttack(this), additionalDamage);
 				return super.doHurtTarget(target);
 			}
@@ -260,7 +267,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (!armorItems.isEmpty())
 					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
 					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
+				target.hurt(GigDamageSources.of(target.getLevel(), GigDamageSources.XENO), additionalDamage);
 				return super.doHurtTarget(target);
 			}
 //			case 5 -> {
@@ -301,41 +308,74 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public List<ExtendedSensor<ClassicAlienEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((entity,
-						target) -> !((entity instanceof AlienEntity || entity instanceof Warden || entity instanceof ArmorStand || entity instanceof Bat) || !target.hasLineOfSight(entity) || (entity.getVehicle() != null && entity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (entity instanceof AlienEggEntity)
-								|| entity.getCommandSenderWorld().getBlockStates(entity.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) entity).isBleeding() || ((Host) entity).hasParasite() || ((Eggmorphable) entity).isEggmorphing() || this.isVehicle() || (GigEntityUtils.isFacehuggerAttached(entity)) && entity.isAlive())),
-				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7), new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+		return ObjectArrayList.of(
+				// Player Sensor
+				new NearbyPlayersSensor<>(),
+				// Living Sensor
+				new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
+				// Block Sensor
+				new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
+				// Fire Sensor
+				new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				// Lights Sensor
+				new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+				// Nest Sensor
 				new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(30).setPredicate((block, entity) -> block.is(GIgBlocks.NEST_RESIN_WEB_CROSS)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)), new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true), new LookAtTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching), new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
+		return BrainActivityGroup.coreTasks(
+				// Flee Fire
+				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
+				// Take target to nest
+				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				// Looks at target
+				new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(entity -> !this.isPassedOut() || !this.isSearching || !this.isExecuting()),
+				// Move to target
+				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isStatis() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
-				new FirstApplicableBehaviour<ClassicAlienEntity>(new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && !(((Player) target).isCreative() || ((Player) target).isSpectator())), new SetRandomLookTarget<>().startCondition(entity -> !this.isStatis() || !this.isSearching)),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()), new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
+		return BrainActivityGroup.idleTasks(
+				// Build Nest
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				// Kill Lights
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				// Do first
+				new FirstApplicableBehaviour<ClassicAlienEntity>(
+						// Targeting
+						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+						// Look at players
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+						// Look around randomly
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching)).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+				// Random
+				new OneRandomBehaviour<>(
+						// Randomly walk around
+						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting() || this.isPassedOut()),
+						// Idle
+						new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
 	}
 
 	@Override
 	public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity,
-						target) -> ((target instanceof AlienEntity || target instanceof Warden || target instanceof ArmorStand || target instanceof Bat) || !(entity instanceof LivingEntity) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target instanceof AlienEggEntity) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-								|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive())),
-				new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))), new JumpToTargetTask<>(10), new ClassicXenoMeleeAttackTask(10).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
+				// Invalidate Target
+				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
+				// Walk to Target
+				new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> this.isPassedOut() || (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))),
+				// Jump to Target
+				new JumpToTargetTask<>(10),
+				// Classic Xeno attacking
+				new ClassicXenoMeleeAttackTask(5).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
 	}
 
 	@Override
-	public void positionRider(Entity passenger) {
-		super.positionRider(passenger);
-		if (passenger instanceof LivingEntity) {
-			var mob = (LivingEntity) passenger;
-			SplittableRandom random = new SplittableRandom();
+	public void positionRider(Entity entity) {
+		if (entity instanceof LivingEntity mob) {
+			var random = new SplittableRandom();
 			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, true, true));
 			var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
 			var g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
@@ -343,11 +383,12 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var y3 = random.nextFloat(0.44F, 0.45F);
 			var y = random.nextFloat(0.74F, 0.75f);
 			var y2 = random.nextFloat(1.14F, 1.15f);
-			mob.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f), this.getY() + (double) (this.isExecuting() == true ? (passenger.getBbHeight() < 1.4 ? y2 : y) : (passenger.getBbHeight() < 1.4 ? y3 : y1)), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
+			mob.setPos(this.getX() + (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * f), this.getY() + (double) (this.isExecuting() == true ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)), this.getZ() - (double) ((this.isExecuting() == true ? -2.4f : -1.85f) * g));
 			mob.yBodyRot = this.yBodyRot;
 			mob.xxa = this.xxa;
 			mob.zza = this.zza;
 			mob.yya = this.yya;
+			mob.setSpeed(0);
 		}
 	}
 
@@ -358,7 +399,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isStatis() == false) {
+			if (event.isMoving() && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isPassedOut() == false) {
 				if (this.isOnGround() && !this.wasEyeInWater && this.isExecuting() == false) {
 					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
 						return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -374,59 +415,77 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (isDead && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (!(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isOnGround() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+			else if (!(this.getLevel().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.getLevel().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isOnGround() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			else if (this.isCrawling() && this.isExecuting() == false && this.isStatis() == false && !this.isVehicle())
+			else if (this.isCrawling() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			else if (getCurrentAttackType() == AlienAttackType.NONE)
-				if (this.isExecuting() == true && !this.isVehicle() && this.isStatis() == false)
-					return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
-			return event.setAndContinue(this.isStatis() == true || this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.isExecuting() == true && this.isVehicle() ? GigAnimationsDefault.EXECUTION_CARRY : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("thudSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("biteSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HEADBITE, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
 			if (event.getKeyframeData().getSound().matches("crunchSoundkey")) {
-				if (this.level.isClientSide) {
+				if (this.getLevel().isClientSide) {
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 				}
 			}
-		})).add(new AnimationController<>(this, "attackController", 1, event -> {
-			if (getCurrentAttackType() != AlienAttackType.NONE && attackProgress > 0 && !this.isVehicle() && this.isExecuting() == false)
-				return event.setAndContinue(RawAnimation.begin().then(AlienAttackType.animationMappings.get(getCurrentAttackType()), LoopType.PLAY_ONCE));
-			if (this.isVehicle() && this.isExecuting() == false)
-				return event.setAndContinue(GigAnimationsDefault.KIDNAP);
+		}).triggerableAnim("carry", GigAnimationsDefault.EXECUTION_CARRY) // carry
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
+				.triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)); // idle
+		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (event.getAnimatable().isPassedOut())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-				if (this.level.isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-		}));
+		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
+				.triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
+				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+				.triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+				.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+				.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.PLAY_ONCE)) // wake up
+				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+				.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+				.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+				.triggerableAnim("left_claw_basic", GigAnimationsDefault.LEFT_CLAW_BASIC) // attack
+				.triggerableAnim("right_claw_basic", GigAnimationsDefault.RIGHT_CLAW_BASIC) // attack
+				.triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
+				.triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
+				.setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+					if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+						if (this.getLevel().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}));
 		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
@@ -434,7 +493,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-				if (this.level.isClientSide)
+				if (this.getLevel().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 		}));
 	}
