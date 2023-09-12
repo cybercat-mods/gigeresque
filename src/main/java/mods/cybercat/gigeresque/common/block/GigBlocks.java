@@ -40,7 +40,8 @@ public record GigBlocks() implements GigeresqueInitializer {
 	/*
 	 * FLUID BLOCKS
 	 */
-	public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY)) {
+	protected static Properties replaceCheck = Gigeresque.config.blackfuildNonrepacle ? BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY) : BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY);
+	public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, replaceCheck) {
 	};
 
 	/*

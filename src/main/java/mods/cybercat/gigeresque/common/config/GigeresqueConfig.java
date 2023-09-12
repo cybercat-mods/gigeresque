@@ -13,6 +13,10 @@ public class GigeresqueConfig {
 
 	@Configurable
 	@Configurable.Synchronized
+	public boolean blackfuildNonrepacle = false;
+
+	@Configurable
+	@Configurable.Synchronized
 	public boolean facehuggerGivesBlindness = false;
 
 	@Configurable
