@@ -289,7 +289,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isAggressive() && !this.isHissing() && this.isAlive() && this.isPassedOut() == false)) {
+		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && this.isPassedOut() == false)) {
 			if (isSearching) {
 				if (searchingProgress > Constants.TPS * 3) {
 					searchingProgress = 0;
