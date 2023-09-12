@@ -1,6 +1,29 @@
-v.0.5.40
+v.0.5.41
 
-- Adds vehicle checks for https://github.com/cybercat-mods/gigeresque/issues/179
+- Fixes Black Fluid not being replaceable. Made this configurable however.
+- Fixes Xenos ignoring mobs near that are within 1 block of a Nest Cross block but aren't in the nest cross block itself.
+- Fixes Acid removing Black Fluid.
+- Mutants now bleed Black Fluid instead of Acid blood.
+- Nerf sculk dungeons, requires new world. - Shift
+- Tweak carrying checks. 
+- Adds discord link to Mod Menu info.
+- Built-in compatibility, that loads only if the mod is loaded, now added for: 
+	- Ad Astra (For Mobs and Dungeons spawn on other planets)
+	- Aftershock (For Mobs)
+	- Alexs Mobs* (For Mobs)
+	- Arachnids (For Mobs)
+	- Better End* (For Mobs)
+	- Caracal* (For Mobs)
+	- Cave Dweller* (For Mobs)
+	- Friends and Foes* (For Mobs)
+	- Graveyard* (For Mobs)
+	- Illager Invasion* (For Mobs)
+	- Living Things (For Mobs)
+	- Minecraft Comes Alive (For Mobs)
+	- Twilight Forest* (For Mobs)
+	- YDMS Red Panda (For Mobs)
+	
+* *Credit to impulsivelass*
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
