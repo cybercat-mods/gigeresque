@@ -1,29 +1,18 @@
-v.0.5.41
+v.0.5.42
 
-- Fixes Black Fluid not being replaceable. Made this configurable however.
-- Fixes Xenos ignoring mobs near that are within 1 block of a Nest Cross block but aren't in the nest cross block itself.
-- Fixes Acid removing Black Fluid.
-- Mutants now bleed Black Fluid instead of Acid blood.
-- Nerf sculk dungeons, requires new world. - Shift
-- Tweak carrying checks. 
-- Adds discord link to Mod Menu info.
-- Built-in compatibility, that loads only if the mod is loaded, now added for: 
-	- Ad Astra (For Mobs and Dungeons spawn on other planets)
-	- Aftershock (For Mobs)
-	- Alexs Mobs* (For Mobs)
-	- Arachnids (For Mobs)
-	- Better End* (For Mobs)
-	- Caracal* (For Mobs)
-	- Cave Dweller* (For Mobs)
-	- Friends and Foes* (For Mobs)
-	- Graveyard* (For Mobs)
-	- Illager Invasion* (For Mobs)
-	- Living Things (For Mobs)
-	- Minecraft Comes Alive (For Mobs)
-	- Twilight Forest* (For Mobs)
-	- YDMS Red Panda (For Mobs)
-	
-* *Credit to impulsivelass*
+- Adds new optional config to enable Shifts Sneaky Egg datapck
+	- This Datapack will change how the Eggs triggers!
+		What it brings:
+		-Sneaking around will drop their detection radius.
+		-There is a special case where encasing an egg will prevent it from triggering at all, until it is open.
+
+		Notes:
+		-Hurting them while sneaking will still cause them to trigger.
+		-Uncrouching will bring back their detection radius.
+		-Approaching an egg too closely will still make it hatch.
+- Fixes misspelled lang entries.
+- Sets mobs being held by Xenos to be persistent.
+- Sets mobs being eggmorpged to be persistent.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
