@@ -166,7 +166,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 	}
 
 	public static boolean canFallThrough(BlockState state) {
-		return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(GigTags.ACID_RESISTANT) && state != GIgBlocks.ACID_BLOCK.defaultBlockState();
+		return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(GigTags.ACID_RESISTANT) && state != GigBlocks.ACID_BLOCK.defaultBlockState();
 	}
 
 	@Override

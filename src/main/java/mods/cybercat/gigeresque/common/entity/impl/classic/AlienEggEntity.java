@@ -8,7 +8,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -177,7 +177,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 			if (this.level().isClientSide)
 				for (var i = 0; i < 2; i++)
 					this.level().addAlwaysVisibleParticle(Particles.GOO, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
-			this.level().setBlockAndUpdate(this.blockPosition(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+			this.level().setBlockAndUpdate(this.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 			this.kill();
 		}
 

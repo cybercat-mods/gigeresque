@@ -27,13 +27,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-public record GIgBlocks() implements GigeresqueInitializer {
+public record GigBlocks() implements GigeresqueInitializer {
 
-	private static GIgBlocks instance;
+	private static GigBlocks instance;
 
-	synchronized public static GIgBlocks getInstance() {
+	synchronized public static GigBlocks getInstance() {
 		if (instance == null)
-			instance = new GIgBlocks();
+			instance = new GigBlocks();
 		return instance;
 	}
 

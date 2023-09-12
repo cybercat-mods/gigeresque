@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -50,7 +50,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return GigEntityUtils.faceHuggerTest(this.target, entity) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
+		return GigEntityUtils.faceHuggerTest(this.target, entity) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 		if (this.target == null)
 			return;
 
-		if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
+		if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
 		if (entity.distanceTo(this.target) < 1.1F)

@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.util;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -51,17 +51,17 @@ public record GigEntityUtils() {
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
-		return !((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || !target.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+		return !((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || !target.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
 				|| self.isVehicle() || (GigEntityUtils.isFacehuggerAttached(target)) && target.isAlive());
 	}
 
 	public static boolean removeTarget(LivingEntity target, AlienEntity self) {
 		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target))
-				|| (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
+				|| (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
 	}
 
 	public static boolean removeFaceHuggerTarget(LivingEntity target, AlienEntity self) {
 		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !GigEntityUtils.isTargetHostable(target)
-				|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
+				|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
 	}
 }

@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
@@ -32,7 +32,7 @@ public class SittingIdolInvisBlock extends Block {
 		if (!world.isClientSide) {
 			var radius = new Vec3i(2, 2, 2);
 			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
-				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_3)) {
+				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
 					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof IdolStorageEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
@@ -56,7 +56,7 @@ public class SittingIdolInvisBlock extends Block {
 		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 			BlockState testState;
 
-			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_3)) {
+			if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
 				world.destroyBlock(testPos, true);
 				Block.dropResources(testState, world, testPos);
 			} else if (testState.is(this))

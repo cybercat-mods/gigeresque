@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
@@ -35,22 +35,22 @@ public class AlienSarcophagusInvisBlock extends Block {
 		if (!world.isClientSide) {
 			var radius = new Vec3i(2, 2, 2);
 			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
-				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1)) {
 					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof AlienStorageEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
 				}
-				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
+				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
 					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof AlienStorageGooEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
 				}
-				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
+				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
 					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof AlienStorageHuggerEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
 				}
-				if (world.getBlockState(testPos).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
+				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
 					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof AlienStorageSporeEntity idolStorageEntity)
 						player.openMenu(idolStorageEntity);
 					return InteractionResult.SUCCESS;
@@ -72,16 +72,16 @@ public class AlienSarcophagusInvisBlock extends Block {
 		var radius = new Vec3i(2, 2, 2);
 		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
 			BlockState testState;
-			if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1)) {
+			if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1)) {
 				world.destroyBlock(testPos, true);
 				Block.dropResources(testState, world, testPos);
-			} else if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
+			} else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
 				world.destroyBlock(testPos, true);
 				Block.dropResources(testState, world, testPos);
-			} else if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
+			} else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
 				world.destroyBlock(testPos, true);
 				Block.dropResources(testState, world, testPos);
-			}  else if ((testState = world.getBlockState(testPos)).is(GIgBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
+			}  else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
 				world.destroyBlock(testPos, true);
 				Block.dropResources(testState, world, testPos);
 			} else if (testState.is(this))

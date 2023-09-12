@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -39,7 +39,7 @@ public class InGameOverlayRendererMixin {
 			var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
 			var fluidState = client.player.level().getFluidState(blockPos);
 
-			if (fluidState.createLegacyBlock().getBlock() == GIgBlocks.BLACK_FLUID)
+			if (fluidState.createLegacyBlock().getBlock() == GigBlocks.BLACK_FLUID)
 				renderBlackFluidOverlay(client, matrices);
 
 			if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {

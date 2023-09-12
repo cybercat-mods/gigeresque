@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity.helper;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
@@ -73,7 +73,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
 				return false;
 		}
 		if (context.affectedState() != null)
-			return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GIgBlocks.ACID_BLOCK);
+			return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GigBlocks.ACID_BLOCK);
 		return true;
 	}
 

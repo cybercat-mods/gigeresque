@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.common;
 
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.config.format.ConfigFormats;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.compat.GigCompats;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
@@ -32,7 +32,7 @@ public class Gigeresque implements ModInitializer {
 		GigItems.getInstance().initialize();
 		GigMemoryTypes.getInstance().initialize();
 		GigSensors.getInstance().initialize();
-		GIgBlocks.getInstance().initialize();
+		GigBlocks.getInstance().initialize();
 		GigFluids.getInstance().initialize();
 		GigSounds.getInstance().initialize();
 		GigStatusEffects.getInstance().initialize();
@@ -43,9 +43,9 @@ public class Gigeresque implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
 		GigItemGroups.getInstance().initialize();
 		GigCompats.getInstance().initialize();;
-		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_BLOCK, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_WEB, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_WEB_CROSS, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_BLOCK, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB_CROSS, 20, 5);
 	}
 }

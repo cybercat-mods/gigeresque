@@ -16,7 +16,7 @@ import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -65,7 +65,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
 	private static final Logger LOGGER = LogUtils.getLogger();
 	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 	private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
@@ -257,7 +257,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 	private void generateAcidPool(int xOffset, int zOffset) {
 		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
 		var posState = level().getBlockState(pos);
-		var newState = GIgBlocks.ACID_BLOCK.defaultBlockState();
+		var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
 
 		if (posState.getBlock() == Blocks.WATER)
 			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
@@ -318,7 +318,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 			if (acidThickness == 0)
 				return super.hurt(source, amount);
 
-			var newState = GIgBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
 			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
@@ -364,7 +364,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 			return false;
 		if (livingEntity.getMobType() == MobType.UNDEAD)
 			return false;
-		if (livingEntity.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
+		if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
 			return false;
 		if (livingEntity.getType() == EntityType.ARMOR_STAND)
 			return false;

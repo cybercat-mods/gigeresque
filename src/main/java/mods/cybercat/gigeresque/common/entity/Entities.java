@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
@@ -82,13 +82,13 @@ public record Entities() implements GigeresqueInitializer {
 
 	@Override
 	public void initialize() {
-		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity"), FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_goo"), FabricBlockEntityTypeBuilder.create(AlienStorageGooEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_GOO).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_hugger"), FabricBlockEntityTypeBuilder.create(AlienStorageHuggerEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_spore"), FabricBlockEntityTypeBuilder.create(AlienStorageSporeEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_1_SPORE).build(null));		
-		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_jar_entity"), FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
-		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("sitting_idol_entity"), FabricBlockEntityTypeBuilder.create(IdolStorageEntity::new, GIgBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
-		SPORE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("neomorph_spore_pods"), FabricBlockEntityTypeBuilder.create(SporeBlockEntity::new, GIgBlocks.SPORE_BLOCK).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity"), FabricBlockEntityTypeBuilder.create(AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_goo"), FabricBlockEntityTypeBuilder.create(AlienStorageGooEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_hugger"), FabricBlockEntityTypeBuilder.create(AlienStorageHuggerEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_block_entity_spore"), FabricBlockEntityTypeBuilder.create(AlienStorageSporeEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE).build(null));		
+		ALIEN_STORAGE_BLOCK_ENTITY_2 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("alien_storage_jar_entity"), FabricBlockEntityTypeBuilder.create(JarStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_2).build(null));
+		ALIEN_STORAGE_BLOCK_ENTITY_3 = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("sitting_idol_entity"), FabricBlockEntityTypeBuilder.create(IdolStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_3).build(null));
+		SPORE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource("neomorph_spore_pods"), FabricBlockEntityTypeBuilder.create(SporeBlockEntity::new, GigBlocks.SPORE_BLOCK).build(null));
 		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());

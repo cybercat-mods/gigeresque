@@ -7,7 +7,7 @@ import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -25,7 +25,7 @@ import net.tslat.smartbrainlib.util.RandomUtil;
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
-	public static final Predicate<BlockState> NEST = state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS);
+	public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -64,8 +64,8 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 							target.setPos(Vec3.atBottomCenterOf(testPos));
 							target.removeVehicle();
 							entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-							level.setBlockAndUpdate(testPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-							level.setBlockAndUpdate(testPos.above(), GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+							level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 						}
 				}
 	}

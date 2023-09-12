@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.fluid;
 
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -48,7 +48,7 @@ public abstract class BlackFluid extends FlowingFluid {
 
 	@Override
 	protected BlockState createLegacyBlock(FluidState state) {
-		return GIgBlocks.BLACK_FLUID.defaultBlockState().setValue(BlockStateProperties.LEVEL, getLegacyLevel(state));
+		return GigBlocks.BLACK_FLUID.defaultBlockState().setValue(BlockStateProperties.LEVEL, getLegacyLevel(state));
 	}
 
 	@Override
@@ -87,8 +87,8 @@ public abstract class BlackFluid extends FlowingFluid {
 				if (this.isSporeReplaceable(level, blockPos)) {
 					if (!this.hasSporeReplacements(level, blockPos))
 						continue;
-					if (!level.getBlockState(blockPos).is(GIgBlocks.BLACK_FLUID))
-						level.setBlockAndUpdate(blockPos, GIgBlocks.SPORE_BLOCK.defaultBlockState());
+					if (!level.getBlockState(blockPos).is(GigBlocks.BLACK_FLUID))
+						level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.defaultBlockState());
 					return;
 				}
 				if (!level.getBlockState(blockPos).blocksMotion())

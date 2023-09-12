@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mojang.datafixers.util.Pair;
 
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -33,7 +33,7 @@ public class NestBuildingHelper {
 						if (alien.level().getLightEmission(alien.blockPosition()) < 8) {
 							var random = new SplittableRandom();
 							var randomPhase = random.nextInt(0, 100);
-							var resinBlock = GIgBlocks.NEST_RESIN.defaultBlockState();
+							var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
 							if (nestBlockData.isFloor())
 								if (randomPhase <= 70)
 									alien.level().setBlockAndUpdate(blockPos, resinBlock);
@@ -41,10 +41,10 @@ public class NestBuildingHelper {
 									alien.level().setBlockAndUpdate(blockPos, resinBlock);
 
 							if (nestBlockData.isCorner())
-								alien.level().setBlockAndUpdate(blockPos, GIgBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+								alien.level().setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 
 							if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
-								var nestResinWebState = GIgBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
+								var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
 										NestResinWebVariant.values()[new Random().nextInt(NestResinWebVariant.values().length)]);
 								alien.level().setBlockAndUpdate(blockPos, nestResinWebState);
 							}
@@ -57,7 +57,7 @@ public class NestBuildingHelper {
 	}
 
 	public static boolean isResinBlock(Block block) {
-		return block == GIgBlocks.NEST_RESIN || block == GIgBlocks.NEST_RESIN_WEB || block == GIgBlocks.NEST_RESIN_WEB_CROSS || block == GIgBlocks.NEST_RESIN_BLOCK;
+		return block == GigBlocks.NEST_RESIN || block == GigBlocks.NEST_RESIN_WEB || block == GigBlocks.NEST_RESIN_WEB_CROSS || block == GigBlocks.NEST_RESIN_BLOCK;
 	}
 
 	private static NestBlockData getNestBlockData(Level world, BlockPos blockPos) {
