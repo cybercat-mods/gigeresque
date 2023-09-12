@@ -193,5 +193,6 @@
   "config.gigeresque.option.alienblockHardness" : "Dungeon Block Hardness",
   "config.gigeresque.option.alienblockResistance" : "Dungeon Block Resistance",
   "config.gigeresque.option.enableDevparticles" : "Enable Dev Particles",
+  "config.gigeresque.option.blackfuildNonrepacle" : "Makes Black Fluid Nonreplacable",
   "config.screen.gigeresque" : "Gigeresque Options"
 }
