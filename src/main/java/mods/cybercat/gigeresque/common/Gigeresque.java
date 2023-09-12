@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common;
 
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.config.format.ConfigFormats;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.compat.GigCompats;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
@@ -20,6 +21,10 @@ import mods.cybercat.gigeresque.common.util.MobSpawn;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.chat.Component;
 
 public class Gigeresque implements ModInitializer {
 	public static GigeresqueConfig config;
@@ -47,5 +52,9 @@ public class Gigeresque implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN, 20, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB, 20, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB_CROSS, 20, 5);
+		if (config.enableSneakyEggs)
+			FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
+				ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED);
+			}));
 	}
 }
