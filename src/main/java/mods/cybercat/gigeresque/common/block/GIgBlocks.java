@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 public record GIgBlocks() implements GigeresqueInitializer {
 
@@ -38,7 +40,7 @@ public record GIgBlocks() implements GigeresqueInitializer {
 	/*
 	 * FLUID BLOCKS
 	 */
-	public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, BlockBehaviour.Properties.of().noCollission().strength(100.0F).noLootTable()) {
+	public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY)) {
 	};
 
 	/*
