@@ -11,6 +11,8 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.AcidBlock;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
@@ -21,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -51,6 +54,7 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
@@ -58,6 +62,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
@@ -291,7 +296,36 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
+		
+		if (!this.level().isClientSide) {
+			var attacker = source.getEntity();
+			if (attacker != null)
+				if (attacker instanceof LivingEntity)
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+		}
 
+		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+			return super.hurt(source, amount);
+
+		if (!this.level().isClientSide && source != damageSources().genericKill()) {
+			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+
+			if (this.getHealth() < (this.getMaxHealth() / 4))
+				acidThickness += 1;
+			if (amount >= 5)
+				acidThickness += 1;
+			if (amount > (this.getMaxHealth() / 10))
+				acidThickness += 1;
+			if (acidThickness == 0)
+				return super.hurt(source, amount);
+
+			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+
+			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+				level().setBlockAndUpdate(this.blockPosition(), newState);
+		}
 		return super.hurt(source, amount);
 	}
 

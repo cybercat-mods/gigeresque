@@ -15,7 +15,6 @@ import com.mojang.serialization.Dynamic;
 
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -254,7 +253,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 	public void checkDespawn() {
 	}
 
-	private void generateAcidPool(int xOffset, int zOffset) {
+	protected void generateAcidPool(int xOffset, int zOffset) {
 		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
 		var posState = level().getBlockState(pos);
 		var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
@@ -292,40 +291,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 			}
 		}
 		super.die(source);
-	}
-
-	@Override
-	public boolean hurt(DamageSource source, float amount) {
-		if (!this.level().isClientSide) {
-			var attacker = source.getEntity();
-			if (attacker != null)
-				if (attacker instanceof LivingEntity)
-					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
-		}
-
-		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-			return super.hurt(source, amount);
-
-		if (!this.level().isClientSide && source != damageSources().genericKill()) {
-			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-
-			if (this.getHealth() < (this.getMaxHealth() / 4))
-				acidThickness += 1;
-			if (amount >= 5)
-				acidThickness += 1;
-			if (amount > (this.getMaxHealth() / 10))
-				acidThickness += 1;
-			if (acidThickness == 0)
-				return super.hurt(source, amount);
-
-			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
-
-			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				level().setBlockAndUpdate(this.blockPosition(), newState);
-		}
-		return super.hurt(source, amount);
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.AcidBlock;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -20,15 +22,20 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -130,8 +137,56 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		if (!this.level().isClientSide) {
+			var attacker = source.getEntity();
+			if (source.getEntity() != null)
+				if (attacker instanceof LivingEntity living)
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+		}
+
+		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+			return super.hurt(source, amount);
+
+		if (!this.level().isClientSide && source != damageSources().genericKill()) {
+			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+
+			if (this.getHealth() < (this.getMaxHealth() / 4))
+				acidThickness += 1;
+			if (amount >= 5)
+				acidThickness += 1;
+			if (amount > (this.getMaxHealth() / 10))
+				acidThickness += 1;
+			if (acidThickness == 0)
+				return super.hurt(source, amount);
+
+			var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+
+			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+				level().setBlockAndUpdate(this.blockPosition(), newState);
+		}
+		return super.hurt(source, amount);
+	}
+
+	@Override
+	protected void generateAcidPool(int xOffset, int zOffset) {
+		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
+		var posState = level().getBlockState(pos);
+		var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
+
+		if (posState.getBlock() == Blocks.WATER)
+			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+
+		if (!(posState.getBlock() instanceof LiquidBlock))
+			return;
+		level().setBlockAndUpdate(pos, newState);
+	}
+
+	@Override
 	protected int getAcidDiameter() {
-		return 1;
+		return 2;
 	}
 
 }

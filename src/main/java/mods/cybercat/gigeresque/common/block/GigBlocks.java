@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -51,6 +52,7 @@ public record GigBlocks() implements GigeresqueInitializer {
 	public static final SporeBlock SPORE_BLOCK = new SporeBlock();
 
 	public static final AcidBlock ACID_BLOCK = new AcidBlock(FabricBlockSettings.of().nonOpaque().noLootTable());
+	public static final BlackFluidBlock BLACK_FLUID_BLOCK = new BlackFluidBlock(FabricBlockSettings.of().nonOpaque().noLootTable());
 
 	public static final AlienSarcophagusInvisBlock ALIEN_STORAGE_BLOCK_INVIS = new AlienSarcophagusInvisBlock();
 	public static final SittingIdolInvisBlock ALIEN_STORAGE_BLOCK_INVIS2 = new SittingIdolInvisBlock();
@@ -159,6 +161,7 @@ public record GigBlocks() implements GigeresqueInitializer {
 		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("neomorph_spore_pods"), SPORE_BLOCK);
 		Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"), new mods.cybercat.gigeresque.common.item.GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
 		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("acid_block"), ACID_BLOCK);
+		Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("black_fuild_block"), BLACK_FLUID_BLOCK);
 		registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
 		registerItemBlock("alien_storage_block1_hugger", ALIEN_STORAGE_BLOCK_1_HUGGER);
 		registerItemBlock("alien_storage_block1_goo", ALIEN_STORAGE_BLOCK_1_GOO);

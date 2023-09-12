@@ -13,6 +13,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -27,6 +28,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.LeapAtTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -35,6 +37,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,10 +47,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -127,9 +133,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public List<ExtendedSensor<StalkerEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
-				new NearbyBlocksSensor<StalkerEntity>().setRadius(7), new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<StalkerEntity>().setRadius(7), new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -145,9 +150,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
-				new LeapAtTargetTask<>(0), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), // move to
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new LeapAtTargetTask<>(0), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), // move to
 				new AlienMeleeAttack(13));// attack
 	}
 
@@ -167,9 +170,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			default -> AlienAttackType.NORMAL;
 			});
 
-		if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
-			this.level().removeBlock(this.blockPosition(), false);
-
 		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
 			breakingCounter++;
 			if (breakingCounter > 10)
@@ -182,12 +182,12 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 							breakingCounter = -90;
 							if (level().isClientSide()) {
 								for (var i = 2; i < 10; i++)
-									level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
+									level().addAlwaysVisibleParticle(Particles.GOO, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
 								level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 							}
 						} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 							if (!level().isClientSide)
-								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
+								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, 8));
 							this.hurt(damageSources().generic(), 5);
 							breakingCounter = -90;
 						}
@@ -197,6 +197,59 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 		}
 		this.setNoGravity(!this.level().getBlockState(this.blockPosition().above()).isAir() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
 		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		if (!this.level().isClientSide) {
+			var attacker = source.getEntity();
+			if (source.getEntity() != null)
+				if (attacker instanceof LivingEntity living)
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+		}
+
+		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+			return super.hurt(source, amount);
+
+		if (!this.level().isClientSide && source != damageSources().genericKill()) {
+			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+
+			if (this.getHealth() < (this.getMaxHealth() / 4))
+				acidThickness += 1;
+			if (amount >= 5)
+				acidThickness += 1;
+			if (amount > (this.getMaxHealth() / 10))
+				acidThickness += 1;
+			if (acidThickness == 0)
+				return super.hurt(source, amount);
+
+			var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+
+			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+				level().setBlockAndUpdate(this.blockPosition(), newState);
+		}
+		return super.hurt(source, amount);
+	}
+
+	@Override
+	protected void generateAcidPool(int xOffset, int zOffset) {
+		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
+		var posState = level().getBlockState(pos);
+		var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
+
+		if (posState.getBlock() == Blocks.WATER)
+			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+
+		if (!(posState.getBlock() instanceof LiquidBlock))
+			return;
+		level().setBlockAndUpdate(pos, newState);
+	}
+
+	@Override
+	protected int getAcidDiameter() {
+		return 3;
 	}
 
 	@Override
