@@ -91,19 +91,29 @@ public class AzureVibrationUser implements VibrationSystem.User {
 			return;
 		if (this.mob.isVehicle())
 			return;
+//		if (this.mob.isAggressive())
+//			if (this.mob instanceof AdultAlienEntity adult && adult.isPassedOut()) {
+//				adult.triggerAnim("attackController", "wakeup");
+//				adult.wakeupCounter = 0;
+//				return;
+//			}
+
 		if (this.mob instanceof AdultAlienEntity adult) {
 			adult.wakeupCounter++;
-			if (adult.isPassedOut() & adult.wakeupCounter == 1)
+			if (adult.isPassedOut() & adult.wakeupCounter == 1) {
 				adult.triggerAnim("attackController", "wakeup");
-			if (adult.wakeupCounter == 2) {
-				adult.triggerAnim("attackController", "alert");
-				adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 50, 100, false, false));
 			}
-			if (!adult.isPassedOut() & adult.wakeupCounter >= 3) {
+			if (adult.wakeupCounter == 2) {
+				adult.setPassedOutStatus(false);
+				adult.triggerAnim("attackController", "alert");
+				adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
+			}
+			if (adult.wakeupCounter >= 3) {
+				adult.triggerAnim("attackController", "run");
+				adult.setPassedOutStatus(false);
 				adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 				adult.wakeupCounter = 0;
 			}
-			adult.setAggressive(true);
 		}
 		if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity)
 			if (!(entity2 instanceof IronGolem))

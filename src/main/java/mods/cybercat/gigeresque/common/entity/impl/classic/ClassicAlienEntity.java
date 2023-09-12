@@ -463,12 +463,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 			return PlayState.STOP;
 		}).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
+				.triggerableAnim("run", RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
 				.triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
 				.triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
 				.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
-				.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.PLAY_ONCE)) // wake up
+				.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.LOOP)) // wake up
 				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
 				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
 				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
