@@ -28,9 +28,9 @@ public class Gigeresque implements ModInitializer {
 	public void onInitialize() {
 		config = AzureLibMod.registerConfig(GigeresqueConfig.class, ConfigFormats.json()).getConfigInstance();
 
-		GigItems.init();
-		GigMemoryTypes.init();
-		GigSensors.init();
+		GigItems.getInstance().initialize();
+		GigMemoryTypes.getInstance().initialize();
+		GigSensors.getInstance().initialize();
 		GIgBlocks.getInstance().initialize();
 		GigFluids.getInstance().initialize();
 		GigSounds.getInstance().initialize();
@@ -40,7 +40,7 @@ public class Gigeresque implements ModInitializer {
 		MobSpawn.addSpawnEntries();
 		GigStructures.registerStructureFeatures();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
-		GigItemGroups.init();;
+		GigItemGroups.getInstance().initialize();
 		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_BLOCK, 20, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN, 20, 5);
 		FlammableBlockRegistry.getDefaultInstance().add(GIgBlocks.NEST_RESIN_WEB, 20, 5);

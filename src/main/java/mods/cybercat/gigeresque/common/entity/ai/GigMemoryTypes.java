@@ -8,15 +8,26 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.SBLConstants;
 
-public record GigMemoryTypes() {
+public record GigMemoryTypes() implements GigeresqueInitializer {
 
-	public static void init() {
+	private static GigMemoryTypes instance;
+
+	synchronized public static GigMemoryTypes getInstance() {
+		if (instance == null) {
+			instance = new GigMemoryTypes();
+		}
+		return instance;
+	}
+
+	@Override
+	public void initialize() {
 	}
 
 	public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_LIGHT_BLOCKS = register("nearby_light_blocks");

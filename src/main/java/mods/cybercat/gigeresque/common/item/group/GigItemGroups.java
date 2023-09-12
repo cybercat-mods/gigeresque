@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.item.group;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
@@ -13,12 +14,22 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
-public record GigItemGroups() {
-	
+public record GigItemGroups() implements GigeresqueInitializer {
+
+	private static GigItemGroups instance;
+
+	synchronized public static GigItemGroups getInstance() {
+		if (instance == null) {
+			instance = new GigItemGroups();
+		}
+		return instance;
+	}
+
 	public static final ResourceKey<CreativeModeTab> GENERAL = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Constants.modResource("items"));
 	public static final ResourceKey<CreativeModeTab> BLOCKS = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Constants.modResource("blocks"));
-	
-	public static void init() {
+
+	@Override
+	public void initialize() {
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, GENERAL, FabricItemGroup.builder().icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG)) // icon
 				.title(Component.translatable("itemGroup.gigeresque.items")) // title
 				.displayItems((context, entries) -> {

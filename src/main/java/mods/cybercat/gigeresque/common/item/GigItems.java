@@ -4,15 +4,26 @@ import mod.azure.azurelib.items.AzureSpawnEgg;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-public record GigItems() {
+public record GigItems() implements GigeresqueInitializer {
 
-	public static void init() {
+	private static GigItems instance;
+
+	synchronized public static GigItems getInstance() {
+		if (instance == null) {
+			instance = new GigItems();
+		}
+		return instance;
+	}
+
+	@Override
+	public void initialize() {
 	}
 
 	public static final BucketItem BLACK_FLUID_BUCKET = registerItem("black_fluid_bucket", new BucketItem(GigFluids.BLACK_FLUID_STILL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));

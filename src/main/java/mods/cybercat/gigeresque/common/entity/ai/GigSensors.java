@@ -6,13 +6,24 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
-public final record GigSensors() {
+public final record GigSensors() implements GigeresqueInitializer {
 
-	public static void init() {
+	private static GigSensors instance;
+
+	synchronized public static GigSensors getInstance() {
+		if (instance == null) {
+			instance = new GigSensors();
+		}
+		return instance;
+	}
+
+	@Override
+	public void initialize() {
 	}
 
 	public static final Supplier<SensorType<NearbyLightsBlocksSensor<?>>> NEARBY_LIGHT_BLOCKS = register("nearby_light_blocks", NearbyLightsBlocksSensor::new);
