@@ -2,12 +2,12 @@ package mods.cybercat.gigeresque.common.util.nest;
 
 import java.util.List;
 import java.util.Random;
-import java.util.SplittableRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.mojang.datafixers.util.Pair;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -31,14 +31,11 @@ public class NestBuildingHelper {
 							continue;
 
 						if (alien.level().getLightEmission(alien.blockPosition()) < 8) {
-							var random = new SplittableRandom();
-							var randomPhase = random.nextInt(0, 100);
 							var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
-							if (nestBlockData.isFloor())
-								if (randomPhase <= 70)
-									alien.level().setBlockAndUpdate(blockPos, resinBlock);
-								else
-									alien.level().setBlockAndUpdate(blockPos, resinBlock);
+							if (nestBlockData.isFloor()) {
+								alien.level().setBlockAndUpdate(blockPos, resinBlock);
+								alien.level().setBlockAndUpdate(blockPos.below(), resinBlock.setValue(NestResinBlock.LAYERS, 8));
+							}
 
 							if (nestBlockData.isCorner())
 								alien.level().setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
