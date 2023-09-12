@@ -47,6 +47,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
@@ -176,6 +177,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			var f = this.getFirstPassenger().getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
 			if (!this.isExecuting())
 				this.triggerAnim("attackController", "kidnap");
+			if (this.getFirstPassenger() instanceof Mob mob && !mob.isPersistenceRequired())
+				mob.setPersistenceRequired();
 			if (this.isBiting()) {
 				biteCounter++;
 				if (biteCounter == 5) {
