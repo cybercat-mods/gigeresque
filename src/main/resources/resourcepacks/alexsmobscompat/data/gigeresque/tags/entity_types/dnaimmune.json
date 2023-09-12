@@ -1,0 +1,23 @@
+{
+	"replace": false,
+	"values": [
+		"alexsmobs:bone_serpent",
+	    "alexsmobs:bone_serpent_part",
+	    "alexsmobs:soul_vulture",
+	    "alexsmobs:spectre",
+	    "alexsmobs:guster",
+	    "alexsmobs:straddler",
+	    "alexsmobs:stradpole",
+	    "alexsmobs:enderiophage",
+	    "alexsmobs:void_worm",
+	    "alexsmobs:void_worm_part",
+	    "alexsmobs:laviathan",
+	    "alexsmobs:rocky_roller",
+	    "alexsmobs:flutter",
+	    "alexsmobs:skelewag",
+	    "alexsmobs:farseer",
+	    "alexsmobs:skreecher",
+	    "alexsmobs:underminer",
+	    "alexsmobs:warped_mosco"
+	]
+}

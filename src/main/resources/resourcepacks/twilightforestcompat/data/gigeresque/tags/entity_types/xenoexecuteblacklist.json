@@ -1,0 +1,33 @@
+{
+	"replace": false,
+	"values": [
+		"twilightforest:minoshroom",
+	    "twilightforest:mist_wolf",
+	    "twilightforest:mosquito_swarm",
+	    "twilightforest:naga",
+	    "twilightforest:quest_ram",
+	    "twilightforest:adherent",
+	    "twilightforest:alpha_yeti",
+	    "twilightforest:armored_giant",
+	    "twilightforest:carminite_ghastguard",
+	    "twilightforest:carminite_ghastling",
+	    "twilightforest:carminite_golem",
+	    "twilightforest:death_tome",
+	    "twilightforest:giant_miner",
+	    "twilightforest:harbinger_cube",
+	    "twilightforest:hydra",
+	    "twilightforest:ice_crystal",
+	    "twilightforest:king_spider",
+	    "twilightforest:knight_phantom",
+	    "twilightforest:lich",
+	    "twilightforest:lich_minion",
+	    "twilightforest:unstable_ice_core",
+	    "twilightforest:ur_ghast",
+	    "twilightforest:wraith",
+	    "twilightforest:skeleton_druid",
+	    "twilightforest:roving_cube",
+	    "twilightforest:snow_guardian",
+	    "twilightforest:snow_queen",
+	    "twilightforest:stable_ice_core"
+	]
+}

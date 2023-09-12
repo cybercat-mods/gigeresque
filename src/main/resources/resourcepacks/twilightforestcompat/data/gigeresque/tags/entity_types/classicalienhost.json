@@ -1,0 +1,14 @@
+{
+	"replace": false,
+	"values": [
+		"twilightforest:blockchain_goblin",
+		"twilightforest:kobold",
+		"twilightforest:upper_goblin_knight",
+		"twilightforest:lower_goblin_knight",
+		"twilightforest:minotaur",
+		"twilightforest:redcap",
+		"twilightforest:redcap_sapper",
+		"twilightforest:troll",
+		"twilightforest:yeti"
+	]
+}

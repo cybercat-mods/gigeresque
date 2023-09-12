@@ -1,0 +1,16 @@
+{
+	"replace": false,
+	"values": [
+		"graveyard:corrupted_pillager",
+	    "graveyard:corrupted_vindicator",
+	    "graveyard:ghoul",
+	    "graveyard:ghouling",
+	    "graveyard:lich",
+	    "graveyard:nameless_hanged",
+	    "graveyard:nightmare",
+	    "graveyard:reaper",
+	    "graveyard:revenant",
+	    "graveyard:skeleton_creeper",
+	    "graveyard:wraith"
+	]
+}

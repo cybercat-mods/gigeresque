@@ -1,0 +1,20 @@
+{
+	"replace": false,
+	"values": [
+		"twilightforest:minotaur",
+	    "twilightforest:bighorn_sheep",
+	    "twilightforest:boar",
+	    "twilightforest:deer",
+	    "twilightforest:hedge_spider",
+	    "twilightforest:hostile_wolf",
+	    "twilightforest:troll",
+	    "twilightforest:winter_wolf",
+	    "twilightforest:yeti",
+	    "twilightforest:redcap_sapper",
+	    "twilightforest:redcap",
+	    "twilightforest:slime_beetle",
+	    "twilightforest:pinch_beetle",
+	    "twilightforest:penguin",
+	    "twilightforest:fire_beetle"
+	]
+}

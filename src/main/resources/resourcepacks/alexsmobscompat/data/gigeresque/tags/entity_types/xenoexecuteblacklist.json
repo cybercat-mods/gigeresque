@@ -1,0 +1,33 @@
+{
+	"replace": false,
+	"values": [
+		"alexsmobs:gorilla",
+	    "alexsmobs:warped_mosco",
+	    "alexsmobs:bone_serpent",
+	    "alexsmobs:bone_serpent_part",
+	    "alexsmobs:crocodile",
+	    "alexsmobs:orca",
+	    "alexsmobs:centipede_body",
+	    "alexsmobs:centipede_head",
+	    "alexsmobs:centipede_tail",
+	    "alexsmobs:moose",
+	    "alexsmobs:elephant",
+	    "alexsmobs:guster",
+	    "alexsmobs:soul_vulture",
+	    "alexsmobs:straddler",
+	    "alexsmobs:cachalot_whale",
+	    "alexsmobs:enderiophage",
+	    "alexsmobs:void_worm",
+	    "alexsmobs:void_worm_part",
+	    "alexsmobs:laviathan",
+	    "alexsmobs:anaconda",
+	    "alexsmobs:anaconda_part",
+	    "alexsmobs:rocky_roller",
+	    "alexsmobs:bunfungus",
+	    "alexsmobs:giant_squid",
+	    "alexsmobs:skelewag",
+	    "alexsmobs:rhinoceros",
+	    "alexsmobs:farseer",
+	    "alexsmobs:underminer"
+	]
+}
