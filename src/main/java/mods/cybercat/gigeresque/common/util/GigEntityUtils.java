@@ -51,8 +51,8 @@ public record GigEntityUtils() {
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
-		return !((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || !target.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || (target.getBlockStateOn().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS)
-				|| target.level().getBlockStates(target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || self.isVehicle() || (GigEntityUtils.isFacehuggerAttached(target)) && target.isAlive());
+		return !((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || !target.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GIgBlocks.NEST_RESIN_WEB_CROSS) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
+				|| self.isVehicle() || (GigEntityUtils.isFacehuggerAttached(target)) && target.isAlive());
 	}
 
 	public static boolean removeTarget(LivingEntity target, AlienEntity self) {

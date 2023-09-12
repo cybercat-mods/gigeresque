@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GIgBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -54,7 +53,7 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS));
+		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
 	}
 
 	@Override
@@ -76,9 +75,6 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
 			return;
 
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
-			return;
-
-		if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GIgBlocks.NEST_RESIN_WEB_CROSS)))
 			return;
 
 		if (entity instanceof StalkerEntity) {
