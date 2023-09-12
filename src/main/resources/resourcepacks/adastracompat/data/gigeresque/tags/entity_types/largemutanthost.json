@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"values": [
+		"ad_stra:luarian",
+		"ad_stra:pygro",
+		"ad_stra:pygro_brute",
+		"ad_stra:luarian_wandering_trader",
+		"ad_stra:martian_raptor",
+		"ad_stra:mogler",
+	]
+}
