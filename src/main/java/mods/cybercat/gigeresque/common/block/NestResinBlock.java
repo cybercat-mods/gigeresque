@@ -137,14 +137,12 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-//		var test = RandomUtil.getRandomPositionWithinRange(blockPos, 3, 1, 3, false, serverLevel);
 		if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN) )
 			if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
 				serverLevel.setBlockAndUpdate(blockPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
-//			else
-//				for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-//					if (serverLevel.getBlockState(test).isAir() && serverLevel.getBlockState(test.below()).isSolid()) 
-//						serverLevel.setBlockAndUpdate(testPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
+			else
+				if (serverLevel.getBlockState(blockPos.above()).isAir() && serverLevel.getBlockState(blockPos.below()).isSolid()) 
+					serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 		super.randomTick(blockState, serverLevel, blockPos, randomSource);
 	}
 
