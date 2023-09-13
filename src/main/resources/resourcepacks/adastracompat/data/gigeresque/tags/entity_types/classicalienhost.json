@@ -1,9 +1,9 @@
 {
 	"replace": false,
 	"values": [
-		"ad_astra:luarian",
+		"ad_astra:lunarian",
 		"ad_astra:pygro",
 		"ad_astra:pygro_brute",
-		"ad_astra:luarian_wandering_trader"
+		"ad_astra:lunarian_wandering_trader"
 	]
 }
