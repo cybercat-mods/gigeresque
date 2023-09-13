@@ -1,18 +1,12 @@
-v.0.5.42
+v.0.5.43
 
-- Adds new optional config to enable Shifts Sneaky Egg datapck
-	- This Datapack will change how the Eggs triggers!
-		What it brings:
-		-Sneaking around will drop their detection radius.
-		-There is a special case where encasing an egg will prevent it from triggering at all, until it is open.
-
-		Notes:
-		-Hurting them while sneaking will still cause them to trigger.
-		-Uncrouching will bring back their detection radius.
-		-Approaching an egg too closely will still make it hatch.
-- Fixes misspelled lang entries.
-- Sets mobs being held by Xenos to be persistent.
-- Sets mobs being eggmorpged to be persistent.
+- Added isVehicle check to hissing.
+- Fixes exploit of the sound system.
+- Fixes Mixin crash.
+- Fixes Aliens attacking things just touching the Nest Cross block. Now when touching, entities are auto moved to center of the block.
+- Nest resin when a full block will place a resin cross block above itself if there is room.
+- Makes building nests use a check if the block at the feet of the Xeno is a not a nest block before it places more, allow more nest blocks to be placed.
+- Nesting now places a set of full resin blocks below the resin at it's feet.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
