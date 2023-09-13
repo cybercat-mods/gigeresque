@@ -28,8 +28,10 @@ public class NestResinWebFullBlock extends Block {
 		if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {
 			livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
-			if (!state.is(GigBlocks.NEST_RESIN_WEB_CROSS))
+			if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
 				livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
+			if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
+				livingEntity.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
 		}
 	}
 }
