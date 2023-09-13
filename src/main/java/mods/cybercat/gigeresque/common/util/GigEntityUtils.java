@@ -47,7 +47,7 @@ public record GigEntityUtils() {
 
 	public static boolean faceHuggerTest(LivingEntity target, AlienEntity self) {
 		return target instanceof LivingEntity && !(target instanceof AlienEntity || target instanceof Slime || target instanceof Strider) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && !(target instanceof AmbientCreature) && ((LivingEntity) target).getMobType() != MobType.UNDEAD && !(target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-				&& !GigEntityUtils.removeFaceHuggerTarget(target, self);
+				&& !GigEntityUtils.removeFaceHuggerTarget(target, self) && GigEntityUtils.isTargetHostable(target);
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
