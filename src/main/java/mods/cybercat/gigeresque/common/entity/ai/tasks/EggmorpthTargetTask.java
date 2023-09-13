@@ -55,7 +55,7 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 		if (target != null)
 			if (test != nestLocation)
 				if (!nestLocation.closerToCenterThan(entity.position(), 1.4))
-					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 0));
+					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 1));
 				else {
 					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
 						if (level.getBlockState(test).isAir() && level.getBlockState(test.below()).isSolid()) {

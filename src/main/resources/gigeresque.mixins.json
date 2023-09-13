@@ -15,7 +15,8 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.WanderingTraderEntityMixin",
     "common.entity.WardenEntityMixin",
-    "common.entity.HorseMixin"
+    "common.entity.HorseMixin",
+    "common.PointOfInterestTypesInvoker"
   ],
   "client": [
     "client.entity.render.AzureEntityRendererMixin",
