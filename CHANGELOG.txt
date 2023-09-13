@@ -1,12 +1,8 @@
-v.0.5.43
+v.0.5.44
 
-- Added isVehicle check to hissing.
-- Fixes exploit of the sound system.
-- Fixes Mixin crash.
-- Fixes Aliens attacking things just touching the Nest Cross block. Now when touching, entities are auto moved to center of the block.
-- Nest resin when a full block will place a resin cross block above itself if there is room.
-- Makes building nests use a check if the block at the feet of the Xeno is a not a nest block before it places more, allow more nest blocks to be placed.
-- Nesting now places a set of full resin blocks below the resin at it's feet.
+- Fixes Runnerburster not having proper Aggro check.
+- Fixes Ad Astra compatibility on tags. 
+- Fixes Mobs in a tower of resin moving to the top block.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
