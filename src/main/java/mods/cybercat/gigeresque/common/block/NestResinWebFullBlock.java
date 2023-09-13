@@ -25,10 +25,11 @@ public class NestResinWebFullBlock extends Block {
 			return;
 		if ((entity instanceof Player && (((Player) entity).isCreative() || ((Player) entity).isSpectator())))
 			return;
-		if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host)entity).hasParasite()) {
+		if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {
 			livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
-			livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
+			if (!state.is(GigBlocks.NEST_RESIN_WEB_CROSS))
+				livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
 		}
 	}
 }
