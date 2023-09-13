@@ -38,7 +38,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 			callbackInfo.cancel();
 	}
 
-	@Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") })
+	@Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") }, cancellable = true)
 	public boolean cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
 		if (this instanceof Host host && host.hasParasite())
 			callbackInfo.setReturnValue(true);
