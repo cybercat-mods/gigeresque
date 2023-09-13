@@ -1,10 +1,10 @@
 {
 	"replace": false,
 	"values": [
-		"ad_stra:corrupted_lunarian",
-		"ad_stra:zombified_pygro",
-		"ad_stra:zombified_mogler",
-		"ad_stra:sulfur_creeper",
-		"ad_stra:star_crawler"
+		"ad_astra:corrupted_lunarian",
+		"ad_astra:zombified_pygro",
+		"ad_astra:zombified_mogler",
+		"ad_astra:sulfur_creeper",
+		"ad_astra:star_crawler"
 	]
 }

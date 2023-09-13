@@ -1,8 +1,8 @@
 {
 	"replace": false,
 	"values": [
-		"ad_stra:martian_raptor",
-		"ad_stra:mogler",
-		"ad_stra:glacian_ram"
+		"ad_astra:martian_raptor",
+		"ad_astra:mogler",
+		"ad_astra:glacian_ram"
 	]
 }
