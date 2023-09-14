@@ -33,6 +33,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -263,7 +264,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		if (source != damageSources().genericKill())
 			if (source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
 				setIsHatching(true);
-		
+
 		if (!this.level().isClientSide) {
 			var attacker = source.getEntity();
 			if (attacker != null)
@@ -301,11 +302,13 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 		super.baseTick();
 		this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(Gigeresque.config.alieneggHatchRange)).forEach(target -> {
 			if (target.isAlive())
-				if (GigEntityUtils.faceHuggerTest(target, this))
-					if (!(target instanceof Player))
+				if (GigEntityUtils.faceHuggerTest(target, this)) {
+					if (target instanceof Mob)
 						setIsHatching(true);
-					else if (target instanceof Player player && !(player.isCreative() || player.isSpectator()))
-						setIsHatching(true);
+					if (target instanceof Player player)
+						if (!(player.isCreative() || player.isSpectator()))
+							setIsHatching(true);
+				}
 		});
 	}
 

@@ -58,7 +58,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -190,7 +189,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public boolean isAttachedToHost() {
-		return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity || this.isPassenger();
+		return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity || !this.isPassenger();
 	}
 
 	@Override
@@ -246,10 +245,9 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			}
 
 			var vehicle = this.getVehicle();
-			if (vehicle != null && ((Host) vehicle).isBleeding() || vehicle instanceof Player && (((Player) vehicle).isCreative() || ((Player) vehicle).isSpectator())) {
-				if (((Player) vehicle).hasEffect(MobEffects.BLINDNESS))
-					((Player) vehicle).removeEffect(MobEffects.BLINDNESS);
-				this.stopRiding();
+			if (vehicle != null && ((Host) vehicle).isBleeding()) {
+				if (((LivingEntity) vehicle).hasEffect(MobEffects.BLINDNESS))
+					((LivingEntity) vehicle).removeEffect(MobEffects.BLINDNESS);
 				detachFromHost(true);
 				setIsInfertile(true);
 				this.kill();
@@ -296,7 +294,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
-		
+
 		if (!this.level().isClientSide) {
 			var attacker = source.getEntity();
 			if (attacker != null)
