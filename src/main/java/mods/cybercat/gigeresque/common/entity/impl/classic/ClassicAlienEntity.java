@@ -359,7 +359,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						// Randomly walk around
 						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting() || this.isPassedOut()),
 						// Idle
-						new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(1800, 2400))));
+						new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
