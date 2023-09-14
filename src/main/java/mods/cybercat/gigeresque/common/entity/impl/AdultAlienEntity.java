@@ -242,7 +242,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 		if (!level().isClientSide && this.isVehicle())
 			this.setAggressive(false);
-		
+
 		if (this.isAggressive()) {
 			this.wakeupCounter = 0;
 			this.setPassedOutStatus(false);
@@ -281,14 +281,15 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 		// Hissing Logic
 		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
-			hissingCooldown++;
+			if (!this.level().isClientSide)
+				hissingCooldown++;
 
-			if (hissingCooldown == 20) {
+			if (hissingCooldown == 80) {
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 				setIsHissing(true);
 			}
 
-			if (hissingCooldown > 80) {
+			if (hissingCooldown > 160) {
 				setIsHissing(false);
 				hissingCooldown = -500;
 			}
@@ -349,7 +350,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		var multiplier = 1.0f;
 		if (source == damageSources().onFire())
 			multiplier = 2.0f;
-		
+
 		if (!this.level().isClientSide) {
 			var attacker = source.getEntity();
 			if (attacker != null)
