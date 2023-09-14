@@ -51,7 +51,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		if (!entity.isAggressive()) {
 			if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
 				startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 7.0)) {
+			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 2.0)) {
 				var world = entity.level();
 				var random = entity.getRandom();
 				entity.triggerAnim("attackController", "swipe");
