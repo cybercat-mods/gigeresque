@@ -16,6 +16,7 @@ import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.structures.GigStructures;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.util.MobSpawn;
 import net.fabricmc.api.ModInitializer;
@@ -48,10 +49,7 @@ public class Gigeresque implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
 		GigItemGroups.getInstance().initialize();
 		GigCompats.getInstance().initialize();;
-		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_BLOCK, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB, 20, 5);
-		FlammableBlockRegistry.getDefaultInstance().add(GigBlocks.NEST_RESIN_WEB_CROSS, 20, 5);
+		FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
 		if (config.enableSneakyEggs)
 			FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
 				ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED);
