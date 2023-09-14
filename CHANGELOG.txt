@@ -1,13 +1,11 @@
-v.0.5.45
+v.0.5.46
 
-- Fixed misspelled Lunarians in Ad Astra tags.
-- Fixed nest cross blocks not properly moving the entity.
-- Lowered threshold on triggering Classic Xenos walking animation.
-- Increased timer on Stasis, to make it less common.
-- Increased timer on hissing to make it happen less.
-- Make a lot of the timers run only on the server thread, not the render thread.
-- Lowered Idle timer on Xenos, they will now move far more often.
-- Xenos will now seek out dark areas of the world randomly. 
+- Fixed hissing check desyncing. Moved to NBT data
+- Fixed Nest building replacing the Gig Dungeon Blocks
+- Fixed Facehuggers rendering issue if there is a block above the entity it's hugging.
+- Fixed edge case crash on Huggers/Eggs.
+- Added compat for the mod: promenade - Credit to LmpulsiveLass
+- Expanded optional mods on CurseForge and Modrinth for mods we ship compatibility with. 
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
