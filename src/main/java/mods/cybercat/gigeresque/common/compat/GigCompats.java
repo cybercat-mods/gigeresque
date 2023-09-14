@@ -125,5 +125,12 @@ public record GigCompats() implements GigeresqueInitializer {
 						// Mod Compat datapack found in resources/resourcepacks
 						Constants.modResource("adastracompat"), modContainer, Component.literal("adastracompat"), ResourcePackActivationType.DEFAULT_ENABLED);
 			}));
+
+		if (FabricLoader.getInstance().isModLoaded("promenade"))
+			FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
+				ResourceManagerHelper.registerBuiltinResourcePack(
+						// Mod Compat datapack found in resources/resourcepacks
+						Constants.modResource("promenadecompat"), modContainer, Component.literal("promenadecompat"), ResourcePackActivationType.DEFAULT_ENABLED);
+			}));
 	}
 }
