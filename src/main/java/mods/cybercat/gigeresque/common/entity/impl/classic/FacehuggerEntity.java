@@ -190,7 +190,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public boolean isAttachedToHost() {
-		return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity;
+		return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity || this.isPassenger();
 	}
 
 	@Override
