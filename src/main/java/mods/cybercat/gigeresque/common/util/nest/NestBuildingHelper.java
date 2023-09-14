@@ -11,6 +11,7 @@ import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
@@ -30,20 +31,24 @@ public class NestBuildingHelper {
 						if (nestBlockData == null)
 							continue;
 
-						if (alien.level().getLightEmission(alien.blockPosition()) < 8) {
+						if (alien.level().getLightEmission(alien.blockPosition()) < 6) {
 							var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
 							if (nestBlockData.isFloor()) {
-								alien.level().setBlockAndUpdate(blockPos, resinBlock);
-								alien.level().setBlockAndUpdate(blockPos.below(), resinBlock.setValue(NestResinBlock.LAYERS, 8));
+								if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									alien.level().setBlockAndUpdate(blockPos, resinBlock);
+								if (!alien.level().getBlockState(blockPos.below()).is(GigTags.DUNGEON_BLOCKS))
+									alien.level().setBlockAndUpdate(blockPos.below(), resinBlock.setValue(NestResinBlock.LAYERS, 8));
 							}
 
 							if (nestBlockData.isCorner())
-								alien.level().setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+								if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									alien.level().setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 
 							if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
 								var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
 										NestResinWebVariant.values()[new Random().nextInt(NestResinWebVariant.values().length)]);
-								alien.level().setBlockAndUpdate(blockPos, nestResinWebState);
+								if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									alien.level().setBlockAndUpdate(blockPos, nestResinWebState);
 							}
 							if (alien.level().isClientSide)
 								alien.playSound(SoundEvents.HONEY_BLOCK_STEP);
@@ -54,7 +59,7 @@ public class NestBuildingHelper {
 	}
 
 	public static boolean isResinBlock(Block block) {
-		return block == GigBlocks.NEST_RESIN || block == GigBlocks.NEST_RESIN_WEB || block == GigBlocks.NEST_RESIN_WEB_CROSS || block == GigBlocks.NEST_RESIN_BLOCK;
+		return block.defaultBlockState().is(GigTags.NEST_BLOCKS);
 	}
 
 	private static NestBlockData getNestBlockData(Level world, BlockPos blockPos) {
