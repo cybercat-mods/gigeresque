@@ -112,6 +112,17 @@ if (file('key.properties').exists()) {
             	optionalDependency 'dripsounds-fabric'
             	optionalDependency 'sound-physics-remastered'
             	optionalDependency 'ad-astra'
+            	optionalDependency 'aftershock'
+            	optionalDependency 'arachnids'
+            	optionalDependency 'jar-jar-binks'
+            	optionalDependency 'living-things'
+            	optionalDependency 'caracal-mod'
+            	optionalDependency 'illager-invasion'
+            	optionalDependency 'minecraft-comes-alive-mca'
+            	optionalDependency 'promenade'
+            	optionalDependency 'friends-and-foes'
+            	optionalDependency 'the-graveyard-fabric'
+            	optionalDependency 'betterend'
         	}
         	mainArtifact(remapJar)
 
@@ -146,6 +157,18 @@ if (file('key.properties').exists()) {
             optional.project "dripsounds-fabric"
             optional.project "sound-physics-remastered"
             optional.project "ad-astra"
+            optional.project "aftershock"
+            optional.project "arachnids"
+            optional.project "jar-jar-binks"
+            optional.project "living-things"
+            optional.project "betterend"
+            optional.project "caracal_mob"
+            optional.project "illager-invasion"
+            optional.project "minecraft-comes-alive-reborn"
+            optional.project "promenade"
+            optional.project "the-graveyard-fabric"
+            optional.project "cave-dweller-fabric"
+            optional.project "friends-and-foes"
    		}
 	}
 }
