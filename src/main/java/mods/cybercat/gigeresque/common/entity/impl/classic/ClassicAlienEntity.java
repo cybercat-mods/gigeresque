@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
@@ -356,6 +357,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching)).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 				// Random
 				new OneRandomBehaviour<>(
+						// Find Darkness
+						new FindDarknessTask<>(),
 						// Randomly walk around
 						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting() || this.isPassedOut()),
 						// Idle
