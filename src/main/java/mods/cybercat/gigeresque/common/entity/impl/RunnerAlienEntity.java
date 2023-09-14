@@ -213,7 +213,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				// Looks at target
-				new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(entity -> !this.isPassedOut() || !this.isSearching),
+				new LookAtTarget<>().stopIf(entity -> this.isPassedOut()).startCondition(entity -> !this.isPassedOut() || !this.isSearching()),
 				// Flee Fire
 				new FleeFireTask<>(3.5F),
 				// Move to target

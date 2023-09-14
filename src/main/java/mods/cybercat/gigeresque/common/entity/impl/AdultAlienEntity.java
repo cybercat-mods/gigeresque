@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl;
 
-import static java.lang.Math.max;
-
 import org.jetbrains.annotations.NotNull;
 
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
@@ -55,8 +53,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-//	protected static final EntityDataAccessor<Float> STATIS_TIMER = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
-//	protected static final EntityDataAccessor<Boolean> IS_STATIS = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
@@ -71,7 +68,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	protected long hissingCooldown = 0L;
 	public int statisCounter = 0;
-	public boolean isSearching = false;
 	protected long searchingProgress = 0L;
 	protected long searchingCooldown = 0L;
 	protected int attackProgress = 0;
@@ -83,12 +79,12 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	public AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
 		super(type, world);
-		setMaxUpStep(2.5f);
+		this.setMaxUpStep(2.5f);
 		this.vibrationUser = new AzureVibrationUser(this, 2.5F);
-		navigation = landNavigation;
-		moveControl = landMoveControl;
-		lookControl = landLookControl;
-		setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
+		this.navigation = landNavigation;
+		this.moveControl = landMoveControl;
+		this.lookControl = landLookControl;
+        this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0f);
 	}
 
 	public void setWakingUpStatus(boolean passout) {
@@ -131,6 +127,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.set(IS_BREAKING, isBreaking);
 	}
 
+	public boolean isSearching() {
+		return entityData.get(IS_SEARCHING);
+	}
+
+	public void setIsSearching(boolean isHissing) {
+		entityData.set(IS_SEARCHING, isHissing);
+	}
+
 	public boolean isHissing() {
 		return entityData.get(IS_HISSING);
 	}
@@ -153,16 +157,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
 		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
-			moveRelative(getSpeed(), movementInput);
-			move(MoverType.SELF, getDeltaMovement());
-			setDeltaMovement(getDeltaMovement().scale(0.9));
-			if (getTarget() == null) {
-				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-			}
-		} else {
+		if (this.isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+			this.moveRelative(getSpeed(), movementInput);
+			this.move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.9));
+			if (getTarget() == null) 
+				this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+		} else 
 			super.travel(movementInput);
-		}
 	}
 
 	@Override
@@ -193,8 +195,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(IS_BREAKING, false);
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_HEADBITE, false);
+		entityData.define(IS_SEARCHING, false);
 		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
-		// this.entityData.define(CLIENT_ANGER_LEVEL, 0);
 	}
 
 	@Override
@@ -205,6 +207,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		nbt.putBoolean("wakingup", this.isWakingUp());
 		nbt.putBoolean("isHissing", isHissing());
 		nbt.putBoolean("isBreaking", isBreaking());
+		nbt.putBoolean("isSearching", isSearching());
 		nbt.putBoolean("isExecuting", isExecuting());
 		nbt.putBoolean("isHeadBite", isBiting());
 	}
@@ -216,6 +219,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		setGrowth(nbt.getFloat("growth"));
 		setIsHissing(nbt.getBoolean("isHissing"));
 		setIsBreaking(nbt.getBoolean("isBreaking"));
+		setIsSearching(nbt.getBoolean("isSearching"));
 		setIsExecuting(nbt.getBoolean("isExecuting"));
 		setIsExecuting(nbt.getBoolean("isHeadBite"));
 		setPassedOutStatus(nbt.getBoolean("isStasis"));
@@ -238,7 +242,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	public void tick() {
 		super.tick();
 		if (!level().isClientSide && this.isAlive())
-			grow(this, 1 * getGrowthMultiplier());
+			this.grow(this, 1 * getGrowthMultiplier());
 
 		if (!level().isClientSide && this.isVehicle())
 			this.setAggressive(false);
@@ -251,7 +255,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		// Passing and waking up logic
 		var velocityLength = this.getDeltaMovement().horizontalDistance();
 		if (!this.getTypeName().getString().equalsIgnoreCase("neomorph"))
-			if ((velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching && !this.isHissing() && !this.isPassedOut())) {
+			if ((velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
 				if (!this.level().isClientSide)
 					this.passoutCounter++;
 //				if (!this.level().isClientSide)
@@ -280,91 +284,81 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 				this.passoutCounter = 0;
 
 		// Hissing Logic
-		if (!level().isClientSide && (!this.isSearching && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
+		if (velocityLength == 0 && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
 			if (!this.level().isClientSide)
-				hissingCooldown++;
+				this.hissingCooldown++;
 
-			if (hissingCooldown == 80) {
-				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
-				setIsHissing(true);
-			}
+			if (hissingCooldown == 80) 
+				this.setIsHissing(true);
 
 			if (hissingCooldown > 160) {
-				setIsHissing(false);
-				hissingCooldown = -500;
+				this.setIsHissing(false);
+				this.hissingCooldown = -500;
 			}
 		}
 
 		// Searching Logic
-		if (level().isClientSide && (velocityLength == 0 && this.getDeltaMovement().horizontalDistance() == 0.0 && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && this.isPassedOut() == false)) {
-			if (isSearching) {
-				if (searchingProgress > Constants.TPS * 3) {
-					searchingProgress = 0;
-					searchingCooldown = Constants.TPS * 15L;
-					isSearching = false;
-				} else {
-					if (!this.level().isClientSide)
-						searchingProgress++;
-				}
-			} else {
-				searchingCooldown = max(searchingCooldown - 1, 0);
+		if ((velocityLength == 0 && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut())) {
+			if (!this.level().isClientSide)
+				this.searchingProgress++;
 
-				if (searchingCooldown <= 0) {
-					int next = random.nextInt(10);
+			if (this.searchingProgress == 80) {
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
+				this.setIsSearching(true);
+			}
 
-					isSearching = next == 0 || next == 1;
-				}
+			if (this.searchingProgress > 160) {
+				this.setIsSearching(false);
+				this.searchingProgress = -500;
 			}
 		}
 
-		if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
+		if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
 
 		if (!this.isVehicle() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			if (!this.level().isClientSide)
-				breakingCounter++;
-			if (breakingCounter > 10)
+				this.breakingCounter++;
+			if (this.breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
-						if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
-							if (!level().isClientSide)
+					if (!(this.level().getBlockState(testPos).is(Blocks.GRASS) || this.level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
+						if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(testPos).isAir()) {
+							if (!this.level().isClientSide)
 								this.level().destroyBlock(testPos, true, null, 512);
 							this.triggerAnim("attackController", "swipe");
-							breakingCounter = -90;
-							if (level().isClientSide()) {
+							this.breakingCounter = -90;
+							if (this.level().isClientSide()) {
 								for (var i = 2; i < 10; i++)
-									level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
-								level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+									this.level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
+								this.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 							}
-						} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-							if (!level().isClientSide)
+						} else if (!this.level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !this.level().getBlockState(testPos).isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
+							if (!this.level().isClientSide)
 								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
 							this.hurt(damageSources().generic(), 5);
-							breakingCounter = -90;
+							this.breakingCounter = -90;
 						}
 				}
-			if (breakingCounter >= 25)
-				breakingCounter = 0;
+			if (this.breakingCounter >= 25)
+				this.breakingCounter = 0;
 		}
 	}
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		var multiplier = 1.0f;
-		if (source == damageSources().onFire())
+		if (source == this.damageSources().onFire())
 			multiplier = 2.0f;
 
-		if (!this.level().isClientSide) {
-			var attacker = source.getEntity();
-			if (attacker != null)
-				if (attacker instanceof LivingEntity)
-					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
-		}
+		if (!this.level().isClientSide) 
+			if (source.getEntity() != null)
+				if (source.getEntity() instanceof LivingEntity attacker)
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
 
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-		if (!this.level().isClientSide && source != damageSources().genericKill()) {
+		if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
 			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4))
@@ -381,7 +375,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				level().setBlockAndUpdate(this.blockPosition(), newState);
+				this.level().setBlockAndUpdate(this.blockPosition(), newState);
 		}
 		return super.hurt(source, amount * multiplier);
 	}
@@ -411,7 +405,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	/*
 	 * GROWTH
 	 */
-
 	@Override
 	public float getMaxGrowth() {
 		return Constants.TPM;

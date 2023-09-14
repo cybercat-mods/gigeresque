@@ -335,7 +335,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Take target to nest
 				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
 				// Looks at target
-				new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(entity -> !this.isPassedOut() || !this.isSearching || !this.isExecuting()),
+				new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
 				// Move to target
 				new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting()));
 	}
@@ -354,7 +354,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						// Look at players
 						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 						// Look around randomly
-						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching)).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 				// Random
 				new OneRandomBehaviour<>(
 						// Find Darkness
@@ -419,44 +419,30 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
 					else
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-			} else if (isDead && !this.isVehicle())
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.onGround() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
+			} else if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.onGround() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			else if (this.isCrawling() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("footstepSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("handstepSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) 
+				if (this.level().isClientSide) 
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("thudSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("biteSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("biteSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HEADBITE, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
-			if (event.getKeyframeData().getSound().matches("crunchSoundkey")) {
-				if (this.level().isClientSide) {
+			if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-				}
-			}
 		}).triggerableAnim("carry", GigAnimationsDefault.EXECUTION_CARRY) // carry
 				.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 				.triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
@@ -495,7 +481,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				}));
 		controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+			if (this.isHissing() == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
 				return event.setAndContinue(GigAnimationsDefault.HISS);
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {

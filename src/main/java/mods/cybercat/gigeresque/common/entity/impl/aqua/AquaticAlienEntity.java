@@ -308,7 +308,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 					return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
 				else if (!this.isAggressive() && event.isMoving() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.CRAWL);
-				else if (isSearching && !this.isAggressive() && !isDead && this.isPassedOut() == false)
+				else if (isSearching() && !this.isAggressive() && !isDead && this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.AMBIENT);
 				else if (this.isPassedOut() == false)
 					return event.setAndContinue(GigAnimationsDefault.IDLE_LAND2);
