@@ -108,6 +108,21 @@ if (file('key.properties').exists()) {
             	requiredDependency 'forgified-fabric-api'  
             	requiredDependency 'sinytra-connector'  
             	requiredDependency 'smartbrainlib' 
+            	optionalDependency 'waterdripsound'
+            	optionalDependency 'sound-physics-remastered'
+            	optionalDependency 'ad-astra'
+            	optionalDependency 'aftershock'
+            	optionalDependency 'arachnids'
+            	optionalDependency 'jar-jar-binks'
+            	optionalDependency 'living-things'
+            	optionalDependency 'caracal-mod'
+            	optionalDependency 'illager-invasion'
+            	optionalDependency 'minecraft-comes-alive-mca'
+            	optionalDependency 'the-twilight-forest'
+            	optionalDependency 'the-graveyard-forge'
+            	optionalDependency 'alexs-mobs'
+            	optionalDependency 'friends-and-foes-forge'
+            	optionalDependency 'cave-dweller-evolved'
         	}
         	mainArtifact(remapJar)
 
@@ -138,6 +153,19 @@ if (file('key.properties').exists()) {
         	required.project "connector"
         	required.project "forgified-fabric-api"
         	required.project "smartbrainlib"
+            optional.project "waterdripsound"
+            optional.project "sound-physics-remastered"
+            optional.project "ad-astra"
+            optional.project "aftershock"
+            optional.project "arachnids"
+            optional.project "jar-jar-binks"
+            optional.project "living-things"
+            optional.project "betterend"
+            optional.project "caracal_mob"
+            optional.project "illager-invasion"
+            optional.project "minecraft-comes-alive-reborn"
+            optional.project "the-graveyard-forge"
+            optional.project "friends-and-foes-forge"
    		}
 	}
 }
