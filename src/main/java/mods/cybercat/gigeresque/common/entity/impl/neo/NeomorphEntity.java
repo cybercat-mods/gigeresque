@@ -207,7 +207,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public BrainActivityGroup<NeomorphEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new AlienMeleeAttack(12).whenStopping(e -> this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F), new AlienMeleeAttack(12).whenStopping(e -> this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

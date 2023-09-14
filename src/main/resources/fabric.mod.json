@@ -23,7 +23,7 @@
     "fabric" : "*",
     "minecraft" : "1.20.1",
     "azurelib" : ">=1.0.28",
-    "smartbrainlib" : ">=1.11",
+    "smartbrainlib" : ">=1.12",
     "java" : ">=17"
   },
   "accessWidener" : "gigeresque.accesswidener",

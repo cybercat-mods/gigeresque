@@ -240,7 +240,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 
 	@Override
 	public BrainActivityGroup<NeomorphAdolescentEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(2.5f), new AlienMeleeAttack(10));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5f), new AlienMeleeAttack(10));
 	}
 
 	/*

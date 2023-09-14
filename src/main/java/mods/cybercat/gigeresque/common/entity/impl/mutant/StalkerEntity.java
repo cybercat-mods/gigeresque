@@ -150,7 +150,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public BrainActivityGroup<StalkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new LeapAtTargetTask<>(0), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), // move to
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new LeapAtTargetTask<>(0), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed), // move to
 				new AlienMeleeAttack(13));// attack
 	}
 

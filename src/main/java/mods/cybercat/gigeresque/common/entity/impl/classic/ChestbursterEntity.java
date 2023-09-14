@@ -239,7 +239,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.2F));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F));
 	}
 
 	/*

@@ -118,7 +118,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
 	@Override
 	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AlienMeleeAttack(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AlienMeleeAttack(20));
 	}
 
 	/*

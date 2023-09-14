@@ -247,7 +247,7 @@ public class RunnerAlienEntity extends AdultAlienEntity implements SmartBrainOwn
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
 				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), 
-				new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.runnerXenoAttackSpeed).stopIf(entity -> this.isPassedOut()), 
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.runnerXenoAttackSpeed).stopIf(entity -> this.isPassedOut()), 
 				new AlienMeleeAttack(10));
 	}
 

@@ -139,7 +139,7 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 
 	@Override
 	public BrainActivityGroup<SpitterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.stalkerAttackSpeed), new AlienMeleeAttack(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed), new AlienMeleeAttack(20));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

@@ -195,7 +195,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(!this.wasTouchingWater ? 0.95F : 1.5F), new AlienMeleeAttack(10));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> !this.wasTouchingWater ? 0.95F : 1.5F), new AlienMeleeAttack(10));
 	}
 
 	@Override

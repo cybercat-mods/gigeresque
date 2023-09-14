@@ -371,7 +371,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Invalidate Target
 				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
 				// Walk to Target
-				new SetWalkTargetToAttackTarget<>().speedMod(Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> this.isPassedOut() || (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))),
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> this.isPassedOut() || (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))),
 				// Jump to Target
 				new JumpToTargetTask<>(10),
 				// Classic Xeno attacking

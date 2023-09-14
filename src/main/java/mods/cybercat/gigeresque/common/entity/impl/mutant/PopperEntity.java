@@ -126,7 +126,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
 	@Override
 	public BrainActivityGroup<PopperEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod(1.2F), new AttackExplodeTask(17));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AttackExplodeTask(17));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
