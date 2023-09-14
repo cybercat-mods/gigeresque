@@ -1,11 +1,7 @@
-v.0.5.46
+v.0.5.47
 
-- Fixed hissing check desyncing. Moved to NBT data
-- Fixed Nest building replacing the Gig Dungeon Blocks
-- Fixed Facehuggers rendering issue if there is a block above the entity it's hugging.
-- Fixed edge case crash on Huggers/Eggs.
-- Added compat for the mod: promenade - Credit to LmpulsiveLass
-- Expanded optional mods on CurseForge and Modrinth for mods we ship compatibility with. 
+- Fixed broken rotation on huggers.
+- Removes Martian Raptor from Runner tag as they are considered undead.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
