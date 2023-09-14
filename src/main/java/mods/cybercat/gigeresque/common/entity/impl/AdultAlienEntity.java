@@ -84,7 +84,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		this.navigation = landNavigation;
 		this.moveControl = landMoveControl;
 		this.lookControl = landLookControl;
-        this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0f);
+		this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0f);
 	}
 
 	public void setWakingUpStatus(boolean passout) {
@@ -161,9 +161,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			this.moveRelative(getSpeed(), movementInput);
 			this.move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(0.9));
-			if (getTarget() == null) 
+			if (getTarget() == null)
 				this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-		} else 
+		} else
 			super.travel(movementInput);
 	}
 
@@ -288,7 +288,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (!this.level().isClientSide)
 				this.hissingCooldown++;
 
-			if (hissingCooldown == 80) 
+			if (hissingCooldown == 80)
 				this.setIsHissing(true);
 
 			if (hissingCooldown > 160) {
@@ -316,7 +316,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
 
-		if (!this.isVehicle() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
+		if (!this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
 			if (!this.level().isClientSide)
 				this.breakingCounter++;
 			if (this.breakingCounter > 10)
@@ -325,14 +325,17 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 						if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(testPos).isAir()) {
 							if (!this.level().isClientSide)
 								this.level().destroyBlock(testPos, true, null, 512);
-							this.triggerAnim("attackController", "swipe");
+							if (!this.isVehicle())
+								this.triggerAnim("attackController", "swipe");
+							if (this.isVehicle())
+								this.triggerAnim("attackController", "swipe_left_tail");
 							this.breakingCounter = -90;
 							if (this.level().isClientSide()) {
 								for (var i = 2; i < 10; i++)
 									this.level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
 								this.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
 							}
-						} else if (!this.level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !this.level().getBlockState(testPos).isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
+						} else if (!this.isVehicle() && !this.level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !this.level().getBlockState(testPos).isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
 							if (!this.level().isClientSide)
 								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
 							this.hurt(damageSources().generic(), 5);
@@ -350,7 +353,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		if (source == this.damageSources().onFire())
 			multiplier = 2.0f;
 
-		if (!this.level().isClientSide) 
+		if (!this.level().isClientSide)
 			if (source.getEntity() != null)
 				if (source.getEntity() instanceof LivingEntity attacker)
 					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);

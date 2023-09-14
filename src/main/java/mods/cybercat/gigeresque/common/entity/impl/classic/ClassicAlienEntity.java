@@ -460,6 +460,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				.triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
 				.triggerableAnim("wakeup", GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land", LoopType.LOOP)) // wake up
 				.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+				.triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
 				.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
 				.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
 				.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
