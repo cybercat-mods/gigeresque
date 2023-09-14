@@ -302,8 +302,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					searchingProgress = 0;
 					searchingCooldown = Constants.TPS * 15L;
 					isSearching = false;
-				} else
-					searchingProgress++;
+				} else {
+					if (!this.level().isClientSide)
+						searchingProgress++;
+				}
 			} else {
 				searchingCooldown = max(searchingCooldown - 1, 0);
 
@@ -319,7 +321,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			this.level().removeBlock(this.blockPosition(), false);
 
 		if (!this.isVehicle() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
-			breakingCounter++;
+			if (!this.level().isClientSide)
+				breakingCounter++;
 			if (breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
 					if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(Blocks.TALL_GRASS)))

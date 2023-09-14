@@ -230,7 +230,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 	@Override
 	public void tick() {
 		super.tick();
-		slowticks++;
+		if (!this.level().isClientSide)
+			slowticks++;
 		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) {
 			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
 			slowticks = -60;

@@ -163,7 +163,8 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 			this.level().removeBlock(this.blockPosition(), false);
 
 		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
-			breakingCounter++;
+			if (!this.level().isClientSide)
+				breakingCounter++;
 			if (breakingCounter > 10)
 				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
 					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {

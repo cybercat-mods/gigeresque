@@ -171,7 +171,8 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 			});
 
 		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
-			breakingCounter++;
+			if (!this.level().isClientSide)
+				breakingCounter++;
 			if (breakingCounter > 10)
 				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
 					if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
