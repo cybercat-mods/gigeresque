@@ -173,7 +173,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	private void detachFromHost(boolean removesParasite) {
-		this.stopRiding();
 		this.ticksAttachedToHost = -1.0f;
 		this.kill();
 
@@ -289,8 +288,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
-			detachFromHost(true);
+//		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
+//			detachFromHost(true);
 
 		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
