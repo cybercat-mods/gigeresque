@@ -256,7 +256,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 					this.passoutCounter++;
 //				if (!this.level().isClientSide)
 //					AzureLib.LOGGER.info(this.passoutCounter);
-				if (this.passoutCounter >= 600) {
+				if (this.passoutCounter >= 6000) {
 					this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
 					this.triggerAnim("attackController", "passout");
 					this.passoutCounter = -6000;
@@ -269,7 +269,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 				this.triggerAnim("attackController", "wakeup");
 				this.setPassedOutStatus(false);
 				if (!this.level().isClientSide)
-					this.passoutCounter = -600;
+					this.passoutCounter = -6000;
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
 			}
 //			if (this.tickCount < 2 && !this.isAggressive())
