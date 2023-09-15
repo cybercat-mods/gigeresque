@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.mojang.datafixers.util.Pair;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -33,12 +32,9 @@ public class NestBuildingHelper {
 
 						if (alien.level().getLightEmission(alien.blockPosition()) < 6) {
 							var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
-							if (nestBlockData.isFloor()) {
+							if (nestBlockData.isFloor()) 
 								if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
 									alien.level().setBlockAndUpdate(blockPos, resinBlock);
-								if (!alien.level().getBlockState(blockPos.below()).is(GigTags.DUNGEON_BLOCKS))
-									alien.level().setBlockAndUpdate(blockPos.below(), resinBlock.setValue(NestResinBlock.LAYERS, 8));
-							}
 
 							if (nestBlockData.isCorner())
 								if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
