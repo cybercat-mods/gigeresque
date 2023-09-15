@@ -12,6 +12,7 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -50,7 +51,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
-		return GigEntityUtils.faceHuggerTest(this.target, entity) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
+		return GigEntityUtils.faceHuggerTest(this.target, entity) && !entity.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
 	}
 
 	@Override

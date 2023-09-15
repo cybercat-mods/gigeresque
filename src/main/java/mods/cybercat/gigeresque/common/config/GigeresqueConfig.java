@@ -65,6 +65,11 @@ public class GigeresqueConfig {
 
 	@Configurable
 	@Configurable.Synchronized
+	@Configurable.Range(min = 1)
+	public int facehuggerStunTickTimer = 60;
+
+	@Configurable
+	@Configurable.Synchronized
 	@Configurable.DecimalRange(min = 1)
 	public float impregnationTickTimer = 1200.0f;
 
@@ -131,7 +136,7 @@ public class GigeresqueConfig {
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.DecimalRange(min = 1)
-	public float classicXenoAttackSpeed = 3.5F;
+	public float classicXenoAttackSpeed = 3.9F;
 
 	@Configurable
 	@Configurable.Synchronized
