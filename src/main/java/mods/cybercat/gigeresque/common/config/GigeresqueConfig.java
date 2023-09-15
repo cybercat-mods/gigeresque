@@ -56,22 +56,22 @@ public class GigeresqueConfig {
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.DecimalRange(min = 1)
-	public float eggmorphTickTimer = 6000.0f;
+	public float eggmorphTickTimer = 1200.0f;
 
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.DecimalRange(min = 1)
-	public float facehuggerAttachTickTimer = 4800.0f;
+	public float facehuggerAttachTickTimer = 1200.0f;
 
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.DecimalRange(min = 1)
-	public float impregnationTickTimer = 9600.0f;
+	public float impregnationTickTimer = 1200.0f;
 
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.Range(min = 1)
-	public int sporeTickTimer = 4800;
+	public int sporeTickTimer = 1200;
 
 	@Configurable
 	@Configurable.Synchronized
@@ -86,7 +86,7 @@ public class GigeresqueConfig {
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.Range(min = 1)
-	public int gooEffectTickTimer = 6000;
+	public int gooEffectTickTimer = 1200;
 
 	@Configurable
 	@Configurable.Synchronized
