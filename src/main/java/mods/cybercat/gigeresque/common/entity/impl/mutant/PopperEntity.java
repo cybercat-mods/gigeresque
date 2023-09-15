@@ -176,8 +176,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 				acidThickness += 1;
 			if (acidThickness == 0)
 				return super.hurt(source, amount);
-
-			var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+			
+			var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
 
 			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
