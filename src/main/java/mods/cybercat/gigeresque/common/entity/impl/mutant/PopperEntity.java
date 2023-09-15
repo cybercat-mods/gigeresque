@@ -188,7 +188,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 	}
 
 	@Override
-	protected void generateAcidPool(int xOffset, int zOffset) {
+	public void generateAcidPool(int xOffset, int zOffset) {
 		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
 		var posState = level().getBlockState(pos);
 		var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
