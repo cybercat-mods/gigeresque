@@ -236,9 +236,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					host.hasParasite();
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
-					if (!level().isClientSide) {
+					if (!level().isClientSide) 
 						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-					}
 					setIsInfertile(true);
 					this.unRide();
 					this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
@@ -290,9 +289,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-//		if (isAttachedToHost() && ticksAttachedToHost < Constants.TPS * 3 && amount >= 5.0f)
-//			detachFromHost(true);
-
 		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
 
