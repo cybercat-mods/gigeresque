@@ -114,6 +114,7 @@ if (file('key.properties').exists()) {
             	optionalDependency 'ad-astra'
             	optionalDependency 'aftershock'
             	optionalDependency 'arachnids'
+            	optionalDependency 'happiness-is-a-warm-gun'
             	optionalDependency 'jar-jar-binks'
             	optionalDependency 'living-things'
             	optionalDependency 'caracal-mod'
@@ -159,6 +160,7 @@ if (file('key.properties').exists()) {
             optional.project "ad-astra"
             optional.project "aftershock"
             optional.project "arachnids"
+            optional.project "happiness-is-a-warm-gun"
             optional.project "jar-jar-binks"
             optional.project "living-things"
             optional.project "betterend"
