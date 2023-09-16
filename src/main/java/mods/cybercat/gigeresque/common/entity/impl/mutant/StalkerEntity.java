@@ -188,7 +188,7 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 							}
 						} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
 							if (!level().isClientSide)
-								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, 8));
+								this.level().setBlockAndUpdate(testPos.above(), GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, 4));
 							this.hurt(damageSources().generic(), 5);
 							breakingCounter = -90;
 						}
