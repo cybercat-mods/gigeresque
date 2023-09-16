@@ -216,11 +216,10 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 	}
 
-	@Inject(method = { "isImmobile" }, at = { @At("RETURN") })
-	protected boolean isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing() == true && !((Host) this).hasParasite())
-			return true;
-		return callbackInfo.getReturnValue();
+	@Inject(method = { "isImmobile" }, at = { @At("RETURN") }, cancellable = true)
+	protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
+		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing())
+			callbackInfo.setReturnValue(true);
 	}
 
 	@Inject(method = { "defineSynchedData" }, at = { @At("RETURN") })
