@@ -139,5 +139,12 @@ public record GigCompats() implements GigeresqueInitializer {
 						// Mod Compat datapack found in resources/resourcepacks
 						Constants.modResource("hwgcompat"), modContainer, Component.literal("hwgcompat"), ResourcePackActivationType.DEFAULT_ENABLED);
 			}));
+
+		if (FabricLoader.getInstance().isModLoaded("aether"))
+			FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
+				ResourceManagerHelper.registerBuiltinResourcePack(
+						// Mod Compat datapack found in resources/resourcepacks
+						Constants.modResource("aethercompat"), modContainer, Component.literal("aethercompat"), ResourcePackActivationType.DEFAULT_ENABLED);
+			}));
 	}
 }
