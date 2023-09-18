@@ -16,6 +16,7 @@
     "common.entity.WanderingTraderEntityMixin",
     "common.entity.WardenEntityMixin",
     "common.entity.HorseMixin",
+    "common.entity.EntityMixin",
     "common.PointOfInterestTypesInvoker"
   ],
   "client": [
@@ -25,7 +26,9 @@
     "client.entity.render.feature.SheepWoolFeatureRendererMixin",
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
     "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
-    "client.render.InGameOverlayRendererMixin"
+    "client.render.InGameOverlayRendererMixin",
+    "client.render.LivingEntityClientMixin",
+    "client.render.MixinLivingRenderer"
   ],
   "server": []
 }

@@ -8,6 +8,7 @@ import com.mojang.math.Axis;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mods.cybercat.gigeresque.client.GigeresqueClient;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
@@ -54,39 +55,13 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
 	@Override
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
-		if (entity.isCrawling() && !entity.isPassenger() && !entity.isAggressive()) {
-			if (entity.level().getBlockState(entity.blockPosition().west()).isSolid())
-				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().west()))) {
-					stack.mulPose(Axis.ZP.rotationDegrees(-90));
-					stack.translate(0, -0.2, 0);
-				}
-			if (entity.level().getBlockState(entity.blockPosition()).isSolid())
-				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition()))) {
-					stack.mulPose(Axis.ZP.rotationDegrees(-90));
-					stack.translate(0, -0.2, 0);
-				}
-			if (entity.level().getBlockState(entity.blockPosition().north()).isSolid())
-				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().north()))) {
-					stack.mulPose(Axis.XP.rotationDegrees(90));
-					stack.translate(0, -0.2, 0);
-				}
-			if (entity.level().getBlockState(entity.blockPosition().south()).isSolid())
-				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().south()))) {
-					stack.mulPose(Axis.XP.rotationDegrees(-90));
-					stack.translate(0, -0.2, 0);
-				}
-			if (entity.level().getBlockState(entity.blockPosition().east()).isSolid())
-				if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().east()))) {
-					stack.mulPose(Axis.ZP.rotationDegrees(90));
-					stack.translate(0, -0.2, 0);
-				}
-//			stack.mulPose(Axis.ZP.rotationDegrees(90));
-//			stack.translate(0, 0, 0);
+		if (!entity.isPassenger() && !entity.isAggressive()) {
+			stack.translate(0, 0.1, 0);
 		}
 		if (entity.isNoGravity() && !entity.isCrawling() && !entity.isUnderWater() && !entity.isPassenger()) {
 			if (entity.level().getBlockState(entity.blockPosition().above()).isSolid()) {
-				stack.mulPose(Axis.ZP.rotationDegrees(180));
-				stack.translate(0, -0.6, 0);
+				stack.mulPose(Axis.ZP.rotationDegrees(360));
+				stack.translate(0, -0.2, 0);
 			}
 		}
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
@@ -99,7 +74,14 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 			poseStack.scale(animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F, animatable.tickCount < 5 ? 0 : 1F);
 			poseStack.popPose();
 		}
+    	GigeresqueClient.onPreRenderLiving(animatable, partialTick, poseStack);
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+	
+	@Override
+	public void postRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		GigeresqueClient.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
 	}
 
 	@Override
