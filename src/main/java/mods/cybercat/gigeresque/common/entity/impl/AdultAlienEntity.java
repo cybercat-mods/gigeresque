@@ -402,7 +402,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public PathNavigation createNavigation(Level world) {
-		return (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		return this.isInWater() ? swimNavigation : landNavigation;
 	}
 
 	@Override
