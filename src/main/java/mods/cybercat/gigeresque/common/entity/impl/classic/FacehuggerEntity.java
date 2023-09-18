@@ -251,11 +251,11 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				if (sides.test(offset)) {
 					offsetPos.set(pos.getX() + offset.getStepX(), pos.getY() + offset.getStepY(), pos.getZ() + offset.getStepZ());
 					var state = cache.getBlockState(offsetPos);
-					if (this.canClimbOnBlock(state, offsetPos)) 
+					if (this.canClimbOnBlock(state, offsetPos))
 						hasClimbableNeigbor = true;
 				}
 			}
-			if (!hasClimbableNeigbor) 
+			if (!hasClimbableNeigbor)
 				return -1.0f;
 		}
 		return entity.getPathfindingMalus(nodeType);
@@ -336,15 +336,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (other.maxY > aabb.minY && other.minY < aabb.maxY && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
 			if (offsetX > 0.0D && other.maxX <= aabb.minX) {
 				var dx = aabb.minX - other.maxX;
-				if (dx < offsetX) 
+				if (dx < offsetX)
 					offsetX = dx;
 			} else if (offsetX < 0.0D && other.minX >= aabb.maxX) {
 				var dx = aabb.maxX - other.minX;
-				if (dx > offsetX) 
+				if (dx > offsetX)
 					offsetX = dx;
 			}
 			return offsetX;
-		} else 
+		} else
 			return offsetX;
 	}
 
@@ -352,15 +352,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
 			if (offsetY > 0.0D && other.maxY <= aabb.minY) {
 				var dy = aabb.minY - other.maxY;
-				if (dy < offsetY) 
+				if (dy < offsetY)
 					offsetY = dy;
 			} else if (offsetY < 0.0D && other.minY >= aabb.maxY) {
 				var dy = aabb.maxY - other.minY;
-				if (dy > offsetY) 
+				if (dy > offsetY)
 					offsetY = dy;
 			}
 			return offsetY;
-		} else 
+		} else
 			return offsetY;
 	}
 
@@ -368,15 +368,15 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxY > aabb.minY && other.minY < aabb.maxY) {
 			if (offsetZ > 0.0D && other.maxZ <= aabb.minZ) {
 				var dz = aabb.minZ - other.maxZ;
-				if (dz < offsetZ) 
+				if (dz < offsetZ)
 					offsetZ = dz;
 			} else if (offsetZ < 0.0D && other.minZ >= aabb.maxZ) {
 				var dz = aabb.maxZ - other.minZ;
-				if (dz > offsetZ) 
+				if (dz > offsetZ)
 					offsetZ = dz;
 			}
 			return offsetZ;
-		} else 
+		} else
 			return offsetZ;
 	}
 
@@ -389,7 +389,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		var stickingDistance = this.zza != 0 ? 1.5f : 0.1f;
 
 		for (var facing : Direction.values()) {
-			if (avoidPathingFacing == facing) 
+			if (avoidPathingFacing == facing)
 				continue;
 			var collisionBoxes = this.getCollisionBoxes(entityBox.inflate(0.2f).expandTowards(facing.getStepX() * stickingDistance, facing.getStepY() * stickingDistance, facing.getStepZ() * stickingDistance));
 			var closestDst = Double.MAX_VALUE;
@@ -415,13 +415,13 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				closestFacingDst = closestDst;
 				closestFacing = facing;
 			}
-			if (closestDst < Double.MAX_VALUE) 
+			if (closestDst < Double.MAX_VALUE)
 				weighting = weighting.add(new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(1 - Math.min(closestDst, stickingDistance) / stickingDistance));
 		}
 
 		if (closestFacing == null)
 			this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
-		else 
+		else
 			this.groundDirection = Pair.of(closestFacing, weighting.normalize().add(0, -0.001f, 0).normalize());
 	}
 
@@ -1026,7 +1026,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 			if (this.moveDist > this.nextStepDistance && !state.isAir()) {
 				this.nextStepDistance = this.nextStep();
-					this.playStepSound(pos, state);
+				this.playStepSound(pos, state);
 			} else if (state.isAir())
 				this.processFlappingMovement();
 		}
@@ -1363,12 +1363,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), 
-				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), 
-				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), 
-				new UnreachableTargetSensor<>(), 
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new UnreachableTargetSensor<>(),
 				new HurtBySensor<>());
 	}
 
@@ -1433,9 +1428,5 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
-	}
-
-	@Override
-	public void onRegisterGoals() {
 	}
 }
