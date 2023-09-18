@@ -346,7 +346,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Build Nest
 				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				// Kill Lights
-				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				// Do first
 				new FirstApplicableBehaviour<ClassicAlienEntity>(
 						// Targeting
@@ -431,8 +431,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
 				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-			if (event.getKeyframeData().getSound().matches("ambientSoundkey")) 
-				if (this.level().isClientSide) 
+			if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
+				if (this.level().isClientSide)
 					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
 				if (this.level().isClientSide)
