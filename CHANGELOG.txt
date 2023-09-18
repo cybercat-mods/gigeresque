@@ -1,10 +1,11 @@
-v.0.5.48
+v.0.5.49
 
-- Fixes crash with mutant bleeding.
-- Tweak nesting a bit to fix holes issues
-- Runnerbusters now properly use trigger system to play birthing animation
-- Reduce default timer length
-- Added the ability to knock a facehugger off an entity if damage is equal to that of an iron sword, stunning the hugger for a default 3 seconds (this is configurable via facehuggerStunTickTimer)
+- Fixes Stalker bleeding crash when block breaking.
+- Aliens no longer drown.
+- Happiness (is a) Warm Gun compat added.
+- The Aether Compat added - Thanks impulsivelass
+- Hissing no longer happens underwater.
+- Fixes light breaking height check.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
