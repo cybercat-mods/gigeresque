@@ -325,9 +325,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
 	private void onTravelPre(Vec3 relative, CallbackInfo ci) {
-		if (this.onTravel(relative, true)) {
+		if (this.onTravel(relative, true))
 			ci.cancel();
-		}
 	}
 
 	@Inject(method = "travel", at = @At("RETURN"))
@@ -342,9 +341,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = "jumpFromGround()V", at = @At("HEAD"), cancellable = true)
 	private void onJump(CallbackInfo ci) {
-		if (this.onJump()) {
+		if (this.onJump())
 			ci.cancel();
-		}
 	}
 
 	@Override

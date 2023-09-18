@@ -11,10 +11,10 @@ public record Orientation(Vec3 normal, Vec3 localZ, Vec3 localY, Vec3 localX, fl
 	}
 
 	public Vec3 getGlobal(float yaw, float pitch) {
-		float cy = Mth.cos(yaw * 0.017453292F);
-		float sy = Mth.sin(yaw * 0.017453292F);
-		float cp = -Mth.cos(-pitch * 0.017453292F);
-		float sp = Mth.sin(-pitch * 0.017453292F);
+		var cy = Mth.cos(yaw * 0.017453292F);
+		var sy = Mth.sin(yaw * 0.017453292F);
+		var cp = -Mth.cos(-pitch * 0.017453292F);
+		var sp = Mth.sin(-pitch * 0.017453292F);
 		return this.localX.scale(sy * cp).add(this.localY.scale(sp)).add(this.localZ.scale(cy * cp));
 	}
 
@@ -23,10 +23,9 @@ public record Orientation(Vec3 normal, Vec3 localZ, Vec3 localY, Vec3 localX, fl
 	}
 
 	public Pair<Float, Float> getLocalRotation(Vec3 global) {
-		Vec3 local = this.getLocal(global);
-
-		float yaw = (float) Math.toDegrees(Mth.atan2(local.x, local.z)) + 180.0f;
-		float pitch = (float) -Math.toDegrees(Mth.atan2(local.y, Math.sqrt(local.x * local.x + local.z * local.z)));
+		var local = this.getLocal(global);
+		var yaw = (float) Math.toDegrees(Mth.atan2(local.x, local.z)) + 180.0f;
+		var pitch = (float) -Math.toDegrees(Mth.atan2(local.y, Math.sqrt(local.x * local.x + local.z * local.z)));
 
 		return Pair.of(yaw, pitch);
 	}

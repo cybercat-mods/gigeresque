@@ -31,10 +31,10 @@ public class BetterSpiderPathNavigator<T extends Mob & IClimberEntity> extends A
 
 	@Override
 	public boolean moveTo(Entity entityIn, double speedIn) {
-		Path path = this.createPath(entityIn, 0);
-		if(path != null) {
+		var path = this.createPath(entityIn, 0);
+		if (path != null)
 			return this.moveTo(path, speedIn);
-		} else {
+		else {
 			this.targetPosition = entityIn.blockPosition();
 			this.speedModifier = speedIn;
 			return true;
@@ -43,16 +43,15 @@ public class BetterSpiderPathNavigator<T extends Mob & IClimberEntity> extends A
 
 	@Override
 	public void tick() {
-		if(!this.isDone()) {
+		if (!this.isDone())
 			super.tick();
-		} else {
-			if(this.targetPosition != null && this.useVanillaBehaviour) {
+		else {
+			if (this.targetPosition != null && this.useVanillaBehaviour) {
 				// FORGE: Fix MC-94054
-				if(!this.targetPosition.closerThan(this.mob.blockPosition(), Math.max((double) this.mob.getBbWidth(), 1.0D)) && (!(this.mob.getY() > (double) this.targetPosition.getY()) || !(Constants.blockPos(this.targetPosition.getX(), this.mob.getY(), this.targetPosition.getZ())).closerThan(this.mob.blockPosition(), Math.max((double) this.mob.getBbWidth(), 1.0D)))) {
+				if (!this.targetPosition.closerThan(this.mob.blockPosition(), Math.max((double) this.mob.getBbWidth(), 1.0D)) && (!(this.mob.getY() > (double) this.targetPosition.getY()) || !(Constants.blockPos(this.targetPosition.getX(), this.mob.getY(), this.targetPosition.getZ())).closerThan(this.mob.blockPosition(), Math.max((double) this.mob.getBbWidth(), 1.0D))))
 					this.mob.getMoveControl().setWantedPosition((double) this.targetPosition.getX(), (double) this.targetPosition.getY(), (double) this.targetPosition.getZ(), this.speedModifier);
-				} else {
+				else
 					this.targetPosition = null;
-				}
 			}
 
 		}

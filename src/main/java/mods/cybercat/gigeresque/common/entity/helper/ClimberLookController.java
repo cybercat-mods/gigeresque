@@ -19,13 +19,11 @@ public class ClimberLookController<T extends Mob & IClimberEntity> extends LookC
 
 	@Override
 	protected @NotNull Optional<Float> getXRotD() {
-		Vec3 dir = new Vec3(this.wantedX - this.mob.getX(), this.wantedY - this.mob.getEyeY(), this.wantedZ - this.mob.getZ());
-		return Optional.of(this.climber.getOrientation().getLocalRotation(dir).getRight());
+		return Optional.of(this.climber.getOrientation().getLocalRotation(new Vec3(this.wantedX - this.mob.getX(), this.wantedY - this.mob.getEyeY(), this.wantedZ - this.mob.getZ())).getRight());
 	}
 
 	@Override
 	protected @NotNull Optional<Float> getYRotD() {
-		Vec3 dir = new Vec3(this.wantedX - this.mob.getX(), this.wantedY - this.mob.getEyeY(), this.wantedZ - this.mob.getZ());
-		return Optional.of(this.climber.getOrientation().getLocalRotation(dir).getLeft());
+		return Optional.of(this.climber.getOrientation().getLocalRotation(new Vec3(this.wantedX - this.mob.getX(), this.wantedY - this.mob.getEyeY(), this.wantedZ - this.mob.getZ())).getLeft());
 	}
 }

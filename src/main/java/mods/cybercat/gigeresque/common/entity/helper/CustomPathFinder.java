@@ -60,19 +60,14 @@ public class CustomPathFinder extends PathFinder {
 	@Override
 	public Path findPath(PathNavigationRegion region, Mob entity, Set<BlockPos> checkpoints, float maxDistance, int checkpointRange, float maxExpansionsMultiplier) {
 		this.path.clear();
-
 		this.nodeProcessor.prepare(region, entity);
-
-		Node pathpoint = this.nodeProcessor.getStart();
-
+		var pathpoint = this.nodeProcessor.getStart();
 		//Create a checkpoint for each block pos in the checkpoints set
 		Map<Target, BlockPos> checkpointsMap = checkpoints.stream().collect(Collectors.toMap((pos) -> {
 			return this.nodeProcessor.getGoal(pos.getX(), pos.getY(), pos.getZ());
 		}, Function.identity()));
-
-		Path path = this.findPath(pathpoint, checkpointsMap, maxDistance, checkpointRange, maxExpansionsMultiplier);
+		var path = this.findPath(pathpoint, checkpointsMap, maxDistance, checkpointRange, maxExpansionsMultiplier);
 		this.nodeProcessor.done();
-
 		return path;
 	}
 
@@ -81,57 +76,41 @@ public class CustomPathFinder extends PathFinder {
 	@Nullable
 	private Path findPath(Node start, Map<Target, BlockPos> checkpointsMap, float maxDistance, int checkpointRange, float maxExpansionsMultiplier) {
 		Set<Target> checkpoints = checkpointsMap.keySet();
-
 		start.g = 0.0F;
 		start.h = this.computeHeuristic(start, checkpoints);
 		start.f = start.h;
-
 		this.path.clear();
 		this.path.insert(start);
-
 		Set<Target> reachedCheckpoints = Sets.newHashSetWithExpectedSize(checkpoints.size());
-
-		int expansions = 0;
-		int maxExpansions = (int) (this.maxExpansions * maxExpansionsMultiplier);
+		var expansions = 0;
+		var maxExpansions = (int) (this.maxExpansions * maxExpansionsMultiplier);
 
 		while(!this.path.isEmpty() && ++expansions < maxExpansions) {
-			Node openPathPoint = this.path.pop();
+			var openPathPoint = this.path.pop();
 			openPathPoint.closed = true;
-
-			for(Target checkpoint : checkpoints) {
+			for(var checkpoint : checkpoints) 
 				if(openPathPoint.distanceManhattan(checkpoint) <= checkpointRange) {
 					checkpoint.setReached();
 					reachedCheckpoints.add(checkpoint);
 				}
-			}
-
-			if(!reachedCheckpoints.isEmpty()) {
+			if(!reachedCheckpoints.isEmpty()) 
 				break;
-			}
-
 			if(openPathPoint.distanceTo(start) < maxDistance) {
-				int numOptions = this.nodeProcessor.getNeighbors(this.pathOptions, openPathPoint);
-
-				for(int i = 0; i < numOptions; ++i) {
-					Node successorPathPoint = this.pathOptions[i];
-
-					float costHeuristic = openPathPoint.distanceTo(successorPathPoint); //TODO Replace with cost heuristic
-
+				var numOptions = this.nodeProcessor.getNeighbors(this.pathOptions, openPathPoint);
+				for(var i = 0; i < numOptions; ++i) {
+					var successorPathPoint = this.pathOptions[i];
+					var costHeuristic = openPathPoint.distanceTo(successorPathPoint); //TODO Replace with cost heuristic
 					//walkedDistance corresponds to the total path cost of the evaluation function
 					successorPathPoint.walkedDistance = openPathPoint.walkedDistance + costHeuristic;
-
 					float totalSuccessorPathCost = openPathPoint.g + costHeuristic + successorPathPoint.costMalus;
-
 					if(successorPathPoint.walkedDistance < maxDistance && (!successorPathPoint.inOpenSet() || totalSuccessorPathCost < successorPathPoint.g)) {
 						successorPathPoint.cameFrom = openPathPoint;
 						successorPathPoint.g = totalSuccessorPathCost;
-
 						//distanceToNext corresponds to the heuristic part of the evaluation function
 						successorPathPoint.h = this.computeHeuristic(successorPathPoint, checkpoints) * 1.0f; //TODO Vanilla's 1.5 multiplier is too greedy :( Move to custom heuristic stuff
-
-						if(successorPathPoint.inOpenSet()) {
+						if(successorPathPoint.inOpenSet())
 							this.path.changeCost(successorPathPoint, successorPathPoint.g + successorPathPoint.h);
-						} else {
+						else {
 							//distanceToTarget corresponds to the evaluation function, i.e. total path cost + heuristic
 							successorPathPoint.f = successorPathPoint.g + successorPathPoint.h;
 							this.path.insert(successorPathPoint);
@@ -140,47 +119,38 @@ public class CustomPathFinder extends PathFinder {
 				}
 			}
 		}
-
 		Optional<Path> path;
-
-		if(!reachedCheckpoints.isEmpty()) {
+		if(!reachedCheckpoints.isEmpty())
 			//Use shortest path towards next reached checkpoint
 			path = reachedCheckpoints.stream().map((checkpoint) -> {
 				return this.createPath(checkpoint.getBestNode(), checkpointsMap.get(checkpoint), true);
 			}).min(Comparator.comparingInt(Path::getNodeCount));
-		} else {
+		else 
 			//Use lowest cost path towards any checkpoint
 			path = checkpoints.stream().map((checkpoint) -> {
 				return this.createPath(checkpoint.getBestNode(), checkpointsMap.get(checkpoint), false);
 			}).min(Comparator.comparingDouble(Path::getDistToTarget /*TODO Replace calculation with cost heuristic*/).thenComparingInt(Path::getNodeCount));
-		}
-
 		return !path.isPresent() ? null : path.get();
 	}
 
 	private float computeHeuristic(Node pathPoint, Set<Target> checkpoints) {
-		float minDst = Float.MAX_VALUE;
-
-		for(Target checkpoint : checkpoints) {
+		var minDst = Float.MAX_VALUE;
+		for(var checkpoint : checkpoints) {
 			float dst = pathPoint.distanceTo(checkpoint); //TODO Replace with target heuristic
 			checkpoint.updateBest(dst, pathPoint);
 			minDst = Math.min(dst, minDst);
 		}
-
 		return minDst;
 	}
 
 	protected Path createPath(Node start, BlockPos target, boolean isTargetReached) {
 		List<Node> points = Lists.newArrayList();
-
-		Node currentPathPoint = start;
+		var currentPathPoint = start;
 		points.add(0, start);
-
 		while(currentPathPoint.cameFrom != null) {
 			currentPathPoint = currentPathPoint.cameFrom;
 			points.add(0, currentPathPoint);
 		}
-
 		return new Path(points, target, isTargetReached);
 	}
 }

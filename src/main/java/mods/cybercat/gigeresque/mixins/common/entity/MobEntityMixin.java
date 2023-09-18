@@ -25,14 +25,15 @@ import net.minecraft.world.level.Level;
  */
 @Mixin(Mob.class)
 public abstract class MobEntityMixin extends LivingEntity implements IMobEntityLivingTickHook, IMobEntityTickHook, IMobEntityRegisterGoalsHook {
-	
+
 	@Inject(method = "aiStep", at = @At("HEAD"))
 	private void onLivingTick(CallbackInfo ci) {
 		this.onLivingTick();
 	}
 
 	@Override
-	public void onLivingTick() { }
+	public void onLivingTick() {
+	}
 
 	@Inject(method = "tick()V", at = @At("RETURN"))
 	private void onTick(CallbackInfo ci) {
@@ -40,25 +41,24 @@ public abstract class MobEntityMixin extends LivingEntity implements IMobEntityL
 	}
 
 	@Override
-	public void onTick() { }
+	public void onTick() {
+	}
 
 	@Shadow(prefix = "shadow$")
-	private void shadow$registerGoals() { }
+	private void shadow$registerGoals() {
+	}
 
-	@Redirect(method = "<init>*", at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/world/entity/Mob;registerGoals()V"
-			))
+	@Redirect(method = "<init>*", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;registerGoals()V"))
 	private void onRegisterGoals(Mob _this) {
 		this.shadow$registerGoals();
 
-		if(_this == (Object) this) {
+		if (_this == (Object) this)
 			this.onRegisterGoals();
-		}
 	}
 
 	@Override
-	public void onRegisterGoals() { }
+	public void onRegisterGoals() {
+	}
 
 	@Shadow
 	private boolean persistenceRequired;
@@ -71,7 +71,6 @@ public abstract class MobEntityMixin extends LivingEntity implements IMobEntityL
 	public void playAmbientSound(CallbackInfo callbackInfo) {
 		if (((Eggmorphable) this).isEggmorphing())
 			callbackInfo.cancel();
-
 		if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
 			callbackInfo.cancel();
 	}
