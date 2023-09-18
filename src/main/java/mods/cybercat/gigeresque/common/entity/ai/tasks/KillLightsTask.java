@@ -40,7 +40,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		var yDiff = Mth.abs(entity.getBlockY() - lightSourceLocation.stream().findFirst().get().getFirst().getY());
 		var canGrief = entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-		return !entity.isVehicle() && yDiff < 4 && !entity.isAggressive() && canGrief;
+		return !entity.isVehicle() && yDiff < 3 && !entity.isAggressive() && canGrief;
 	}
 
 	@Override
@@ -48,23 +48,18 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get()).orElse(null);
 		if (lightSourceLocation == null)
 			return;
-		if (!entity.isAggressive()) {
-			if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
-				startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-			if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 2.0)) {
-				var world = entity.level();
-				var random = entity.getRandom();
-				entity.triggerAnim("attackController", "swipe");
-				world.destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
-				if (!world.isClientSide()) {
-					for (int i = 0; i < 2; i++) {
-						var e = random.nextGaussian() * 0.02;
-						var f = random.nextGaussian() * 0.02;
-						var g = random.nextGaussian() * 0.02;
-						((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5, lightSourceLocation.stream().findFirst().get().getFirst().getY(), ((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e, f, g, 0.15000000596046448);
-					}
+		if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
+			startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
+		if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.3)) {
+			entity.triggerAnim("attackController", "swipe");
+			entity.level().destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
+			if (!entity.level().isClientSide()) 
+				for (var i = 0; i < 2; i++) {
+					var e = entity.getRandom().nextGaussian() * 0.02;
+					var f = entity.getRandom().nextGaussian() * 0.02;
+					var g = entity.getRandom().nextGaussian() * 0.02;
+					((ServerLevel) entity.level()).sendParticles(ParticleTypes.POOF, ((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5, lightSourceLocation.stream().findFirst().get().getFirst().getY(), ((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e, f, g, 0.15000000596046448);
 				}
-			}
 		}
 	}
 
