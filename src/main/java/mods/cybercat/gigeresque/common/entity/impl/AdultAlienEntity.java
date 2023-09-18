@@ -283,8 +283,13 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (!this.level().isClientSide)
 				this.passoutCounter = 0;
 
+		if (this.isInWater()) {
+			this.hissingCooldown = 0;
+			this.searchingProgress = 0;
+		}
+
 		// Hissing Logic
-		if (velocityLength == 0 && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
+		if (velocityLength == 0 && !this.isInWater() && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
 			if (!this.level().isClientSide)
 				this.hissingCooldown++;
 
