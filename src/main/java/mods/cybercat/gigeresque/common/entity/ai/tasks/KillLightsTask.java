@@ -54,12 +54,8 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
 			entity.triggerAnim("attackController", "swipe");
 			entity.level().destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
 			if (!entity.level().isClientSide()) 
-				for (var i = 0; i < 2; i++) {
-					var e = entity.getRandom().nextGaussian() * 0.02;
-					var f = entity.getRandom().nextGaussian() * 0.02;
-					var g = entity.getRandom().nextGaussian() * 0.02;
-					((ServerLevel) entity.level()).sendParticles(ParticleTypes.POOF, ((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5, lightSourceLocation.stream().findFirst().get().getFirst().getY(), ((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, e, f, g, 0.15000000596046448);
-				}
+				for (var i = 0; i < 2; i++) 
+					((ServerLevel) entity.level()).sendParticles(ParticleTypes.POOF, ((double) lightSourceLocation.stream().findFirst().get().getFirst().getX()) + 0.5, lightSourceLocation.stream().findFirst().get().getFirst().getY(), ((double) lightSourceLocation.stream().findFirst().get().getFirst().getZ()) + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
 		}
 	}
 
