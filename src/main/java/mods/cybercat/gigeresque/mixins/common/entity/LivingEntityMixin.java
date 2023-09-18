@@ -4,7 +4,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -25,11 +24,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityDataManagerHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityJumpHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityLookAtHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityTravelHook;
-import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -47,13 +41,12 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 /**
  * @author Boston Vanseghi
  */
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity implements Host, Eggmorphable, ILivingEntityLookAtHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, ILivingEntityJumpHook {
+public abstract class LivingEntityMixin extends Entity implements Host, Eggmorphable {
 
 	private static final EntityDataAccessor<Boolean> IS_BLEEDING = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Float> EGGMORPH_TICKS = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.FLOAT);
@@ -302,51 +295,5 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	@Override
 	public void setBleeding(boolean isBleeding) {
 		entityData.set(IS_BLEEDING, isBleeding);
-	}
-
-	@ModifyVariable(method = "lookAt", at = @At("HEAD"), ordinal = 0)
-	private Vec3 onLookAtModify(Vec3 vec, Anchor anchor, Vec3 vec2) {
-		return this.onLookAt(anchor, vec);
-	}
-
-	@Override
-	public Vec3 onLookAt(Anchor anchor, Vec3 vec) {
-		return vec;
-	}
-
-	@Inject(method = "onSyncedDataUpdated", at = @At("HEAD"))
-	private void onNotifyDataManagerChange(EntityDataAccessor<?> key, CallbackInfo ci) {
-		this.onNotifyDataManagerChange(key);
-	}
-
-	@Override
-	public void onNotifyDataManagerChange(EntityDataAccessor<?> key) {
-	}
-
-	@Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-	private void onTravelPre(Vec3 relative, CallbackInfo ci) {
-		if (this.onTravel(relative, true))
-			ci.cancel();
-	}
-
-	@Inject(method = "travel", at = @At("RETURN"))
-	private void onTravelPost(Vec3 relative, CallbackInfo ci) {
-		this.onTravel(relative, false);
-	}
-
-	@Override
-	public boolean onTravel(Vec3 relative, boolean pre) {
-		return false;
-	}
-
-	@Inject(method = "jumpFromGround()V", at = @At("HEAD"), cancellable = true)
-	private void onJump(CallbackInfo ci) {
-		if (this.onJump())
-			ci.cancel();
-	}
-
-	@Override
-	public boolean onJump() {
-		return false;
 	}
 }

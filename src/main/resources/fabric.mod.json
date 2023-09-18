@@ -27,11 +27,11 @@
     "java" : ">=17"
   },
   "accessWidener" : "gigeresque.accesswidener",
-	"custom": {
-		"modmenu": {
-			"links": {
-				"modmenu.discord": "https://discord.gg/jZ6kAHFVQc"
-			}
-		}
-	}
+  "custom" : {
+    "modmenu" : {
+      "links" : {
+        "modmenu.discord" : "https://discord.gg/jZ6kAHFVQc"
+      }
+    }
+  }
 }

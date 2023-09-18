@@ -21,6 +21,9 @@ public record Constants() {
 		return new ResourceLocation(Gigeresque.MOD_ID, name);
 	}
 
+	/*
+	 * Credit to: https://github.com/Nyfaria/NyfsSpiders/tree/1.20.x
+	 */
 	public static BlockPos blockPos(double pX, double pY, double pZ) {
 		return new BlockPos(Mth.floor(pX), Mth.floor(pY), Mth.floor(pZ));
 	}
@@ -30,7 +33,7 @@ public record Constants() {
 	}
 
 	public static Optional<EntityDimensions> onEntitySize(Entity entity) {
-		if(entity instanceof ClassicAlienEntity) 
+		if (entity instanceof ClassicAlienEntity)
 			return Optional.of(EntityDimensions.scalable(0.9f, 2.45f));
 		return Optional.empty();
 	}

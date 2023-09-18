@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -21,43 +20,41 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azuredoom.bettercrawling.common.BetterSpiderPathNavigator;
+import mod.azuredoom.bettercrawling.common.ClimberJumpController;
+import mod.azuredoom.bettercrawling.common.ClimberLookController;
+import mod.azuredoom.bettercrawling.common.ClimberMoveController;
+import mod.azuredoom.bettercrawling.common.CollisionSmoothingUtil;
+import mod.azuredoom.bettercrawling.common.DirectionalPathPoint;
+import mod.azuredoom.bettercrawling.common.Matrix4f;
+import mod.azuredoom.bettercrawling.common.Orientation;
+import mod.azuredoom.bettercrawling.common.PathingTarget;
+import mod.azuredoom.bettercrawling.interfaces.IClimberEntity;
+import mod.azuredoom.bettercrawling.interfaces.IEntityMovementHook;
+import mod.azuredoom.bettercrawling.interfaces.IEntityReadWriteHook;
+import mod.azuredoom.bettercrawling.interfaces.ILivingEntityDataManagerHook;
+import mod.azuredoom.bettercrawling.interfaces.ILivingEntityJumpHook;
+import mod.azuredoom.bettercrawling.interfaces.ILivingEntityLookAtHook;
+import mod.azuredoom.bettercrawling.interfaces.ILivingEntityRotationHook;
+import mod.azuredoom.bettercrawling.interfaces.ILivingEntityTravelHook;
+import mod.azuredoom.bettercrawling.interfaces.IMobEntityLivingTickHook;
+import mod.azuredoom.bettercrawling.interfaces.IMobEntityTickHook;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.BetterSpiderPathNavigator;
-import mods.cybercat.gigeresque.common.entity.helper.ClimberJumpController;
-import mods.cybercat.gigeresque.common.entity.helper.ClimberLookController;
-import mods.cybercat.gigeresque.common.entity.helper.ClimberMoveController;
-import mods.cybercat.gigeresque.common.entity.helper.CollisionSmoothingUtil;
-import mods.cybercat.gigeresque.common.entity.helper.DirectionalPathPoint;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.Matrix4f;
-import mods.cybercat.gigeresque.common.entity.helper.Orientation;
-import mods.cybercat.gigeresque.common.entity.helper.PathingTarget;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
-import mods.cybercat.gigeresque.interfacing.IClimberEntity;
-import mods.cybercat.gigeresque.interfacing.IEntityMovementHook;
-import mods.cybercat.gigeresque.interfacing.IEntityReadWriteHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityDataManagerHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityJumpHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityLookAtHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityRotationHook;
-import mods.cybercat.gigeresque.interfacing.ILivingEntityTravelHook;
-import mods.cybercat.gigeresque.interfacing.IMobEntityLivingTickHook;
-import mods.cybercat.gigeresque.interfacing.IMobEntityRegisterGoalsHook;
-import mods.cybercat.gigeresque.interfacing.IMobEntityTickHook;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -135,7 +132,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity>, IClimberEntity, IMobEntityRegisterGoalsHook, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, ILivingEntityJumpHook {
+public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<FacehuggerEntity>, IClimberEntity, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, ILivingEntityJumpHook {
 	private static final UUID SLOW_FALLING_ID = UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA");
 	public static final AttributeModifier SLOW_FALLING = new AttributeModifier(SLOW_FALLING_ID, "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION);
 
@@ -205,10 +202,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	private double preMoveY;
 
 	private Vec3 jumpDir;
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+	private final BetterSpiderPathNavigator landNavigation = new BetterSpiderPathNavigator<FacehuggerEntity>(this, level(), false);
 	private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
-//	private final DirectPathNavigator roofNavigation = new DirectPathNavigator(this, level());
-	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
 	private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
 	private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 	public float ticksAttachedToHost = -1.0f;
@@ -1316,7 +1311,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	@Override
 	public void travel(Vec3 movementInput) {
 		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isNoGravity() ? roofMoveControl : new ClimberMoveController<>(this);
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
 		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
 		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
@@ -1368,8 +1363,13 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>(),
-				new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(
+				new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), 
+				new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), 
+				new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), 
+				new UnreachableTargetSensor<>(), 
+				new HurtBySensor<>());
 	}
 
 	@Override
