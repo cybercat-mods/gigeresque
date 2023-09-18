@@ -81,15 +81,12 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
 		var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
 		var randomPhase = entity.getRandom().nextInt(0, 100);
-		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
+		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST))
 			entity.grabTarget(target);
-		} else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
+		else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
 			entity.grabTarget(target);
 			entity.setIsBiting(true);
-		} else {
-			if (!entity.isVehicle()) {
-				entity.doHurtTarget(target);
-			}
-		}
+		} else if (!entity.isVehicle())
+			entity.doHurtTarget(target);
 	}
 }
