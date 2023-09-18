@@ -31,14 +31,6 @@ public class GigeresqueClient implements ClientModInitializer {
 			var renderOrientation = climber.calculateOrientation(partialTicks);
 			climber.setRenderOrientation(renderOrientation);
 
-			var verticalOffset = climber.getVerticalOffset(partialTicks);
-
-			var x = climber.getAttachmentOffset(Direction.Axis.X, partialTicks) - (float) renderOrientation.normal().x * verticalOffset;
-			var y = climber.getAttachmentOffset(Direction.Axis.Y, partialTicks) - (float) renderOrientation.normal().y * verticalOffset;
-			var z = climber.getAttachmentOffset(Direction.Axis.Z, partialTicks) - (float) renderOrientation.normal().z * verticalOffset;
-
-			matrixStack.translate(x, y, z);
-
 			matrixStack.mulPose(Axis.YP.rotationDegrees(renderOrientation.yaw()));
 			matrixStack.mulPose(Axis.XP.rotationDegrees(renderOrientation.pitch()));
 			matrixStack.mulPose(Axis.YP.rotationDegrees((float) Math.signum(0.5f - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
