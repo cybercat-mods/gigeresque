@@ -6,8 +6,6 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.util.MathUtil;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +23,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -137,12 +134,11 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-		if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN) )
+		if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN))
 			if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
 				serverLevel.setBlockAndUpdate(blockPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
-			else
-				if (serverLevel.getBlockState(blockPos.above()).isAir() && serverLevel.getBlockState(blockPos.below()).isSolid()) 
-					serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+			else if (serverLevel.getBlockState(blockPos.above()).isAir() && serverLevel.getBlockState(blockPos.below()).isSolid())
+				serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 		super.randomTick(blockState, serverLevel, blockPos, randomSource);
 	}
 }
