@@ -1,8 +1,10 @@
-v.0.5.51
+v.0.5.52
 
-- Fixes Runnerbursters attacking anything taller then 0.8 (Almost 2 blocks talls so won't attack villager size but will attack chickens and such).
-- Updates Better Crawling verison to fix Nyfs Spiders crash.
-- Basic resin block no longer sticks mobs, this is saved for Resin Webbing instead.
+- Fixes Facehugger corner issue.
+- Fixes Facehugger face placement.
+- Fixes Facehugger performance. 
+- Fixes runnerhosts missing Trader Llama.
+- Tweaks DNA settings.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
