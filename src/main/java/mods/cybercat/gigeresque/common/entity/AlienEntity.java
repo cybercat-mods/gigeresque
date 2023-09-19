@@ -291,7 +291,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 					var radius = (getAcidDiameter() - 1) / 2;
 					for (int x = -radius; x <= radius; x++) {
 						for (int z = -radius; z <= radius; z++)
-							generateAcidPool(x, z);
+							if (source != damageSources().genericKill() || source != damageSources().generic())
+								generateAcidPool(x, z);
 					}
 				}
 			}

@@ -217,7 +217,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		super(type, world);
 		this.vibrationUser = new AzureVibrationUser(this, 1.2F);
 		this.navigation = landNavigation;
-		this.setMaxUpStep(1.5f);
+		this.setMaxUpStep(0.1f);
 		this.orientation = this.calculateOrientation(1);
 		this.groundDirection = this.getGroundDirection();
 		this.moveControl = new ClimberMoveController<>(this);
@@ -953,13 +953,10 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			var attachDst = motion.length() + 0.1f;
 			var aabb = this.getBoundingBox();
 			motion = this.getDeltaMovement();
-
 			// Offset AABB towards new surface until it touches
 			for (var i = 0; i < 2 && !this.onGround(); i++)
 				this.move(MoverType.SELF, attachVector.scale(attachDst));
-
 			this.setMaxUpStep(stepHeight);
-
 			// Attaching failed, fall back to previous position
 			if (!this.onGround()) {
 				this.setBoundingBox(aabb);
@@ -971,7 +968,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			} else
 				this.setDeltaMovement(Vec3.ZERO);
 		}
-
 		this.calculateEntityAnimation(true);
 	}
 
@@ -983,10 +979,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		} else {
 			if (Math.abs(this.getY() - this.preMoveY - pos.y) > 0.000001D)
 				this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
-
 			this.setOnGround(this.horizontalCollision || this.verticalCollision);
 		}
-
 		return false;
 	}
 
@@ -1040,7 +1034,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 	}
 
 	public void setLocationFromBoundingbox() {
-		AABB axisalignedbb = this.getBoundingBox();
+		var axisalignedbb = this.getBoundingBox();
 		this.setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2.0D, axisalignedbb.minY, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D);
 	}
 
@@ -1202,8 +1196,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		}
 		if (this.isEggSpawn() == true && this.tickCount > 30)
 			this.setEggSpawnState(false);
-		this.setNoGravity(!this.level().getBlockState(this.blockPosition().above()).isAir() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
-		this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
 	}
 
 	@Override
@@ -1242,7 +1234,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-		if (!this.level().isClientSide && source != damageSources().genericKill()) {
+		if (!this.level().isClientSide && (source != damageSources().genericKill() || source != damageSources().generic())) {
 			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
 			if (this.getHealth() < (this.getMaxHealth() / 4))
@@ -1259,7 +1251,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
 				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				level().setBlockAndUpdate(this.blockPosition(), newState);
+				if (source != damageSources().genericKill() || source != damageSources().generic())
+					level().setBlockAndUpdate(this.blockPosition(), newState);
 		}
 		return super.hurt(source, amount);
 	}
@@ -1304,7 +1297,6 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		var vehicle = this.getVehicle();
 		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
-//		setIsInfertile(true);
 		super.stopRiding();
 	}
 
