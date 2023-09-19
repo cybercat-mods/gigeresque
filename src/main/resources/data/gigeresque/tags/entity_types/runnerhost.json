@@ -18,6 +18,7 @@
 		"minecraft:sheep",
 		"minecraft:wolf",
 		"minecraft:camel",
-		"minecraft:sniffer"
+		"minecraft:sniffer",
+		"minecraft:trader_llama"
 	]
 }
