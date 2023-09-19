@@ -145,12 +145,4 @@ public class NestResinBlock extends Block {
 					serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 		super.randomTick(blockState, serverLevel, blockPos, randomSource);
 	}
-
-	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (!(entity instanceof AlienEntity) && !(entity instanceof Host && ((Host) entity).hasParasite())) {
-			var multiplier = MathUtil.clamp(1.0 / state.getValue(LAYERS), 0.0, 1.0);
-			entity.makeStuckInBlock(state, new Vec3(1.0 * multiplier, 1.0, 1.0 * multiplier));
-		}
-	}
 }
