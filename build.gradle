@@ -42,7 +42,6 @@ dependencies {
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
 	modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
 	include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
-	modImplementation "curse.maven:nyfs-spiders-686058:4728360"
 }
 
 processResources {
