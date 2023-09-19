@@ -63,7 +63,7 @@ public abstract class BlackFluid extends FlowingFluid {
 
 	@Override
 	protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
-		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+		var blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
 		Block.dropResources(state, world, pos, blockEntity);
 	}
 

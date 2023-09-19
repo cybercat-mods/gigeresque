@@ -20,7 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class DNAStatusEffect extends MobEffect {
 	private BlockPos lightBlockPos = null;
@@ -42,8 +41,9 @@ public class DNAStatusEffect extends MobEffect {
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier) {
 		super.applyEffectTick(entity, amplifier);
-		if (this == GigStatusEffects.DNA)
-			entity.heal(0);
+		if (!(entity instanceof AlienEntity))
+			if (this == GigStatusEffects.DNA)
+				entity.heal(0);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class DNAStatusEffect extends MobEffect {
 
 	private void spawnEffects(Level world, LivingEntity entity) {
 		if (!world.isClientSide())
-			for (int i = 0; i < 2; i++)
+			for (var i = 0; i < 2; i++)
 				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
 	}
 
@@ -135,15 +135,15 @@ public class DNAStatusEffect extends MobEffect {
 
 		var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
-		for (int i = 2; i <= maxDistance * 2; i += 2) {
+		for (var i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (int x : offsets)
-			for (int y : offsets)
-				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.offset(x, y, z);
-					BlockState state = world.getBlockState(offsetPos);
+		for (var x : offsets)
+			for (var y : offsets)
+				for (var z : offsets) {
+					var offsetPos = blockPos.offset(x, y, z);
+					var state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(GigBlocks.NEST_RESIN_WEB_CROSS))
 						return offsetPos;
 				}
