@@ -40,8 +40,9 @@ dependencies {
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
-	modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-1.20.1:1.0.2" 
-	include "mod.azuredoom.bettercrawling:better-crawling-fabric-1.20.1:1.0.2" 
+	modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+	include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+	modImplementation "curse.maven:nyfs-spiders-686058:4728360"
 }
 
 processResources {
