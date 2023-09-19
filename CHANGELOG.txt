@@ -1,8 +1,8 @@
-v.0.5.50
+v.0.5.51
 
-- Fixes Black Fluid blood cover spawning mobs.
-- Fixes Facehugger crashing with Better Crawling, a stripped-down fork of Nyfs Spiders.
-	- There are still some render bugs being worked out! 
+- Fixes Runnerbursters attacking anything taller then 0.8 (Almost 2 blocks talls so won't attack villager size but will attack chickens and such).
+- Updates Better Crawling verison to fix Nyfs Spiders crash.
+- Basic resin block no longer sticks mobs, this is saved for Resin Webbing instead.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
