@@ -1185,6 +1185,13 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 				setIsInfertile(true);
 				this.kill();
 			}
+			if (vehicle instanceof Player player)
+				if (player.isCreative() || player.isSpectator()) {
+					host.setTicksUntilImpregnation(-1);
+					detachFromHost(true);
+					setIsInfertile(true);
+					this.kill();
+				}
 		} else
 			ticksAttachedToHost = -1.0f;
 
