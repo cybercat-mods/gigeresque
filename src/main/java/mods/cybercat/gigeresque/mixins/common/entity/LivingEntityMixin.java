@@ -119,13 +119,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "tick" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
-		if (this.isAlive() && this.getCommandSenderWorld().isClientSide && Boolean.TRUE.equals(isBleeding())) {
+		if (this.isAlive() && this.level().isClientSide && this.isBleeding()) {
 			var yOffset = this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0);
 			var customX = this.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
 			var customZ = this.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
 
-			for (int i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++)
-				this.getCommandSenderWorld().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
+			for (var i = 0; i < 1 + (int) (this.getMaxHealth() - this.getHealth()); i++)
+				this.level().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
 		}
 		if (!this.level().isClientSide)
 			if ((this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {

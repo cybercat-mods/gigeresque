@@ -1171,7 +1171,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
 					if (!level().isClientSide)
-						this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
 					setIsInfertile(true);
 					this.unRide();
 					this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
