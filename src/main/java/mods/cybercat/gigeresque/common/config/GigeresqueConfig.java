@@ -66,7 +66,7 @@ public class GigeresqueConfig {
 	@Configurable
 	@Configurable.Synchronized
 	@Configurable.Range(min = 1)
-	public int facehuggerStunTickTimer = 60;
+	public int facehuggerStunTickTimer = 90;
 
 	@Configurable
 	@Configurable.Synchronized
