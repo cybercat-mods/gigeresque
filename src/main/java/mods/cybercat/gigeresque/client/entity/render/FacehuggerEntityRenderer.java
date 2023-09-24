@@ -60,8 +60,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
 	@Override
 	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
-		if (!entity.isPassenger() && !entity.isAggressive())
-			stack.translate(0, 0.1, 0);
+//		if (!entity.isPassenger() && !entity.isAggressive())
+//			stack.translate(0, 0.1, 0);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 
