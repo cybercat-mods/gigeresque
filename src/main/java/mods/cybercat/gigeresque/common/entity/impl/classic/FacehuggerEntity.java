@@ -1164,9 +1164,11 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 			if (host != null) {
 				((LivingEntity) getVehicle()).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-				if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
-					host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer());
+				if (host.doesNotHaveParasite()) {
+					host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer() + 60);
 					host.hasParasite();
+				}
+				if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
 					if (!level().isClientSide)
