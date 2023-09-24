@@ -100,7 +100,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -1062,7 +1061,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 
 	@Override
 	protected int getAcidDiameter() {
-		return 1;
+		return this.isPassenger() ? 0 : 1;
 	}
 
 	public boolean isInfertile() {
@@ -1234,26 +1233,26 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-		if (!this.level().isClientSide && (source != damageSources().genericKill() || source != damageSources().generic())) {
-			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-
-			if (this.getHealth() < (this.getMaxHealth() / 4))
-				acidThickness += 1;
-			if (amount >= 5)
-				acidThickness += 1;
-			if (amount > (this.getMaxHealth() / 10))
-				acidThickness += 1;
-			if (acidThickness == 0)
-				return super.hurt(source, amount);
-
-			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
-
-			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				if (source != damageSources().genericKill() || source != damageSources().generic())
-					level().setBlockAndUpdate(this.blockPosition(), newState);
-		}
+//		if (!this.level().isClientSide && (source != damageSources().genericKill() || source != damageSources().generic())) {
+//			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+//
+//			if (this.getHealth() < (this.getMaxHealth() / 4))
+//				acidThickness += 1;
+//			if (amount >= 5)
+//				acidThickness += 1;
+//			if (amount > (this.getMaxHealth() / 10))
+//				acidThickness += 1;
+//			if (acidThickness == 0)
+//				return super.hurt(source, amount);
+//
+//			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+//
+//			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+//				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+//			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+//				if (source != damageSources().genericKill() || source != damageSources().generic())
+//					level().setBlockAndUpdate(this.blockPosition(), newState);
+//		}
 		return super.hurt(source, amount);
 	}
 

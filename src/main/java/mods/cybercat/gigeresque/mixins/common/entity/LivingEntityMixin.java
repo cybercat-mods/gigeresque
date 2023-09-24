@@ -102,9 +102,6 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		if (amount >= 2)
 			if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
 				((FacehuggerEntity) this.getFirstPassenger()).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100, false, false));
-				if (this.getFirstPassenger().level().getBlockState(this.getFirstPassenger().blockPosition().below()).isAir())
-					if (source != damageSources().genericKill() || source != damageSources().generic())
-						((FacehuggerEntity) this.getFirstPassenger()).level().setBlockAndUpdate(this.getFirstPassenger().blockPosition().below(), GigBlocks.ACID_BLOCK.defaultBlockState());
 				((FacehuggerEntity) this.getFirstPassenger()).triggerAnim("livingController", "stun");
 				this.getFirstPassenger().hurt(source, amount / 20);
 				this.getFirstPassenger().unRide();
