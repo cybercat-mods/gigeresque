@@ -41,8 +41,6 @@ import mod.azuredoom.bettercrawling.interfaces.IMobEntityLivingTickHook;
 import mod.azuredoom.bettercrawling.interfaces.IMobEntityTickHook;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.AcidBlock;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -93,6 +91,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.CollisionGetter;
 import net.minecraft.world.level.Level;
@@ -1107,14 +1106,17 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		entityData.define(JUMPING, false);
 	}
 
-	private void detachFromHost(boolean removesParasite) {
+	public void detachFromHost(boolean removesParasite) {
 		this.ticksAttachedToHost = -1.0f;
-		this.kill();
 
 		var vehicle = this.getVehicle();
-
 		if (vehicle instanceof LivingEntity && removesParasite)
 			((Host) vehicle).removeParasite();
+//
+//		if (vehicle instanceof ServerPlayer player)
+//			if (!player.isCreative() || !player.isSpectator())
+//				player.connection.send(new ClientboundSetPassengersPacket(player));
+		this.unRide();
 	}
 
 	@Override
@@ -1150,7 +1152,8 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 		if (Gigeresque.config.facehuggerGivesBlindness == true)
 			entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
 		if (entity instanceof ServerPlayer player)
-			player.connection.send(new ClientboundSetPassengersPacket(entity));
+			if (!player.isCreative() || !player.isSpectator())
+				player.connection.send(new ClientboundSetPassengersPacket(entity));
 	}
 
 	@Override
@@ -1168,7 +1171,7 @@ public class FacehuggerEntity extends AlienEntity implements GeoEntity, SmartBra
 					host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer() + 60);
 					host.hasParasite();
 				}
-				if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer() && host.doesNotHaveParasite()) {
+				if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer()) {
 					if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
 						((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
 					if (!level().isClientSide)

@@ -95,16 +95,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
 	public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-		if ((this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || (this.getVehicle() != null && this.getVehicle() instanceof AlienEntity)) && (source == damageSources().drown() || source == damageSources().inWall())) {
+		if ((this.getVehicle() != null && this.getVehicle() instanceof AlienEntity) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
 			callbackInfo.setReturnValue(false);
-			callbackInfo.cancel();
-		}
 		if (amount >= 2)
 			if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
 				((FacehuggerEntity) this.getFirstPassenger()).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100, false, false));
 				((FacehuggerEntity) this.getFirstPassenger()).triggerAnim("livingController", "stun");
-				this.getFirstPassenger().hurt(source, amount / 20);
-				this.getFirstPassenger().unRide();
+				((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
+				((FacehuggerEntity) this.getFirstPassenger()).hurt(source, amount / 2);
 			}
 	}
 
