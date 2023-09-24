@@ -325,7 +325,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if (!this.level().isClientSide)
 				this.breakingCounter++;
 			if (this.breakingCounter > 10)
-				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
+				for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(4))) {
 					if (!(this.level().getBlockState(testPos).is(Blocks.GRASS) || this.level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
 						if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(testPos).isAir()) {
 							if (!this.level().isClientSide)
