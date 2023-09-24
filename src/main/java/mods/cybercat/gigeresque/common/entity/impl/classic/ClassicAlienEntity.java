@@ -333,7 +333,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Flee Fire
 				new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
 				// Take target to nest
-				new EggmorpthTargetTask<>().stopIf(entity -> this.entityData.get(FLEEING_FIRE).booleanValue() == true),
+				new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing()),
 				// Looks at target
 				new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
 				// Move to target
@@ -344,13 +344,13 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
 				// Build Nest
-				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new BuildNestTask(90).startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
 				// Kill Lights
-				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+				new KillLightsTask<>().startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
 				// Do first
 				new FirstApplicableBehaviour<ClassicAlienEntity>(
 						// Targeting
-						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
+						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
 						// Look at players
 						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
 						// Look around randomly
@@ -358,11 +358,11 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Random
 				new OneRandomBehaviour<>(
 						// Find Darkness
-						new FindDarknessTask<>(),
+						new FindDarknessTask<>().startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()),
 						// Randomly walk around
-						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isExecuting()).stopIf(entity -> this.isExecuting() || this.isPassedOut()),
+						new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(entity -> !this.isPassedOut() || !this.isExecuting()).stopIf(entity -> this.isExecuting() || this.isPassedOut()),
 						// Idle
-						new Idle<>().startCondition(entity -> (!this.isAggressive() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+						new Idle<>().startCondition(entity -> (!this.isPassedOut() || !this.isAggressive() || this.isFleeing())).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
@@ -371,11 +371,11 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				// Invalidate Target
 				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
 				// Walk to Target
-				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.classicXenoAttackSpeed).stopIf(entity -> this.isPassedOut() || (this.entityData.get(FLEEING_FIRE).booleanValue() == true || !this.hasLineOfSight(entity))),
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
 				// Jump to Target
 				new JumpToTargetTask<>(10),
 				// Classic Xeno attacking
-				new ClassicXenoMeleeAttackTask(5).stopIf(entity -> (this.entityData.get(FLEEING_FIRE).booleanValue() == true)));
+				new ClassicXenoMeleeAttackTask(5).startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(entity -> (this.isFleeing())));
 	}
 
 	@Override
