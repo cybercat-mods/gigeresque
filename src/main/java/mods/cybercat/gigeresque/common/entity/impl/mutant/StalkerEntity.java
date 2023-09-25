@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.impl.mutant;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -16,9 +15,7 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.FlightMoveController;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -26,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.LeapAtTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
@@ -45,10 +43,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -76,23 +71,16 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<StalkerEntity> {
+public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<StalkerEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
-	private final FlightMoveController roofMoveControl = new FlightMoveController(this);
-	private final MoveControl landMoveControl = new MoveControl(this);
-	private final LookControl landLookControl = new LookControl(this);
 	public int breakingCounter = 0;
 
-	public StalkerEntity(EntityType<? extends Monster> entityType, Level world) {
+	public StalkerEntity(EntityType<? extends CrawlerAlien> entityType, Level world) {
 		super(entityType, world);
-		setMaxUpStep(1.5f);
+		this.setMaxUpStep(0.1f);
 		this.vibrationUser = new AzureVibrationUser(this, 1.9F);
-		navigation = landNavigation;
-		moveControl = landMoveControl;
-		lookControl = landLookControl;
 	}
 
 	@Override
@@ -319,8 +307,6 @@ public class StalkerEntity extends AlienEntity implements GeoEntity, SmartBrainO
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		this.moveControl = this.isNoGravity() ? roofMoveControl : landMoveControl;
-
 		if (isEffectiveAi() && this.isInWater()) {
 			moveRelative(getSpeed(), movementInput);
 			move(MoverType.SELF, getDeltaMovement());

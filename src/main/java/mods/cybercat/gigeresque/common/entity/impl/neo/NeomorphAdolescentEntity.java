@@ -14,9 +14,10 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azuredoom.bettercrawling.common.ClimberLookController;
+import mod.azuredoom.bettercrawling.common.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
@@ -26,8 +27,8 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -70,12 +71,13 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<NeomorphAdolescentEntity> {
+public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEntity, SmartBrainOwner<NeomorphAdolescentEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
+	public NeomorphAdolescentEntity(EntityType<? extends CrawlerAdultAlien> entityType, Level world) {
 		super(entityType, world);
+		this.setMaxUpStep(0.1f);
 		this.vibrationUser = new AzureVibrationUser(this, (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? 1.3F : 2.65F);
 	}
 
@@ -86,8 +88,8 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 	@Override
 	public void travel(Vec3 movementInput) {
 		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
 		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
 			moveRelative(getSpeed(), movementInput);
@@ -277,7 +279,7 @@ public class NeomorphAdolescentEntity extends AdultAlienEntity implements GeoEnt
 //					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.5F, true);
 				})).add(new AnimationController<>(this, "attackController", 1, event -> {
 					return PlayState.STOP;
-				}).triggerableAnim("alert", RawAnimation.begin().then("ambient", LoopType.PLAY_ONCE)) // reset hands
+				}).triggerableAnim("alert", RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
 						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
 						.triggerableAnim("death", GigAnimationsDefault.DEATH) // death
 						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack

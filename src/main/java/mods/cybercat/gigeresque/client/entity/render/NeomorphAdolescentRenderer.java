@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azuredoom.bettercrawling.Constants;
 import mods.cybercat.gigeresque.client.entity.model.NeomorphAdolescentModel;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import net.fabricmc.api.EnvType;
@@ -22,11 +23,20 @@ public class NeomorphAdolescentRenderer extends GeoEntityRenderer<NeomorphAdoles
 	@Override
 	public void preRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		if (!animatable.isPassenger())
+			Constants.onPreRenderLiving(animatable, partialTick, poseStack);
 		poseStack.scale(0.6F, 0.6F, 0.6F);
 	}
 
 	@Override
 	protected float getDeathMaxRotation(NeomorphAdolescentEntity entityLivingBaseIn) {
 		return 0.0F;
+	}
+
+	@Override
+	public void postRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		if (!animatable.isPassenger())
+			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
 	}
 }
