@@ -1,10 +1,11 @@
-v.0.5.52
+v.0.5.53
 
-- Fixes Facehugger corner issue.
-- Fixes Facehugger face placement.
-- Fixes Facehugger performance. 
-- Fixes runnerhosts missing Trader Llama.
-- Tweaks DNA settings.
+- Fixes Facehugger jumping render glitch.
+- Fixes Facehugger not falling off on Creative or Spectator players. 
+- Fixes crawling happing on nest blocks and acid. 
+- Fixes players dcing when hugged.
+- Increases default stun timer.
+- Tweaks player hugging. Still weird. 
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
