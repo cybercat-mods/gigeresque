@@ -6,6 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.tslat.smartbrainlib.util.RandomUtil;
 
 public class NestResinBlock extends Block {
 	public NestResinBlock(Properties settings) {
@@ -132,11 +134,20 @@ public class NestResinBlock extends Block {
 
 	@Override
 	public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
+//		var test = RandomUtil.getRandomPositionWithinRange(blockPos, 3, 1, 3, false, serverLevel);
 		if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN))
 			if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
 				serverLevel.setBlockAndUpdate(blockPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
 			else if (serverLevel.getBlockState(blockPos.above()).isAir() && serverLevel.getBlockState(blockPos.below()).isSolid())
 				serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+//			else
+//				for (var testPos : BlockPos.betweenClosed(test, test.above(1)))
+//					if (serverLevel.getBlockState(testPos).isAir() && serverLevel.getBlockState(testPos.below()).isSolid())
+//						if (serverLevel.getBlockState(testPos).getLightEmission() < 5)
+//							if (randomSource.nextIntBetweenInclusive(0, 30) > 25)
+//								NestBuildingHelper.tryBuildNestAround(serverLevel, testPos);
+//							else
+//								serverLevel.setBlockAndUpdate(testPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
 		super.randomTick(blockState, serverLevel, blockPos, randomSource);
 	}
 }

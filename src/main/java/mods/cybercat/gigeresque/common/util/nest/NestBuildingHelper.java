@@ -16,9 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-public class NestBuildingHelper {
-	private NestBuildingHelper() {
-	}
+public record NestBuildingHelper() {
 
 	public static void tryBuildNestAround(AlienEntity alien) {
 		if (!alien.isAggressive() || !alien.isFleeing() || alien.getDeltaMovement().horizontalDistance() <= 0.000000001)
@@ -48,6 +46,37 @@ public class NestBuildingHelper {
 							}
 							if (alien.level().isClientSide)
 								alien.playSound(SoundEvents.HONEY_BLOCK_STEP);
+						}
+					}
+				}
+			}
+	}
+
+	public static void tryBuildNestAround(Level level, BlockPos pos) {
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					for (int y = -1; y <= 3; y++) {
+						var blockPos = pos.offset(x, y, z);
+						var nestBlockData = getNestBlockData(level, blockPos);
+						if (nestBlockData == null)
+							continue;
+
+						if (level.getLightEmission(pos) < 6) {
+							var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
+							if (nestBlockData.isFloor()) 
+								if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									level.setBlockAndUpdate(blockPos, resinBlock);
+
+							if (nestBlockData.isCorner())
+								if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									level.setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+
+							if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
+								var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
+										NestResinWebVariant.values()[new Random().nextInt(NestResinWebVariant.values().length)]);
+								if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+									level.setBlockAndUpdate(blockPos, nestResinWebState);
+							}
 						}
 					}
 				}
