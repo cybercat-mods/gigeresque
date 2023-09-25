@@ -59,13 +59,6 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 	}
 
 	@Override
-	public void render(FacehuggerEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
-//		if (!entity.isPassenger() && !entity.isAggressive())
-//			stack.translate(0, 0.1, 0);
-		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-	}
-
-	@Override
 	public void preRender(PoseStack poseStack, FacehuggerEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (animatable.getEntityData().get(FacehuggerEntity.EGGSPAWN) == true) {
 			poseStack.pushPose();
