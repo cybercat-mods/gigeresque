@@ -31,6 +31,7 @@ import mod.azuredoom.bettercrawling.interfaces.ILivingEntityRotationHook;
 import mod.azuredoom.bettercrawling.interfaces.ILivingEntityTravelHook;
 import mod.azuredoom.bettercrawling.interfaces.IMobEntityLivingTickHook;
 import mod.azuredoom.bettercrawling.interfaces.IMobEntityTickHook;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
@@ -147,7 +148,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
 	@Override
 	public boolean canClimbOnBlock(BlockState state, BlockPos pos) {
-		return !state.is(GigTags.NEST_BLOCKS);
+		return !state.is(GigTags.NEST_BLOCKS) || !state.is(GigBlocks.ACID_BLOCK);
 	}
 
 	@Override
