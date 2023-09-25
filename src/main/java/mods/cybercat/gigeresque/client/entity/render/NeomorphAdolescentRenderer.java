@@ -39,4 +39,9 @@ public class NeomorphAdolescentRenderer extends GeoEntityRenderer<NeomorphAdoles
 		if (!animatable.isPassenger())
 			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
 	}
+	
+	@Override
+	public float getMotionAnimThreshold(NeomorphAdolescentEntity animatable) {
+		return 0.005f;
+	}
 }

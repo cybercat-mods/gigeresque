@@ -26,7 +26,6 @@ public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEnti
 	public void render(RunnerAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
 		float scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
 		stack.scale(scaleFactor, scaleFactor, scaleFactor);
-		stack.translate(0.0, 0.1, 0.0);
 		super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
 	}
 
@@ -47,5 +46,10 @@ public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEnti
 		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 		if (!animatable.isPassenger())
 			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
+	}
+
+	@Override
+	public float getMotionAnimThreshold(RunnerAlienEntity animatable) {
+		return 0.005f;
 	}
 }

@@ -44,4 +44,9 @@ public class StalkerEntityRenderer extends GeoEntityRenderer<StalkerEntity> {
 		if (!animatable.isPassenger())
 			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
 	}
+	
+	@Override
+	public float getMotionAnimThreshold(StalkerEntity animatable) {
+		return 0.005f;
+	}
 }
