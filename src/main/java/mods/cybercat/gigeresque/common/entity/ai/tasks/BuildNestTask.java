@@ -30,7 +30,7 @@ public class BuildNestTask<E extends AdultAlienEntity> extends DelayedBehaviour<
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E alien) {
-		return !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth() && !alien.level().canSeeSky(alien.blockPosition()) && !alien.level().getBlockState(alien.blockPosition()).is(Blocks.SOUL_SAND) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5;
+		return !alien.isCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth() && !alien.level().canSeeSky(alien.blockPosition()) && !alien.level().getBlockState(alien.blockPosition()).is(Blocks.SOUL_SAND) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5;
 	}
 
 	@Override
