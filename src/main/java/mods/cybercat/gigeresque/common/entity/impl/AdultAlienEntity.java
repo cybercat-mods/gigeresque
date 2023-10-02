@@ -277,7 +277,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Hissing Logic
-		if (velocityLength == 0 && !this.isInWater() && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive()) {
+		if (velocityLength == 0 && !this.isInWater() && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && this.isPassedOut() == false) && !this.isAggressive() && !this.isCrawling()) {
 			if (!this.level().isClientSide)
 				this.hissingCooldown++;
 
@@ -291,7 +291,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if ((velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut())) {
+		if ((velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
 			if (!this.level().isClientSide)
 				this.searchingProgress++;
 
