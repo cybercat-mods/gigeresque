@@ -91,7 +91,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
 		ImmutableList.Builder<EntityDataAccessor<Optional<BlockPos>>> pathingTargets = ImmutableList.builder();
 		ImmutableList.Builder<EntityDataAccessor<Direction>> pathingSides = ImmutableList.builder();
-		for (int i = 0; i < 8; i++) {
+		for (var i = 0; i < 8; i++) {
 			pathingTargets.add(SynchedEntityData.defineId(cls, EntityDataSerializers.OPTIONAL_BLOCK_POS));
 			pathingSides.add(SynchedEntityData.defineId(cls, EntityDataSerializers.DIRECTION));
 		}
@@ -567,7 +567,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 		var baseStickingOffsetZ = 0.0f;
 		var baseOrientationNormal = new Vec3(0, 1, 0);
 
-		if (!this.isTravelingInFluid && this.onGround() && this.getVehicle() == null) {
+		if (!this.isTravelingInFluid && this.onGround() && this.getVehicle() == null && this.isCrawling()) {
 			var p = this.position();
 			var s = p.add(0, this.getBbHeight() * 0.5f, 0);
 			var inclusionBox = new AABB(s.x, s.y, s.z, s.x, s.y, s.z).inflate(this.collisionsInclusionRange);
@@ -582,14 +582,12 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
 				if (Math.max(dx, Math.max(dy, dz)) < 0.5f) {
 					isAttached = true;
-					this.setIsCrawling(true);
 					this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2, this.getBbWidth() / 2);
 					this.lastAttachmentOffsetY = Mth.clamp(attachmentPos.y - p.y, 0, this.getBbHeight());
 					this.lastAttachmentOffsetZ = Mth.clamp(attachmentPos.z - p.z, -this.getBbWidth() / 2, this.getBbWidth() / 2);
 					this.lastAttachmentOrientationNormal = attachmentPoint.getRight();
 				} else {
 					isAttached = false;
-					this.setIsCrawling(false);
 				}
 			}
 		}
@@ -767,7 +765,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 	}
 
 	private float getRelevantMoveFactor(float slipperiness) {
-		return this.onGround() ? this.getSpeed() * (0.16277136F / (slipperiness * slipperiness * slipperiness)) : this.getFlyingSpeed();
+		return this.getSpeed();
 	}
 
 	private void travelOnGround(Vec3 relative) {
@@ -963,10 +961,10 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 	}
 
 	public void setLocationFromBoundingbox() {
-		AABB axisalignedbb = this.getBoundingBox();
+		var axisalignedbb = this.getBoundingBox();
 		this.setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2.0D, axisalignedbb.minY, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D);
 	}
-	
+
 	@Override
 	public int getMaxStuckCheckTicks() {
 		return 10;

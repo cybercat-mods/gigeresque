@@ -37,7 +37,6 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -79,8 +78,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		this.setMaxUpStep(2.5f);
 		this.vibrationUser = new AzureVibrationUser(this, 2.5F);
 		this.navigation = landNavigation;
-		this.moveControl = landMoveControl;
-		this.lookControl = landLookControl;
 		this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0f);
 	}
 
@@ -291,7 +288,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		}
 
 		// Searching Logic
-		if ((velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
+		if ((this.level().getBlockState(this.blockPosition().below()).isSolid() && velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
 			if (!this.level().isClientSide)
 				this.searchingProgress++;
 
@@ -378,17 +375,12 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-		return false;
+		return (this.fallDistance > 0.1) ? false : true;
 	}
 
 	@Override
 	protected void jumpInLiquid(TagKey<Fluid> fluid) {
 		super.jumpInLiquid(fluid);
-	}
-
-	@Override
-	public PathNavigation createNavigation(Level world) {
-		return this.isInWater() ? swimNavigation : landNavigation;
 	}
 
 	@Override

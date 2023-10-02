@@ -94,16 +94,18 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
 		if (this.mob instanceof AdultAlienEntity adult) {
 			adult.wakeupCounter++;
-			if (adult.isPassedOut() & adult.wakeupCounter == 1) 
+			if (adult.isPassedOut() & adult.wakeupCounter == 1)
 				adult.triggerAnim("attackController", "wakeup");
 			if (adult.wakeupCounter == 2) {
-				adult.setPassedOutStatus(false);
+				if (adult.level().getBlockState(adult.blockPosition().below()).isSolid())
+					adult.setPassedOutStatus(false);
 				adult.triggerAnim("attackController", "alert");
 				adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
 			}
 			if (adult.wakeupCounter >= 3) {
 				adult.triggerAnim("attackController", "run");
 				adult.setPassedOutStatus(false);
+				adult.setAggressive(true);
 				adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
 				adult.wakeupCounter = 0;
 			}
