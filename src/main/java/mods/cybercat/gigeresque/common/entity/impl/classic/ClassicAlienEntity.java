@@ -255,8 +255,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+		return this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ()) <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	@Override
