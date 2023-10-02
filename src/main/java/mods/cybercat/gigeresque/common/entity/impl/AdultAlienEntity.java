@@ -8,9 +8,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
@@ -59,7 +57,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(AdultAlienEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	protected final AzureNavigation landNavigation = new AzureNavigation(this, level());
 	protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
 	protected final MoveControl landMoveControl = new MoveControl(this);
@@ -177,14 +174,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		return false;
 	}
 
-	public AlienAttackType getCurrentAttackType() {
-		return entityData.get(CURRENT_ATTACK_TYPE);
-	}
-
-	public void setCurrentAttackType(AlienAttackType value) {
-		entityData.set(CURRENT_ATTACK_TYPE, value);
-	}
-
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
@@ -196,7 +185,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 		entityData.define(IS_EXECUTION, false);
 		entityData.define(IS_HEADBITE, false);
 		entityData.define(IS_SEARCHING, false);
-		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 	@Override
@@ -390,8 +378,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
 	@Override
 	public boolean onClimbable() {
-//		setIsCrawling(this.horizontalCollision && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.hasEffect(MobEffects.LEVITATION));
-//		return this.horizontalCollision && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.hasEffect(MobEffects.LEVITATION);
 		return false;
 	}
 

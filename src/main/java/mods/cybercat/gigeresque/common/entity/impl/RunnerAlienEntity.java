@@ -13,7 +13,6 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azuredoom.bettercrawling.common.ClimberLookController;
 import mod.azuredoom.bettercrawling.common.ClimberMoveController;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -103,32 +102,6 @@ public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOw
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-
-		// Attack logic
-
-		if (attackProgress > 0) {
-			attackProgress--;
-
-			if (!level().isClientSide && attackProgress <= 0)
-				setCurrentAttackType(AlienAttackType.NONE);
-		}
-
-		if (attackProgress == 0 && swinging)
-			attackProgress = 10;
-
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-			case 2 -> AlienAttackType.TAIL_LEFT;
-			case 3 -> AlienAttackType.TAIL_RIGHT;
-			default -> AlienAttackType.CLAW_LEFT_MOVING;
-			});
-	}
-
-	@Override
 	public boolean doHurtTarget(Entity target) {
 		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
 			if (this.getRandom().nextInt(0, 10) > 7) {
@@ -173,9 +146,8 @@ public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOw
 
 	@Override
 	public List<ExtendedSensor<RunnerAlienEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
-				new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7), new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<RunnerAlienEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<RunnerAlienEntity>().setRadius(7), new NearbyRepellentsSensor<RunnerAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				new NearbyLightsBlocksSensor<RunnerAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -193,17 +165,17 @@ public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOw
 	public BrainActivityGroup<RunnerAlienEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
 				// Build Nest
-				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), 
+				new BuildNestTask(90).stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)),
 				// Kill Lights
 				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
 				// Do first
 				new FirstApplicableBehaviour<RunnerAlienEntity>(
 						// Targeting
-						new TargetOrRetaliate<>(), 
+						new TargetOrRetaliate<>(),
 						// Look at players
-						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), 
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
 						// Look around randomly
-						new SetRandomLookTarget<>()), 
+						new SetRandomLookTarget<>()),
 				// Random
 				new OneRandomBehaviour<>(
 						// Randomly walk around
@@ -215,13 +187,12 @@ public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), 
-				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.runnerXenoAttackSpeed).stopIf(entity -> this.isPassedOut()), 
+				// Invalidate Target
+				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
+				// Walk to Target
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.runnerXenoAttackSpeed).stopIf(entity -> this.isPassedOut()),
+				// Xeno attacking
 				new AlienMeleeAttack(10));
-	}
-
-	@Override
-	protected void registerGoals() {
 	}
 
 	/*

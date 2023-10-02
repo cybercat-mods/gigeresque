@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.animatable.GeoEntity;
@@ -19,7 +16,6 @@ import mod.azuredoom.bettercrawling.common.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -44,7 +40,6 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -98,88 +93,17 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
 			if (getTarget() == null) {
 				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
 			}
-		} else {
+		} else
 			super.travel(movementInput);
-		}
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-
-		// Attack logic
-
-		if (attackProgress > 0) {
-			attackProgress--;
-
-			if (!level().isClientSide && attackProgress <= 0)
-				setCurrentAttackType(AlienAttackType.NONE);
-		}
-
-		if (attackProgress == 0 && swinging)
-			attackProgress = 10;
-
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-			case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-			case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-			default -> AlienAttackType.CLAW_LEFT_MOVING;
-			});
 	}
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> Gigeresque.config.runnerXenoTailAttackDamage;
-		case EXECUTION -> Float.MAX_VALUE;
-		default -> 0.0f;
-		};
-
-		if (target instanceof LivingEntity && !level().isClientSide)
-			switch (getAttckingState()) {
-			case 1 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
+		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
+			if (this.getRandom().nextInt(0, 10) > 7) {
+				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.runnerXenoTailAttackDamage : 0.0f);
+				this.heal(1.0833f);
 				return super.doHurtTarget(target);
-			}
-			case 2 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 3 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 4 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-//			case 5 -> {
-//				var health = ((LivingEntity) target).getHealth();
-//				var maxhealth = ((LivingEntity) target).getMaxHealth();
-//				if (health >= (maxhealth * 0.10)) {
-//					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
-//					this.grabTarget(target);
-//				}
-//				return super.doHurtTarget(target);
-//			}
 			}
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
@@ -223,9 +147,8 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
 
 	@Override
 	public List<ExtendedSensor<NeomorphAdolescentEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
-				new NearbyBlocksSensor<NeomorphAdolescentEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphAdolescentEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<NeomorphAdolescentEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<NeomorphAdolescentEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphAdolescentEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				new NearbyLightsBlocksSensor<NeomorphAdolescentEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
 	}
 
 	@Override
@@ -235,8 +158,7 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
 
 	@Override
 	public BrainActivityGroup<NeomorphAdolescentEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())), new FirstApplicableBehaviour<NeomorphAdolescentEntity>(new TargetOrRetaliate<>(), 
-				new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
+		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())), new FirstApplicableBehaviour<NeomorphAdolescentEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
 				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.05f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 

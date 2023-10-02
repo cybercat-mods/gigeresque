@@ -14,8 +14,6 @@ import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -30,8 +28,6 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -44,6 +40,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -74,7 +71,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<StalkerEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(StalkerEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	public int breakingCounter = 0;
 
 	public StalkerEntity(EntityType<? extends CrawlerAlien> entityType, Level world) {
@@ -149,14 +145,6 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.NORMAL;
-			case 1 -> AlienAttackType.HEAVY;
-			case 2 -> AlienAttackType.NORMAL;
-			case 3 -> AlienAttackType.HEAVY;
-			default -> AlienAttackType.NORMAL;
-			});
 
 		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
 			if (!this.level().isClientSide)
@@ -252,41 +240,18 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 		return d <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case HEAVY -> Gigeresque.config.stalkerTailAttackDamage;
-		default -> 0.0f;
-		};
-
-		if (target instanceof LivingEntity && !level().isClientSide)
-			switch (getCurrentAttackType().genericAttackType) {
-			case NORMAL -> {
+		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
+			if (this.getRandom().nextInt(0, 10) > 7) {
+				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
+				this.heal(1.0833f);
 				return super.doHurtTarget(target);
 			}
-			case HEAVY -> {
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			}
+		if (target instanceof Creeper creeper)
+			creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
-
-	}
-
-	public AlienAttackType getCurrentAttackType() {
-		return entityData.get(CURRENT_ATTACK_TYPE);
-	}
-
-	public void setCurrentAttackType(AlienAttackType value) {
-		entityData.set(CURRENT_ATTACK_TYPE, value);
-	}
-
-	@Override
-	public void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 	@Override

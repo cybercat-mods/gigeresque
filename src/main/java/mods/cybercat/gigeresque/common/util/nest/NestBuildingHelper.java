@@ -53,9 +53,9 @@ public record NestBuildingHelper() {
 	}
 
 	public static void tryBuildNestAround(Level level, BlockPos pos) {
-			for (int x = -1; x <= 1; x++) {
-				for (int z = -1; z <= 1; z++) {
-					for (int y = -1; y <= 3; y++) {
+			for (var x = -1; x <= 1; x++) {
+				for (var z = -1; z <= 1; z++) {
+					for (var y = -1; y <= 3; y++) {
 						var blockPos = pos.offset(x, y, z);
 						var nestBlockData = getNestBlockData(level, blockPos);
 						if (nestBlockData == null)

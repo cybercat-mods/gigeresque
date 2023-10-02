@@ -138,12 +138,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
 	@VisibleForTesting
 	public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
-		if (!this.isNoAi() && this.canTargetEntity(entity)) {
-			boolean bl2 = !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player);
-			int j = this.angerManagement.increaseAnger(entity, i);
-			if (entity instanceof Player && bl2 && AngerLevel.byAnger(j).isAngry())
+		if (!this.isNoAi() && this.canTargetEntity(entity))
+			if (entity instanceof Player && !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player) && AngerLevel.byAnger(this.angerManagement.increaseAnger(entity, i)).isAngry())
 				this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-		}
 	}
 
 	@Override
@@ -289,8 +286,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 					generateAcidPool(0, 0);
 				else {
 					var radius = (getAcidDiameter() - 1) / 2;
-					for (int x = -radius; x <= radius; x++) {
-						for (int z = -radius; z <= radius; z++)
+					for (var x = -radius; x <= radius; x++) {
+						for (var z = -radius; z <= radius; z++)
 							if (source != damageSources().genericKill() || source != damageSources().generic())
 								generateAcidPool(x, z);
 					}

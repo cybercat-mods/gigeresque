@@ -166,14 +166,9 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
 	public void detachFromHost(boolean removesParasite) {
 		this.ticksAttachedToHost = -1.0f;
-
 		var vehicle = this.getVehicle();
 		if (vehicle instanceof LivingEntity && removesParasite)
 			((Host) vehicle).removeParasite();
-//
-//		if (vehicle instanceof ServerPlayer player)
-//			if (!player.isCreative() || !player.isSpectator())
-//				player.connection.send(new ClientboundSetPassengersPacket(player));
 		this.unRide();
 	}
 
@@ -207,7 +202,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 		entity.yya = 0;
 		entity.yBodyRot = 0;
 		entity.setSpeed(0.0f);
-		if (Gigeresque.config.facehuggerGivesBlindness == true)
+		if (Gigeresque.config.facehuggerGivesBlindness)
 			entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
 		if (entity instanceof ServerPlayer player)
 			if (!player.isCreative() || !player.isSpectator())
@@ -263,7 +258,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 			this.removeFreeWill();
 			return;
 		}
-		if (this.isEggSpawn() == true && this.tickCount > 30)
+		if (this.isEggSpawn() && this.tickCount > 30)
 			this.setEggSpawnState(false);
 	}
 
@@ -293,36 +288,14 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 		if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
 			return false;
 
-		if (!this.level().isClientSide) {
-			var attacker = source.getEntity();
-			if (attacker != null)
-				if (attacker instanceof LivingEntity)
-					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
-		}
+		if (!this.level().isClientSide)
+			if (source.getEntity() != null)
+				if (source.getEntity() instanceof LivingEntity livingEntity)
+					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
 
 		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
 			return super.hurt(source, amount);
 
-//		if (!this.level().isClientSide && (source != damageSources().genericKill() || source != damageSources().generic())) {
-//			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-//
-//			if (this.getHealth() < (this.getMaxHealth() / 4))
-//				acidThickness += 1;
-//			if (amount >= 5)
-//				acidThickness += 1;
-//			if (amount > (this.getMaxHealth() / 10))
-//				acidThickness += 1;
-//			if (acidThickness == 0)
-//				return super.hurt(source, amount);
-//
-//			var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
-//
-//			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-//				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-//			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-//				if (source != damageSources().genericKill() || source != damageSources().generic())
-//					level().setBlockAndUpdate(this.blockPosition(), newState);
-//		}
 		return super.hurt(source, amount);
 	}
 
@@ -363,8 +336,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
 	@Override
 	public void stopRiding() {
-		var vehicle = this.getVehicle();
-		if (vehicle != null && vehicle instanceof LivingEntity && vehicle.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
+		if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && (isInWater() || isInWater()))
 			return;
 		super.stopRiding();
 	}

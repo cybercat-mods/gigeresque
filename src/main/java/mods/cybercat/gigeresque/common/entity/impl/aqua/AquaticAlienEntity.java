@@ -12,7 +12,6 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -198,36 +197,6 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> !this.wasTouchingWater ? 0.95F : 1.5F), new AlienMeleeAttack(10));
-	}
-
-	@Override
-	protected void registerGoals() {
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-
-		// Attack logic
-
-		if (attackProgress > 0) {
-			attackProgress--;
-
-			if (!level().isClientSide && attackProgress <= 0)
-				setCurrentAttackType(AlienAttackType.NONE);
-		}
-
-		if (attackProgress == 0 && swinging)
-			attackProgress = 10;
-
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-			case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-			case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-			default -> AlienAttackType.CLAW_LEFT_MOVING;
-			});
 	}
 
 	@Override

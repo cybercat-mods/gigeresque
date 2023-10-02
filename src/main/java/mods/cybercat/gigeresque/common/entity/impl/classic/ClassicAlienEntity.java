@@ -17,7 +17,6 @@ import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -138,38 +137,6 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			this.setPassedOutStatus(false);
 
 		// Attack logic
-
-		if (attackProgress > 0) {
-			attackProgress--;
-			if (!level().isClientSide && attackProgress <= 0)
-				setCurrentAttackType(AlienAttackType.NONE);
-		}
-
-		if (attackProgress == 0 && swinging)
-			attackProgress = 10;
-
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			if (this.isCrawling() || this.wasEyeInWater)
-				setCurrentAttackType(switch (random.nextInt(4)) {
-				case 0 -> AlienAttackType.CLAW_LEFT;
-				case 1 -> AlienAttackType.CLAW_RIGHT;
-				case 2 -> AlienAttackType.TAIL_LEFT;
-				case 3 -> AlienAttackType.TAIL_RIGHT;
-				default -> AlienAttackType.CLAW_LEFT;
-				});
-			else
-				setCurrentAttackType(switch (random.nextInt(4)) {
-				case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-				case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-				case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-				case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-				default -> AlienAttackType.CLAW_LEFT_MOVING;
-				});
-
-		if (this.isAggressive())
-			this.setPose(Pose.CROUCHING);
-		else
-			this.setPose(Pose.STANDING);
 
 		if (this.isExecuting())
 			this.setDeltaMovement(0, 0, 0);

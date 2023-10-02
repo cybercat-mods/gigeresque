@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
@@ -18,9 +15,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.data.handler.TrackedDataHandlers;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -33,20 +28,23 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -76,7 +74,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<NeomorphEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private static final EntityDataAccessor<AlienAttackType> CURRENT_ATTACK_TYPE = SynchedEntityData.defineId(NeomorphEntity.class, TrackedDataHandlers.ALIEN_ATTACK_TYPE);
 	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 	public int breakingCounter = 0;
 
@@ -218,15 +215,6 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 	public void tick() {
 		super.tick();
 
-		if (!level().isClientSide && getCurrentAttackType() == AlienAttackType.NONE)
-			setCurrentAttackType(switch (random.nextInt(5)) {
-			case 0 -> AlienAttackType.CLAW_LEFT_MOVING;
-			case 1 -> AlienAttackType.CLAW_RIGHT_MOVING;
-			case 2 -> AlienAttackType.TAIL_LEFT_MOVING;
-			case 3 -> AlienAttackType.TAIL_RIGHT_MOVING;
-			default -> AlienAttackType.CLAW_LEFT_MOVING;
-			});
-
 		if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
 
@@ -271,72 +259,22 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> Gigeresque.config.runnerXenoTailAttackDamage;
-		case EXECUTION -> Float.MAX_VALUE;
-		default -> 0.0f;
-		};
-
-		if (target instanceof LivingEntity && !level().isClientSide)
-			switch (getAttckingState()) {
-			case 1 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
+			if (this.getRandom().nextInt(0, 10) > 7) {
+				if (livingEntity instanceof Player playerEntity)
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
+				if (livingEntity instanceof Mob mobEntity)
+					if (mobEntity.getMainHandItem() != null)
+						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.runnerXenoTailAttackDamage : 0.0f);
+				this.heal(1.0833f);
 				return super.doHurtTarget(target);
 			}
-			case 2 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 3 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 4 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-//			case 5 -> {
-//				var health = ((LivingEntity) target).getHealth();
-//				var maxhealth = ((LivingEntity) target).getMaxHealth();
-//				if (health >= (maxhealth * 0.10)) {
-//					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
-//					this.grabTarget(target);
-//				}
-//				return super.doHurtTarget(target);
-//			}
-			}
+		if (target instanceof Creeper creeper)
+			creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
-	}
-
-	public AlienAttackType getCurrentAttackType() {
-		return entityData.get(CURRENT_ATTACK_TYPE);
-	}
-
-	public void setCurrentAttackType(AlienAttackType value) {
-		entityData.set(CURRENT_ATTACK_TYPE, value);
-	}
-
-	@Override
-	public void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(CURRENT_ATTACK_TYPE, AlienAttackType.NONE);
 	}
 
 }
