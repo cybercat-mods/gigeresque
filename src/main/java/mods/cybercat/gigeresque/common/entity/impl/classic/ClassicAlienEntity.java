@@ -36,6 +36,7 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -240,7 +241,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				if (livingEntity instanceof Mob mobEntity)
 					if (mobEntity.getMainHandItem() != null)
 						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
-				livingEntity.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.classicXenoTailAttackDamage : 0.0f);
+				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+				livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.classicXenoTailAttackDamage : 0.0f);
 				this.heal(1.0833f);
 				return super.doHurtTarget(target);
 			}
