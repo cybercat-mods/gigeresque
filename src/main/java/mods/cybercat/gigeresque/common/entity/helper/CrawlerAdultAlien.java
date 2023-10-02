@@ -582,11 +582,14 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
 				if (Math.max(dx, Math.max(dy, dz)) < 0.5f) {
 					isAttached = true;
-
+					this.setIsCrawling(true);
 					this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2, this.getBbWidth() / 2);
 					this.lastAttachmentOffsetY = Mth.clamp(attachmentPos.y - p.y, 0, this.getBbHeight());
 					this.lastAttachmentOffsetZ = Mth.clamp(attachmentPos.z - p.z, -this.getBbWidth() / 2, this.getBbWidth() / 2);
 					this.lastAttachmentOrientationNormal = attachmentPoint.getRight();
+				} else {
+					isAttached = false;
+					this.setIsCrawling(false);
 				}
 			}
 		}
