@@ -126,6 +126,7 @@ if (file('key.properties').exists()) {
             	optionalDependency 'friends-and-foes-forge'
             	optionalDependency 'cave-dweller-evolved'
             	optionalDependency 'aether'
+            	optionalDependency 'bygone-nether'
         	}
         	mainArtifact(remapJar)
 
@@ -171,6 +172,7 @@ if (file('key.properties').exists()) {
             optional.project "the-graveyard-forge"
             optional.project "friends-and-foes-forge"
             optional.project "aether"
+            optional.project "bygone-nether"
    		}
 	}
 }
