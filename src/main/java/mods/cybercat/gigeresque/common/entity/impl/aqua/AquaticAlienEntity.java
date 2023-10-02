@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -13,7 +10,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.enums.AlienAttackType;
@@ -30,13 +26,16 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
@@ -50,7 +49,10 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -228,53 +230,23 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 			});
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> Gigeresque.config.aquaticXenoTailAttackDamage;
-		case EXECUTION -> Float.MAX_VALUE;
-		default -> 0.0f;
-		};
-
-		if (target instanceof LivingEntity && !level().isClientSide)
-			switch (getCurrentAttackType().genericAttackType) {
-			case CLAW -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
+			if (this.getRandom().nextInt(0, 10) > 7) {
+				if (livingEntity instanceof Player playerEntity)
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-			}
-			case TAIL -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty()) {
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				}
-			}
-			case EXECUTION -> {
-				double yOffset = this.getEyeY() - ((target.getEyeY() - target.blockPosition().getY()) / 2.0);
-				double e = target.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				double f = target.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-				holdingCounter++;
-				if (holdingCounter == 760) {
-					this.getNavigation().stop();
-					this.setIsExecuting(true);
-					this.setAggressive(false);
-				}
-				if (holdingCounter == 850) {
-					target.hurt(damageSources().generic(), Float.MAX_VALUE);
-					target.level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0, -0.15, 0.0);
-					this.setIsExecuting(false);
-					holdingCounter = 0;
-				}
+				if (livingEntity instanceof Mob mobEntity)
+					if (mobEntity.getMainHandItem() != null)
+						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.aquaticXenoTailAttackDamage : 0.0f);
+				this.heal(1.0833f);
 				return super.doHurtTarget(target);
 			}
-			}
-
+		if (target instanceof Creeper creeper)
+			creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
 		this.heal(1.0833f);
-		target.hurt(damageSources().mobAttack(this), additionalDamage);
-
 		return super.doHurtTarget(target);
 	}
 
