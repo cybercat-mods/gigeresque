@@ -36,8 +36,8 @@ public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity
 		CoreGeoBone head = getAnimationProcessor().getBone("head");
 
 		if (head != null && animatable.getDeltaMovement().horizontalDistance() == 0 && !animatable.isVehicle() && !animatable.isPassedOut()) {
-			head.setRotX(animationState.getData(DataTickets.ENTITY_MODEL_DATA).headPitch() * Mth.DEG_TO_RAD);
-//			head.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);
+//			head.setRotX(animationState.getData(DataTickets.ENTITY_MODEL_DATA).headPitch() * Mth.DEG_TO_RAD);
+			head.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);
 		}
 
 		super.setCustomAnimations(animatable, instanceId, animationState);
