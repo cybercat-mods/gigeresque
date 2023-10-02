@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azuredoom.bettercrawling.interfaces.IClimberEntity;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -39,26 +38,24 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 	@Override
 	public void preRender(PoseStack poseStack, ClassicAlienEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (!animatable.isPassenger()) {
-			if (animatable instanceof IClimberEntity climber) {
-				var orientation = climber.getOrientation();
-				var renderOrientation = climber.calculateOrientation(partialTick);
-				climber.setRenderOrientation(renderOrientation);
-				var above = animatable.level().getBlockState(animatable.blockPosition().above()).isSolid();
-				var below = animatable.level().getBlockState(animatable.blockPosition().below()).isSolid();
-				if (above) 
-					poseStack.translate(0, 0.75, 0);
-				if (animatable.level().getBlockState(animatable.blockPosition().west()).isSolid() && !above && !below) 
-					poseStack.translate(-0.45, 0, 0);
-				if (animatable.level().getBlockState(animatable.blockPosition().east()).isSolid() && !above && !below) 
-					poseStack.translate(0.45, 0, 0);
-				if (animatable.level().getBlockState(animatable.blockPosition().north()).isSolid() && !above && !below)
-					poseStack.translate(0, 0, -0.4);
-				if (animatable.level().getBlockState(animatable.blockPosition().south()).isSolid() && !above && !below)
-					poseStack.translate(0, 0, 0.49);
-				poseStack.mulPose(Axis.YP.rotationDegrees(renderOrientation.yaw()));
-				poseStack.mulPose(Axis.XP.rotationDegrees(renderOrientation.pitch()));
-				poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.signum(0.5f - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
-			}
+			var orientation = animatable.getOrientation();
+			var renderOrientation = animatable.calculateOrientation(partialTick);
+			animatable.setRenderOrientation(renderOrientation);
+			var above = animatable.level().getBlockState(animatable.blockPosition().above()).isSolid();
+			var below = animatable.level().getBlockState(animatable.blockPosition().below()).isSolid();
+			if (above)
+				poseStack.translate(0, 0.75, 0);
+			if (animatable.level().getBlockState(animatable.blockPosition().west()).isSolid() && !above && !below)
+				poseStack.translate(-0.45, 0, 0);
+			if (animatable.level().getBlockState(animatable.blockPosition().east()).isSolid() && !above && !below)
+				poseStack.translate(0.45, 0, 0);
+			if (animatable.level().getBlockState(animatable.blockPosition().north()).isSolid() && !above && !below)
+				poseStack.translate(0, 0, -0.4);
+			if (animatable.level().getBlockState(animatable.blockPosition().south()).isSolid() && !above && !below)
+				poseStack.translate(0, 0, 0.49);
+			poseStack.mulPose(Axis.YP.rotationDegrees(renderOrientation.yaw()));
+			poseStack.mulPose(Axis.XP.rotationDegrees(renderOrientation.pitch()));
+			poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.signum(0.5f - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
 		}
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 	}
@@ -69,9 +66,9 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 //			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
 		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 	}
-	
+
 	@Override
 	public float getMotionAnimThreshold(ClassicAlienEntity animatable) {
-		return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f: 0.005f;
+		return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f : 0.005f;
 	}
 }
