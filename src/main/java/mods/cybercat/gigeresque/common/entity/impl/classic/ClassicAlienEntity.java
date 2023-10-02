@@ -55,6 +55,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -246,6 +247,8 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 				this.heal(1.0833f);
 				return super.doHurtTarget(target);
 			}
+		if (target instanceof Creeper creeper)
+			creeper.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO), creeper.getMaxHealth());
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
 	}
