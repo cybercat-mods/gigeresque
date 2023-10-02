@@ -13,10 +13,11 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azuredoom.bettercrawling.common.ClimberLookController;
+import mod.azuredoom.bettercrawling.common.ClimberMoveController;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -28,8 +29,8 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -84,19 +85,19 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOwner<ClassicAlienEntity> {
+public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainOwner<ClassicAlienEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
+	public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAdultAlien> type, @NotNull Level world) {
 		super(type, world);
 	}
 
 	@Override
 	public void travel(Vec3 movementInput) {
 		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);;
 
 		if (this.tickCount % 10 == 0)
 			this.refreshDimensions();
@@ -113,7 +114,7 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : this.isCrawling() ? EntityDimensions.scalable(0.9f, 0.9f) : super.getDimensions(pose);
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : this.isCrawling() ? EntityDimensions.scalable(0.9f, 0.9f) : EntityDimensions.scalable(0.9f, 1.9f);
 	}
 
 	@Override
@@ -129,6 +130,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 	@Override
 	public void tick() {
 		super.tick();
+
+		if (!this.isInWater())
+			this.setIsCrawling(this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
 
 		if (!this.isVehicle())
 			this.setIsExecuting(false);
@@ -352,9 +356,9 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.onGround() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			else if (this.isCrawling() && this.isExecuting() == false && this.isPassedOut() == false && !this.isVehicle())
+			else if (this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle() && !this.isInWater())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() == true && !this.isVehicle() && !this.isAggressive() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+			return event.setAndContinue(this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() && !this.isVehicle() && !this.isAggressive() && this.level().getBlockState(this.blockPosition().below()).isSolid() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level().isClientSide)
