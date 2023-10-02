@@ -1,11 +1,16 @@
-v.0.5.53
+v.0.5.54
 
-- Fixes Facehugger jumping render glitch.
-- Fixes Facehugger not falling off on Creative or Spectator players. 
-- Fixes crawling happing on nest blocks and acid. 
-- Fixes players dcing when hugged.
-- Increases default stun timer.
-- Tweaks player hugging. Still weird. 
+- Fixed Aether tags.
+- Fixed Classic Xeno not being able to knock the targets item from it's hand.
+- Fixed Runner Xeno not being able to knock the targets item from it's hand.
+- Fixed Aqua Xeno not being able to knock the targets item from it's hand.
+- Fixed Xeno head rotation.
+- Cleaned up Facehugger rotations on walls.
+- Classic Aliens now use crawling (not perfect but worth testing)
+- Added Bygone Nether compat (thanks to Impulsivelass).
+- Added sound effect to Classic Xeno knocking item of hand.
+- Added extra damage done to Creepers. 
+- Filter out water blocks from crawling.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
