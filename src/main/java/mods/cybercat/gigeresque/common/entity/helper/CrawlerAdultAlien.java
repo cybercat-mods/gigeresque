@@ -57,6 +57,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.CollisionGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -148,7 +149,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
 	@Override
 	public boolean canClimbOnBlock(BlockState state, BlockPos pos) {
-		return !state.is(GigTags.NEST_BLOCKS) || !state.is(GigBlocks.ACID_BLOCK);
+		return !state.is(GigTags.NEST_BLOCKS) || !state.is(GigBlocks.ACID_BLOCK) || !state.is(Blocks.WATER);
 	}
 
 	@Override
