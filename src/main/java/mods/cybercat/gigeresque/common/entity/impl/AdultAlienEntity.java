@@ -177,14 +177,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void defineSynchedData() {
 		super.defineSynchedData();
-		entityData.define(GROWTH, 0.0f);
+		this.entityData.define(GROWTH, 0.0f);
 		this.entityData.define(PASSED_OUT, false);
 		this.entityData.define(WAKING_UP, false);
-		entityData.define(IS_HISSING, false);
-		entityData.define(IS_BREAKING, false);
-		entityData.define(IS_EXECUTION, false);
-		entityData.define(IS_HEADBITE, false);
-		entityData.define(IS_SEARCHING, false);
+		this.entityData.define(IS_HISSING, false);
+		this.entityData.define(IS_BREAKING, false);
+		this.entityData.define(IS_EXECUTION, false);
+		this.entityData.define(IS_HEADBITE, false);
+		this.entityData.define(IS_SEARCHING, false);
 	}
 
 	@Override
@@ -203,15 +203,15 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		setGrowth(nbt.getFloat("getStatisTimer"));
-		setGrowth(nbt.getFloat("growth"));
-		setIsHissing(nbt.getBoolean("isHissing"));
-		setIsBreaking(nbt.getBoolean("isBreaking"));
-		setIsSearching(nbt.getBoolean("isSearching"));
-		setIsExecuting(nbt.getBoolean("isExecuting"));
-		setIsExecuting(nbt.getBoolean("isHeadBite"));
-		setPassedOutStatus(nbt.getBoolean("isStasis"));
-		setWakingUpStatus(nbt.getBoolean("wakingup"));
+		this.setGrowth(nbt.getFloat("getStatisTimer"));
+		this.setGrowth(nbt.getFloat("growth"));
+		this.setIsHissing(nbt.getBoolean("isHissing"));
+		this.setIsBreaking(nbt.getBoolean("isBreaking"));
+		this.setIsSearching(nbt.getBoolean("isSearching"));
+		this.setIsExecuting(nbt.getBoolean("isExecuting"));
+		this.setIsExecuting(nbt.getBoolean("isHeadBite"));
+		this.setPassedOutStatus(nbt.getBoolean("isStasis"));
+		this.setWakingUpStatus(nbt.getBoolean("wakingup"));
 	}
 
 	@Override
