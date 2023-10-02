@@ -1,10 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import java.util.List;
-import java.util.Random;
 import java.util.SplittableRandom;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +44,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -57,6 +55,8 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -233,56 +233,16 @@ public class ClassicAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		var additionalDamage = switch (getCurrentAttackType().genericAttackType) {
-		case TAIL -> Gigeresque.config.classicXenoTailAttackDamage;
-		case EXECUTION -> Float.MAX_VALUE;
-		default -> 0.0f;
-		};
-
-		if (target instanceof LivingEntity && !level().isClientSide)
-			switch (getAttckingState()) {
-			case 1 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
+		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
+			if (this.getRandom().nextInt(0, 10) > 7) {
+				if (livingEntity instanceof Player playerEntity)
 					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), additionalDamage);
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
+				if (livingEntity instanceof Mob mobEntity)
+					if (mobEntity.getMainHandItem() != null)
+						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+				livingEntity.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.classicXenoTailAttackDamage : 0.0f);
+				this.heal(1.0833f);
 				return super.doHurtTarget(target);
-			}
-			case 2 -> {
-				if (target instanceof Player playerEntity && this.random.nextInt(7) == 0) {
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
-					playerEntity.getInventory().removeItem(playerEntity.getInventory().getSelected());
-				}
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 3 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(damageSources().mobAttack(this), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-			case 4 -> {
-				var armorItems = StreamSupport.stream(target.getArmorSlots().spliterator(), false).collect(Collectors.toList());
-				if (!armorItems.isEmpty())
-					armorItems.get(new Random().nextInt(armorItems.size())).hurtAndBreak(10, this, it -> {
-					});
-				target.hurt(GigDamageSources.of(target.level(), GigDamageSources.XENO), additionalDamage);
-				return super.doHurtTarget(target);
-			}
-//			case 5 -> {
-//				var health = ((LivingEntity) target).getHealth();
-//				var maxhealth = ((LivingEntity) target).getMaxHealth();
-//				if (health >= (maxhealth * 0.10)) {
-//					target.hurt(DamageSource.mobAttack(this), Float.MAX_VALUE);
-//					this.grabTarget(target);
-//				}
-//				return super.doHurtTarget(target);
-//			}
 			}
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
