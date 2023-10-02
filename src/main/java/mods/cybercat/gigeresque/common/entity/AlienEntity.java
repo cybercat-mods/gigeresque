@@ -362,6 +362,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 			return false;
 		if (this.isAggressive())
 			return false;
+		if (!this.level().getBlockState(this.blockPosition().below()).isSolid())
+			return false;
 		return true;
 	}
 }
