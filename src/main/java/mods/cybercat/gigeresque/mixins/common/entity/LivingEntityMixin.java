@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mod.azure.azurelib.AzureLib;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -114,7 +115,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
 	@Inject(method = { "tick" }, at = { @At("HEAD") })
 	void tick(CallbackInfo callbackInfo) {
-		if (this.isAlive() && this.level().isClientSide && this.isBleeding()) {
+		if (this.isAlive() && this.level().isClientSide && this.isBleeding() && this.hasParasite()) {
 			var yOffset = this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0);
 			var customX = this.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
 			var customZ = this.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
@@ -138,10 +139,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 				resetEggmorphing();
 				setBleeding(false);
 			}
-		if (GigEntityUtils.isTargetHostable(this)) {
-			handleEggingLogic();
-			handleHostLogic();
-		}
+		if (!this.level().isClientSide)
+			if (GigEntityUtils.isTargetHostable(this)) {
+				handleEggingLogic();
+				handleHostLogic();
+			}
 	}
 
 	@Inject(method = { "isUsingItem" }, at = { @At("RETURN") })
@@ -176,9 +178,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	private void handleHostLogic() {
 		if (hasParasite()) {
 			ticksUntilImpregnation = Math.max(ticksUntilImpregnation - 1.0F, 0f);
-
-			if (Boolean.TRUE.equals(!isBleeding()) && ticksUntilImpregnation >= 0 && ticksUntilImpregnation < Constants.TPS * 30L)
-				setBleeding(true);
+			if (!this.level().isClientSide)
+				AzureLib.LOGGER.info(ticksUntilImpregnation);
 
 			handleStatusEffect(Constants.TPM * 12L, MobEffects.HUNGER, false);
 			handleStatusEffect(Constants.TPM * 7L, MobEffects.WEAKNESS, true);
@@ -186,8 +187,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 		}
 
 		if (ticksUntilImpregnation == 0L) {
-			if (tickCount % Constants.TPS == 0L)
+			if (tickCount % Constants.TPS == 0L) {
+				if (Boolean.TRUE.equals(!isBleeding()))
+					setBleeding(true);
 				this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), this.getMaxHealth() / 8f);
+			}
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
 				ChestbursterEntity burster = Entities.CHESTBURSTER.create(this.level());
