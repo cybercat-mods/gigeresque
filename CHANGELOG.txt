@@ -1,6 +1,10 @@
-v.0.5.54b
+v.0.5.55
 
-- Updates bundled AzureLib version to latest.
+- Fixes Hugger Crash when hugging an entity that dies.
+- Fixes Impregnation timer causing endless bleeding (in my testing).
+- Updates the min tick time config, lowest you can do is 1200 now as any lower breaks the ticking systems needed for hugging, impregnation, and egg morphing.
+- Adds Strider to facehugger blacklist tag.
+- Adds attack black list tags for large xenos and small xenos. 
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
