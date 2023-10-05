@@ -12,12 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ambient.AmbientCreature;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.Slime;
-import net.minecraft.world.entity.monster.Strider;
-import net.minecraft.world.entity.monster.warden.Warden;
 
 public record GigEntityUtils() {
 
@@ -46,22 +40,34 @@ public record GigEntityUtils() {
 	}
 
 	public static boolean faceHuggerTest(LivingEntity target, AlienEntity self) {
-		return target instanceof LivingEntity && !(target instanceof AlienEntity || target instanceof Slime || target instanceof Strider) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && !(target instanceof AmbientCreature) && ((LivingEntity) target).getMobType() != MobType.UNDEAD && !(target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-				&& !GigEntityUtils.removeFaceHuggerTarget(target, self) && GigEntityUtils.isTargetHostable(target);
+		return !(target instanceof AlienEntity || target instanceof AmbientCreature) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(target) && !GigEntityUtils.removeFaceHuggerTarget(target, self) && GigEntityUtils.isTargetHostable(target);
 	}
 
 	public static boolean entityTest(LivingEntity target, AlienEntity self) {
-		return !((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || !target.hasLineOfSight(target) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing()
-				|| self.isVehicle() || (GigEntityUtils.isFacehuggerAttached(target)) && target.isAlive());
+		return !((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(target) || self.isVehicle() && target.isAlive());
 	}
 
 	public static boolean removeTarget(LivingEntity target, AlienEntity self) {
-		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || (GigEntityUtils.isFacehuggerAttached(target))
-				|| (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
+		return ((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) && !target.isAlive());
 	}
 
 	public static boolean removeFaceHuggerTarget(LivingEntity target, AlienEntity self) {
-		return ((target instanceof AlienEntity || target instanceof Warden || target instanceof Slime || target instanceof ArmorStand || target instanceof Bat || target instanceof IronGolem) || (target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance)) || ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing() || !GigEntityUtils.isTargetHostable(target)
-				|| (GigEntityUtils.isFacehuggerAttached(target)) || (target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) && !target.isAlive());
+		return ((target instanceof AlienEntity || target.getType().is(GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
+	}
+
+	public static boolean mainCheck(LivingEntity target) {
+		return GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggcheck(target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetcheck(target);
+	}
+
+	public static boolean passengerCheck(LivingEntity target) {
+		return target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance);
+	}
+
+	public static boolean feetcheck(LivingEntity target) {
+		return target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS;
+	}
+
+	public static boolean hostEggcheck(LivingEntity target) {
+		return ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing();
 	}
 }
