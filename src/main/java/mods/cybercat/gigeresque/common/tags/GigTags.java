@@ -34,7 +34,6 @@ public class GigTags {
 	public static final TagKey<EntityType<?>> DNAIMMUNE = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("dnaimmune"));
 	public static final TagKey<EntityType<?>> FACEHUGGER_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("facehuggerblacklist"));
 	public static final TagKey<EntityType<?>> XENO_EXECUTE_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("xenoexecuteblacklist"));
-	
 	public static final TagKey<EntityType<?>> XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("xenoattackblacklist"));	
 	public static final TagKey<EntityType<?>> SMALL_XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("smallxenoattackblacklist"));	
 	
