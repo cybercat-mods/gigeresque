@@ -1,10 +1,7 @@
-v.0.5.55
+v.0.5.56
 
-- Fixes Hugger Crash when hugging an entity that dies.
-- Fixes Impregnation timer causing endless bleeding (in my testing).
-- Updates the min tick time config, lowest you can do is 1200 now as any lower breaks the ticking systems needed for hugging, impregnation, and egg morphing.
-- Adds Strider to facehugger blacklist tag.
-- Adds attack black list tags for large xenos and small xenos. 
+- Updates required AzureLib version to v1.0.32.
+- Adds AzureLib to Connector builds required mods list, no longer bundled as you can use the Forge version safely with Fabric mods.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
