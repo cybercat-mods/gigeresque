@@ -243,8 +243,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 			if ((velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
 				if (!this.level().isClientSide)
 					this.passoutCounter++;
-//				if (!this.level().isClientSide)
-//					AzureLib.LOGGER.info(this.passoutCounter);
 				if (this.passoutCounter >= 6000) {
 					this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
 					this.triggerAnim("attackController", "passout");

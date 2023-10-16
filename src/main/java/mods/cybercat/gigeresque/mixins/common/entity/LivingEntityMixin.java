@@ -25,6 +25,7 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -179,7 +180,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 	private void handleHostLogic() {
 		if (hasParasite()) {
 			ticksUntilImpregnation = Math.max(ticksUntilImpregnation - 1.0F, 0f);
-			if (!this.level().isClientSide)
+			if (!this.level().isClientSide && FabricLoader.getInstance().isDevelopmentEnvironment())
 				AzureLib.LOGGER.info(ticksUntilImpregnation);
 
 			handleStatusEffect(Constants.TPM * 12L, MobEffects.HUNGER, false);
