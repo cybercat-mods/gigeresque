@@ -7,6 +7,7 @@ import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
@@ -60,7 +61,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
 			default -> basicCheck ? "left_claw_basic" : "left_claw";
 			});
 		}
-		if (entity instanceof AquaticAlienEntity || entity instanceof NeomorphEntity || entity instanceof NeomorphAdolescentEntity) {
+		if (entity instanceof AquaticAlienEntity || entity instanceof NeomorphEntity || entity instanceof NeomorphAdolescentEntity || entity instanceof SpitterEntity) {
 			entity.triggerAnim("attackController", switch (entity.getRandom().nextInt(4)) {
 			case 0 -> "left_claw";
 			case 1 -> "right_claw";

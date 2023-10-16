@@ -50,8 +50,8 @@ public record GigItemGroups() implements GigeresqueInitializer {
 						entries.accept(GigItems.NEOBURSTER_SPAWN_EGG);
 						entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG);
 						entries.accept(GigItems.NEOMORPH_SPAWN_EGG);
-						entries.accept(GigItems.SPITTER_SPAWN_EGG);
 					}
+					entries.accept(GigItems.SPITTER_SPAWN_EGG);
 				}).build()); // build() no longer registers by itself
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, BLOCKS, FabricItemGroup.builder().icon(() -> new ItemStack(GigBlocks.NEST_RESIN_WEB)) // icon
 				.title(Component.translatable("itemGroup.gigeresque.blocks")) // title

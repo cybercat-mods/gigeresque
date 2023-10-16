@@ -8,6 +8,8 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -21,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
@@ -55,7 +58,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -64,7 +66,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTar
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
@@ -85,8 +86,61 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+			if (event.isMoving() && !this.isCrawling() && !isDead) {
+				if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
+					return event.setAndContinue(GigAnimationsDefault.RUN);
+				else
+					return event.setAndContinue(GigAnimationsDefault.WALK);
+			}
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
+				if (this.level().isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
+				if (this.level().isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
+				if (this.level().isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+				if (this.level().isClientSide)
+					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+		}).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+				.triggerableAnim("idle", GigAnimationsDefault.IDLE)) // idle
+				.add(new AnimationController<>(this, "attackController", 0, event -> {
+					if (event.getAnimatable().isPassedOut())
+						return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+					return PlayState.STOP;
+				}).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+						.triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+						.triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+						.triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+						.triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+						.setSoundKeyframeHandler(event -> {
+							if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+								if (this.level().isClientSide)
+									this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+							if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+								if (this.level().isClientSide)
+									this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+							if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+								if (this.level().isClientSide)
+									this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						}))
+				.add(new AnimationController<>(this, "hissController", 0, event -> {
+					var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+					if (this.isHissing() == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+						return event.setAndContinue(GigAnimationsDefault.HISS);
+					return PlayState.STOP;
+				}).setSoundKeyframeHandler(event -> {
+					if (event.getKeyframeData().getSound().matches("hissSoundkey"))
+						if (this.level().isClientSide)
+							this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+				}));
 	}
 
 	@Override
@@ -107,24 +161,63 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 
 	@Override
 	public List<ExtendedSensor<SpitterEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<SpitterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<SpitterEntity>().setRadius(7), new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+		return ObjectArrayList.of(
+				// Player Sensor
+				new NearbyPlayersSensor<>(),
+				// Living Sensor
+				new NearbyLivingEntitySensor<SpitterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
+				// Block Sensor
+				new NearbyBlocksSensor<SpitterEntity>().setRadius(7), 
+				// Fire Sensor
+				new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+				// Lights Sensor
+				new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), 
+				// Nest Sensor
+				new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<SpitterEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(
+				// Looks at target
+				new LookAtTarget<>(), 
+				// Flee Fire
+				new FleeFireTask<>(1.3F),
+//				new StrafeTarget<>().speedMod(0.25F), 
+				// Move to target
+				new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<SpitterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<SpitterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1.15f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(
+				// Kill Lights
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), 
+				// Do first
+				new FirstApplicableBehaviour<SpitterEntity>(
+						// Targeting
+						new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
+						// Look at players
+						new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+						// Look around randomly
+						new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+				// Random
+				new OneRandomBehaviour<>(
+						// Randomly walk around
+						new SetRandomWalkTarget<>().speedModifier(1.15f), 
+						// Idle
+						new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<SpitterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed), new AlienMeleeAttack(20));
+		return BrainActivityGroup.fightTasks(
+				// Invalidate Target
+				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), 
+				// Walk to Target
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5F), 
+				// Xeno attacking
+				new AlienMeleeAttack(5));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
