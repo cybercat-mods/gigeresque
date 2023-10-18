@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.impl.extra;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -11,10 +10,11 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azuredoom.bettercrawling.common.ClimberLookController;
+import mod.azuredoom.bettercrawling.common.ClimberMoveController;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
@@ -22,8 +22,8 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienProjectileAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -37,11 +37,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -55,6 +58,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -75,15 +80,13 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
-public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<SpitterEntity> {
+public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, SmartBrainOwner<SpitterEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 	public int breakingCounter = 0;
 
-	public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
+	public SpitterEntity(EntityType<? extends CrawlerAdultAlien> entityType, Level world) {
 		super(entityType, world);
-		setMaxUpStep(1.5f);
 		this.vibrationUser = new AzureVibrationUser(this, 1.9F);
 		navigation = landNavigation;
 	}
@@ -93,11 +96,18 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
 			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 			if (event.isMoving() && !this.isCrawling() && !isDead) {
-				if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
-					return event.setAndContinue(GigAnimationsDefault.RUN);
-				else
-					return event.setAndContinue(GigAnimationsDefault.WALK);
-			}
+				if (this.onGround() && !this.wasEyeInWater) {
+					if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
+						return event.setAndContinue(GigAnimationsDefault.RUN);
+					else 
+						return event.setAndContinue(GigAnimationsDefault.WALK);
+				} else if (this.wasEyeInWater && !this.isVehicle())
+					if (this.isAggressive() && !this.isVehicle())
+						return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+					else
+						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+			} else if (this.isCrawling() && !this.isVehicle() && !this.isInWater())
+				return event.setAndContinue(GigAnimationsDefault.CRAWL);
 			return event.setAndContinue(GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
@@ -234,6 +244,9 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	public void tick() {
 		super.tick();
 
+		if (!this.isInWater())
+			this.setIsCrawling(this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
+
 		if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
 
@@ -280,6 +293,30 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
 		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
+	@Override
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : this.isCrawling() ? EntityDimensions.scalable(0.9f, 0.9f) : EntityDimensions.scalable(0.9f, 1.9f);
+	}
+
+	@Override
+	public void travel(Vec3 movementInput) {
+		this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+		this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+		this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);;
+
+		if (this.tickCount % 10 == 0)
+			this.refreshDimensions();
+
+		if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+			moveRelative(getSpeed(), movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			setDeltaMovement(getDeltaMovement().scale(0.5));
+			if (getTarget() == null)
+				setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+		} else
+			super.travel(movementInput);
 	}
 
 	@Override
