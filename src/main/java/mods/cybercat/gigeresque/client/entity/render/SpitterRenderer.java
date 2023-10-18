@@ -29,4 +29,9 @@ public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
 	protected float getDeathMaxRotation(SpitterEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
+
+	@Override
+	public float getMotionAnimThreshold(SpitterEntity animatable) {
+		return 0.005f;
+	}
 }
