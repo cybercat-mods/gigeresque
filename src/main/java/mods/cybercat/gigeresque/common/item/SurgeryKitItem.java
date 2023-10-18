@@ -5,10 +5,12 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -59,6 +61,8 @@ public class SurgeryKitItem extends Item {
 					playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
 					stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 				}
+				if (entity.level().isClientSide)
+					entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
 				entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
 			}
 	}
