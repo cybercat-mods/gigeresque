@@ -280,10 +280,12 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	public boolean doHurtTarget(Entity target) {
 		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
 			if (this.getRandom().nextInt(0, 10) > 7) {
-				if (livingEntity instanceof Player playerEntity)
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
 				if (livingEntity instanceof Mob mobEntity)
 					if (mobEntity.getMainHandItem() != null)
+				if (target instanceof Player playerEntity) {
+					playerEntity.drop(playerEntity.getInventory().getSelected(), false);
+					playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
+				}
 						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
 				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
 				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);

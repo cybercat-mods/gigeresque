@@ -261,8 +261,10 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 	public boolean doHurtTarget(Entity target) {
 		if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
 			if (this.getRandom().nextInt(0, 10) > 7) {
-				if (livingEntity instanceof Player playerEntity)
-					playerEntity.drop(playerEntity.getInventory().getSelected(), true, false);
+				if (target instanceof Player playerEntity) {
+					playerEntity.drop(playerEntity.getInventory().getSelected(), false);
+					playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
+				}
 				if (livingEntity instanceof Mob mobEntity)
 					if (mobEntity.getMainHandItem() != null)
 						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
