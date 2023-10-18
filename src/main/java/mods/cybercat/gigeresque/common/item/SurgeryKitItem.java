@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Host;
@@ -27,15 +28,18 @@ public class SurgeryKitItem extends Item {
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
-		tryRemoveParasite(itemStack, livingEntity);
-		player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
-		itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
+		if (!livingEntity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+			tryRemoveParasite(itemStack, livingEntity);
+			player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
+			itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
+		}
 		return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		tryRemoveParasite(user.getItemInHand(hand), user);
+		if (!user.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+			tryRemoveParasite(user.getItemInHand(hand), user);
 		return super.use(world, user, hand);
 	}
 
