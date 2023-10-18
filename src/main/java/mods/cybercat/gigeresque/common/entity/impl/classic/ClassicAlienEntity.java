@@ -26,7 +26,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.ClassicXenoMeleeAttackTas
 import mods.cybercat.gigeresque.common.entity.ai.tasks.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
@@ -311,8 +310,6 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
 				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
 				// Walk to Target
 				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
-				// Jump to Target
-				new JumpToTargetTask<>(10),
 				// Classic Xeno attacking
 				new ClassicXenoMeleeAttackTask(5).startCondition(entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(entity -> (this.isFleeing())));
 	}
