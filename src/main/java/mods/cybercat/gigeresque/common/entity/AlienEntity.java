@@ -29,6 +29,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -41,10 +42,12 @@ import net.minecraft.world.entity.Marker;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerLevel;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -365,5 +368,24 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 		if (!this.level().getBlockState(this.blockPosition().below()).isSolid())
 			return false;
 		return true;
+	}
+
+	@Nullable
+	public ItemEntity drop(LivingEntity target, ItemStack itemStack, boolean bl) {
+		if (itemStack.isEmpty())
+			return null;
+
+		var d = target.getEyeY() - (double) 0.3f;
+		var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);
+		itemEntity.setPickUpDelay(40);
+		float g = Mth.sin(this.getXRot() * ((float) Math.PI / 180));
+		float h = Mth.cos(this.getXRot() * ((float) Math.PI / 180));
+		float i = Mth.sin(this.getYRot() * ((float) Math.PI / 180));
+		float j = Mth.cos(this.getYRot() * ((float) Math.PI / 180));
+		float k = this.random.nextFloat() * ((float) Math.PI * 2);
+		float l = 0.02f * this.random.nextFloat();
+		itemEntity.setDeltaMovement((double) (-i * h * 0.3f) + Math.cos(k) * (double) l, -g * 0.3f + 0.1f + (this.random.nextFloat() - this.random.nextFloat()) * 0.1f, (double) (j * h * 0.3f) + Math.sin(k) * (double) l);
+		target.level().addFreshEntity(itemEntity);
+		return itemEntity;
 	}
 }

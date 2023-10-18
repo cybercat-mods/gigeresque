@@ -266,8 +266,10 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 					playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
 				}
 				if (livingEntity instanceof Mob mobEntity)
-					if (mobEntity.getMainHandItem() != null)
+					if (mobEntity.getMainHandItem() != null) {
+						this.drop(mobEntity, mobEntity.getMainHandItem(), false);
 						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+					}
 				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
 				livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.runnerXenoTailAttackDamage : 0.0f);
 				this.heal(1.0833f);

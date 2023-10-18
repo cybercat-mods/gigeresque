@@ -213,8 +213,10 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
 					playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
 				}
 				if (livingEntity instanceof Mob mobEntity)
-					if (mobEntity.getMainHandItem() != null)
+					if (mobEntity.getMainHandItem() != null) {
+						this.drop(mobEntity, mobEntity.getMainHandItem(), false);
 						mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+					}
 				livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
 				livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.classicXenoTailAttackDamage : 0.0f);
 				this.heal(1.0833f);
