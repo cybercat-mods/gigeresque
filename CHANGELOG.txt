@@ -1,7 +1,13 @@
-v.0.5.56
+v.0.5.57
 
-- Updates required AzureLib version to v1.0.32.
-- Adds AzureLib to Connector builds required mods list, no longer bundled as you can use the Forge version safely with Fabric mods.
+- Fixes Facehugger damage crash.
+- Fixes Dev Timer left in built version.
+- Fixes Item Dupe when Xenos knock an item from the players hand.
+- Fixes Mobs not dropping their items when knocked.
+- Fixes Classic Xeno still jumping which is no longer needed.
+- Fixes Surgery Kit removing bursters when entity is still hugged. 
+- Adds early WIP Spitter. Any impregnated Classic Xeno host that has DNA effect will spawn a Spitter. 
+- Adds burster noise to Surgery Kit.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
