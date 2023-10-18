@@ -28,14 +28,12 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -54,7 +52,6 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -87,8 +84,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
 	public SpitterEntity(EntityType<? extends CrawlerAdultAlien> entityType, Level world) {
 		super(entityType, world);
-		this.vibrationUser = new AzureVibrationUser(this, 1.9F);
-		navigation = landNavigation;
+		this.vibrationUser = new AzureVibrationUser(this, 1.3F);
 	}
 
 	@Override
@@ -108,7 +104,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 						return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
 			} else if (this.isCrawling() && !this.isVehicle() && !this.isInWater())
 				return event.setAndContinue(GigAnimationsDefault.CRAWL);
-			return event.setAndContinue(GigAnimationsDefault.IDLE);
+			return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
 				if (this.level().isClientSide)
@@ -229,7 +225,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 				// Invalidate Target
 				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
 				// Walk to Target
-				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5F),
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
 				// Xeno Acid Spit
 				new AlienProjectileAttack(18),
 				// Xeno attacking
@@ -249,32 +245,6 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
 		if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
 			this.level().removeBlock(this.blockPosition(), false);
-
-		if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true) {
-			if (!this.level().isClientSide)
-				breakingCounter++;
-			if (breakingCounter > 10)
-				for (BlockPos testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
-					if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
-						if (!level().isClientSide)
-							this.level().destroyBlock(testPos, true, null, 512);
-						this.swing(InteractionHand.MAIN_HAND);
-						breakingCounter = -90;
-						if (level().isClientSide()) {
-							for (var i = 2; i < 10; i++)
-								level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
-							level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-						}
-					} else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-						if (!level().isClientSide)
-							this.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
-						this.hurt(damageSources().generic(), 5);
-						breakingCounter = -90;
-					}
-				}
-			if (breakingCounter >= 25)
-				breakingCounter = 0;
-		}
 	}
 
 	@Override
@@ -293,6 +263,11 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
 		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
+	@Override
+	public void refreshDimensions() {
+		super.refreshDimensions();
 	}
 
 	@Override
