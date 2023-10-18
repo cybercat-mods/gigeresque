@@ -26,6 +26,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -196,20 +197,28 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 			}
 
 			if (this.isDeadOrDying() && !hasParasiteSpawned) {
-				ChestbursterEntity burster = Entities.CHESTBURSTER.create(this.level());
-				if (this.getType().is(GigTags.RUNNER_HOSTS)) {
-					burster = Entities.RUNNERBURSTER.create(this.level());
-					burster.setHostId("runner");
-				}
-				if (this.getType().is(GigTags.AQUATIC_HOSTS))
-					burster = Entities.AQUATIC_CHESTBURSTER.create(this.level());
+				LivingEntity burster = Entities.CHESTBURSTER.create(this.level());
 
-				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
+				if (!this.hasEffect(GigStatusEffects.SPORE) && !this.hasEffect(GigStatusEffects.DNA)) {
+					if (this.getType().is(GigTags.RUNNER_HOSTS)) {
+						burster = Entities.RUNNERBURSTER.create(this.level());
+						((ChestbursterEntity) burster).setHostId("runner");
+					}
+					else if (this.getType().is(GigTags.AQUATIC_HOSTS))
+						burster = Entities.AQUATIC_CHESTBURSTER.create(this.level());
+					else
+						burster = Entities.CHESTBURSTER.create(this.level());
+				} else if (this.getType().is(GigTags.NEOHOST) && this.hasEffect(GigStatusEffects.SPORE))
+					burster = Entities.NEOBURSTER.create(this.level());
+				else if (this.getType().is(GigTags.CLASSIC_HOSTS) && this.hasEffect(GigStatusEffects.DNA))
+					burster = Entities.SPITTER.create(this.level());
 
 				if (this.hasCustomName())
-					burster.setCustomName(this.getCustomName());
+						burster.setCustomName(this.getCustomName());
 				burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
-				burster.setBirthStatus(true);
+				if (burster instanceof ChestbursterEntity chest)
+					chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()).toString());
+				burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
 				this.level().addFreshEntity(burster);
 				if (level().isClientSide)
 					this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
