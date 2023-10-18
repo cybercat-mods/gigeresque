@@ -7,8 +7,8 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 
 public class AcidParticle extends TextureSheetParticle {
-	private boolean reachedGround;
-	private final SpriteSet spriteProvider;
+	protected boolean reachedGround;
+	protected final SpriteSet spriteProvider;
 
 	public AcidParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
 		super(clientWorld, d, e, f);
@@ -21,36 +21,30 @@ public class AcidParticle extends TextureSheetParticle {
 		var colorRed = Mth.nextFloat(random, red - 0.05f, red + 0.05f);
 		var colorGreen = Mth.nextFloat(random, green - 0.05f, green + 0.05f);
 		var colorBlue = Mth.nextFloat(random, blue - 0.015f, blue + 0.015f);
-		setColor(colorRed, colorGreen, colorBlue);
-		quadSize *= 0.75f;
-		lifetime = (int) (20.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
-		reachedGround = false;
-		hasPhysics = false;
+		this.setColor(colorRed, colorGreen, colorBlue);
+		this.gravity = 3.0E-6F;
+		this.quadSize *= 0.75f;
+		this.lifetime = (int) (10.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
+		this.reachedGround = false;
+		this.hasPhysics = true;
 		this.spriteProvider = spriteProvider;
-		setSpriteFromAge(spriteProvider);
+		this.setSpriteFromAge(spriteProvider);
 	}
 
 	@Override
 	public void tick() {
-		xo = x;
-		yo = y;
-		zo = z;
-		if (age++ >= lifetime)
-			remove();
-		else {
-			setSpriteFromAge(spriteProvider);
-			if (onGround) {
-				yd = 0.0;
-				reachedGround = true;
-			}
-			if (reachedGround)
-				yd += 0.002;
-			this.move(xd, yd, zd);
-			if (y == yo) {
-				xd *= 1.1;
-				zd *= 1.1;
-			}
-		}
+		this.xo = this.x;
+		this.yo = this.y;
+		this.zo = this.z;
+		if (this.age++ < this.lifetime && this.alpha > 0.0F) {
+			this.xd += (double) (this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1));
+			this.zd += (double) (this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1));
+			this.yd -= (double) this.gravity;
+			this.move(this.xd, this.yd, this.zd);
+			if (this.age >= this.lifetime && this.alpha > 0.01F)
+				this.alpha -= 0.015F;
+		} else
+			this.remove();
 	}
 
 	@Override

@@ -18,18 +18,22 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.AlienProjectileAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -42,6 +46,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -114,6 +119,8 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 						return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
 					return PlayState.STOP;
 				}).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+						.triggerableAnim("acidspit", GigAnimationsDefault.SPIT) // spit
+						.triggerableAnim("acidspray", GigAnimationsDefault.SPRAY) // spray
 						.triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
 						.triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
 						.triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
@@ -167,11 +174,11 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 				// Living Sensor
 				new NearbyLivingEntitySensor<SpitterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
 				// Block Sensor
-				new NearbyBlocksSensor<SpitterEntity>().setRadius(7), 
+				new NearbyBlocksSensor<SpitterEntity>().setRadius(7),
 				// Fire Sensor
 				new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
 				// Lights Sensor
-				new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), 
+				new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
 				// Nest Sensor
 				new HurtBySensor<>());
 	}
@@ -180,19 +187,16 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	public BrainActivityGroup<SpitterEntity> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				// Looks at target
-				new LookAtTarget<>(), 
+				new LookAtTarget<>(),
 				// Flee Fire
-				new FleeFireTask<>(1.3F),
-//				new StrafeTarget<>().speedMod(0.25F), 
-				// Move to target
-				new MoveToWalkTarget<>());
+				new FleeFireTask<>(1.3F), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<SpitterEntity> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
 				// Kill Lights
-				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), 
+				new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
 				// Do first
 				new FirstApplicableBehaviour<SpitterEntity>(
 						// Targeting
@@ -204,7 +208,7 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 				// Random
 				new OneRandomBehaviour<>(
 						// Randomly walk around
-						new SetRandomWalkTarget<>().speedModifier(1.15f), 
+						new SetRandomWalkTarget<>().speedModifier(1.15f),
 						// Idle
 						new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
@@ -213,9 +217,11 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 	public BrainActivityGroup<SpitterEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
 				// Invalidate Target
-				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), 
+				new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
 				// Walk to Target
-				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5F), 
+				new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5F),
+				// Xeno Acid Spit
+				new AlienProjectileAttack(18),
 				// Xeno attacking
 				new AlienMeleeAttack(5));
 	}
@@ -298,6 +304,30 @@ public class SpitterEntity extends AdultAlienEntity implements GeoEntity, SmartB
 			creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
 		this.heal(1.0833f);
 		return super.doHurtTarget(target);
+	}
+
+	public void shootAcid(LivingEntity target, LivingEntity attacker) {
+		if (attacker.hasLineOfSight(target)) {
+			BehaviorUtils.lookAtEntity(this, target);
+			// Calculate the line of sight between the entities
+			var attackerPos = attacker.position();
+			var targetPos = target.position();
+			var direction = targetPos.subtract(attackerPos).normalize();
+
+			// Spawn acid particles along the line of sight and play the sound
+			for (var i = 1; i < Mth.floor(direction.length()) + 7; ++i) {
+				var vec34 = this.position().add(0.0, 1.3f, 0.0).add(direction.scale(i));
+				if (this.level() instanceof ServerLevel serverLevel)
+					serverLevel.sendParticles(Particles.ACID, vec34.x, vec34.y, vec34.z, 1, 0, 0, 0, 0);
+			}
+			this.playSound(SoundEvents.LAVA_EXTINGUISH, 3.0f, 1.0f);
+
+			// Damage the target entity/shield if used
+			if (!target.getUseItem().is(Items.SHIELD))
+				target.hurt(GigDamageSources.of(this.level(), GigDamageSources.ACID), 2.0f);
+			if (target.getUseItem().is(Items.SHIELD) && target instanceof Player player)
+				target.getUseItem().hurtAndBreak(10, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
+		}
 	}
 
 }
