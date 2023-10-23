@@ -1,6 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"friendsandfoes:mauler"
-	]
+  "replace": false,
+  "values": [
+    "friendsandfoes:mauler",
+    "friendsandfoes:rascal"
+  ]
 }
