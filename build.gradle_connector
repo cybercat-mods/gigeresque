@@ -128,6 +128,7 @@ if (file('key.properties').exists()) {
             	optionalDependency 'cave-dweller-evolved'
             	optionalDependency 'aether'
             	optionalDependency 'bygone-nether'
+				optionalDependency 'alexs-caves'
         	}
         	mainArtifact(remapJar)
 
