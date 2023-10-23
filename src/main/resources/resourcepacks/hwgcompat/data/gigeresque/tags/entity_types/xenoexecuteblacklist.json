@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"hwg:technodemon_lesser_1",
-    	"hwg:technodemon_greater_1"
-	]
+  "replace": false,
+  "values": [
+    "hwg:technodemon_lesser_1",
+    "hwg:technodemon_greater_1"
+  ]
 }

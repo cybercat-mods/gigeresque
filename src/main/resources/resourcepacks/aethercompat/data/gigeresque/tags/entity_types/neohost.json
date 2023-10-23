@@ -1,11 +1,11 @@
 {
-	"replace": false,
-	"values": [
-		"aether:valkyrie",
-		"aether:cockatrice",
-		"aether:flying_cow",
-		"aether:moa",
-		"aether:phyg",
-		"aether:sheepuff"
-	]
+  "replace": false,
+  "values": [
+    "aether:valkyrie",
+    "aether:cockatrice",
+    "aether:flying_cow",
+    "aether:moa",
+    "aether:phyg",
+    "aether:sheepuff"
+  ]
 }

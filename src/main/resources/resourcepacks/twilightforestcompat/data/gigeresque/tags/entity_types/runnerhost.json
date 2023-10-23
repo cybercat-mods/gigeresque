@@ -1,10 +1,10 @@
 {
-	"replace": false,
-	"values": [
-		"twilightforest:bighorn_sheep",
-		"twilightforest:boar",
-		"twilightforest:deer",
-		"twilightforest:hostile_wolf",
-		"twilightforest:winter_wolf"
-	]
+  "replace": false,
+  "values": [
+    "twilightforest:bighorn_sheep",
+    "twilightforest:boar",
+    "twilightforest:deer",
+    "twilightforest:hostile_wolf",
+    "twilightforest:winter_wolf"
+  ]
 }

@@ -1,8 +1,8 @@
 {
-	"replace": false,
-	"values": [
-		"livingthings:mantaray",
-		"livingthings:penguin",
-		"livingthings:shark"
-	]
+  "replace": false,
+  "values": [
+    "livingthings:mantaray",
+    "livingthings:penguin",
+    "livingthings:shark"
+  ]
 }

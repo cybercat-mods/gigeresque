@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"illagerinvasion:surrendered",
-    	"illagerinvasion:invoker"
-	]
+  "replace": false,
+  "values": [
+    "illagerinvasion:surrendered",
+    "illagerinvasion:invoker"
+  ]
 }

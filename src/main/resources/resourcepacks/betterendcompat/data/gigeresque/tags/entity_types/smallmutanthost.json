@@ -1,9 +1,9 @@
 {
-	"replace": false,
-	"values": [
-		"betterend:dragonfly",
-		"betterend:end_fish",
-		"betterend:cubozoa",
-		"betterend:silk_moth"
-	]
+  "replace": false,
+  "values": [
+    "betterend:dragonfly",
+    "betterend:end_fish",
+    "betterend:cubozoa",
+    "betterend:silk_moth"
+  ]
 }

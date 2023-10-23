@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"mca:female_villager",
-		"mca:male_villager"
-	]
+  "replace": false,
+  "values": [
+    "mca:female_villager",
+    "mca:male_villager"
+  ]
 }

@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"promenade:capybara",
-		"promenade:duck"
-	]
+  "replace": false,
+  "values": [
+    "promenade:capybara",
+    "promenade:duck"
+  ]
 }

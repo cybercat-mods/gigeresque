@@ -1,18 +1,18 @@
 {
-	"replace": false,
-	"values": [
-		"twilightforest:raven",
-	    "twilightforest:carminite_broodling",
-	    "twilightforest:dwarf_rabbit",
-	    "twilightforest:helmet_crab",
-	    "twilightforest:upper_goblin_knight",
-	    "twilightforest:lower_goblin_knight",
-	    "twilightforest:maze_slime",
-	    "twilightforest:tiny_bird",
-	    "twilightforest:towerwood_borer",
-	    "twilightforest:squirrel",
-	    "twilightforest:swarm_spider",
-	    "twilightforest:kobold",
-	    "twilightforest:blockchain_goblin"
-	]
+  "replace": false,
+  "values": [
+    "twilightforest:raven",
+    "twilightforest:carminite_broodling",
+    "twilightforest:dwarf_rabbit",
+    "twilightforest:helmet_crab",
+    "twilightforest:upper_goblin_knight",
+    "twilightforest:lower_goblin_knight",
+    "twilightforest:maze_slime",
+    "twilightforest:tiny_bird",
+    "twilightforest:towerwood_borer",
+    "twilightforest:squirrel",
+    "twilightforest:swarm_spider",
+    "twilightforest:kobold",
+    "twilightforest:blockchain_goblin"
+  ]
 }

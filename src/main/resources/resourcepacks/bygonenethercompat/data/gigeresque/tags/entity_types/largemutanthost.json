@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"bygone_nether:piglin_prisoner",
-		"bygone_nether:piglin_hunter"
-	]
+  "replace": false,
+  "values": [
+    "bygone_nether:piglin_prisoner",
+    "bygone_nether:piglin_hunter"
+  ]
 }

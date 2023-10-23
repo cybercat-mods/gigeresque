@@ -1,12 +1,12 @@
 {
-	"replace": false,
-	"values": [
-		"arachnids:brainbug",
-		"arachnids:hopper",
-		"arachnids:plasma",
-		"arachnids:scorpion",
-		"arachnids:tanker",
-		"arachnids:warrior",
-		"arachnids:worker"
-	]
+  "replace": false,
+  "values": [
+    "arachnids:brainbug",
+    "arachnids:hopper",
+    "arachnids:plasma",
+    "arachnids:scorpion",
+    "arachnids:tanker",
+    "arachnids:warrior",
+    "arachnids:worker"
+  ]
 }

@@ -1,10 +1,10 @@
 {
-	"replace": false,
-	"values": [
-		"livingthings:ancient_blaze",
-		"livingthings:baby_ender_dragon",
-		"livingthings:elephant",
-		"livingthings:giraffe",
-		"livingthings:nether_knight"
-	]
+  "replace": false,
+  "values": [
+    "livingthings:ancient_blaze",
+    "livingthings:baby_ender_dragon",
+    "livingthings:elephant",
+    "livingthings:giraffe",
+    "livingthings:nether_knight"
+  ]
 }

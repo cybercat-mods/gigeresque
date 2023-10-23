@@ -1,6 +1,6 @@
- {
-       "pack": {
-           "pack_format": 15,
-           "description": "YDMS Redpanda Compat Datapack"
-       }
-   }
+{
+  "pack": {
+    "pack_format": 15,
+    "description": "YDMS Redpanda Compat Datapack"
+  }
+}

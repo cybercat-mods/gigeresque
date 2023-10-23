@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"alexsmobs:gorilla",
-		"alexsmobs:murmur"
-	]
+  "replace": false,
+  "values": [
+    "alexsmobs:gorilla",
+    "alexsmobs:murmur"
+  ]
 }
