@@ -30,6 +30,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
         headDistances.put(EntityType.PIG, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.WOLF, (facehugger, host) -> new TransformData(0.0, ((double) host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.4, host.getBbWidth() - ((double) facehugger.getBbHeight()) - 0.2, 0.6, calcStandardOffsetY(facehugger) + 0.95));
         headDistances.put(EntityType.VILLAGER, (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
+        headDistances.put(EntityType.WITCH, (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
         headDistances.put(EntityType.PILLAGER, (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
         headDistances.put(EntityType.VINDICATOR, (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
         headDistances.put(EntityType.WANDERING_TRADER, (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
