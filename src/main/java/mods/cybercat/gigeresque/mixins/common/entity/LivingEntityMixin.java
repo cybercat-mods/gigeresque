@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -99,6 +100,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
         if ((this.getVehicle() != null && this.getVehicle() instanceof AlienEntity) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
             callbackInfo.setReturnValue(false);
+        if ((this.getVehicle() != null && this.getVehicle() instanceof ClassicAlienEntity) && source == damageSources().inWall())
+            callbackInfo.setReturnValue(false);
         if (amount >= 2)
             if (this.getFirstPassenger() != null)
                 if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
@@ -148,13 +151,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             }
     }
 
-    @Inject(method = {"isUsingItem"}, at = {@At("RETURN")})
+    @Inject(method = {"isUsingItem"}, at = {@At("RETURN")}, cancellable = true)
     public void isUsingItem(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.isEggmorphing())
             callbackInfo.setReturnValue(false);
     }
 
-    @Inject(method = {"isPushable"}, at = {@At("RETURN")})
+    @Inject(method = {"isPushable"}, at = {@At("RETURN")}, cancellable = true)
     public void noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this))
             callbackInfo.setReturnValue(false);
