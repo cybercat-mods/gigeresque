@@ -1,12 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import java.util.List;
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
@@ -19,69 +13,73 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+    protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
 
-	@Nullable
-	protected LivingEntity target = null;
+    @Nullable
+    protected LivingEntity target = null;
 
-	public AlienMeleeAttack(int delayTicks) {
-		super(delayTicks);
-	}
+    public AlienMeleeAttack(int delayTicks) {
+        super(delayTicks);
+    }
 
-	/**
-	 * Set the time between attacks.
-	 * 
-	 * @param supplier The tick value provider
-	 * @return this
-	 */
-	public AlienMeleeAttack<E> attackInterval(Function<E, Integer> supplier) {
-		this.attackIntervalSupplier = supplier;
+    /**
+     * Set the time between attacks.
+     *
+     * @param supplier The tick value provider
+     * @return this
+     */
+    public AlienMeleeAttack<E> attackInterval(Function<E, Integer> supplier) {
+        this.attackIntervalSupplier = supplier;
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+        return MEMORY_REQUIREMENTS;
+    }
 
-	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		this.target = BrainUtils.getTargetOfEntity(entity);
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+        this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
-	}
+        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
+    }
 
-	@Override
-	protected void start(E entity) {
-		entity.swing(InteractionHand.MAIN_HAND);
-		BehaviorUtils.lookAtEntity(entity, this.target);
-	}
+    @Override
+    protected void start(E entity) {
+        entity.swing(InteractionHand.MAIN_HAND);
+        BehaviorUtils.lookAtEntity(entity, this.target);
+    }
 
-	@Override
-	protected void stop(E entity) {
-		this.target = null;
-	}
+    @Override
+    protected void stop(E entity) {
+        this.target = null;
+    }
 
-	@Override
-	protected void doDelayedAction(E entity) {
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+    @Override
+    protected void doDelayedAction(E entity) {
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
 
-		if (this.target == null)
-			return;
+        if (this.target == null)
+            return;
 
-		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
-			return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+            return;
 
-		if (entity instanceof StalkerEntity) {
-			this.target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, true, true));
-			this.target.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 1, true, true));
-		}
+        if (entity instanceof StalkerEntity) {
+            this.target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, true, true));
+            this.target.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 1, true, true));
+        }
 
-		entity.doHurtTarget(this.target);
-	}
+        entity.doHurtTarget(this.target);
+    }
 }

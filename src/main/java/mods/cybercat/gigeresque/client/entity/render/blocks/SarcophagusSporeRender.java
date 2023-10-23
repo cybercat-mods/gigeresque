@@ -5,8 +5,8 @@ import mods.cybercat.gigeresque.client.entity.model.blocks.SarcophagusSporeModel
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
 
 public class SarcophagusSporeRender extends GeoBlockRenderer<AlienStorageSporeEntity> {
-	public SarcophagusSporeRender() {
-		super(new SarcophagusSporeModel());
-	}
+    public SarcophagusSporeRender() {
+        super(new SarcophagusSporeModel());
+    }
 
 }

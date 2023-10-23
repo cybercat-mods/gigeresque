@@ -12,7 +12,6 @@ import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,133 +33,133 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class IdolStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
-	private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
-	protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
+    public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
+    protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
-		@Override
-		protected void onOpen(Level world, BlockPos pos, BlockState state) {
-			IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
-		}
+        @Override
+        protected void onOpen(Level world, BlockPos pos, BlockState state) {
+            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        }
 
-		@Override
-		protected void onClose(Level world, BlockPos pos, BlockState state) {
-			IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
-		}
+        @Override
+        protected void onClose(Level world, BlockPos pos, BlockState state) {
+            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        }
 
-		@Override
-		protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
-			IdolStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
-		}
+        @Override
+        protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+            IdolStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
+        }
 
-		@Override
-		protected boolean isOwnContainer(Player player) {
-			if (player.containerMenu instanceof ChestMenu menu)
-				return menu.getContainer() == IdolStorageEntity.this;
-			return false;
-		}
-	};
+        @Override
+        protected boolean isOwnContainer(Player player) {
+            if (player.containerMenu instanceof ChestMenu menu)
+                return menu.getContainer() == IdolStorageEntity.this;
+            return false;
+        }
+    };
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
-	public IdolStorageEntity(BlockPos pos, BlockState state) {
-		super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, pos, state);
-	}
+    public IdolStorageEntity(BlockPos pos, BlockState state) {
+        super(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, pos, state);
+    }
 
-	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
-		this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-		if (!this.tryLoadLootTable(nbt))
-			ContainerHelper.loadAllItems(nbt, this.items);
-	}
+    public static void tick(Level level, BlockPos pos, BlockState state, IdolStorageEntity blockEntity) {
+        if (level != null) {
+            if (!blockEntity.level.isClientSide)
+                BlockPos.betweenClosed(pos, pos.relative(state.getValue(SittingIdolBlock.FACING), 2).above(2)).forEach(testPos -> {
+                    if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2))
+                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.defaultBlockState(), Block.UPDATE_ALL);
+                });
+            if (!blockEntity.isRemoved())
+                blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
+        }
+    }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt) {
-		super.saveAdditional(nbt);
-		if (!this.trySaveLootTable(nbt))
-			ContainerHelper.saveAllItems(nbt, this.items);
-	}
+    @Override
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        if (!this.tryLoadLootTable(nbt))
+            ContainerHelper.loadAllItems(nbt, this.items);
+    }
 
-	@Override
-	public int getContainerSize() {
-		return 9;
-	}
+    @Override
+    public void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        if (!this.trySaveLootTable(nbt))
+            ContainerHelper.saveAllItems(nbt, this.items);
+    }
 
-	@Override
-	public NonNullList<ItemStack> getItems() {
-		return this.items;
-	}
+    @Override
+    public int getContainerSize() {
+        return 9;
+    }
 
-	@Override
-	protected void setItems(NonNullList<ItemStack> list) {
-		this.items = list;
-	}
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return this.items;
+    }
 
-	@Override
-	protected Component getDefaultName() {
-		return Component.translatable("block.gigeresque.alien_storage_block3");
-	}
+    @Override
+    protected void setItems(NonNullList<ItemStack> list) {
+        this.items = list;
+    }
 
-	@Override
-	protected AbstractContainerMenu createMenu(int syncId, Inventory inventory) {
-		return new ChestMenu(MenuType.GENERIC_3x3, syncId, inventory, this, 1);
-	}
+    @Override
+    protected Component getDefaultName() {
+        return Component.translatable("block.gigeresque.alien_storage_block3");
+    }
 
-	@Override
-	public void startOpen(Player player) {
-		if (!this.isRemoved() && !player.isSpectator())
-			this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-	}
+    @Override
+    protected AbstractContainerMenu createMenu(int syncId, Inventory inventory) {
+        return new ChestMenu(MenuType.GENERIC_3x3, syncId, inventory, this, 1);
+    }
 
-	@Override
-	public void stopOpen(Player player) {
-		if (!this.isRemoved() && !player.isSpectator())
-			this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-	}
+    @Override
+    public void startOpen(Player player) {
+        if (!this.isRemoved() && !player.isSpectator())
+            this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+    }
 
-	public void tick() {
-		if (!this.isRemoved())
-			this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
-	}
+    @Override
+    public void stopOpen(Player player) {
+        if (!this.isRemoved() && !player.isSpectator())
+            this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+    }
 
-	protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
-		world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
-		if (oldViewerCount != newViewerCount)
-			if (newViewerCount > 0)
-				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-			else
-				world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
-	}
+    public void tick() {
+        if (!this.isRemoved())
+            this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
+    }
 
-	public StorageStates getChestState() {
-		return this.getBlockState().getValue(IdolStorageEntity.CHEST_STATE);
-	}
+    protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+        world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
+        if (oldViewerCount != newViewerCount)
+            if (newViewerCount > 0)
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+    }
 
-	public void setChestState(StorageStates state) {
-		this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(CHEST_STATE, state));
-	}
+    public StorageStates getChestState() {
+        return this.getBlockState().getValue(IdolStorageEntity.CHEST_STATE);
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
-	}
+    public void setChestState(StorageStates state) {
+        this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(CHEST_STATE, state));
+    }
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
-		}));
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
 
-	public static void tick(Level level, BlockPos pos, BlockState state, IdolStorageEntity blockEntity) {
-		if (level != null) {
-			if (!blockEntity.level.isClientSide)
-				BlockPos.betweenClosed(pos, pos.relative((Direction) state.getValue(SittingIdolBlock.FACING), 2).above(2)).forEach(testPos -> {
-					if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2))
-						level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.defaultBlockState(), Block.UPDATE_ALL);
-				});
-			if (!blockEntity.isRemoved())
-				blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
-		}
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, event -> {
+            return PlayState.CONTINUE;
+        }));
+    }
 }

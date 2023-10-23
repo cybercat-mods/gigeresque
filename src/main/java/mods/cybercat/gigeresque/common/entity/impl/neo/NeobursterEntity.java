@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -52,93 +50,95 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
+import java.util.List;
+
 public class NeobursterEntity extends RunnerbursterEntity {
 
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
-		super(type, level);
-	}
+    public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
+        super(type, level);
+    }
 
-	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
-	}
+    public static AttributeSupplier.Builder createAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
+    }
 
-	/*
-	 * GROWTH
-	 */
-	@Override
-	public float getGrowthMultiplier() {
-		return Gigeresque.config.chestbursterGrowthMultiplier;
-	}
+    /*
+     * GROWTH
+     */
+    @Override
+    public float getGrowthMultiplier() {
+        return Gigeresque.config.chestbursterGrowthMultiplier;
+    }
 
-	@Override
-	public float getMaxGrowth() {
-		return Constants.TPD / 2.0f;
-	}
+    @Override
+    public float getMaxGrowth() {
+        return Constants.TPD / 2.0f;
+    }
 
-	@Override
-	public LivingEntity growInto() {
-		return Entities.NEOMORPH_ADOLESCENT.create(level());
-	}
+    @Override
+    public LivingEntity growInto() {
+        return Entities.NEOMORPH_ADOLESCENT.create(level());
+    }
 
-	@Override
-	public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), 
-				new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)||  !(target instanceof Creeper || target instanceof IronGolem)),
-				new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), 
-				new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-				new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
-	}
+    @Override
+    public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+                new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)),
+                new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
+                new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+                new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+    }
 
-	@Override
-	public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
-	}
+    @Override
+    public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(5), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.45f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
-	}
+    @Override
+    public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(5), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.45f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+    }
 
-	@Override
-	public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack(20));
-	}
+    @Override
+    public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack(20));
+    }
 
-	/*
-	 * ANIMATIONS
-	 */
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
-			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			var velocityLength = this.getDeltaMovement().horizontalDistance();
-			if (velocityLength >= 0.000000001 && !isDead)
-				if (walkAnimation.speedOld >= 0.35F)
-					return event.setAndContinue(GigAnimationsDefault.RUN);
-				else
-					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (this.entityData.get(BIRTHED) == true)
-				return event.setAndContinue(GigAnimationsDefault.BIRTH);
-			else
-				return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-				if (this.level().isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
-			if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-				if (this.level().isClientSide)
-					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
-		}));
-		controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-			return PlayState.STOP;
-		}).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
-	}
+    /*
+     * ANIMATIONS
+     */
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+            var velocityLength = this.getDeltaMovement().horizontalDistance();
+            if (velocityLength >= 0.000000001 && !isDead)
+                if (walkAnimation.speedOld >= 0.35F)
+                    return event.setAndContinue(GigAnimationsDefault.RUN);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.WALK);
+            else if (this.entityData.get(BIRTHED) == true)
+                return event.setAndContinue(GigAnimationsDefault.BIRTH);
+            else
+                return event.setAndContinue(GigAnimationsDefault.IDLE);
+        }).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+                if (this.level().isClientSide)
+                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
+            if (event.getKeyframeData().getSound().matches("stepSoundkey"))
+                if (this.level().isClientSide)
+                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
+        }));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+            return PlayState.STOP;
+        }).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
 
 }

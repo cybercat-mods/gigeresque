@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class AquaticChestbursterEntityModel extends DefaultedEntityGeoModel<AquaticChestbursterEntity> {
 
-	public AquaticChestbursterEntityModel() {
-		super(Constants.modResource("aquatic_chestburster/aquatic_chestburster"), false);
-	}
+    public AquaticChestbursterEntityModel() {
+        super(Constants.modResource("aquatic_chestburster/aquatic_chestburster"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(AquaticChestbursterEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(AquaticChestbursterEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

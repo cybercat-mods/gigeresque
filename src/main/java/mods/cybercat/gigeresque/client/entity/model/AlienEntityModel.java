@@ -13,24 +13,24 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity> {
 
-	public AlienEntityModel() {
-		super(Constants.modResource("alien/alien"), false);
-	}
+    public AlienEntityModel() {
+        super(Constants.modResource("alien/alien"), false);
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(ClassicAlienEntity object) {
-		return object.isPassedOut() == true ? EntityTextures.ALIEN_STATIS : EntityTextures.ALIEN;
-	}
+    @Override
+    public ResourceLocation getTextureResource(ClassicAlienEntity object) {
+        return object.isPassedOut() == true ? EntityTextures.ALIEN_STATIS : EntityTextures.ALIEN;
+    }
 
-	@Override
-	public RenderType getRenderType(ClassicAlienEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(ClassicAlienEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
-	@Override
-	public void setCustomAnimations(ClassicAlienEntity animatable, long instanceId, AnimationState<ClassicAlienEntity> animationState) {
+    @Override
+    public void setCustomAnimations(ClassicAlienEntity animatable, long instanceId, AnimationState<ClassicAlienEntity> animationState) {
 
-		super.setCustomAnimations(animatable, instanceId, animationState);
-	}
+        super.setCustomAnimations(animatable, instanceId, animationState);
+    }
 
 }

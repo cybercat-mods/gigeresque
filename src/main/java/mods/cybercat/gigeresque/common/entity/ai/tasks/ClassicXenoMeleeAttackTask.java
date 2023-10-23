@@ -1,13 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -21,72 +14,75 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends CustomDelayedMeleeBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+    protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+    @Nullable
+    protected LivingEntity target = null;
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
-	public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+    public ClassicXenoMeleeAttackTask(int delayTicks) {
+        super(delayTicks);
+    }
 
-	@Nullable
-	protected LivingEntity target = null;
+    /**
+     * Set the time between attacks.
+     *
+     * @param supplier The tick value provider
+     * @return this
+     */
+    public ClassicXenoMeleeAttackTask<E> attackInterval(Function<E, Integer> supplier) {
+        this.attackIntervalSupplier = supplier;
 
-	public ClassicXenoMeleeAttackTask(int delayTicks) {
-		super(delayTicks);
-	}
+        return this;
+    }
 
-	/**
-	 * Set the time between attacks.
-	 * 
-	 * @param supplier The tick value provider
-	 * @return this
-	 */
-	public ClassicXenoMeleeAttackTask<E> attackInterval(Function<E, Integer> supplier) {
-		this.attackIntervalSupplier = supplier;
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+        return MEMORY_REQUIREMENTS;
+    }
 
-		return this;
-	}
+    @Override
+    protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+        this.target = BrainUtils.getTargetOfEntity(entity);
+        return !entity.isVehicle() && BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target);
+    }
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
+    @Override
+    protected void start(E entity) {
+        entity.swing(InteractionHand.MAIN_HAND);
+        BehaviorUtils.lookAtEntity(entity, this.target);
+    }
 
-	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		this.target = BrainUtils.getTargetOfEntity(entity);
-		return !entity.isVehicle() && BrainUtils.canSee(entity, target) && entity.isWithinMeleeAttackRange(this.target);
-	}
+    @Override
+    protected void stop(E entity) {
+        this.target = null;
+    }
 
-	@Override
-	protected void start(E entity) {
-		entity.swing(InteractionHand.MAIN_HAND);
-		BehaviorUtils.lookAtEntity(entity, this.target);
-	}
+    @Override
+    protected void doDelayedAction(E entity) {
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
 
-	@Override
-	protected void stop(E entity) {
-		this.target = null;
-	}
+        if (this.target == null)
+            return;
 
-	@Override
-	protected void doDelayedAction(E entity) {
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+            return;
 
-		if (this.target == null)
-			return;
-
-		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
-			return;
-
-		var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
-		var randomPhase = entity.getRandom().nextInt(0, 100);
-		if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST))
-			entity.grabTarget(target);
-		else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
-			entity.grabTarget(target);
-			entity.setIsBiting(true);
-		} else if (!entity.isVehicle())
-			entity.doHurtTarget(target);
-	}
+        var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
+        var randomPhase = entity.getRandom().nextInt(0, 100);
+        if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(target) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST))
+            entity.grabTarget(target);
+        else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
+            entity.grabTarget(target);
+            entity.setIsBiting(true);
+        } else if (!entity.isVehicle())
+            entity.doHurtTarget(target);
+    }
 }

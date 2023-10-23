@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class FacehuggerEntityModel extends DefaultedEntityGeoModel<FacehuggerEntity> {
 
-	public FacehuggerEntityModel() {
-		super(Constants.modResource("facehugger/facehugger"), false);
-	}
+    public FacehuggerEntityModel() {
+        super(Constants.modResource("facehugger/facehugger"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(FacehuggerEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(FacehuggerEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

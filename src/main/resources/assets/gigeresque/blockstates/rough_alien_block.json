@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "gigeresque:block/rough_alien_block" }
+    "": {
+      "model": "gigeresque:block/rough_alien_block"
+    }
   }
 }

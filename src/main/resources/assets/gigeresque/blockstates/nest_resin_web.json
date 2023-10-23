@@ -126,9 +126,6 @@
         "uvlock": true
       }
     },
-
-
-
     {
       "when": {
         "nest_resin_web_variant": "two",
@@ -255,9 +252,6 @@
         "uvlock": true
       }
     },
-
-
-
     {
       "when": {
         "nest_resin_web_variant": "three",
@@ -384,9 +378,6 @@
         "uvlock": true
       }
     },
-
-
-
     {
       "when": {
         "nest_resin_web_variant": "four",
@@ -513,9 +504,6 @@
         "uvlock": true
       }
     },
-
-
-
     {
       "when": {
         "nest_resin_web_variant": "five",
@@ -642,9 +630,6 @@
         "uvlock": true
       }
     },
-
-
-
     {
       "when": {
         "nest_resin_web_variant": "six",

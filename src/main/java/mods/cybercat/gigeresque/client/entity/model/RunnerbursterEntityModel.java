@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class RunnerbursterEntityModel extends DefaultedEntityGeoModel<RunnerbursterEntity> {
 
-	public RunnerbursterEntityModel() {
-		super(Constants.modResource("runnerburster/runnerburster"), false);
-	}
+    public RunnerbursterEntityModel() {
+        super(Constants.modResource("runnerburster/runnerburster"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(RunnerbursterEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(RunnerbursterEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

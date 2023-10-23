@@ -10,14 +10,14 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 @Environment(EnvType.CLIENT)
 public class AcidParticleFactory implements ParticleProvider<SimpleParticleType> {
-	private final SpriteSet spriteProvider;
+    private final SpriteSet spriteProvider;
 
-	public AcidParticleFactory(SpriteSet spriteProvider) {
-		this.spriteProvider = spriteProvider;
-	}
+    public AcidParticleFactory(SpriteSet spriteProvider) {
+        this.spriteProvider = spriteProvider;
+    }
 
-	@Override
-	public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
-		return new AcidParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
-	}
+    @Override
+    public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        return new AcidParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
+    }
 }

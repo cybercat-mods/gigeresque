@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class StalkerEntityModel extends DefaultedEntityGeoModel<StalkerEntity> {
 
-	public StalkerEntityModel() {
-		super(Constants.modResource("stalker/stalker"), false);
-	}
+    public StalkerEntityModel() {
+        super(Constants.modResource("stalker/stalker"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(StalkerEntity animatable, ResourceLocation texture) {
-		return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? RenderType.entityTranslucentCull(getTextureResource(animatable)) : RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(StalkerEntity animatable, ResourceLocation texture) {
+        return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? RenderType.entityTranslucentCull(getTextureResource(animatable)) : RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

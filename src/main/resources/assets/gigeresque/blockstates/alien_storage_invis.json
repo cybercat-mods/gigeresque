@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "gigeresque:block/alien_storage_invis"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "gigeresque:block/alien_storage_invis"
+    }
+  }
 }

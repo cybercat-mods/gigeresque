@@ -19,28 +19,28 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SporeBlock extends BaseEntityBlock {
 
-	protected SporeBlock() {
-		super(FabricBlockSettings.of().sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
-	}
+    protected SporeBlock() {
+        super(FabricBlockSettings.of().sounds(SoundType.NYLIUM).nonOpaque().requiresTool().strength(15, 15));
+    }
 
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, Entities.SPORE_ENTITY, SporeBlockEntity::tick);
-	}
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, Entities.SPORE_ENTITY, SporeBlockEntity::tick);
+    }
 
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return Entities.SPORE_ENTITY.create(pos, state);
-	}
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return Entities.SPORE_ENTITY.create(pos, state);
+    }
 
-	@Override
-	public RenderShape getRenderShape(BlockState p_49232_) {
-		return RenderShape.MODEL;
-	}
+    @Override
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return Block.box(3, 0, 4, 13, 4, 11);
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return Block.box(3, 0, 4, 13, 4, 11);
+    }
 
 }

@@ -8,13 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SittingIdolModel extends DefaultedBlockGeoModel<IdolStorageEntity> {
 
-	public SittingIdolModel() {
-		super(Constants.modResource("sittingidol/sittingidol"));
-	}
+    public SittingIdolModel() {
+        super(Constants.modResource("sittingidol/sittingidol"));
+    }
 
-	@Override
-	public RenderType getRenderType(IdolStorageEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(IdolStorageEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

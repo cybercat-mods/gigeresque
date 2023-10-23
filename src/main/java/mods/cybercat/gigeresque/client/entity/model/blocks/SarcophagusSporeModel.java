@@ -8,13 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SarcophagusSporeModel extends DefaultedBlockGeoModel<AlienStorageSporeEntity> {
 
-	public SarcophagusSporeModel() {
-		super(Constants.modResource("sarcophagus/sarcophagus"));
-	}
+    public SarcophagusSporeModel() {
+        super(Constants.modResource("sarcophagus/sarcophagus"));
+    }
 
-	@Override
-	public RenderType getRenderType(AlienStorageSporeEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(AlienStorageSporeEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

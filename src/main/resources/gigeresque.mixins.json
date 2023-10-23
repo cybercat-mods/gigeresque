@@ -7,16 +7,16 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "common.PointOfInterestTypesInvoker",
     "common.entity.CreeperMixin",
+    "common.entity.HorseMixin",
     "common.entity.HostileEntityMixin",
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
     "common.entity.PlayerEntityMixin",
     "common.entity.VillagerEntityMixin",
     "common.entity.WanderingTraderEntityMixin",
-    "common.entity.WardenEntityMixin",
-    "common.entity.HorseMixin",
-    "common.PointOfInterestTypesInvoker"
+    "common.entity.WardenEntityMixin"
   ],
   "client": [
     "client.entity.render.AzureEntityRendererMixin",

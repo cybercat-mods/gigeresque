@@ -15,20 +15,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class MuralBlock extends GigBlock {
 
-	public MuralBlock() {
-		super(FabricBlockSettings.of().strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
-	}
+    public MuralBlock() {
+        super(FabricBlockSettings.of().strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
+    }
 
-	@Override
-	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
-		world.setBlock(pos, GigBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
-		var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
-		areaEffectCloudEntity.setRadius(1.0F);
-		areaEffectCloudEntity.setDuration(60);
-		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
-		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-		world.addFreshEntity(areaEffectCloudEntity);
-		super.playerDestroy(world, player, pos, state, blockEntity, stack);
-	}
+    @Override
+    public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+        world.setBlock(pos, GigBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+        var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
+        areaEffectCloudEntity.setRadius(1.0F);
+        areaEffectCloudEntity.setDuration(60);
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+        world.addFreshEntity(areaEffectCloudEntity);
+        super.playerDestroy(world, player, pos, state, blockEntity, stack);
+    }
 
 }

@@ -1,24 +1,24 @@
 {
-	"replace": false,
-	"values": [
-		"minecraft:cow",
-		"minecraft:donkey",
-		"minecraft:fox",
-		"minecraft:goat",
-		"minecraft:hoglin",
-		"minecraft:horse",
-		"minecraft:llama",
-		"minecraft:mooshroom",
-		"minecraft:mule",
-		"minecraft:panda",
-		"minecraft:pig",
-		"minecraft:ocelot",
-		"minecraft:polar_bear",
-		"minecraft:ravager",
-		"minecraft:sheep",
-		"minecraft:wolf",
-		"minecraft:camel",
-		"minecraft:sniffer",
-		"minecraft:trader_llama"
-	]
+  "replace": false,
+  "values": [
+    "minecraft:cow",
+    "minecraft:donkey",
+    "minecraft:fox",
+    "minecraft:goat",
+    "minecraft:hoglin",
+    "minecraft:horse",
+    "minecraft:llama",
+    "minecraft:mooshroom",
+    "minecraft:mule",
+    "minecraft:panda",
+    "minecraft:pig",
+    "minecraft:ocelot",
+    "minecraft:polar_bear",
+    "minecraft:ravager",
+    "minecraft:sheep",
+    "minecraft:wolf",
+    "minecraft:camel",
+    "minecraft:sniffer",
+    "minecraft:trader_llama"
+  ]
 }

@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class RunnerAlienEntityModel extends DefaultedEntityGeoModel<RunnerAlienEntity> {
 
-	public RunnerAlienEntityModel() {
-		super(Constants.modResource("runner_alien/runner_alien"), true);
-	}
+    public RunnerAlienEntityModel() {
+        super(Constants.modResource("runner_alien/runner_alien"), true);
+    }
 
-	@Override
-	public RenderType getRenderType(RunnerAlienEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(RunnerAlienEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

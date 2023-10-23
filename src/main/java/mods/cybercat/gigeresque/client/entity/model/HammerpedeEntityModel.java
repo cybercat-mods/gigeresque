@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class HammerpedeEntityModel extends DefaultedEntityGeoModel<HammerpedeEntity> {
 
-	public HammerpedeEntityModel() {
-		super(Constants.modResource("hammerpede/hammerpede"), false);
-	}
+    public HammerpedeEntityModel() {
+        super(Constants.modResource("hammerpede/hammerpede"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(HammerpedeEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(HammerpedeEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

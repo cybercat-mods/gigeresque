@@ -8,25 +8,25 @@ import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
 
 public class AmphibiousNavigation extends WaterBoundPathNavigation {
-	public AmphibiousNavigation(Mob entity, Level world) {
-		super(entity, world);
-	}
+    public AmphibiousNavigation(Mob entity, Level world) {
+        super(entity, world);
+    }
 
-	@Override
-	protected boolean canUpdatePath() {
-		return true;
-	}
+    @Override
+    protected boolean canUpdatePath() {
+        return true;
+    }
 
-	@Override
-	protected PathFinder createPathFinder(int range) {
-		nodeEvaluator = new AmphibiousNodeEvaluator(true);
-		nodeEvaluator.setCanOpenDoors(false);
-		nodeEvaluator.setCanPassDoors(false);
-		return new PathFinder(nodeEvaluator, range);
-	}
+    @Override
+    protected PathFinder createPathFinder(int range) {
+        nodeEvaluator = new AmphibiousNodeEvaluator(true);
+        nodeEvaluator.setCanOpenDoors(false);
+        nodeEvaluator.setCanPassDoors(false);
+        return new PathFinder(nodeEvaluator, range);
+    }
 
-	@Override
-	public boolean isStableDestination(BlockPos pos) {
-		return !level.getBlockState(pos.below()).isAir();
-	}
+    @Override
+    public boolean isStableDestination(BlockPos pos) {
+        return !level.getBlockState(pos.below()).isAir();
+    }
 }

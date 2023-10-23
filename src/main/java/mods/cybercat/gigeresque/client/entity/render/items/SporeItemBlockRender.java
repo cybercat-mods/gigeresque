@@ -6,8 +6,8 @@ import mods.cybercat.gigeresque.common.item.GigBlockItem;
 
 public class SporeItemBlockRender extends GeoItemRenderer<GigBlockItem> {
 
-	public SporeItemBlockRender() {
-		super(new SporeItemBlockModel());
-	}
+    public SporeItemBlockRender() {
+        super(new SporeItemBlockModel());
+    }
 
 }

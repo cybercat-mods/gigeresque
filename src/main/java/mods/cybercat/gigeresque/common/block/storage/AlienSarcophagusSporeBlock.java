@@ -15,24 +15,24 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class AlienSarcophagusSporeBlock extends AlienSarcophagusBlock {
 
-	public AlienSarcophagusSporeBlock() {
-		super();
-	}
+    public AlienSarcophagusSporeBlock() {
+        super();
+    }
 
-	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!world.isClientSide && world.getBlockEntity(pos)instanceof AlienStorageSporeEntity alienStorageEntity)
-			player.openMenu(alienStorageEntity);
-		return InteractionResult.SUCCESS;
-	}
+    @Override
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!world.isClientSide && world.getBlockEntity(pos) instanceof AlienStorageSporeEntity alienStorageEntity)
+            player.openMenu(alienStorageEntity);
+        return InteractionResult.SUCCESS;
+    }
 
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.create(pos, state);
-	}
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.create(pos, state);
+    }
 
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE, AlienStorageSporeEntity::tick);
-	}
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE, AlienStorageSporeEntity::tick);
+    }
 }

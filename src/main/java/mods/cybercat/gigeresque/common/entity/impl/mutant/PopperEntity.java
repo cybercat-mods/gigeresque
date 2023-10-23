@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
@@ -58,152 +56,154 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 
+import java.util.List;
+
 public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<PopperEntity> {
 
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 
-	public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
-		super(entityType, world);
-		setMaxUpStep(1.5f);
-		this.vibrationUser = new AzureVibrationUser(this, 0.9F);
-		navigation = landNavigation;
-	}
+    public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
+        super(entityType, world);
+        setMaxUpStep(1.5f);
+        this.vibrationUser = new AzureVibrationUser(this, 0.9F);
+        navigation = landNavigation;
+    }
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
-			var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-			if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
-				if (walkAnimation.speedOld >= 0.35F)
-					return event.setAndContinue(GigAnimationsDefault.RUN);
-				else
-					return event.setAndContinue(GigAnimationsDefault.WALK);
-			else if (isDead)
-				return event.setAndContinue(GigAnimationsDefault.DEATH);
-			else if (event.getAnimatable().getAttckingState() == 1 && !isDead && !this.onGround())
-				return event.setAndContinue(GigAnimationsDefault.CHARGE);
-			else
-				return event.setAndContinue(GigAnimationsDefault.IDLE);
-		}).triggerableAnim("death", GigAnimationsDefault.DEATH));
-	}
+    public static AttributeSupplier.Builder createAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.popperHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.popperAttackDamage).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+            if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
+                if (walkAnimation.speedOld >= 0.35F)
+                    return event.setAndContinue(GigAnimationsDefault.RUN);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.WALK);
+            else if (isDead)
+                return event.setAndContinue(GigAnimationsDefault.DEATH);
+            else if (event.getAnimatable().getAttckingState() == 1 && !isDead && !this.onGround())
+                return event.setAndContinue(GigAnimationsDefault.CHARGE);
+            else
+                return event.setAndContinue(GigAnimationsDefault.IDLE);
+        }).triggerableAnim("death", GigAnimationsDefault.DEATH));
+    }
 
-	@Override
-	public void tick() {
-		super.tick();
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
+    @Override
+    public void tick() {
+        super.tick();
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		tickBrain(this);
-		super.customServerAiStep();
-	}
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
 
-	@Override
-	public List<ExtendedSensor<PopperEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<PopperEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<PopperEntity>().setRadius(7), new NearbyRepellentsSensor<PopperEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
-	}
+    @Override
+    protected void customServerAiStep() {
+        tickBrain(this);
+        super.customServerAiStep();
+    }
 
-	@Override
-	public BrainActivityGroup<PopperEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
-	}
+    @Override
+    public List<ExtendedSensor<PopperEntity>> getSensors() {
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<PopperEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<PopperEntity>().setRadius(7), new NearbyRepellentsSensor<PopperEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
+    }
 
-	@Override
-	public BrainActivityGroup<PopperEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PopperEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
-	}
+    @Override
+    public BrainActivityGroup<PopperEntity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<PopperEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AttackExplodeTask(17));
-	}
+    @Override
+    public BrainActivityGroup<PopperEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PopperEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+    }
 
-	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.popperHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.popperAttackDamage).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
-	}
+    @Override
+    public BrainActivityGroup<PopperEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AttackExplodeTask(17));
+    }
 
-	@Override
-	protected void tickDeath() {
-		super.tickDeath();
-		if (this.deathTime == 55) {
-			this.explode();
-			this.remove(Entity.RemovalReason.KILLED);
-			super.tickDeath();
-			this.dropExperience();
-		}
-	}
+    @Override
+    protected void tickDeath() {
+        super.tickDeath();
+        if (this.deathTime == 55) {
+            this.explode();
+            this.remove(Entity.RemovalReason.KILLED);
+            super.tickDeath();
+            this.dropExperience();
+        }
+    }
 
-	public void explode() {
-		var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY() + 1, this.getZ());
-		areaEffectCloudEntity.setRadius(2.0F);
-		areaEffectCloudEntity.setDuration(30);
-		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
-		areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-		this.level().addFreshEntity(areaEffectCloudEntity);
-	}
+    public void explode() {
+        var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY() + 1, this.getZ());
+        areaEffectCloudEntity.setRadius(2.0F);
+        areaEffectCloudEntity.setDuration(30);
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+        this.level().addFreshEntity(areaEffectCloudEntity);
+    }
 
-	@Override
-	public boolean hurt(DamageSource source, float amount) {
-		if (!this.level().isClientSide) {
-			var attacker = source.getEntity();
-			if (source.getEntity() != null)
-				if (attacker instanceof LivingEntity living)
-					this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
-		}
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (!this.level().isClientSide) {
+            var attacker = source.getEntity();
+            if (source.getEntity() != null)
+                if (attacker instanceof LivingEntity living)
+                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+        }
 
-		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-			return super.hurt(source, amount);
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+            return super.hurt(source, amount);
 
-		if (!this.level().isClientSide && source != damageSources().genericKill()) {
-			var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+        if (!this.level().isClientSide && source != damageSources().genericKill()) {
+            var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-			if (this.getHealth() < (this.getMaxHealth() / 4))
-				acidThickness += 1;
-			if (amount >= 5)
-				acidThickness += 1;
-			if (amount > (this.getMaxHealth() / 10))
-				acidThickness += 1;
-			if (acidThickness == 0)
-				return super.hurt(source, amount);
-			
-			var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
+            if (this.getHealth() < (this.getMaxHealth() / 4))
+                acidThickness += 1;
+            if (amount >= 5)
+                acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10))
+                acidThickness += 1;
+            if (acidThickness == 0)
+                return super.hurt(source, amount);
 
-			if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-				newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-			if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-				level().setBlockAndUpdate(this.blockPosition(), newState);
-		}
-		return super.hurt(source, amount);
-	}
+            var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
 
-	@Override
-	public void generateAcidPool(int xOffset, int zOffset) {
-		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
-		var posState = level().getBlockState(pos);
-		var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
+            if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+                newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+            if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+                level().setBlockAndUpdate(this.blockPosition(), newState);
+        }
+        return super.hurt(source, amount);
+    }
 
-		if (posState.getBlock() == Blocks.WATER)
-			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+    @Override
+    public void generateAcidPool(int xOffset, int zOffset) {
+        var pos = this.blockPosition().offset(xOffset, 0, zOffset);
+        var posState = level().getBlockState(pos);
+        var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
 
-		if (!(posState.getBlock() instanceof LiquidBlock))
-			return;
-		level().setBlockAndUpdate(pos, newState);
-	}
+        if (posState.getBlock() == Blocks.WATER)
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-	@Override
-	protected int getAcidDiameter() {
-		return 2;
-	}
+        if (!(posState.getBlock() instanceof LiquidBlock))
+            return;
+        level().setBlockAndUpdate(pos, newState);
+    }
+
+    @Override
+    protected int getAcidDiameter() {
+        return 2;
+    }
 
 }

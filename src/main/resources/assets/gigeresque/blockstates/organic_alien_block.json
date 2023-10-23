@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "gigeresque:block/organic_alien_block" }
+    "": {
+      "model": "gigeresque:block/organic_alien_block"
+    }
   }
 }

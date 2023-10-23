@@ -2,13 +2,7 @@ package mods.cybercat.gigeresque.common.entity;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
-import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
-import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
-import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
+import mods.cybercat.gigeresque.common.block.entity.*;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
@@ -40,71 +34,69 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public record Entities() implements GigeresqueInitializer {
 
-	private static Entities instance;
+    public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(EntityIdentifiers.ALIEN.getPath(), MobCategory.MONSTER, ClassicAlienEntity::new, 0.9f, 2.45f);
+    public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(), MobCategory.MONSTER, AquaticAlienEntity::new, 2.0f, 2.0f);
+    public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), MobCategory.MONSTER, AquaticChestbursterEntity::new, 0.5f, 0.25f);
+    public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(), MobCategory.MONSTER, ChestbursterEntity::new, 0.5f, 0.25f);
+    public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), MobCategory.MONSTER, AlienEggEntity::new, 0.7f, 0.9f);
+    public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(), MobCategory.MONSTER, FacehuggerEntity::new, 0.95f, 0.3f);
+    public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(), MobCategory.MONSTER, RunnerAlienEntity::new, 1.25f, 1.75f);
+    public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(), MobCategory.MONSTER, RunnerbursterEntity::new, 0.5f, 0.5f);
+    public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(EntityIdentifiers.MUTANT_POPPER.getPath(), MobCategory.MONSTER, PopperEntity::new, 1.0f, 0.75f);
+    public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), MobCategory.MONSTER, HammerpedeEntity::new, 1.4f, 0.75f);
+    public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(EntityIdentifiers.MUTANT_STALKER.getPath(), MobCategory.MONSTER, StalkerEntity::new, 1.25f, 1.75f);
+    public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(), MobCategory.MONSTER, NeobursterEntity::new, 0.5f, 0.45f);
+    public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), MobCategory.MONSTER, NeomorphAdolescentEntity::new, 1.0f, 0.9f);
+    public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), MobCategory.MONSTER, NeomorphEntity::new, 0.9f, 2.55f);
+    public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
+    private static Entities instance;
 
-	synchronized public static Entities getInstance() {
-		if (instance == null) 
-			instance = new Entities();
-		return instance;
-	}
+    synchronized public static Entities getInstance() {
+        if (instance == null)
+            instance = new Entities();
+        return instance;
+    }
 
-	protected static <T extends Entity> EntityType<T> registerAlienType(String name, MobCategory category, EntityType.EntityFactory<T> factory, float width, float height) {
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
-	}
+    protected static <T extends Entity> EntityType<T> registerAlienType(String name, MobCategory category, EntityType.EntityFactory<T> factory, float width, float height) {
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
+    }
 
-	protected static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
-		return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource(name), FabricBlockEntityTypeBuilder.create(factory, block).build(null));
-	}
-
-	public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(EntityIdentifiers.ALIEN.getPath(), MobCategory.MONSTER, ClassicAlienEntity::new, 0.9f, 2.45f);
-	public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(), MobCategory.MONSTER, AquaticAlienEntity::new, 2.0f, 2.0f);
-	public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), MobCategory.MONSTER, AquaticChestbursterEntity::new, 0.5f, 0.25f);
-	public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(), MobCategory.MONSTER, ChestbursterEntity::new, 0.5f, 0.25f);
-	public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), MobCategory.MONSTER, AlienEggEntity::new, 0.7f, 0.9f);
-	public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(), MobCategory.MONSTER, FacehuggerEntity::new, 0.95f, 0.3f);
-	public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(), MobCategory.MONSTER, RunnerAlienEntity::new, 1.25f, 1.75f);
-	public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(), MobCategory.MONSTER, RunnerbursterEntity::new, 0.5f, 0.5f);
-	public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(EntityIdentifiers.MUTANT_POPPER.getPath(), MobCategory.MONSTER, PopperEntity::new, 1.0f, 0.75f);
-	public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), MobCategory.MONSTER, HammerpedeEntity::new, 1.4f, 0.75f);
-	public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(EntityIdentifiers.MUTANT_STALKER.getPath(), MobCategory.MONSTER, StalkerEntity::new, 1.25f, 1.75f);
-
-	public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(), MobCategory.MONSTER, NeobursterEntity::new, 0.5f, 0.45f);
-	public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), MobCategory.MONSTER, NeomorphAdolescentEntity::new, 1.0f, 0.9f);
-	public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), MobCategory.MONSTER, NeomorphEntity::new, 0.9f, 2.55f);
-	public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
+    protected static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource(name), FabricBlockEntityTypeBuilder.create(factory, block).build(null));
+    }
 
 //	public static final EntityType<? extends CrusherEntity> CRUSHER = registerAlienType(EntityIdentifiers.CRUSHER.getPath(), CrusherEntity::new, 1.3f, 2.35f);
 //	public static final EntityType<? extends PraetorianEntity> PRAETORIAN = registerAlienType(EntityIdentifiers.PRAETORIAN.getPath(), PraetorianEntity::new, 1.3f, 3.45f);
 //	public static final EntityType<? extends UltramorpthEntity> ULTRAMORTH = registerAlienType(EntityIdentifiers.ULTRAMORTH.getPath(), UltramorpthEntity::new, 1.7f, 4.45f);
 
-	public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1 = registerBlockType("alien_storage_block_entity", AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1);
-	public static BlockEntityType<AlienStorageHuggerEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = registerBlockType("alien_storage_block_entity_hugger", AlienStorageHuggerEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER);
-	public static BlockEntityType<AlienStorageGooEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = registerBlockType("alien_storage_block_entity_goo", AlienStorageGooEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO);
-	public static BlockEntityType<AlienStorageSporeEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = registerBlockType("alien_storage_block_entity_spore", AlienStorageSporeEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE);
-	public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2 = registerBlockType("alien_storage_jar_entity", JarStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_2);
-	public static BlockEntityType<IdolStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_3 = registerBlockType("sitting_idol_entity", IdolStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_3);
-	public static BlockEntityType<SporeBlockEntity> SPORE_ENTITY = registerBlockType("neomorph_spore_pods", SporeBlockEntity::new, GigBlocks.SPORE_BLOCK);
-
-	@Override
-	public void initialize() {
-		FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(CHESTBURSTER, ChestbursterEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(EGG, AlienEggEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(FACEHUGGER, FacehuggerEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(RUNNER_ALIEN, RunnerAlienEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(RUNNERBURSTER, RunnerbursterEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(MUTANT_POPPER, PopperEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(MUTANT_HAMMERPEDE, HammerpedeEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(MUTANT_STALKER, StalkerEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(NEOBURSTER, NeobursterEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(NEOMORPH_ADOLESCENT, NeomorphAdolescentEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(NEOMORPH, NeomorphEntity.createAttributes());
-		FabricDefaultAttributeRegistry.register(SPITTER, SpitterEntity.createAttributes());
+    @Override
+    public void initialize() {
+        FabricDefaultAttributeRegistry.register(ALIEN, ClassicAlienEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(AQUATIC_ALIEN, AquaticAlienEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(AQUATIC_CHESTBURSTER, AquaticChestbursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(CHESTBURSTER, ChestbursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(EGG, AlienEggEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(FACEHUGGER, FacehuggerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(RUNNER_ALIEN, RunnerAlienEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(RUNNERBURSTER, RunnerbursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(MUTANT_POPPER, PopperEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(MUTANT_HAMMERPEDE, HammerpedeEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(MUTANT_STALKER, StalkerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(NEOBURSTER, NeobursterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(NEOMORPH_ADOLESCENT, NeomorphAdolescentEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(NEOMORPH, NeomorphEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(SPITTER, SpitterEntity.createAttributes());
 
 //		FabricDefaultAttributeRegistry.register(CRUSHER, CrusherEntity.createAttributes());
 //		FabricDefaultAttributeRegistry.register(PRAETORIAN, PraetorianEntity.createAttributes());
 //		FabricDefaultAttributeRegistry.register(ULTRAMORTH, UltramorpthEntity.createAttributes());
-	}
+    }    public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1 = registerBlockType("alien_storage_block_entity", AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1);
+    public static BlockEntityType<AlienStorageHuggerEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = registerBlockType("alien_storage_block_entity_hugger", AlienStorageHuggerEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER);
+    public static BlockEntityType<AlienStorageGooEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = registerBlockType("alien_storage_block_entity_goo", AlienStorageGooEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO);
+    public static BlockEntityType<AlienStorageSporeEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = registerBlockType("alien_storage_block_entity_spore", AlienStorageSporeEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE);
+    public static BlockEntityType<JarStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_2 = registerBlockType("alien_storage_jar_entity", JarStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_2);
+    public static BlockEntityType<IdolStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_3 = registerBlockType("sitting_idol_entity", IdolStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_3);
+    public static BlockEntityType<SporeBlockEntity> SPORE_ENTITY = registerBlockType("neomorph_spore_pods", SporeBlockEntity::new, GigBlocks.SPORE_BLOCK);
+
+
 }

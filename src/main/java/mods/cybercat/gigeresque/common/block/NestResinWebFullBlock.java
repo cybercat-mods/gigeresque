@@ -15,23 +15,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public class NestResinWebFullBlock extends Block {
-	public NestResinWebFullBlock(Properties settings) {
-		super(settings);
-	}
+    public NestResinWebFullBlock(Properties settings) {
+        super(settings);
+    }
 
-	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (entity instanceof AlienEntity)
-			return;
-		if ((entity instanceof Player && (((Player) entity).isCreative() || ((Player) entity).isSpectator())))
-			return;
-		if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {
-			livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
-			livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
-			if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
-				livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
-			if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
-				livingEntity.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
-		}
-	}
+    @Override
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        if (entity instanceof AlienEntity)
+            return;
+        if ((entity instanceof Player && (((Player) entity).isCreative() || entity.isSpectator())))
+            return;
+        if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {
+            livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
+            if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
+                livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);
+            if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
+                livingEntity.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
+        }
+    }
 }

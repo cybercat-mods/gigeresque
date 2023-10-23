@@ -1,18 +1,8 @@
 package mods.cybercat.gigeresque.common.entity;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
@@ -33,13 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Marker;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -59,333 +43,339 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity {
 
-	public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
-	protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
-	private static final Logger LOGGER = LogUtils.getLogger();
-	protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
-	private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
-	protected VibrationSystem.User vibrationUser;
-	private VibrationSystem.Data vibrationData;
-	public int attackstatetimer = 0;
-	protected int slowticks = 0;
+    public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
+    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+    protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
+    public int attackstatetimer = 0;
+    protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
+    protected VibrationSystem.User vibrationUser;
+    protected int slowticks = 0;
+    private VibrationSystem.Data vibrationData;
 
-	protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
-		super(entityType, world);
-		setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
-		setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-		if (navigation != null)
-			navigation.setCanFloat(true);
-		this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-		this.vibrationData = new VibrationSystem.Data();
-		this.dynamicGameEventListener = new DynamicGameEventListener<VibrationSystem.Listener>(new VibrationSystem.Listener(this));
-	}
+    protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
+        super(entityType, world);
+        setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
+        setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
+        if (navigation != null)
+            navigation.setCanFloat(true);
+        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+        this.vibrationData = new VibrationSystem.Data();
+        this.dynamicGameEventListener = new DynamicGameEventListener<VibrationSystem.Listener>(new VibrationSystem.Listener(this));
+    }
 
-	@Override
-	protected void tickDeath() {
-		++this.deathTime;
-		this.triggerAnim("livingController", "death");
-		this.triggerAnim("attackController", "death");
-		if (this.deathTime == 150) {
-			this.remove(Entity.RemovalReason.KILLED);
-			super.tickDeath();
-			this.dropExperience();
-		}
-	}
+    @Override
+    protected void tickDeath() {
+        ++this.deathTime;
+        this.triggerAnim("livingController", "death");
+        this.triggerAnim("attackController", "death");
+        if (this.deathTime == 150) {
+            this.remove(Entity.RemovalReason.KILLED);
+            super.tickDeath();
+            this.dropExperience();
+        }
+    }
 
-	protected int getAcidDiameter() {
-		return 3;
-	}
+    protected int getAcidDiameter() {
+        return 3;
+    }
 
-	public boolean isFleeing() {
-		return this.entityData.get(FLEEING_FIRE);
-	}
+    public boolean isFleeing() {
+        return this.entityData.get(FLEEING_FIRE);
+    }
 
-	public void setFleeingStatus(boolean fleeing) {
-		this.entityData.set(FLEEING_FIRE, Boolean.valueOf(fleeing));
-	}
+    public void setFleeingStatus(boolean fleeing) {
+        this.entityData.set(FLEEING_FIRE, Boolean.valueOf(fleeing));
+    }
 
-	public boolean isUpsideDown() {
-		return this.entityData.get(UPSIDE_DOWN);
-	}
+    public boolean isUpsideDown() {
+        return this.entityData.get(UPSIDE_DOWN);
+    }
 
-	public void setUpsideDown(boolean upsideDown) {
-		this.entityData.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
-	}
+    public void setUpsideDown(boolean upsideDown) {
+        this.entityData.set(UPSIDE_DOWN, Boolean.valueOf(upsideDown));
+    }
 
-	public int getAttckingState() {
-		return this.entityData.get(STATE);
-	}
+    public int getAttckingState() {
+        return this.entityData.get(STATE);
+    }
 
-	public void setAttackingState(int time) {
-		this.entityData.set(STATE, time);
-	}
+    public void setAttackingState(int time) {
+        this.entityData.set(STATE, time);
+    }
 
-	public boolean isCrawling() {
-		return entityData.get(IS_CLIMBING);
-	}
+    public boolean isCrawling() {
+        return entityData.get(IS_CLIMBING);
+    }
 
-	public void setIsCrawling(boolean isHissing) {
-		entityData.set(IS_CLIMBING, isHissing);
-	}
+    public void setIsCrawling(boolean isHissing) {
+        entityData.set(IS_CLIMBING, isHissing);
+    }
 
-	public void increaseAngerAt(@Nullable Entity entity) {
-		this.increaseAngerAt(entity, 35, true);
-	}
+    public void increaseAngerAt(@Nullable Entity entity) {
+        this.increaseAngerAt(entity, 35, true);
+    }
 
-	@VisibleForTesting
-	public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
-		if (!this.isNoAi() && this.canTargetEntity(entity))
-			if (entity instanceof Player && !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player) && AngerLevel.byAnger(this.angerManagement.increaseAnger(entity, i)).isAngry())
-				this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-	}
+    @VisibleForTesting
+    public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
+        if (!this.isNoAi() && this.canTargetEntity(entity))
+            if (entity instanceof Player && !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player) && AngerLevel.byAnger(this.angerManagement.increaseAnger(entity, i)).isAngry())
+                this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+    }
 
-	@Override
-	public void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(UPSIDE_DOWN, false);
-		this.entityData.define(FLEEING_FIRE, false);
-		this.entityData.define(IS_CLIMBING, false);
-		this.entityData.define(STATE, 0);
-		this.entityData.define(CLIENT_ANGER_LEVEL, 0);
-	}
+    @Override
+    public void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(UPSIDE_DOWN, false);
+        this.entityData.define(FLEEING_FIRE, false);
+        this.entityData.define(IS_CLIMBING, false);
+        this.entityData.define(STATE, 0);
+        this.entityData.define(CLIENT_ANGER_LEVEL, 0);
+    }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		compound.putBoolean("isCrawling", isCrawling());
-		VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", (Tag) tag));
-		AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", (Tag) tag));
-	}
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("isCrawling", isCrawling());
+        VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("listener", tag));
+        AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(LOGGER::error).ifPresent(tag -> compound.put("anger", tag));
+    }
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		if (compound.contains("isCrawling"))
-			setIsCrawling(compound.getBoolean("isCrawling"));
-		if (compound.contains("anger")) {
-			AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
-				this.angerManagement = angerManagement;
-			});
-			this.syncClientAngerLevel();
-		}
-		if (compound.contains("listener", 10))
-			VibrationSystem.Data.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(LOGGER::error).ifPresent(data -> {
-				this.vibrationData = data;
-			});
-	}
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("isCrawling"))
+            setIsCrawling(compound.getBoolean("isCrawling"));
+        if (compound.contains("anger")) {
+            AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
+                this.angerManagement = angerManagement;
+            });
+            this.syncClientAngerLevel();
+        }
+        if (compound.contains("listener", 10))
+            VibrationSystem.Data.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(LOGGER::error).ifPresent(data -> {
+                this.vibrationData = data;
+            });
+    }
 
-	public int getClientAngerLevel() {
-		return this.entityData.get(CLIENT_ANGER_LEVEL);
-	}
+    public int getClientAngerLevel() {
+        return this.entityData.get(CLIENT_ANGER_LEVEL);
+    }
 
-	protected void syncClientAngerLevel() {
-		this.entityData.set(CLIENT_ANGER_LEVEL, this.getActiveAnger());
-	}
+    protected void syncClientAngerLevel() {
+        this.entityData.set(CLIENT_ANGER_LEVEL, this.getActiveAnger());
+    }
 
-	public AngerLevel getAngerLevel() {
-		return AngerLevel.byAnger(this.getActiveAnger());
-	}
+    public AngerLevel getAngerLevel() {
+        return AngerLevel.byAnger(this.getActiveAnger());
+    }
 
-	private int getActiveAnger() {
-		return this.angerManagement.getActiveAnger(this.getTarget());
-	}
+    private int getActiveAnger() {
+        return this.angerManagement.getActiveAnger(this.getTarget());
+    }
 
-	public void clearAnger(Entity entity) {
-		this.angerManagement.clearAnger(entity);
-	}
+    public void clearAnger(Entity entity) {
+        this.angerManagement.clearAnger(entity);
+    }
 
-	@VisibleForTesting
-	public AngerManagement getAngerManagement() {
-		return this.angerManagement;
-	}
+    @VisibleForTesting
+    public AngerManagement getAngerManagement() {
+        return this.angerManagement;
+    }
 
-	public Optional<LivingEntity> getEntityAngryAt() {
-		if (this.getAngerLevel().isAngry())
-			return this.angerManagement.getActiveEntity();
-		return Optional.empty();
-	}
+    public Optional<LivingEntity> getEntityAngryAt() {
+        if (this.getAngerLevel().isAngry())
+            return this.angerManagement.getActiveEntity();
+        return Optional.empty();
+    }
 
-	@Override
-	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-		return false;
-	}
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return false;
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		var serverLevel = (ServerLevel) this.level();
-		super.customServerAiStep();
-		if (this.tickCount % 20 == 0) {
-			this.angerManagement.tick(serverLevel, this::canTargetEntity);
-			this.syncClientAngerLevel();
-		}
-	}
+    @Override
+    protected void customServerAiStep() {
+        var serverLevel = (ServerLevel) this.level();
+        super.customServerAiStep();
+        if (this.tickCount % 20 == 0) {
+            this.angerManagement.tick(serverLevel, this::canTargetEntity);
+            this.syncClientAngerLevel();
+        }
+    }
 
-	@Override
-	public void tick() {
-		super.tick();
-		if (!this.level().isClientSide)
-			slowticks++;
-		if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) {
-			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
-			slowticks = -60;
-		}
-		if (this.level() instanceof ServerLevel serverLevel)
-			AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
-		if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
-			this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
-				if (e.is(GigTags.NEST_BLOCKS))
-					this.heal(0.5833f);
-			});
-	}
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide)
+            slowticks++;
+        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) {
+            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
+            slowticks = -60;
+        }
+        if (this.level() instanceof ServerLevel serverLevel)
+            AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
+        if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
+            this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
+                if (e.is(GigTags.NEST_BLOCKS))
+                    this.heal(0.5833f);
+            });
+    }
 
-	@Override
-	public boolean requiresCustomPersistence() {
-		return true;
-	}
+    @Override
+    public boolean requiresCustomPersistence() {
+        return true;
+    }
 
-	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
-	}
+    @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
 
-	@Override
-	public void checkDespawn() {
-	}
+    @Override
+    public void checkDespawn() {
+    }
 
-	public void generateAcidPool(int xOffset, int zOffset) {
-		var pos = this.blockPosition().offset(xOffset, 0, zOffset);
-		var posState = level().getBlockState(pos);
-		var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
+    public void generateAcidPool(int xOffset, int zOffset) {
+        var pos = this.blockPosition().offset(xOffset, 0, zOffset);
+        var posState = level().getBlockState(pos);
+        var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
 
-		if (posState.getBlock() == Blocks.WATER)
-			newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+        if (posState.getBlock() == Blocks.WATER)
+            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-		if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
-			return;
-		level().setBlockAndUpdate(pos, newState);
-	}
+        if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
+            return;
+        level().setBlockAndUpdate(pos, newState);
+    }
 
-	@Override
-	public void die(DamageSource source) {
-		if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources())) {
-			super.die(source);
-			return;
-		}
-		if (source == damageSources().genericKill()) {
-			super.die(source);
-			return;
-		}
+    @Override
+    public void die(DamageSource source) {
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources())) {
+            super.die(source);
+            return;
+        }
+        if (source == damageSources().genericKill()) {
+            super.die(source);
+            return;
+        }
 
-		if (!this.level().isClientSide) {
-			if (source != damageSources().genericKill() || source != damageSources().generic()) {
-				if (getAcidDiameter() == 1)
-					generateAcidPool(0, 0);
-				else {
-					var radius = (getAcidDiameter() - 1) / 2;
-					for (var x = -radius; x <= radius; x++) {
-						for (var z = -radius; z <= radius; z++)
-							if (source != damageSources().genericKill() || source != damageSources().generic())
-								generateAcidPool(x, z);
-					}
-				}
-			}
-		}
-		super.die(source);
-	}
+        if (!this.level().isClientSide) {
+            if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                if (getAcidDiameter() == 1)
+                    generateAcidPool(0, 0);
+                else {
+                    var radius = (getAcidDiameter() - 1) / 2;
+                    for (var x = -radius; x <= radius; x++) {
+                        for (var z = -radius; z <= radius; z++)
+                            if (source != damageSources().genericKill() || source != damageSources().generic())
+                                generateAcidPool(x, z);
+                    }
+                }
+            }
+        }
+        super.die(source);
+    }
 
-	@Override
-	public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
-		if (this.level() instanceof ServerLevel serverLevel)
-			biConsumer.accept(this.dynamicGameEventListener, serverLevel);
-	}
+    @Override
+    public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+        if (this.level() instanceof ServerLevel serverLevel)
+            biConsumer.accept(this.dynamicGameEventListener, serverLevel);
+    }
 
-	@Override
-	public VibrationSystem.Data getVibrationData() {
-		return this.vibrationData;
-	}
+    @Override
+    public VibrationSystem.Data getVibrationData() {
+        return this.vibrationData;
+    }
 
-	@Override
-	public VibrationSystem.User getVibrationUser() {
-		return this.vibrationUser;
-	}
+    @Override
+    public VibrationSystem.User getVibrationUser() {
+        return this.vibrationUser;
+    }
 
-	/*
-	 * Enabled force condition propagation Lifted jumps to return sites
-	 */
-	@Contract(value = "null->false")
-	public boolean canTargetEntity(@Nullable Entity entity) {
-		if (!(entity instanceof LivingEntity))
-			return false;
-		var livingEntity = (LivingEntity) entity;
-		if (this.level() != entity.level())
-			return false;
-		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
-			return false;
-		if (((Host) livingEntity).hasParasite())
-			return false;
-		if (this.isVehicle())
-			return false;
-		if (this.isAlliedTo(entity))
-			return false;
-		if (livingEntity.getMobType() == MobType.UNDEAD)
-			return false;
-		if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
-			return false;
-		if (livingEntity.getType() == EntityType.ARMOR_STAND)
-			return false;
-		if (livingEntity.getType() == EntityType.WARDEN)
-			return false;
-		if (livingEntity instanceof Bat)
-			return false;
-		if (entity instanceof Marker)
-			return false;
-		if (entity instanceof AreaEffectCloud)
-			return false;
-		if (GigEntityUtils.isFacehuggerAttached(livingEntity))
-			return false;
-		if (livingEntity.isInvulnerable())
-			return false;
-		if (livingEntity.isDeadOrDying())
-			return false;
-		if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
-			return false;
-		var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
-		if (list2.anyMatch(NEST))
-			return false;
-		if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
-			return false;
-		if (livingEntity instanceof AlienEntity)
-			return false;
-		if (this.isAggressive())
-			return false;
-		if (!this.level().getBlockState(this.blockPosition().below()).isSolid())
-			return false;
-		return true;
-	}
+    /*
+     * Enabled force condition propagation Lifted jumps to return sites
+     */
+    @Contract(value = "null->false")
+    public boolean canTargetEntity(@Nullable Entity entity) {
+        if (!(entity instanceof LivingEntity))
+            return false;
+        var livingEntity = (LivingEntity) entity;
+        if (this.level() != entity.level())
+            return false;
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
+            return false;
+        if (((Host) livingEntity).hasParasite())
+            return false;
+        if (this.isVehicle())
+            return false;
+        if (this.isAlliedTo(entity))
+            return false;
+        if (livingEntity.getMobType() == MobType.UNDEAD)
+            return false;
+        if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
+            return false;
+        if (livingEntity.getType() == EntityType.ARMOR_STAND)
+            return false;
+        if (livingEntity.getType() == EntityType.WARDEN)
+            return false;
+        if (livingEntity instanceof Bat)
+            return false;
+        if (entity instanceof Marker)
+            return false;
+        if (entity instanceof AreaEffectCloud)
+            return false;
+        if (GigEntityUtils.isFacehuggerAttached(livingEntity))
+            return false;
+        if (livingEntity.isInvulnerable())
+            return false;
+        if (livingEntity.isDeadOrDying())
+            return false;
+        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
+            return false;
+        var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
+        if (list2.anyMatch(NEST))
+            return false;
+        if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
+            return false;
+        if (livingEntity instanceof AlienEntity)
+            return false;
+        if (this.isAggressive())
+            return false;
+        return this.level().getBlockState(this.blockPosition().below()).isSolid();
+    }
 
-	@Nullable
-	public ItemEntity drop(LivingEntity target, ItemStack itemStack, boolean bl) {
-		if (itemStack.isEmpty())
-			return null;
+    @Nullable
+    public ItemEntity drop(LivingEntity target, ItemStack itemStack, boolean bl) {
+        if (itemStack.isEmpty())
+            return null;
 
-		var d = target.getEyeY() - (double) 0.3f;
-		var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);
-		itemEntity.setPickUpDelay(40);
-		float g = Mth.sin(this.getXRot() * ((float) Math.PI / 180));
-		float h = Mth.cos(this.getXRot() * ((float) Math.PI / 180));
-		float i = Mth.sin(this.getYRot() * ((float) Math.PI / 180));
-		float j = Mth.cos(this.getYRot() * ((float) Math.PI / 180));
-		float k = this.random.nextFloat() * ((float) Math.PI * 2);
-		float l = 0.02f * this.random.nextFloat();
-		itemEntity.setDeltaMovement((double) (-i * h * 0.3f) + Math.cos(k) * (double) l, -g * 0.3f + 0.1f + (this.random.nextFloat() - this.random.nextFloat()) * 0.1f, (double) (j * h * 0.3f) + Math.sin(k) * (double) l);
-		target.level().addFreshEntity(itemEntity);
-		return itemEntity;
-	}
+        var d = target.getEyeY() - (double) 0.3f;
+        var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);
+        itemEntity.setPickUpDelay(40);
+        float g = Mth.sin(this.getXRot() * ((float) Math.PI / 180));
+        float h = Mth.cos(this.getXRot() * ((float) Math.PI / 180));
+        float i = Mth.sin(this.getYRot() * ((float) Math.PI / 180));
+        float j = Mth.cos(this.getYRot() * ((float) Math.PI / 180));
+        float k = this.random.nextFloat() * ((float) Math.PI * 2);
+        float l = 0.02f * this.random.nextFloat();
+        itemEntity.setDeltaMovement((double) (-i * h * 0.3f) + Math.cos(k) * (double) l, -g * 0.3f + 0.1f + (this.random.nextFloat() - this.random.nextFloat()) * 0.1f, (double) (j * h * 0.3f) + Math.sin(k) * (double) l);
+        target.level().addFreshEntity(itemEntity);
+        return itemEntity;
+    }
 }

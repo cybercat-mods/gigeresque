@@ -21,51 +21,51 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SittingIdolInvisBlock extends Block {
 
-	private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+    private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
-	public SittingIdolInvisBlock() {
-		super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque().noLootTable());
-	}
+    public SittingIdolInvisBlock() {
+        super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque().noLootTable());
+    }
 
-	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!world.isClientSide) {
-			var radius = new Vec3i(2, 2, 2);
-			for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
-				if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
-					if (!world.isClientSide && world.getBlockEntity(testPos)instanceof IdolStorageEntity idolStorageEntity)
-						player.openMenu(idolStorageEntity);
-					return InteractionResult.SUCCESS;
-				}
-		}
-		return InteractionResult.SUCCESS;
-	}
+    @Override
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!world.isClientSide) {
+            var radius = new Vec3i(2, 2, 2);
+            for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
+                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
+                    if (!world.isClientSide && world.getBlockEntity(testPos) instanceof IdolStorageEntity idolStorageEntity)
+                        player.openMenu(idolStorageEntity);
+                    return InteractionResult.SUCCESS;
+                }
+        }
+        return InteractionResult.SUCCESS;
+    }
 
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.INVISIBLE;
-	}
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
+    }
 
-	@Override
-	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-		if (world.isClientSide)
-			return;
+    @Override
+    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        if (world.isClientSide)
+            return;
 
-		var radius = new Vec3i(2, 2, 2);
+        var radius = new Vec3i(2, 2, 2);
 
-		for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
-			BlockState testState;
+        for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
+            BlockState testState;
 
-			if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
-				world.destroyBlock(testPos, true);
-				Block.dropResources(testState, world, testPos);
-			} else if (testState.is(this))
-				world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-		}
-	}
+            if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
+                world.destroyBlock(testPos, true);
+                Block.dropResources(testState, world, testPos);
+            } else if (testState.is(this))
+                world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        }
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return OUTLINE_SHAPE;
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return OUTLINE_SHAPE;
+    }
 }

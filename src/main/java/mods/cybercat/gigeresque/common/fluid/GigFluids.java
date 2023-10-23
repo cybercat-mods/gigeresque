@@ -9,25 +9,24 @@ import net.minecraft.world.level.material.Fluid;
 
 public record GigFluids() implements GigeresqueInitializer {
 
-	private static GigFluids instance;
+    public static final BlackFluid BLACK_FLUID_STILL = new BlackFluid.Still();
+    public static final BlackFluid BLACK_FLUID_FLOWING = new BlackFluid.Flowing();
+    private static GigFluids instance;
 
-	synchronized public static GigFluids getInstance() {
-		if (instance == null) {
-			instance = new GigFluids();
-		}
-		return instance;
-	}
+    synchronized public static GigFluids getInstance() {
+        if (instance == null) {
+            instance = new GigFluids();
+        }
+        return instance;
+    }
 
-	private <T extends Fluid> T registerFluid(String path, T fluid) {
-		return Registry.register(BuiltInRegistries.FLUID, new ResourceLocation(Gigeresque.MOD_ID, path), fluid);
-	}
+    private <T extends Fluid> T registerFluid(String path, T fluid) {
+        return Registry.register(BuiltInRegistries.FLUID, new ResourceLocation(Gigeresque.MOD_ID, path), fluid);
+    }
 
-	public static final BlackFluid BLACK_FLUID_STILL = new BlackFluid.Still();
-	public static final BlackFluid BLACK_FLUID_FLOWING = new BlackFluid.Flowing();
-
-	@Override
-	public void initialize() {
-		registerFluid("black_fluid_still", BLACK_FLUID_STILL);
-		registerFluid("black_fluid_flowing", BLACK_FLUID_FLOWING);
-	}
+    @Override
+    public void initialize() {
+        registerFluid("black_fluid_still", BLACK_FLUID_STILL);
+        registerFluid("black_fluid_flowing", BLACK_FLUID_FLOWING);
+    }
 }

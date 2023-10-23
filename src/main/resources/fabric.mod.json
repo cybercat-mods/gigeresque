@@ -1,36 +1,48 @@
 {
-  "schemaVersion" : 1,
-  "id" : "gigeresque",
-  "version" : "${version}",
-  "name" : "Gigeresque",
-  "description" : "Gigeresque is a horror-themed mod that offers players a dive into the horrific biomechanical world of the xenomorphs, and the mutated realms of the neomorphs, deacons, and goo mutants.",
-  "authors" : [ "AzureDoom", "Boston Vanseghi", "Cybercat5555", "Ri5ux", "undermark5" ],
-  "contact" : {
-    "homepage" : "https://www.curseforge.com/minecraft/mc-mods/gigeresque",
-    "issues" : "https://github.com/cybercat-mods/gigeresque/issues",
-    "sources" : "https://github.com/cybercat-mods/gigeresque"
+  "schemaVersion": 1,
+  "id": "gigeresque",
+  "version": "${version}",
+  "name": "Gigeresque",
+  "description": "Gigeresque is a horror-themed mod that offers players a dive into the horrific biomechanical world of the xenomorphs, and the mutated realms of the neomorphs, deacons, and goo mutants.",
+  "authors": [
+    "AzureDoom",
+    "Boston Vanseghi",
+    "Cybercat5555",
+    "Ri5ux",
+    "undermark5"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/gigeresque",
+    "issues": "https://github.com/cybercat-mods/gigeresque/issues",
+    "sources": "https://github.com/cybercat-mods/gigeresque"
   },
-  "license" : "CC BY-NC-ND 4.0",
-  "icon" : "assets/gigeresque/icon.png",
-  "environment" : "*",
-  "entrypoints" : {
-    "main" : [ "mods.cybercat.gigeresque.common.Gigeresque" ],
-    "client" : [ "mods.cybercat.gigeresque.client.GigeresqueClient" ]
+  "license": "CC BY-NC-ND 4.0",
+  "icon": "assets/gigeresque/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mods.cybercat.gigeresque.common.Gigeresque"
+    ],
+    "client": [
+      "mods.cybercat.gigeresque.client.GigeresqueClient"
+    ]
   },
-  "mixins" : [ "gigeresque.mixins.json" ],
-  "depends" : {
-    "fabricloader" : ">=0.14.21",
-    "fabric" : "*",
-    "minecraft" : "1.20.1",
-    "azurelib" : ">=1.0.32",
-    "smartbrainlib" : ">=1.12",
-    "java" : ">=17"
+  "mixins": [
+    "gigeresque.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "fabric": "*",
+    "minecraft": "1.20.1",
+    "azurelib": ">=1.0.32",
+    "smartbrainlib": ">=1.12",
+    "java": ">=17"
   },
-  "accessWidener" : "gigeresque.accesswidener",
-  "custom" : {
-    "modmenu" : {
-      "links" : {
-        "modmenu.discord" : "https://discord.gg/jZ6kAHFVQc"
+  "accessWidener": "gigeresque.accesswidener",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/jZ6kAHFVQc"
       }
     }
   }

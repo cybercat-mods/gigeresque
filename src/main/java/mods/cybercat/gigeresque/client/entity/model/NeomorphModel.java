@@ -11,13 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class NeomorphModel extends DefaultedEntityGeoModel<NeomorphEntity> {
 
-	public NeomorphModel() {
-		super(Constants.modResource("neomorph/neomorph"), false);
-	}
+    public NeomorphModel() {
+        super(Constants.modResource("neomorph/neomorph"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(NeomorphEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(NeomorphEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

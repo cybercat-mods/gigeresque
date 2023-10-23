@@ -5,8 +5,8 @@ import net.minecraft.world.level.block.Block;
 
 public class GigBlockItem extends BlockItem {
 
-	public GigBlockItem(Block block, Properties settings) {
-		super(block, settings);
-	}
+    public GigBlockItem(Block block, Properties settings) {
+        super(block, settings);
+    }
 
 }

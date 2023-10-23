@@ -1,7 +1,7 @@
 {
-	"replace": false,
-	"values": [
-		"minecraft:ghast",
-		"minecraft:iron_golem"
-	]
+  "replace": false,
+  "values": [
+    "minecraft:ghast",
+    "minecraft:iron_golem"
+  ]
 }

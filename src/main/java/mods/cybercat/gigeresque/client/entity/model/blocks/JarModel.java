@@ -7,14 +7,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class JarModel extends DefaultedBlockGeoModel<JarStorageEntity> {
-	
-	public JarModel() {
-		super(Constants.modResource("jar/jar"));
-	}
 
-	@Override
-	public RenderType getRenderType(JarStorageEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    public JarModel() {
+        super(Constants.modResource("jar/jar"));
+    }
+
+    @Override
+    public RenderType getRenderType(JarStorageEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

@@ -8,13 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SarcophagusGooModel extends DefaultedBlockGeoModel<AlienStorageGooEntity> {
 
-	public SarcophagusGooModel() {
-		super(Constants.modResource("sarcophagus/sarcophagus"));
-	}
+    public SarcophagusGooModel() {
+        super(Constants.modResource("sarcophagus/sarcophagus"));
+    }
 
-	@Override
-	public RenderType getRenderType(AlienStorageGooEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(AlienStorageGooEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

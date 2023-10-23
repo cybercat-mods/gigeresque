@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class AquaticAlienEntityModel extends DefaultedEntityGeoModel<AquaticAlienEntity> {
 
-	public AquaticAlienEntityModel() {
-		super(Constants.modResource("aquatic_alien/aquatic_alien"), false);
-	}
+    public AquaticAlienEntityModel() {
+        super(Constants.modResource("aquatic_alien/aquatic_alien"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(AquaticAlienEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(AquaticAlienEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

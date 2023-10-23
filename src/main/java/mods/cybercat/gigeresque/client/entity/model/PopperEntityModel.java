@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class PopperEntityModel extends DefaultedEntityGeoModel<PopperEntity> {
 
-	public PopperEntityModel() {
-		super(Constants.modResource("popper/popper"), false);
-	}
+    public PopperEntityModel() {
+        super(Constants.modResource("popper/popper"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(PopperEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(PopperEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 }

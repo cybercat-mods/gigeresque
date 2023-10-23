@@ -9,13 +9,13 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class HammerpedeEntityRenderer extends GeoEntityRenderer<HammerpedeEntity> {
-	public HammerpedeEntityRenderer(EntityRendererProvider.Context context) {
-		super(context, new HammerpedeEntityModel());
-		this.shadowRadius = 0.5f;
-	}
+    public HammerpedeEntityRenderer(EntityRendererProvider.Context context) {
+        super(context, new HammerpedeEntityModel());
+        this.shadowRadius = 0.5f;
+    }
 
-	@Override
-	protected float getDeathMaxRotation(HammerpedeEntity entityLivingBaseIn) {
-		return 0.0F;
-	}
+    @Override
+    protected float getDeathMaxRotation(HammerpedeEntity entityLivingBaseIn) {
+        return 0.0F;
+    }
 }

@@ -11,13 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class SpitterModel extends DefaultedEntityGeoModel<SpitterEntity> {
 
-	public SpitterModel() {
-		super(Constants.modResource("spitter/spitter"), false);
-	}
+    public SpitterModel() {
+        super(Constants.modResource("spitter/spitter"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(SpitterEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(SpitterEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
 }

@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azuredoom.bettercrawling.Constants;
@@ -15,33 +14,33 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class NeomorphAdolescentRenderer extends GeoEntityRenderer<NeomorphAdolescentEntity> {
-	public NeomorphAdolescentRenderer(EntityRendererProvider.Context context) {
-		super(context, new NeomorphAdolescentModel());
-		this.shadowRadius = 0.5f;
-	}
+    public NeomorphAdolescentRenderer(EntityRendererProvider.Context context) {
+        super(context, new NeomorphAdolescentModel());
+        this.shadowRadius = 0.5f;
+    }
 
-	@Override
-	public void preRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-		if (!animatable.isPassenger())
-			Constants.onPreRenderLiving(animatable, partialTick, poseStack);
-		poseStack.scale(0.6F, 0.6F, 0.6F);
-	}
+    @Override
+    public void preRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        if (!animatable.isPassenger())
+            Constants.onPreRenderLiving(animatable, partialTick, poseStack);
+        poseStack.scale(0.6F, 0.6F, 0.6F);
+    }
 
-	@Override
-	protected float getDeathMaxRotation(NeomorphAdolescentEntity entityLivingBaseIn) {
-		return 0.0F;
-	}
+    @Override
+    protected float getDeathMaxRotation(NeomorphAdolescentEntity entityLivingBaseIn) {
+        return 0.0F;
+    }
 
-	@Override
-	public void postRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-		if (!animatable.isPassenger())
-			Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
-	}
-	
-	@Override
-	public float getMotionAnimThreshold(NeomorphAdolescentEntity animatable) {
-		return 0.005f;
-	}
+    @Override
+    public void postRender(PoseStack poseStack, NeomorphAdolescentEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        if (!animatable.isPassenger())
+            Constants.onPostRenderLiving(animatable, partialTick, poseStack, bufferSource);
+    }
+
+    @Override
+    public float getMotionAnimThreshold(NeomorphAdolescentEntity animatable) {
+        return 0.005f;
+    }
 }

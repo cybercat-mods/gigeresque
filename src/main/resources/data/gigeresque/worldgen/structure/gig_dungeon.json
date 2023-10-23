@@ -1,9 +1,9 @@
 {
-  "type" : "gigeresque:gig_dungeon",
-  "start_pool" : "gigeresque:gig_dungeon",
-  "size" : 15,
-  "max_distance_from_center" : 64,
-  "biomes" : "#gigeresque:has_structure/gig_dungeon_biomes",
-  "step" : "underground_decoration",
-  "spawn_overrides" : { }
+  "type": "gigeresque:gig_dungeon",
+  "start_pool": "gigeresque:gig_dungeon",
+  "size": 15,
+  "max_distance_from_center": 64,
+  "biomes": "#gigeresque:has_structure/gig_dungeon_biomes",
+  "step": "underground_decoration",
+  "spawn_overrides": {}
 }

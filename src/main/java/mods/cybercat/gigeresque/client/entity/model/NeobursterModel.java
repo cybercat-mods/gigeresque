@@ -12,18 +12,18 @@ import net.minecraft.resources.ResourceLocation;
 @Environment(EnvType.CLIENT)
 public class NeobursterModel extends DefaultedEntityGeoModel<NeobursterEntity> {
 
-	public NeobursterModel() {
-		super(Constants.modResource("neoburster/neoburster"), false);
-	}
+    public NeobursterModel() {
+        super(Constants.modResource("neoburster/neoburster"), false);
+    }
 
-	@Override
-	public RenderType getRenderType(NeobursterEntity animatable, ResourceLocation texture) {
-		return RenderType.entityTranslucent(getTextureResource(animatable));
-	}
+    @Override
+    public RenderType getRenderType(NeobursterEntity animatable, ResourceLocation texture) {
+        return RenderType.entityTranslucent(getTextureResource(animatable));
+    }
 
-	@Override
-	public void setCustomAnimations(NeobursterEntity animatable, long instanceId, AnimationState<NeobursterEntity> animationState) {
-		super.setCustomAnimations(animatable, instanceId, animationState);
-	}
+    @Override
+    public void setCustomAnimations(NeobursterEntity animatable, long instanceId, AnimationState<NeobursterEntity> animationState) {
+        super.setCustomAnimations(animatable, instanceId, animationState);
+    }
 
 }

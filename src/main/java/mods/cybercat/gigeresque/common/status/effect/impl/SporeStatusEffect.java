@@ -17,55 +17,55 @@ import net.minecraft.world.level.Level;
 
 public class SporeStatusEffect extends MobEffect {
 
-	public SporeStatusEffect() {
-		super(MobEffectCategory.HARMFUL, Color.BLACK.getColor());
-	}
+    public SporeStatusEffect() {
+        super(MobEffectCategory.HARMFUL, Color.BLACK.getColor());
+    }
 
-	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return true;
-	}
+    @Override
+    public boolean isDurationEffectTick(int duration, int amplifier) {
+        return true;
+    }
 
-	@Override
-	public boolean isInstantenous() {
-		return false;
-	}
+    @Override
+    public boolean isInstantenous() {
+        return false;
+    }
 
-	@Override
-	public void applyEffectTick(LivingEntity entity, int amplifier) {
-		super.applyEffectTick(entity, amplifier);
-		if (this == GigStatusEffects.SPORE)
-			entity.heal(0);
-	}
+    @Override
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
+        super.applyEffectTick(entity, amplifier);
+        if (this == GigStatusEffects.SPORE)
+            entity.heal(0);
+    }
 
-	@Override
-	public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
-		var neoBurster = Entities.NEOBURSTER.create(entity.level());
-		if (!(entity instanceof AlienEntity) && entity.getType().is(GigTags.NEOHOST)) {
-			if (!(entity instanceof Player)) {
-				neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-				spawnEffects(entity.level(), entity);
-				entity.level().addFreshEntity(neoBurster);
-				entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-				return;
-			}
-			if (entity instanceof Player playerEntity) {
-				if (!playerEntity.isSpectator() && !playerEntity.isCreative()) {
-					neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
-					spawnEffects(playerEntity.level(), playerEntity);
-					playerEntity.level().addFreshEntity(neoBurster);
-					entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-					return;
-				}
-			}
-		}
-		super.removeAttributeModifiers(entity, attributes, amplifier);
-	}
+    @Override
+    public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
+        var neoBurster = Entities.NEOBURSTER.create(entity.level());
+        if (!(entity instanceof AlienEntity) && entity.getType().is(GigTags.NEOHOST)) {
+            if (!(entity instanceof Player)) {
+                neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+                spawnEffects(entity.level(), entity);
+                entity.level().addFreshEntity(neoBurster);
+                entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+                return;
+            }
+            if (entity instanceof Player playerEntity) {
+                if (!playerEntity.isSpectator() && !playerEntity.isCreative()) {
+                    neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
+                    spawnEffects(playerEntity.level(), playerEntity);
+                    playerEntity.level().addFreshEntity(neoBurster);
+                    entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+                    return;
+                }
+            }
+        }
+        super.removeAttributeModifiers(entity, attributes, amplifier);
+    }
 
-	private void spawnEffects(Level world, LivingEntity entity) {
-		if (!world.isClientSide())
-			for (var i = 0; i < 2; i++)
-				((ServerLevel) world).sendParticles(ParticleTypes.POOF, ((double) entity.getX()) + 0.5, entity.getY(), ((double) entity.getZ()) + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
-	}
+    private void spawnEffects(Level world, LivingEntity entity) {
+        if (!world.isClientSide())
+            for (var i = 0; i < 2; i++)
+                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(), entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
+    }
 
 }

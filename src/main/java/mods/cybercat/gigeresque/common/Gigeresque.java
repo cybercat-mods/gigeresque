@@ -27,30 +27,30 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 
 public class Gigeresque implements ModInitializer {
-	public static GigeresqueConfig config;
-	public static final String MOD_ID = "gigeresque";
+    public static final String MOD_ID = "gigeresque";
+    public static GigeresqueConfig config;
 
-	@Override
-	public void onInitialize() {
-		config = AzureLibMod.registerConfig(GigeresqueConfig.class, ConfigFormats.json()).getConfigInstance();
+    @Override
+    public void onInitialize() {
+        config = AzureLibMod.registerConfig(GigeresqueConfig.class, ConfigFormats.json()).getConfigInstance();
 
-		GigItems.getInstance().initialize();
-		GigMemoryTypes.getInstance().initialize();
-		GigSensors.getInstance().initialize();
-		GigBlocks.getInstance().initialize();
-		GigFluids.getInstance().initialize();
-		GigSounds.getInstance().initialize();
-		GigStatusEffects.getInstance().initialize();
-		Entities.getInstance().initialize();
-		MobSpawn.addSpawnEntries();
-		GigStructures.registerStructureFeatures();
-		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
-		GigItemGroups.getInstance().initialize();
-		GigCompats.getInstance().initialize();;
-		FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
-		if (config.enableSneakyEggs)
-			FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
-				ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED);
-			}));
-	}
+        GigItems.getInstance().initialize();
+        GigMemoryTypes.getInstance().initialize();
+        GigSensors.getInstance().initialize();
+        GigBlocks.getInstance().initialize();
+        GigFluids.getInstance().initialize();
+        GigSounds.getInstance().initialize();
+        GigStatusEffects.getInstance().initialize();
+        Entities.getInstance().initialize();
+        MobSpawn.addSpawnEntries();
+        GigStructures.registerStructureFeatures();
+        ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
+        GigItemGroups.getInstance().initialize();
+        GigCompats.getInstance().initialize();
+        FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
+        if (config.enableSneakyEggs)
+            FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> {
+                ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED);
+            }));
+    }
 }

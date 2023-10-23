@@ -10,11 +10,11 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class GigeresqueClient implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		new BlockRenderLayers().initialize();
-		new FluidRenderHandlers().initialize();
-		new EntityRenderers().initialize();
-		new Particles().initialize();
-	}
+    @Override
+    public void onInitializeClient() {
+        new BlockRenderLayers().initialize();
+        new FluidRenderHandlers().initialize();
+        new EntityRenderers().initialize();
+        new Particles().initialize();
+    }
 }

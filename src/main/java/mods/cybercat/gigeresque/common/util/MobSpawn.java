@@ -15,12 +15,12 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 public class MobSpawn {
 
-	public static void addSpawnEntries() {
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(GigTags.EGGSPAWN_BIOMES, context)), MobCategory.MONSTER, Entities.EGG, Gigeresque.config.alienegg_spawn_weight, Gigeresque.config.alienegg_min_group, Gigeresque.config.alienegg_max_group);
-		SpawnPlacements.register(Entities.EGG, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AlienEggEntity::canSpawn);
-	}
+    public static void addSpawnEntries() {
+        BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(GigTags.EGGSPAWN_BIOMES, context)), MobCategory.MONSTER, Entities.EGG, Gigeresque.config.alienegg_spawn_weight, Gigeresque.config.alienegg_min_group, Gigeresque.config.alienegg_max_group);
+        SpawnPlacements.register(Entities.EGG, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AlienEggEntity::canSpawn);
+    }
 
-	private static boolean parseBiomes(TagKey<Biome> biomes, BiomeSelectionContext biomeContext) {
-		return biomeContext.hasTag(biomes);
-	}
+    private static boolean parseBiomes(TagKey<Biome> biomes, BiomeSelectionContext biomeContext) {
+        return biomeContext.hasTag(biomes);
+    }
 }

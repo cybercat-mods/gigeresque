@@ -1,10 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
@@ -22,52 +18,55 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.RandomUtil;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
-	public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+        return MEMORY_REQUIREMENTS;
+    }
 
-	@Override
-	protected void start(E entity) {
-		entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-	}
+    @Override
+    protected void start(E entity) {
+        entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+    }
 
-	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return entity.getEntityData().get(AlienEntity.FLEEING_FIRE).booleanValue() == false;
-	}
+    @Override
+    protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+        return entity.getEntityData().get(AlienEntity.FLEEING_FIRE).booleanValue() == false;
+    }
 
-	@Override
-	protected void tick(ServerLevel level, E entity, long gameTime) {
-		var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_NEST_BLOCKS.get()).orElse(null);
-		var target = entity.getFirstPassenger();
-		if (lightSourceLocation == null)
-			return;
-		var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, level);
-		var nestLocation = lightSourceLocation.stream().findAny().get().getFirst();
+    @Override
+    protected void tick(ServerLevel level, E entity, long gameTime) {
+        var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_NEST_BLOCKS.get()).orElse(null);
+        var target = entity.getFirstPassenger();
+        if (lightSourceLocation == null)
+            return;
+        var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, level);
+        var nestLocation = lightSourceLocation.stream().findAny().get().getFirst();
 //		if (!lightSourceLocation.stream().findAny().get().getSecond().is(GIgBlocks.NEST_RESIN_WEB_CROSS))
 //			return;
-		if (target != null)
-			if (test != nestLocation)
-				if (!nestLocation.closerToCenterThan(entity.position(), 1.4))
-					BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 1));
-				else {
-					for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-						if (level.getBlockState(test).isAir() && level.getBlockState(test.below()).isSolid()) {
-							BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-							((Eggmorphable) target).setTicksUntilEggmorphed(Gigeresque.config.getEggmorphTickTimer());
-							target.setPos(Vec3.atBottomCenterOf(testPos));
-							target.removeVehicle();
-							entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-							level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-							level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-						}
-				}
-	}
+        if (target != null)
+            if (test != nestLocation)
+                if (!nestLocation.closerToCenterThan(entity.position(), 1.4))
+                    BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(nestLocation, 2.5F, 1));
+                else {
+                    for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
+                        if (level.getBlockState(test).isAir() && level.getBlockState(test.below()).isSolid()) {
+                            BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+                            ((Eggmorphable) target).setTicksUntilEggmorphed(Gigeresque.config.getEggmorphTickTimer());
+                            target.setPos(Vec3.atBottomCenterOf(testPos));
+                            target.removeVehicle();
+                            entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+                            level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+                            level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+                        }
+                }
+    }
 
 }

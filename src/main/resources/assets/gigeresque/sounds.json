@@ -1,151 +1,215 @@
 {
-  "alien_hiss" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_hiss_1"
-    }, {
-      "name" : "gigeresque:alien/alien_hiss_2"
-    }, {
-      "name" : "gigeresque:alien/alien_hiss_3"
-    } ]
+  "alien_hiss": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_hiss_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_hiss_2"
+      },
+      {
+        "name": "gigeresque:alien/alien_hiss_3"
+      }
+    ]
   },
-  "alien_claw" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_claw_woosh"
-    } ]
+  "alien_claw": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_claw_woosh"
+      }
+    ]
   },
-  "alien_tail" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_tail_woosh"
-    } ]
+  "alien_tail": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_tail_woosh"
+      }
+    ]
   },
-  "alien_death" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_death_1"
-    }, {
-      "name" : "gigeresque:alien/alien_death_2"
-    }, {
-      "name" : "gigeresque:alien/alien_death_3"
-    } ]
+  "alien_death": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_death_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_death_2"
+      },
+      {
+        "name": "gigeresque:alien/alien_death_3"
+      }
+    ]
   },
-  "alien_hurt" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_hurt_1"
-    }, {
-      "name" : "gigeresque:alien/alien_hurt_2"
-    }, {
-      "name" : "gigeresque:alien/alien_hurt_3"
-    } ]
+  "alien_hurt": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_hurt_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_hurt_2"
+      },
+      {
+        "name": "gigeresque:alien/alien_hurt_3"
+      }
+    ]
   },
-  "alien_ambient" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_ambient"
-    } ]
+  "alien_ambient": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_ambient"
+      }
+    ]
   },
-  "alien_headbite" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_headbite"
-    } ]
+  "alien_headbite": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_headbite"
+      }
+    ]
   },
-  "alien_death_thud" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_death_thud"
-    } ]
+  "alien_death_thud": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_death_thud"
+      }
+    ]
   },
-  "alien_crunch" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_crunch_1"
-    }, {
-      "name" : "gigeresque:alien/alien_crunch_2"
-    } ]
+  "alien_crunch": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_crunch_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_crunch_2"
+      }
+    ]
   },
-  "egg_notice" : {
-    "sounds" : [ {
-      "name" : "gigeresque:egg/notice_1"
-    }, {
-      "name" : "gigeresque:egg/notice_2"
-    } ]
+  "egg_notice": {
+    "sounds": [
+      {
+        "name": "gigeresque:egg/notice_1"
+      },
+      {
+        "name": "gigeresque:egg/notice_2"
+      }
+    ]
   },
-  "egg_open" : {
-    "sounds" : [ {
-      "name" : "gigeresque:egg/open"
-    } ]
+  "egg_open": {
+    "sounds": [
+      {
+        "name": "gigeresque:egg/open"
+      }
+    ]
   },
-  "hugger_ambient" : {
-    "sounds" : [ {
-      "name" : "gigeresque:facehugger/ambient_1"
-    }, {
-      "name" : "gigeresque:facehugger/ambient_2"
-    }, {
-      "name" : "gigeresque:facehugger/ambient_3"
-    } ]
+  "hugger_ambient": {
+    "sounds": [
+      {
+        "name": "gigeresque:facehugger/ambient_1"
+      },
+      {
+        "name": "gigeresque:facehugger/ambient_2"
+      },
+      {
+        "name": "gigeresque:facehugger/ambient_3"
+      }
+    ]
   },
-  "hugger_death" : {
-    "sounds" : [ {
-      "name" : "gigeresque:facehugger/death_1"
-    }, {
-      "name" : "gigeresque:facehugger/death_2"
-    }, {
-      "name" : "gigeresque:facehugger/death_3"
-    } ]
+  "hugger_death": {
+    "sounds": [
+      {
+        "name": "gigeresque:facehugger/death_1"
+      },
+      {
+        "name": "gigeresque:facehugger/death_2"
+      },
+      {
+        "name": "gigeresque:facehugger/death_3"
+      }
+    ]
   },
-  "hugger_hurt" : {
-    "sounds" : [ {
-      "name" : "gigeresque:facehugger/hurt"
-    } ]
+  "hugger_hurt": {
+    "sounds": [
+      {
+        "name": "gigeresque:facehugger/hurt"
+      }
+    ]
   },
-  "hugger_implant" : {
-    "sounds" : [ {
-      "name" : "gigeresque:facehugger/implant_1"
-    }, {
-      "name" : "gigeresque:facehugger/implant_2"
-    }, {
-      "name" : "gigeresque:facehugger/implant_3"
-    } ]
+  "hugger_implant": {
+    "sounds": [
+      {
+        "name": "gigeresque:facehugger/implant_1"
+      },
+      {
+        "name": "gigeresque:facehugger/implant_2"
+      },
+      {
+        "name": "gigeresque:facehugger/implant_3"
+      }
+    ]
   },
-  "chestbursting" : {
-    "sounds" : [ {
-      "name" : "gigeresque:burster/chestbursting"
-    } ]
+  "chestbursting": {
+    "sounds": [
+      {
+        "name": "gigeresque:burster/chestbursting"
+      }
+    ]
   },
-  "alien_footstep" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_footstep_1"
-    }, {
-      "name" : "gigeresque:alien/alien_footstep_2"
-    } ]
+  "alien_footstep": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_footstep_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_footstep_2"
+      }
+    ]
   },
-  "alien_handstep" : {
-    "sounds" : [ {
-      "name" : "gigeresque:alien/alien_handstep_1"
-    }, {
-      "name" : "gigeresque:alien/alien_handstep_2"
-    } ]
+  "alien_handstep": {
+    "sounds": [
+      {
+        "name": "gigeresque:alien/alien_handstep_1"
+      },
+      {
+        "name": "gigeresque:alien/alien_handstep_2"
+      }
+    ]
   },
-  "aqua_landmove" : {
-    "sounds" : [ {
-      "name" : "gigeresque:aqua/aqua_landmove_1"
-    }, {
-      "name" : "gigeresque:aqua/aqua_landmove_2"
-    }, {
-      "name" : "gigeresque:aqua/aqua_landmove_3"
-    }, {
-      "name" : "gigeresque:aqua/aqua_landmove_4"
-    } ]
+  "aqua_landmove": {
+    "sounds": [
+      {
+        "name": "gigeresque:aqua/aqua_landmove_1"
+      },
+      {
+        "name": "gigeresque:aqua/aqua_landmove_2"
+      },
+      {
+        "name": "gigeresque:aqua/aqua_landmove_3"
+      },
+      {
+        "name": "gigeresque:aqua/aqua_landmove_4"
+      }
+    ]
   },
-  "burster_crawl" : {
-    "sounds" : [ {
-      "name" : "gigeresque:burster/burster_crawl_1"
-    }, {
-      "name" : "gigeresque:burster/burster_crawl_2"
-    }, {
-      "name" : "gigeresque:burster/burster_crawl_3"
-    } ]
+  "burster_crawl": {
+    "sounds": [
+      {
+        "name": "gigeresque:burster/burster_crawl_1"
+      },
+      {
+        "name": "gigeresque:burster/burster_crawl_2"
+      },
+      {
+        "name": "gigeresque:burster/burster_crawl_3"
+      }
+    ]
   },
-  "aqua_landclaw" : {
-    "sounds" : [ {
-      "name" : "gigeresque:aqua/aqua_landclaw_1"
-    }, {
-      "name" : "gigeresque:aqua/aqua_landclaw_2"
-    } ]
+  "aqua_landclaw": {
+    "sounds": [
+      {
+        "name": "gigeresque:aqua/aqua_landclaw_1"
+      },
+      {
+        "name": "gigeresque:aqua/aqua_landclaw_2"
+      }
+    ]
   }
 }

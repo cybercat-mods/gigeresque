@@ -9,13 +9,13 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class PopperEntityRenderer extends GeoEntityRenderer<PopperEntity> {
-	public PopperEntityRenderer(EntityRendererProvider.Context context) {
-		super(context, new PopperEntityModel());
-		this.shadowRadius = 0.5f;
-	}
+    public PopperEntityRenderer(EntityRendererProvider.Context context) {
+        super(context, new PopperEntityModel());
+        this.shadowRadius = 0.5f;
+    }
 
-	@Override
-	protected float getDeathMaxRotation(PopperEntity entityLivingBaseIn) {
-		return 0.0F;
-	}
+    @Override
+    protected float getDeathMaxRotation(PopperEntity entityLivingBaseIn) {
+        return 0.0F;
+    }
 }

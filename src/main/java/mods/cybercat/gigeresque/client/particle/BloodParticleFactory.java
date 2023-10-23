@@ -10,14 +10,14 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 @Environment(EnvType.CLIENT)
 public class BloodParticleFactory implements ParticleProvider<SimpleParticleType> {
-	private final SpriteSet spriteProvider;
+    private final SpriteSet spriteProvider;
 
-	public BloodParticleFactory(SpriteSet spriteProvider) {
-		this.spriteProvider = spriteProvider;
-	}
+    public BloodParticleFactory(SpriteSet spriteProvider) {
+        this.spriteProvider = spriteProvider;
+    }
 
-	@Override
-	public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
-		return new BloodParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
-	}
+    @Override
+    public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        return new BloodParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
+    }
 }
