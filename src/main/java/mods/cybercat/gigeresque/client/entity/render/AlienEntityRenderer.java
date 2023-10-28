@@ -36,7 +36,7 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 
     @Override
     public void preRender(PoseStack poseStack, ClassicAlienEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (!animatable.isPassenger()) {
+        if (!animatable.isPassenger() && !isReRender && !(animatable.getGrowth() >= animatable.getMaxGrowth())) {
             var orientation = animatable.getOrientation();
             var renderOrientation = animatable.calculateOrientation(partialTick);
             animatable.setRenderOrientation(renderOrientation);
