@@ -141,9 +141,8 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (attacker != null)
-                if (attacker instanceof LivingEntity)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+            if (attacker != null && attacker instanceof LivingEntity)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -178,13 +177,13 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
             setBlood(bloodRendering++);
             grow(this, 1 * getGrowthMultiplier());
         }
-        if (this.isEating() == true)
+        if (this.isEating())
             eatingCounter++;
         if (eatingCounter >= 20) {
             this.setEatingStatus(false);
             eatingCounter = 0;
         }
-        if (this.isBirthed() == true && this.tickCount > 1200 && this.getGrowth() > 200)
+        if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
             this.setBirthStatus(false);
     }
 
@@ -277,20 +276,15 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
                 else
                     return event.setAndContinue(GigAnimationsDefault.SLITHER);
-            else if (this.tickCount < 60 && event.getAnimatable().isBirthed() == true)
+            else if (this.tickCount < 60 && event.getAnimatable().isBirthed())
                 return event.setAndContinue(GigAnimationsDefault.BIRTH);
             else
                 return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("stepSoundkey")) {
-                if (this.level().isClientSide) {
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                }
-            }
+            if (event.getKeyframeData().getSound().matches("stepSoundkey") && this.level().isClientSide)
+                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

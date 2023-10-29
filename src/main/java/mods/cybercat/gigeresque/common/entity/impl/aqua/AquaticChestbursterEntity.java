@@ -128,13 +128,10 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
                 }
             }
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-                if (this.level().isClientSide)
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+            if (event.getKeyframeData().getSound().matches("stepSoundkey") && this.level().isClientSide)
+                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

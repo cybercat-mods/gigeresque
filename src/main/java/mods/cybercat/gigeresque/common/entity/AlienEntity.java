@@ -62,7 +62,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class, EntityDataSerializers.BOOLEAN);
     private static final Logger LOGGER = LogUtils.getLogger();
     private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
-    public int attackstatetimer = 0;
+    public static final int ATTACK_STATE_TIMER = 0;
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
     protected VibrationSystem.User vibrationUser;
     protected int slowticks = 0;
@@ -76,7 +76,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             navigation.setCanFloat(true);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.vibrationData = new VibrationSystem.Data();
-        this.dynamicGameEventListener = new DynamicGameEventListener<VibrationSystem.Listener>(new VibrationSystem.Listener(this));
+        this.dynamicGameEventListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));
     }
 
     @Override
@@ -133,9 +133,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     @VisibleForTesting
     public void increaseAngerAt(@Nullable Entity entity, int i, boolean bl) {
-        if (!this.isNoAi() && this.canTargetEntity(entity))
-            if (entity instanceof Player && !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player) && AngerLevel.byAnger(this.angerManagement.increaseAnger(entity, i)).isAngry())
-                this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+        if (!this.isNoAi() && this.canTargetEntity(entity) && entity instanceof Player && !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player) && AngerLevel.byAnger(this.angerManagement.increaseAnger(entity, i)).isAngry())
+            this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
     }
 
     @Override
@@ -162,15 +161,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (compound.contains("isCrawling"))
             setIsCrawling(compound.getBoolean("isCrawling"));
         if (compound.contains("anger")) {
-            AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerManagement -> {
-                this.angerManagement = angerManagement;
-            });
+            AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerM ->
+                    this.angerManagement = angerM);
             this.syncClientAngerLevel();
         }
         if (compound.contains("listener", 10))
-            VibrationSystem.Data.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(LOGGER::error).ifPresent(data -> {
-                this.vibrationData = data;
-            });
+            VibrationSystem.Data.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(LOGGER::error).ifPresent(data -> this.vibrationData = data);
     }
 
     public int getClientAngerLevel() {
@@ -224,7 +220,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         super.tick();
         if (!this.level().isClientSide)
             slowticks++;
-        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))) {
+        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             slowticks = -60;
         }
@@ -266,26 +262,21 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     @Override
     public void die(DamageSource source) {
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources())) {
-            super.die(source);
-            return;
-        }
-        if (source == damageSources().genericKill()) {
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()) || source == damageSources().genericKill()) {
             super.die(source);
             return;
         }
 
-        if (!this.level().isClientSide) {
-            if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                if (getAcidDiameter() == 1)
-                    generateAcidPool(0, 0);
-                else {
-                    var radius = (getAcidDiameter() - 1) / 2;
-                    for (var x = -radius; x <= radius; x++) {
-                        for (var z = -radius; z <= radius; z++)
-                            if (source != damageSources().genericKill() || source != damageSources().generic())
-                                generateAcidPool(x, z);
-                    }
+        boolean damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
+        if (damageCheck) {
+            if (getAcidDiameter() == 1)
+                generateAcidPool(0, 0);
+            else {
+                var radius = (getAcidDiameter() - 1) / 2;
+                for (var x = -radius; x <= radius; x++) {
+                    for (var z = -radius; z <= radius; z++)
+                        if (source != damageSources().genericKill() || source != damageSources().generic())
+                            generateAcidPool(x, z);
                 }
             }
         }
@@ -365,7 +356,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (itemStack.isEmpty())
             return null;
 
-        var d = target.getEyeY() - (double) 0.3f;
+        var d = target.getEyeY() - 0.3f;
         var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);
         itemEntity.setPickUpDelay(40);
         float g = Mth.sin(this.getXRot() * ((float) Math.PI / 180));
@@ -374,7 +365,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         float j = Mth.cos(this.getYRot() * ((float) Math.PI / 180));
         float k = this.random.nextFloat() * ((float) Math.PI * 2);
         float l = 0.02f * this.random.nextFloat();
-        itemEntity.setDeltaMovement((double) (-i * h * 0.3f) + Math.cos(k) * (double) l, -g * 0.3f + 0.1f + (this.random.nextFloat() - this.random.nextFloat()) * 0.1f, (double) (j * h * 0.3f) + Math.sin(k) * (double) l);
+        itemEntity.setDeltaMovement((-i * h * 0.3f) + Math.cos(k) * l, -g * 0.3f + 0.1f * 0.1f, (j * h * 0.3f) + Math.sin(k) * l);
         target.level().addFreshEntity(itemEntity);
         return itemEntity;
     }

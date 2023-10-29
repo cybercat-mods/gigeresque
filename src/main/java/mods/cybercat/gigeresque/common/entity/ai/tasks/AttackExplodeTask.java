@@ -17,10 +17,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.SplittableRandom;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMeleeBehaviour<E> {
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
-    protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+    protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
     @Nullable
     protected LivingEntity target = null;
@@ -35,7 +36,7 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
      * @param supplier The tick value provider
      * @return this
      */
-    public AttackExplodeTask<E> attackInterval(Function<E, Integer> supplier) {
+    public AttackExplodeTask<E> attackInterval(ToIntFunction<E> supplier) {
         this.attackIntervalSupplier = supplier;
 
         return this;
@@ -65,7 +66,7 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
         if (this.target == null)
             return;

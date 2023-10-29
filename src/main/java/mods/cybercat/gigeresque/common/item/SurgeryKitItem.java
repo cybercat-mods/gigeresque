@@ -30,7 +30,7 @@ public class SurgeryKitItem extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
-        if (!livingEntity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
+        if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance)) {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
@@ -40,15 +40,14 @@ public class SurgeryKitItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-        if (!user.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+        if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance))
             tryRemoveParasite(user.getItemInHand(hand), user);
         return super.use(world, user, hand);
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
         var host = (Host) entity;
-        if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE))
-            if (!entity.level().isClientSide) {
+        if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE) && !entity.level().isClientSide) {
                 entity.removeEffect(MobEffects.HUNGER);
                 entity.removeEffect(MobEffects.WEAKNESS);
                 entity.removeEffect(MobEffects.DIG_SLOWDOWN);
@@ -83,8 +82,7 @@ public class SurgeryKitItem extends Item {
         else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA))
             burster = Entities.SPITTER.create(entity.level());
 
-        if (entity.hasCustomName())
-            if (entity != null)
+        if (entity.hasCustomName() && entity != null)
                 burster.setCustomName(entity.getCustomName());
         if (burster instanceof ChestbursterEntity chest)
             chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());

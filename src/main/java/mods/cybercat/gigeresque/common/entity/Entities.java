@@ -51,14 +51,14 @@ public record Entities() implements GigeresqueInitializer {
     public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
     private static Entities instance;
 
-    synchronized public static Entities getInstance() {
+    public static synchronized Entities getInstance() {
         if (instance == null)
             instance = new Entities();
         return instance;
     }
 
     protected static <T extends Entity> EntityType<T> registerAlienType(String name, MobCategory category, EntityType.EntityFactory<T> factory, float width, float height) {
-        return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(category, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
     }
 
     protected static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
@@ -90,7 +90,9 @@ public record Entities() implements GigeresqueInitializer {
 //		FabricDefaultAttributeRegistry.register(CRUSHER, CrusherEntity.createAttributes());
 //		FabricDefaultAttributeRegistry.register(PRAETORIAN, PraetorianEntity.createAttributes());
 //		FabricDefaultAttributeRegistry.register(ULTRAMORTH, UltramorpthEntity.createAttributes());
-    }    public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1 = registerBlockType("alien_storage_block_entity", AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1);
+    }
+
+    public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1 = registerBlockType("alien_storage_block_entity", AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1);
     public static BlockEntityType<AlienStorageHuggerEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER = registerBlockType("alien_storage_block_entity_hugger", AlienStorageHuggerEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER);
     public static BlockEntityType<AlienStorageGooEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_GOO = registerBlockType("alien_storage_block_entity_goo", AlienStorageGooEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO);
     public static BlockEntityType<AlienStorageSporeEntity> ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE = registerBlockType("alien_storage_block_entity_spore", AlienStorageSporeEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE);

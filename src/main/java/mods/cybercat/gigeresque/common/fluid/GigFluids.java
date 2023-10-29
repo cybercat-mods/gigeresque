@@ -13,7 +13,7 @@ public record GigFluids() implements GigeresqueInitializer {
     public static final BlackFluid BLACK_FLUID_FLOWING = new BlackFluid.Flowing();
     private static GigFluids instance;
 
-    synchronized public static GigFluids getInstance() {
+    public static synchronized GigFluids getInstance() {
         if (instance == null) {
             instance = new GigFluids();
         }

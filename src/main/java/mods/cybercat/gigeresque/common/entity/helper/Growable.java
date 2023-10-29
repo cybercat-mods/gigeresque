@@ -31,8 +31,7 @@ public interface Growable {
             if (newEntity instanceof RunnerbursterEntity runnerBurster)
                 runnerBurster.setBirthStatus(false);
             world.addFreshEntity(newEntity);
-            if (entity.hasCustomName())
-                if (entity != null)
+            if (entity.hasCustomName() && entity != null)
                     newEntity.setCustomName(entity.getCustomName());
             entity.remove(Entity.RemovalReason.DISCARDED);
         }

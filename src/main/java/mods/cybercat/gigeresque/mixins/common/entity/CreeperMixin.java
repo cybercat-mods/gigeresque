@@ -25,7 +25,7 @@ public abstract class CreeperMixin extends Monster {
             var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
             areaEffectCloudEntity.setRadius(5.0F);
             areaEffectCloudEntity.setDuration(300);
-            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
             areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
             this.level().addFreshEntity(areaEffectCloudEntity);
         }

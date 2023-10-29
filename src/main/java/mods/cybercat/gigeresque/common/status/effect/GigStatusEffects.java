@@ -20,7 +20,7 @@ public record GigStatusEffects() implements GigeresqueInitializer {
     public static final MobEffect SPORE = new SporeStatusEffect();
     private static GigStatusEffects instance;
 
-    synchronized public static GigStatusEffects getInstance() {
+    public static synchronized GigStatusEffects getInstance() {
         if (instance == null)
             instance = new GigStatusEffects();
         return instance;

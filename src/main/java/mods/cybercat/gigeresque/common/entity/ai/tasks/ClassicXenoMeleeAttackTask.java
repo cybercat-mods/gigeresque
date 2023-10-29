@@ -19,11 +19,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends CustomDelayedMeleeBehaviour<E> {
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
-    protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+    protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
     @Nullable
     protected LivingEntity target = null;
 
@@ -37,7 +38,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
      * @param supplier The tick value provider
      * @return this
      */
-    public ClassicXenoMeleeAttackTask<E> attackInterval(Function<E, Integer> supplier) {
+    public ClassicXenoMeleeAttackTask<E> attackInterval(ToIntFunction<E> supplier) {
         this.attackIntervalSupplier = supplier;
 
         return this;
@@ -67,7 +68,7 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
         if (this.target == null)
             return;

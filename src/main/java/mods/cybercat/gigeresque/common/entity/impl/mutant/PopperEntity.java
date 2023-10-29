@@ -148,7 +148,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
         var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY() + 1, this.getZ());
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(30);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
         this.level().addFreshEntity(areaEffectCloudEntity);
     }
@@ -157,9 +157,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (source.getEntity() != null)
-                if (attacker instanceof LivingEntity living)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+            if (source.getEntity() != null && attacker instanceof LivingEntity living)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))

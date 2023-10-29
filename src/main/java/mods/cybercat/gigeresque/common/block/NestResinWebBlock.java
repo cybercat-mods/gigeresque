@@ -30,7 +30,7 @@ public class NestResinWebBlock extends Block {
     public static final BooleanProperty SOUTH = PipeBlock.SOUTH;
     public static final BooleanProperty WEST = PipeBlock.WEST;
 
-    public static final Map<Direction, BooleanProperty> FACING_PROPERTIES = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter(entry -> entry.getKey() != Direction.DOWN).collect(Util.toMap());
+    protected static final Map<Direction, BooleanProperty> FACING_PROPERTIES = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter(entry -> entry.getKey() != Direction.DOWN).collect(Util.toMap());
     public static final EnumProperty<NestResinWebVariant> VARIANTS = EnumProperty.create("nest_resin_web_variant", NestResinWebVariant.class);
 
     private static final VoxelShape UP_SHAPE = box(0.0, 15.0, 0.0, 16.0, 16.0, 16.0);
@@ -39,6 +39,7 @@ public class NestResinWebBlock extends Block {
     private static final VoxelShape SOUTH_SHAPE = box(0.0, 0.0, 0.0, 16.0, 16.0, 1.0);
     private static final VoxelShape NORTH_SHAPE = box(0.0, 0.0, 15.0, 16.0, 16.0, 16.0);
     private final Map<BlockState, VoxelShape> shapesByState;
+    private Random random = new Random();
 
     public NestResinWebBlock(Properties settings) {
         super(settings);
@@ -48,15 +49,15 @@ public class NestResinWebBlock extends Block {
 
     private static VoxelShape getShapeForState(BlockState state) {
         var voxelShape = Shapes.empty();
-        if (state.getValue(UP))
+        if (Boolean.TRUE.equals(state.getValue(UP)))
             voxelShape = UP_SHAPE;
-        if (state.getValue(NORTH))
+        if (Boolean.TRUE.equals(state.getValue(NORTH)))
             voxelShape = Shapes.or(voxelShape, SOUTH_SHAPE);
-        if (state.getValue(SOUTH))
+        if (Boolean.TRUE.equals(state.getValue(SOUTH)))
             voxelShape = Shapes.or(voxelShape, NORTH_SHAPE);
-        if (state.getValue(EAST))
+        if (Boolean.TRUE.equals(state.getValue(EAST)))
             voxelShape = Shapes.or(voxelShape, WEST_SHAPE);
-        if (state.getValue(WEST))
+        if (Boolean.TRUE.equals(state.getValue(WEST)))
             voxelShape = Shapes.or(voxelShape, EAST_SHAPE);
         return voxelShape.isEmpty() ? Shapes.block() : voxelShape;
     }
@@ -92,7 +93,7 @@ public class NestResinWebBlock extends Block {
     private int getAdjacentBlockCount(BlockState state) {
         final int[] i = {0};
         FACING_PROPERTIES.values().forEach(it -> {
-            if (state.getValue(it)) {
+            if (Boolean.TRUE.equals(state.getValue(it))) {
                 i[0]++;
             }
         });
@@ -117,7 +118,7 @@ public class NestResinWebBlock extends Block {
 
     private BlockState getPlacementShape(BlockState state, LevelReader world, BlockPos pos) {
         var blockPos = pos.above();
-        if (state.getValue(UP))
+        if (Boolean.TRUE.equals(state.getValue(UP)))
             state = state.setValue(UP, shouldConnectTo(world, blockPos, Direction.DOWN));
         BlockState blockState = null;
         var iterator = Direction.Plane.HORIZONTAL.iterator();
@@ -130,7 +131,7 @@ public class NestResinWebBlock extends Block {
                 }
                 direction = iterator.next();
                 booleanProperty = getFacingProperty(direction);
-            } while (!state.getValue(booleanProperty));
+            } while (!Boolean.TRUE.equals(state.getValue(booleanProperty)));
             var bl = shouldHaveSide(world, pos, direction);
             if (!bl) {
                 if (blockState == null)
@@ -169,7 +170,7 @@ public class NestResinWebBlock extends Block {
                 var booleanProperty = getFacingProperty(direction);
                 var bl2 = bl && blockState.getValue(booleanProperty);
                 if (!bl2 && shouldHaveSide(ctx.getLevel(), ctx.getClickedPos(), direction))
-                    return blockState2.setValue(booleanProperty, true).setValue(VARIANTS, Arrays.stream(NestResinWebVariant.values()).toList().get(new Random().nextInt(NestResinWebVariant.values().length)));
+                    return blockState2.setValue(booleanProperty, true).setValue(VARIANTS, Arrays.stream(NestResinWebVariant.values()).toList().get(random.nextInt(NestResinWebVariant.values().length)));
             }
         }
         return bl ? blockState2 : null;

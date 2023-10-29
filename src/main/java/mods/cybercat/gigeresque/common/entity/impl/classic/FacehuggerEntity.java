@@ -85,7 +85,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
-    private final BetterSpiderPathNavigator landNavigation = new BetterSpiderPathNavigator<FacehuggerEntity>(this, level(), false);
+    private final BetterSpiderPathNavigator<?> landNavigation = new BetterSpiderPathNavigator<FacehuggerEntity>(this, level(), false);
     private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
     private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
     private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
@@ -199,9 +199,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         entity.setSpeed(0.0f);
         if (Gigeresque.config.facehuggerGivesBlindness)
             entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
-        if (entity instanceof ServerPlayer player)
-            if (!player.isCreative() || !player.isSpectator())
-                player.connection.send(new ClientboundSetPassengersPacket(entity));
+        if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
+            player.connection.send(new ClientboundSetPassengersPacket(entity));
     }
 
     @Override
@@ -236,13 +235,12 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 setIsInfertile(true);
                 this.kill();
             }
-            if (vehicle instanceof Player player)
-                if (player.isCreative() || player.isSpectator()) {
-                    host.setTicksUntilImpregnation(-1);
-                    detachFromHost(true);
-                    setIsInfertile(true);
-                    this.kill();
-                }
+            if (vehicle instanceof Player player && (player.isCreative() || player.isSpectator())) {
+                host.setTicksUntilImpregnation(-1);
+                detachFromHost(true);
+                setIsInfertile(true);
+                this.kill();
+            }
         } else
             ticksAttachedToHost = -1.0f;
 
@@ -281,10 +279,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
             return false;
 
-        if (!this.level().isClientSide)
-            if (source.getEntity() != null)
-                if (source.getEntity() instanceof LivingEntity livingEntity)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
+        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity livingEntity)
+            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
@@ -373,7 +369,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     @Override
     public boolean onClimbable() {
         setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-        return !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.isAggressive() && (!(this.fallDistance > 0.1) || this.isEggSpawn());
+        return !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.isAggressive() && (this.fallDistance <= 0.1 || this.isEggSpawn());
     }
 
     @Override
@@ -416,38 +412,35 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
-            if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == false && isInfertile() || this.isDeadOrDying())
+            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (this.isUpsideDown() == false && this.isJumping() == false && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
-                if (this.isAttacking() == false && event.isMoving())
+            if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
+                if (!this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.SWIM);
-                else if (this.isAttacking() == true && event.isMoving())
+                else if (this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                 else
                     return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            if (this.isJumping() == true)
+            if (this.isJumping())
                 return event.setAndContinue(GigAnimationsDefault.CHARGE);
-            if (this.isEggSpawn() == true && !this.isDeadOrDying())
+            if (this.isEggSpawn() && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-            if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == true && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
             }
-            if (this.isUpsideDown() == false && this.isJumping() == false && this.isAttacking() == false && this.isEggSpawn() == false && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }
-            if (this.isUpsideDown() == false && this.isJumping() == false && this.isCrawling() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && this.isCrawling() && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }
             return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("huggingSoundkey")) {
-                if (this.level().isClientSide) {
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                }
-            }
+            if (event.getKeyframeData().getSound().matches("huggingSoundkey") && this.level().isClientSide)
+                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT, SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }).triggerableAnim("stun", RawAnimation.begin().then("stunned", LoopType.PLAY_ONCE)));
     }
 

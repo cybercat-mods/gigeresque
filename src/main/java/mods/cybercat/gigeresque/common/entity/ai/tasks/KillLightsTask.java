@@ -59,7 +59,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
-        alien.getNavigation().moveTo(((double) ((float) targetPos.getX())) + 0.5, targetPos.getY(), ((double) ((float) targetPos.getZ())) + 0.5, 2.5F);
+        alien.getNavigation().moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 2.5F);
     }
 
 }

@@ -82,8 +82,8 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
         ROTATION_BODY = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
     }
 
-    public float prevOrientationYawDelta;
-    public float nextStepDistance, nextFlap;
+    protected float prevOrientationYawDelta;
+    protected float nextStepDistance, nextFlap;
     private double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
     private double attachmentOffsetX, attachmentOffsetY, attachmentOffsetZ;
     private Vec3 attachmentNormal = new Vec3(0, 1, 0);
@@ -106,7 +106,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
     private double preMoveY;
     private Vec3 jumpDir;
 
-    public CrawlerAdultAlien(EntityType<? extends AdultAlienEntity> entityType, Level level) {
+    protected CrawlerAdultAlien(EntityType<? extends AdultAlienEntity> entityType, Level level) {
         super(entityType, level);
         this.setMaxUpStep(0.1f);
         this.orientation = this.calculateOrientation(1);
@@ -167,8 +167,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
     @Override
     public PathNavigation createNavigation(Level world) {
-        var navigate = new BetterSpiderPathNavigator<CrawlerAdultAlien>(this, world, false);
-        return navigate;
+        return new BetterSpiderPathNavigator<CrawlerAdultAlien>(this, world, false);
     }
 
     @Override
@@ -726,10 +725,6 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             var fluidState = this.level().getFluidState(this.blockPosition());
 
             if (!this.canClimbInWater && this.isInWater() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidState)) {
-                this.isTravelingInFluid = true;
-                if (canTravel)
-                    return false;
-            } else if (!this.canClimbInLava && this.isInLava() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidState)) {
                 this.isTravelingInFluid = true;
                 if (canTravel)
                     return false;

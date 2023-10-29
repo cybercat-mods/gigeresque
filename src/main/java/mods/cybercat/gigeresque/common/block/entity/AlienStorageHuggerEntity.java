@@ -74,7 +74,7 @@ public class AlienStorageHuggerEntity extends RandomizableContainerBlockEntity i
                     if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
                         level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
                 });
-                if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkHuggerstatus() == true && blockEntity.level.getGameTime() % 80L == 0L) {
+                if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkHuggerstatus() && blockEntity.level.getGameTime() % 80L == 0L) {
                     var facehugger = Entities.FACEHUGGER.create(level);
                     facehugger.moveTo(pos.above(4), 0, 0);
                     level.addFreshEntity(facehugger);

@@ -89,12 +89,12 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(StairBlock.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return Boolean.TRUE.equals(state.getValue(StairBlock.WATERLOGGED)) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if (!world.isClientSide() && state.getValue(WATERLOGGED))
+        if (!world.isClientSide() && Boolean.TRUE.equals(state.getValue(WATERLOGGED)))
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
@@ -131,7 +131,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         for (var i = 0; i < (getThickness(state) * 2) + 1; i++)
-            world.addAlwaysVisibleParticle(Particles.GOO, pos.getX() + random.nextDouble(), pos.getY() + (state.getValue(WATERLOGGED) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
+            world.addAlwaysVisibleParticle(Particles.GOO, pos.getX() + random.nextDouble(), pos.getY() + (Boolean.TRUE.equals(state.getValue(WATERLOGGED)) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
         if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
             world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
     }
@@ -139,8 +139,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
-        if (random.nextInt(8 - currentThickness) == 0)
-            if (currentThickness >= 1)
+        if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1)
                 setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
         if (this.age > 600)
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
@@ -169,14 +168,12 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (entity.isAlive())
-            if (entity instanceof LivingEntity livingEntity) {
+        if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
                 if (livingEntity.hasEffect(GigStatusEffects.DNA))
                     return;
                 if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(GigTags.DNAIMMUNE))
                     livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-                if (livingEntity instanceof Player playerEntity)
-                    if (!playerEntity.isCreative() && !playerEntity.isSpectator())
+                if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
                         livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
             }
     }

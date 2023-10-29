@@ -94,12 +94,11 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
-            if (this.getRandom().nextInt(0, 10) > 7) {
-                livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.runnerXenoTailAttackDamage : 0.0f);
-                this.heal(1.0833f);
-                return super.doHurtTarget(target);
-            }
+        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
+            livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.runnerXenoTailAttackDamage : 0.0f);
+            this.heal(1.0833f);
+            return super.doHurtTarget(target);
+        }
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
@@ -170,13 +169,13 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     var velocityLength = this.getDeltaMovement().horizontalDistance();
-                    if (velocityLength >= 0.000000001 && !this.isCrawling() && this.isExecuting() == false && !isDead && this.isPassedOut() == false && !this.swinging)
-                        if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.isExecuting() == false) {
+                    if (velocityLength >= 0.000000001 && !this.isCrawling() && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
+                        if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.isExecuting()) {
                             if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                                 return event.setAndContinue(GigAnimationsDefault.RUN);
-                            else if (this.isExecuting() == false && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
+                            else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
                                 return event.setAndContinue(GigAnimationsDefault.WALK);
-                        } else if (this.wasEyeInWater && this.isExecuting() == false && !this.isVehicle())
+                        } else if (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())
                             if (this.isAggressive() && !this.isVehicle())
                                 return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                             else
@@ -185,18 +184,11 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
                 }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                         .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND) // idle
                         .setSoundKeyframeHandler(event -> {
-                            if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
-                            if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
-//			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-//				if (this.level().isClientSide)
-//					this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.5F, true);
-                        })).add(new AnimationController<>(this, "attackController", 1, event -> {
-                    return PlayState.STOP;
-                }).triggerableAnim("alert", RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
+                            if (event.getKeyframeData().getSound().matches("thudSoundkey") && this.level().isClientSide)
+                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
+                            if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
+                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
+                        })).add(new AnimationController<>(this, "attackController", 1, event -> PlayState.STOP).triggerableAnim("alert", RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
                         .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                         .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                         .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
@@ -204,22 +196,19 @@ public class NeomorphAdolescentEntity extends CrawlerAdultAlien implements GeoEn
                         .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
                         .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
                         .setSoundKeyframeHandler(event -> {
-                            if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                            if (event.getKeyframeData().getSound().matches("clawSoundkey") && this.level().isClientSide)
+                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                            if (event.getKeyframeData().getSound().matches("tailSoundkey") && this.level().isClientSide)
+                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
                         }))
                 .add(new AnimationController<>(this, "hissController", 0, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (this.entityData.get(IS_HISSING) == true && !this.isVehicle() && this.isExecuting() == false && !isDead && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))
+                    if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8))
                         return event.setAndContinue(GigAnimationsDefault.HISS);
                     return PlayState.STOP;
                 }).setSoundKeyframeHandler(event -> {
-                    if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-                        if (this.level().isClientSide)
-                            this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
                 }));
     }
 

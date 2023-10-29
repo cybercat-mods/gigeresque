@@ -133,9 +133,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
                     return event.setAndContinue(GigAnimationsDefault.WALK);
             return event.setAndContinue(GigAnimationsDefault.IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("birth", GigAnimationsDefault.BIRTH).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("birth", GigAnimationsDefault.BIRTH).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

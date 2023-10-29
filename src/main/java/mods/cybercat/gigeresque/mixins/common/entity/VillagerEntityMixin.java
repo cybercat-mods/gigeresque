@@ -17,15 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @author Boston Vanseghi
  */
 @Mixin(Villager.class)
-public abstract class VillagerEntityMixin extends AbstractVillager {
-
-    public VillagerEntityMixin(EntityType<Villager> type, Level world) {
-        super(type, world);
-    }
+public abstract class VillagerEntityMixin {
 
     @Inject(method = {"mobInteract"}, at = {@At("HEAD")}, cancellable = true)
     protected void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem)
-            callbackInfo.setReturnValue(super.mobInteract(player, hand));
+            callbackInfo.setReturnValue(callbackInfo.getReturnValue());
     }
 }

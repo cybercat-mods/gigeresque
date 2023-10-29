@@ -17,15 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @author Boston Vanseghi
  */
 @Mixin(WanderingTrader.class)
-public abstract class WanderingTraderEntityMixin extends AbstractVillager {
-
-    public WanderingTraderEntityMixin(EntityType<WanderingTrader> type, Level world) {
-        super(type, world);
-    }
+public abstract class WanderingTraderEntityMixin {
 
     @Inject(method = {"mobInteract"}, at = {@At("HEAD")}, cancellable = true)
     protected void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem)
-            callbackInfo.setReturnValue(super.mobInteract(player, hand));
+            callbackInfo.setReturnValue(callbackInfo.getReturnValue());
     }
 }

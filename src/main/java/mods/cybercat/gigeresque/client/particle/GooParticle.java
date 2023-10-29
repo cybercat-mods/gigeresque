@@ -17,7 +17,7 @@ public class GooParticle extends TextureSheetParticle {
         zd = i;
         setColor(0, 0, 0);
         quadSize *= 0.75f;
-        lifetime = (int) (20.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
+        lifetime = (int) (20.0 / ((random.nextFloat()) * 0.8 + 0.2));
         reachedGround = false;
         hasPhysics = false;
         this.spriteProvider = spriteProvider;
@@ -54,7 +54,7 @@ public class GooParticle extends TextureSheetParticle {
 
     @Override
     public float getQuadSize(float tickDelta) {
-        return quadSize * Mth.clamp((((float) age) + tickDelta) / ((float) lifetime) * 32.0f, 0.0f, 1.0f);
+        return quadSize * Mth.clamp(((age) + tickDelta) / (lifetime) * 32.0f, 0.0f, 1.0f);
     }
 
 }

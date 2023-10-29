@@ -19,7 +19,7 @@ public record GigDamageSources() {
     public static final ResourceKey<DamageType> DNA = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("dna"));
     public static final ResourceKey<DamageType> XENO = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("xeno"));
     public static final ResourceKey<DamageType> SPORE = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("spore"));
-    private static final List<? extends String> list = List.of("execution1", "execution2");
+    private static final List<String> list = List.of("execution1", "execution2");
     private static final SplittableRandom random = new SplittableRandom();
     private static final int randomIndex = random.nextInt(list.size());
     public static final ResourceKey<DamageType> EXECUTION = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource(list.get(randomIndex)));

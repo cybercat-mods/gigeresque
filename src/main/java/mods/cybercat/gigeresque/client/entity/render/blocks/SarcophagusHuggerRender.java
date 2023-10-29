@@ -42,7 +42,7 @@ public class SarcophagusHuggerRender extends GeoBlockRenderer<AlienStorageHugger
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
                 poseStack.translate(0.0D, 0.0D, -2.0D);
                 poseStack.scale(0.7F, 0.7F, 0.7F);
-                if (animatable.checkHuggerstatus() == true)
+                if (animatable.checkHuggerstatus())
                     Minecraft.getInstance().getEntityRenderDispatcher().render(Entities.FACEHUGGER.create(animatable.getLevel()), 0.0, 0.0, 0.0, 0.0f, partialTick, poseStack, bufferSource, packedLight);
                 super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
             }

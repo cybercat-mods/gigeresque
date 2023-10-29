@@ -27,8 +27,8 @@ import java.util.List;
 
 public class NestResinBlock extends Block {
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
-    public static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false, true);
-    public static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true, true);
+    protected static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false, true);
+    protected static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true, true);
     public NestResinBlock(Properties settings) {
         super(settings);
 
@@ -56,7 +56,7 @@ public class NestResinBlock extends Block {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return context instanceof EntityCollisionContext && ((EntityCollisionContext) context).getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override

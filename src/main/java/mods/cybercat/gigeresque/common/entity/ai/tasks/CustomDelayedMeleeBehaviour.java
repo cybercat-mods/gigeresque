@@ -23,7 +23,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
     protected Consumer<E> delayedCallback = entity -> {
     };
 
-    public CustomDelayedMeleeBehaviour(int delayTicks) {
+    protected CustomDelayedMeleeBehaviour(int delayTicks) {
         this.delayTime = delayTicks;
 
         runFor(entity -> Math.max(delayTicks, 60));
@@ -51,57 +51,59 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
             doDelayedAction(entity);
         }
         entity.setAttackingState(1);
+        var cName = "attackController";
+        var leftClaw = "left_claw";
+        var rightClaw = "right_claw";
+        var attackNormal = "attack_normal";
         if (entity instanceof ClassicAlienEntity classic) {
             boolean basicCheck = classic.isCrawling() || classic.isInWater();
-            classic.triggerAnim("attackController", switch (classic.getRandom().nextInt(4)) {
-                case 0 -> basicCheck ? "left_claw_basic" : "left_claw";
-                case 1 -> basicCheck ? "right_claw_basic" : "right_claw";
+            classic.triggerAnim(cName, switch (classic.getRandom().nextInt(4)) {
+                case 0 -> basicCheck ? "left_claw_basic" : leftClaw;
+                case 1 -> basicCheck ? "right_claw_basic" : rightClaw;
                 case 2 -> basicCheck ? "left_tail_basic" : "left_tail";
                 case 3 -> basicCheck ? "right_tail_basic" : "right_tail";
-                default -> basicCheck ? "left_claw_basic" : "left_claw";
+                default -> basicCheck ? "left_claw_basic" : leftClaw;
             });
         }
         if (entity instanceof AquaticAlienEntity || entity instanceof NeomorphEntity || entity instanceof NeomorphAdolescentEntity || entity instanceof SpitterEntity) {
-            entity.triggerAnim("attackController", switch (entity.getRandom().nextInt(4)) {
-                case 0 -> "left_claw";
-                case 1 -> "right_claw";
+            entity.triggerAnim(cName, switch (entity.getRandom().nextInt(4)) {
+                case 0 -> leftClaw;
+                case 1 -> rightClaw;
                 case 2 -> "left_tail";
                 case 3 -> "right_tail";
-                default -> "left_claw";
+                default -> leftClaw;
             });
         }
         if (entity instanceof StalkerEntity stalker) {
             stalker.triggerAnim("livingController", switch (stalker.getRandom().nextInt(4)) {
-                case 0 -> "attack_normal";
+                case 0 -> attackNormal;
                 case 1 -> "attack_heavy";
-                case 2 -> "attack_normal";
+                case 2 -> attackNormal;
                 case 3 -> "attack_heavy";
-                default -> "attack_normal";
+                default -> attackNormal;
             });
         }
         if (entity instanceof RunnerAlienEntity runner) {
-            runner.triggerAnim("attackController", switch (runner.getRandom().nextInt(4)) {
-                case 0 -> "left_claw";
-                case 1 -> "right_claw";
+            runner.triggerAnim(cName, switch (runner.getRandom().nextInt(4)) {
+                case 0 -> leftClaw;
+                case 1 -> rightClaw;
                 case 2 -> "left_tail_basic";
                 case 3 -> "right_tail_basic";
-                default -> "left_claw";
+                default -> leftClaw;
             });
         }
 
         if (entity instanceof HammerpedeEntity hammer)
-            hammer.triggerAnim("attackController", "attack");
+            hammer.triggerAnim(cName, "attack");
 
-        if (entity instanceof FacehuggerEntity hugger)
-            if (hugger.getTarget() != null) {
+        if (entity instanceof FacehuggerEntity hugger && hugger.getTarget() != null) {
                 var vec3d2 = new Vec3(hugger.getTarget().getX() - hugger.getX(), 0.0, hugger.getTarget().getZ() - hugger.getZ());
                 vec3d2 = vec3d2.normalize().scale(0.2).add(hugger.getDeltaMovement().scale(0.2));
                 hugger.setDeltaMovement(vec3d2.x, hugger.getTarget().getEyeHeight() > 0.8 ? 0.5F : 0.4, vec3d2.z);
                 hugger.setJumping(true);
             }
 
-        if (entity instanceof PopperEntity popper)
-            if (popper.getTarget() != null) {
+        if (entity instanceof PopperEntity popper && popper.getTarget() != null) {
                 var vec3d2 = new Vec3(popper.getTarget().getX() - popper.getX(), 0.0, popper.getTarget().getZ() - popper.getZ());
                 vec3d2 = vec3d2.normalize().scale(0.2).add(popper.getDeltaMovement().scale(0.2));
                 popper.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);

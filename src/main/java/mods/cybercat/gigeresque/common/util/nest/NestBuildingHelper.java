@@ -16,41 +16,6 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public record NestBuildingHelper() {
-
-    public static void tryBuildNestAround(AlienEntity alien) {
-        if (!alien.isAggressive() || !alien.isFleeing() || alien.getDeltaMovement().horizontalDistance() <= 0.000000001)
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                    for (int y = -1; y <= 3; y++) {
-                        var blockPos = alien.blockPosition().offset(x, y, z);
-                        var nestBlockData = getNestBlockData(alien.level(), blockPos);
-                        if (nestBlockData == null)
-                            continue;
-
-                        if (alien.level().getLightEmission(alien.blockPosition()) < 6) {
-                            var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
-                            if (nestBlockData.isFloor())
-                                if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
-                                    alien.level().setBlockAndUpdate(blockPos, resinBlock);
-
-                            if (nestBlockData.isCorner())
-                                if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
-                                    alien.level().setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-
-                            if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
-                                var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
-                                        NestResinWebVariant.values()[new Random().nextInt(NestResinWebVariant.values().length)]);
-                                if (!alien.level().getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
-                                    alien.level().setBlockAndUpdate(blockPos, nestResinWebState);
-                            }
-                            if (alien.level().isClientSide)
-                                alien.playSound(SoundEvents.HONEY_BLOCK_STEP);
-                        }
-                    }
-                }
-            }
-    }
-
     public static void tryBuildNestAround(Level level, BlockPos pos) {
         for (var x = -1; x <= 1; x++) {
             for (var z = -1; z <= 1; z++) {
@@ -62,17 +27,15 @@ public record NestBuildingHelper() {
 
                     if (level.getLightEmission(pos) < 6) {
                         var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
-                        if (nestBlockData.isFloor())
-                            if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+                        if (nestBlockData.isFloor() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
                                 level.setBlockAndUpdate(blockPos, resinBlock);
 
-                        if (nestBlockData.isCorner())
-                            if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
+                        if (nestBlockData.isCorner() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
                                 level.setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 
                         if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
                             var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,
-                                    NestResinWebVariant.values()[new Random().nextInt(NestResinWebVariant.values().length)]);
+                                    NestResinWebVariant.values()[level.getRandom().nextInt(NestResinWebVariant.values().length)]);
                             if (!level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
                                 level.setBlockAndUpdate(blockPos, nestResinWebState);
                         }

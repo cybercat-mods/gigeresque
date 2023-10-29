@@ -25,7 +25,7 @@ public class MuralBlock extends GigBlock {
         var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
         areaEffectCloudEntity.setRadius(1.0F);
         areaEffectCloudEntity.setDuration(60);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
         world.addFreshEntity(areaEffectCloudEntity);
         super.playerDestroy(world, player, pos, state, blockEntity, stack);

@@ -101,18 +101,16 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
                     return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
                 }).setSoundKeyframeHandler(event -> {
-                            if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            if (this.level().isClientSide) {
+                                if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            }
                         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                         .triggerableAnim("idle", GigAnimationsDefault.IDLE)) // idle
                 .add(new AnimationController<>(this, "attackController", 0, event -> {
@@ -129,25 +127,23 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                         .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
                         .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
                         .setSoundKeyframeHandler(event -> {
-                            if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
-                                if (this.level().isClientSide)
-                                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            if (this.level().isClientSide) {
+                                if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            }
                         }))
                 .add(new AnimationController<>(this, "hissController", 0, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (this.isHissing() == true && !this.isVehicle() && this.isExecuting() == false && !isDead)
+                    if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
                         return event.setAndContinue(GigAnimationsDefault.HISS);
                     return PlayState.STOP;
                 }).setSoundKeyframeHandler(event -> {
-                    if (event.getKeyframeData().getSound().matches("hissSoundkey"))
-                        if (this.level().isClientSide)
-                            this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
                 }));
     }
 
@@ -287,22 +283,20 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
-            if (this.getRandom().nextInt(0, 10) > 7) {
-                if (target instanceof Player playerEntity) {
-                    playerEntity.drop(playerEntity.getInventory().getSelected(), false);
-                    playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
-                }
-                if (target instanceof Mob mobEntity)
-                    if (mobEntity.getMainHandItem() != null) {
-                        this.drop(mobEntity, mobEntity.getMainHandItem(), false);
-                        mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
-                    }
-                target.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-                target.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
-                this.heal(1.0833f);
-                return super.doHurtTarget(target);
+        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
+            if (livingEntity instanceof Player playerEntity) {
+                playerEntity.drop(playerEntity.getInventory().getSelected(), false);
+                playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
             }
+            if (livingEntity instanceof Mob mobEntity && mobEntity.getMainHandItem() != null) {
+                this.drop(mobEntity, mobEntity.getMainHandItem(), false);
+                mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+            }
+            livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+            livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
+            this.heal(1.0833f);
+            return super.doHurtTarget(target);
+        }
         if (target instanceof Creeper creeper)
             creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);

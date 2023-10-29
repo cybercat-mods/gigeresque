@@ -91,8 +91,7 @@ public abstract class BlackFluid extends FlowingFluid {
                     return;
                 }
                 if (!level.getBlockState(blockPos).blocksMotion())
-                    continue;
-                return;
+                    return;
             }
     }
 

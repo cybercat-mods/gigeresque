@@ -53,8 +53,7 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 
         @Override
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof ChestMenu menu)
-                return menu.getContainer() == IdolStorageEntity.this;
+            if (player.containerMenu instanceof ChestMenu menu) return menu.getContainer() == IdolStorageEntity.this;
             return false;
         }
     };
@@ -81,15 +80,13 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(nbt))
-            ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
     public void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
-        if (!this.trySaveLootTable(nbt))
-            ContainerHelper.saveAllItems(nbt, this.items);
+        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
     }
 
     @Override
@@ -137,10 +134,8 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
         if (oldViewerCount != newViewerCount)
-            if (newViewerCount > 0)
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-            else
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+            if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
     }
 
     public StorageStates getChestState() {
@@ -158,8 +153,6 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
-            return PlayState.CONTINUE;
-        }));
+        controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
     }
 }

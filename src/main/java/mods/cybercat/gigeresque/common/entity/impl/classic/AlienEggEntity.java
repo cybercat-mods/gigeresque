@@ -171,9 +171,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         if (this.isNoAi())
             return;
 
-        if (this.isHatched() && this.isAlive())
-            if (!this.level().isClientSide)
-                this.setTicksUntilNest(ticksUntilNest++);
+        if (this.isHatched() && this.isAlive() && !this.level().isClientSide)
+            this.setTicksUntilNest(ticksUntilNest++);
         if (this.getTicksUntilNest() == 6000f) {
             if (this.level().isClientSide)
                 for (var i = 0; i < 2; i++)
@@ -185,9 +184,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
             hatchProgress++;
 
-        if (hatchProgress == 40L)
-            if (!level().isClientSide)
-                this.getCommandSenderWorld().playSound(this, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 1.0F, 1.0F);
+        if (hatchProgress == 40L && !level().isClientSide)
+            this.level().playSound(this, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 1.0F, 1.0F);
 
         if (hatchProgress >= MAX_HATCH_PROGRESS) {
             setIsHatching(false);
@@ -255,15 +253,13 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source != damageSources().genericKill())
-            if (source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
-                setIsHatching(true);
+        if (source != damageSources().genericKill() && source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
+            setIsHatching(true);
 
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (attacker != null)
-                if (attacker instanceof LivingEntity)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+            if (attacker != null && attacker instanceof LivingEntity)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -295,14 +291,12 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     public void baseTick() {
         super.baseTick();
         this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(Gigeresque.config.alieneggHatchRange)).forEach(target -> {
-            if (target.isAlive())
-                if (GigEntityUtils.faceHuggerTest(target, this)) {
-                    if (target instanceof Mob)
-                        setIsHatching(true);
-                    if (target instanceof Player player)
-                        if (!(player.isCreative() || player.isSpectator()))
-                            setIsHatching(true);
-                }
+            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target, this)) {
+                if (target instanceof Mob)
+                    setIsHatching(true);
+                if (target instanceof Player player && (!(player.isCreative() || player.isSpectator())))
+                    setIsHatching(true);
+            }
         });
     }
 
@@ -342,9 +336,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
                 event.getController().setAnimation(GigAnimationsDefault.HATCHING);
             return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("hatching"))
-                if (this.level().isClientSide)
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
+            if (event.getKeyframeData().getSound().matches("hatching") && this.level().isClientSide)
+                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 0.75F, 0.1F, true);
         }));
     }
 

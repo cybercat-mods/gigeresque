@@ -34,7 +34,7 @@ public interface AzureTicker {
             data.setCurrentVibration(vibrationInfo);
             var vec3 = vibrationInfo.pos();
             data.setTravelTimeInTicks(user.calculateTravelTimeInTicks(vibrationInfo.distance()));
-            if (Gigeresque.config.enableDevparticles == true)
+            if (Gigeresque.config.enableDevparticles)
                 serverLevel.sendParticles(new VibrationParticleOption(user.getPositionSource(), data.getTravelTimeInTicks()), vec3.x, vec3.y, vec3.z, 1, 0.0, 0.0, 0.0, 0.0);
             user.onDataChanged();
             data.getSelectionStrategy().startOver();

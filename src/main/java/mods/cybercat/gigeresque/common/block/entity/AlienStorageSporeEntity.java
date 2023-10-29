@@ -77,7 +77,7 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
                     if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
                         level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
                 });
-                if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkSporestatus() == true) {
+                if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkSporestatus()) {
                     blockEntity.particleCloud();
                     blockEntity.hasSpawnSpore(false);
                     blockEntity.getLevel().playSound(null, pos, SoundEvents.SPLASH_POTION_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -204,7 +204,7 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
         var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5, worldPosition.getZ());
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(3);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0));
         this.level.addFreshEntity(areaEffectCloudEntity);
     }

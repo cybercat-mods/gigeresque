@@ -59,7 +59,6 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
             owner.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speed, 0));
         if (owner.getFirstPassenger() != null)
             owner.getFirstPassenger().removeVehicle();
-//		owner.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
     }
 
     @Nullable

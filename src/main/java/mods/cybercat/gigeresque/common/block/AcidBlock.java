@@ -60,10 +60,10 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
         builder.add(THICKNESS, WATERLOGGED);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
         if (age > MathUtil.clamp(world.random.nextInt(2) + 1, 1, 52)) {
-//			world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
             age = -1;
         }
@@ -80,24 +80,28 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
         return 100.0f;
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return true;
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(StairBlock.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return Boolean.TRUE.equals(state.getValue(StairBlock.WATERLOGGED)) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if (!world.isClientSide() && state.getValue(WATERLOGGED))
+        if (!world.isClientSide() && Boolean.TRUE.equals(state.getValue(WATERLOGGED)))
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
@@ -108,6 +112,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
     @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        // Stop Vanilla Stuff
     }
 
     protected void setThickness(ServerLevel world, BlockPos pos, BlockState state) {
@@ -125,28 +130,30 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
     @Override
     public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+        // Stop Vanilla Stuff
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean dropExperience) {
+        // Stop Vanilla Stuff
     }
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         for (var i = 0; i < (getThickness(state) * 2) + 1; i++)
-            world.addAlwaysVisibleParticle(Particles.ACID, pos.getX() + random.nextDouble(), pos.getY() + (state.getValue(WATERLOGGED) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
+            world.addAlwaysVisibleParticle(Particles.ACID, pos.getX() + random.nextDouble(), pos.getY() + (Boolean.TRUE.equals(state.getValue(WATERLOGGED)) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
         if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
             world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
-        if (random.nextInt(8 - currentThickness) == 0)
-            if (currentThickness >= 1) {
+        if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1) {
                 setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-                if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && !world.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
-//					world.setBlockAndUpdate(pos.below(), Blocks.AIR.defaultBlockState());
+                if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !world.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
                     world.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
                     world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
                 }
@@ -155,36 +162,40 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
         scheduleTickIfNotScheduled(world, pos);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         scheduleTickIfNotScheduled(world, pos);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext context) {
         return Block.box(0, 0, 0, 16, 2, 16);
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void attack(BlockState state, Level world, BlockPos pos, Player player) {
+        // Stop Vanilla stuff
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         return world.getBlockState(pos).isAir();
     }
 
+    @Deprecated(since = "1.20", forRemoval = false)
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
-            if (livingEntity instanceof Player playerEntity)
-                if (!playerEntity.isCreative() && !playerEntity.isSpectator())
+            if (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))
                     livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
         }
-        if (entity instanceof ItemEntity itemEntity)
-            if (level.getRandom().nextInt(20) < 2)
+        if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2)
                 if (itemEntity.getItem().getMaxDamage() < 2)
                     itemEntity.getItem().shrink(1);
                 else

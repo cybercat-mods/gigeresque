@@ -23,7 +23,7 @@ public class BloodParticle extends TextureSheetParticle {
         var colorRed = Mth.nextFloat(random, red - 0.05f, red + 0.05f);
         setColor(colorRed, green, blue);
         quadSize *= 0.75f;
-        lifetime = (int) (20.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
+        lifetime = (int) (20.0 / ((random.nextFloat()) * 0.8 + 0.2));
         reachedGround = false;
         hasPhysics = true;
         this.spriteProvider = spriteProvider;
@@ -56,8 +56,9 @@ public class BloodParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
+    @Override
     public float getQuadSize(float tickDelta) {
-        return quadSize * Mth.clamp((((float) age) + tickDelta) / ((float) lifetime) * 32.0f, 0.0f, 1.0f);
+        return quadSize * Mth.clamp(((age) + tickDelta) / (lifetime) * 32.0f, 0.0f, 1.0f);
     }
 
 }

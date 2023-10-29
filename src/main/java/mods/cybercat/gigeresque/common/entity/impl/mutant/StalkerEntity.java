@@ -132,7 +132,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.entityData.get(FLEEING_FIRE).booleanValue() == true)), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
+        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
                 new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.9f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
@@ -146,7 +146,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     public void tick() {
         super.tick();
 
-        if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) == true && this.isAggressive()) {
+        if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && this.isAggressive()) {
             if (!this.level().isClientSide)
                 breakingCounter++;
             if (breakingCounter > 10)
@@ -180,9 +180,8 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (source.getEntity() != null)
-                if (attacker instanceof LivingEntity living)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+            if (source.getEntity() != null && attacker instanceof LivingEntity living)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -242,12 +241,11 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide)
-            if (this.getRandom().nextInt(0, 10) > 7) {
-                livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
-                this.heal(1.0833f);
-                return super.doHurtTarget(target);
-            }
+        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
+            livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
+            this.heal(1.0833f);
+            return super.doHurtTarget(target);
+        }
         if (target instanceof Creeper creeper)
             creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
@@ -267,7 +265,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     @Override
     public boolean onClimbable() {
         setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-        return !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.isAggressive() && !(this.fallDistance > 0.1);
+        return !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.isAggressive() && this.fallDistance <= 0.1;
     }
 
     @Override

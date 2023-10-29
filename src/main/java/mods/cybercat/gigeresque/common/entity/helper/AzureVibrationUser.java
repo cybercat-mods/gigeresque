@@ -90,27 +90,26 @@ public class AzureVibrationUser implements VibrationSystem.User {
             return;
         if (this.mob.isVehicle())
             return;
-
+        var cName = "attackController";
         if (this.mob instanceof AdultAlienEntity adult) {
             adult.wakeupCounter++;
             if (adult.isPassedOut() & adult.wakeupCounter == 1)
-                adult.triggerAnim("attackController", "wakeup");
+                adult.triggerAnim(cName, "wakeup");
             if (adult.wakeupCounter == 2) {
                 if (adult.level().getBlockState(adult.blockPosition().below()).isSolid())
                     adult.setPassedOutStatus(false);
-                adult.triggerAnim("attackController", "alert");
+                adult.triggerAnim(cName, "alert");
                 adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             }
             if (adult.wakeupCounter >= 3) {
-                adult.triggerAnim("attackController", "run");
+                adult.triggerAnim(cName, "run");
                 adult.setPassedOutStatus(false);
                 adult.setAggressive(true);
                 adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
                 adult.wakeupCounter = 0;
             }
         }
-        if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity)
-            if (!(entity2 instanceof IronGolem))
+        if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
                 mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
     }
 }

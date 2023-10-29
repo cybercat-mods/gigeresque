@@ -21,7 +21,7 @@ public record GigMemoryTypes() implements GigeresqueInitializer {
     public static final Supplier<MemoryModuleType<List<ItemEntity>>> FOOD_ITEMS = register("food_items");
     private static GigMemoryTypes instance;
 
-    synchronized public static GigMemoryTypes getInstance() {
+    public static synchronized GigMemoryTypes getInstance() {
         if (instance == null) {
             instance = new GigMemoryTypes();
         }
@@ -38,6 +38,9 @@ public record GigMemoryTypes() implements GigeresqueInitializer {
 
     @Override
     public void initialize() {
+        /*
+        Fine to leave empty
+         */
     }
 
 }

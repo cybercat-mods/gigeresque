@@ -78,20 +78,14 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (velocityLength >= 0.000000001 && !isDead && this.entityData.get(STATE) == 0)
-                if (!this.isAggressive())
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
+                if (!this.isAggressive()) return event.setAndContinue(GigAnimationsDefault.WALK);
+                else return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
             else if (this.getTarget() != null && !event.isMoving() && !isDead)
                 return event.setAndContinue(GigAnimationsDefault.WALK_HOSTILE);
-            else if (this.isAggressive())
-                return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
-            else
-                return event.setAndContinue(GigAnimationsDefault.IDLE);
+            else if (this.isAggressive()) return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
+            else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("attack", GigAnimationsDefault.ATTACK).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("attack", GigAnimationsDefault.ATTACK).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override
@@ -112,9 +106,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 
     @Override
     public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
-                new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
     }
 
     @Override
@@ -140,9 +132,8 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (source.getEntity() != null)
-                if (attacker instanceof LivingEntity living)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+            if (source.getEntity() != null && attacker instanceof LivingEntity living)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -151,14 +142,10 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
         if (!this.level().isClientSide && source != damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
 
@@ -176,11 +163,9 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
         var posState = level().getBlockState(pos);
         var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
 
-        if (posState.getBlock() == Blocks.WATER)
-            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-        if (!(posState.getBlock() instanceof LiquidBlock))
-            return;
+        if (!(posState.getBlock() instanceof LiquidBlock)) return;
         level().setBlockAndUpdate(pos, newState);
     }
 

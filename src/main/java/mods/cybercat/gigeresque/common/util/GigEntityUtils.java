@@ -3,20 +3,25 @@ package mods.cybercat.gigeresque.common.util;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.level.Level;
 
 public record GigEntityUtils() {
 
     public static boolean isFacehuggerAttached(Entity entity) {
-        return entity != null && entity.getPassengers().stream().anyMatch(it -> it instanceof FacehuggerEntity);
+        return entity != null && entity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance);
     }
 
     public static boolean isTargetHostable(Entity target) {
@@ -69,5 +74,33 @@ public record GigEntityUtils() {
 
     public static boolean hostEggcheck(LivingEntity target) {
         return ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing();
+    }
+
+    public static void spawnMutant(LivingEntity entity) {
+        var randomPhase = entity.getRandom().nextInt(0, 50);
+        var randomPhase2 = entity.getRandom().nextInt(0, 2);
+        Entity summon;
+        if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
+            if (randomPhase2 == 1)
+                summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
+            else
+                summon = Entities.MUTANT_POPPER.create(entity.level());
+            summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+            spawnEffects(entity.level(), entity);
+            entity.level().addFreshEntity(summon);
+        } else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
+            summon = Entities.MUTANT_STALKER.create(entity.level());
+            summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+            spawnEffects(entity.level(), entity);
+            entity.level().addFreshEntity(summon);
+        }
+        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
+        return;
+    }
+
+    private static void spawnEffects(Level world, LivingEntity entity) {
+        if (!world.isClientSide())
+            for (var i = 0; i < 2; i++)
+                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(), entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
     }
 }

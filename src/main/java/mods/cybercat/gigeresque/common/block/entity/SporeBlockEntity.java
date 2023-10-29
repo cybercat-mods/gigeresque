@@ -30,8 +30,7 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, SporeBlockEntity blockEntity) {
-        if (world != null)
-            if (blockEntity.level.getGameTime() % 20L == 0L) {
+        if (world != null && blockEntity.level.getGameTime() % 20L == 0L) {
                 if (world.isClientSide())
                     for (var k = 0; k < 4; ++k)
                         world.addParticle(ParticleTypes.ASH, pos.getX() + 1.0D * (world.getRandom().nextDouble()), pos.getY() + 0.5D * (world.getRandom().nextDouble()), pos.getZ() + 1.0D * (world.getRandom().nextDouble()), (world.getRandom().nextDouble() - 0.5D) * 2.0D, -world.getRandom().nextDouble(), (world.getRandom().nextDouble() - 0.5D) * 2.0D);
@@ -40,8 +39,7 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
                         if (e.getType().is(GigTags.NEOHOST) && !e.hasEffect(GigStatusEffects.SPORE)) {
                             if (!(e instanceof Player))
                                 blockEntity.particleCloud(e);
-                            if (e instanceof Player playerEntity)
-                                if (!playerEntity.isSpectator() && !playerEntity.isCreative())
+                            if (e instanceof Player playerEntity && !playerEntity.isSpectator() && !playerEntity.isCreative())
                                     blockEntity.particleCloud(playerEntity);
                         }
                     });
@@ -62,7 +60,7 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
         var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5, worldPosition.getZ());
         areaEffectCloudEntity.setRadius(3.0F);
         areaEffectCloudEntity.setDuration(3);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
         if (!entity.hasEffect(GigStatusEffects.SPORE))
             areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0));

@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.DefaultedEntityGeoModel;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
@@ -19,11 +18,6 @@ public class NeobursterModel extends DefaultedEntityGeoModel<NeobursterEntity> {
     @Override
     public RenderType getRenderType(NeobursterEntity animatable, ResourceLocation texture) {
         return RenderType.entityTranslucent(getTextureResource(animatable));
-    }
-
-    @Override
-    public void setCustomAnimations(NeobursterEntity animatable, long instanceId, AnimationState<NeobursterEntity> animationState) {
-        super.setCustomAnimations(animatable, instanceId, animationState);
     }
 
 }

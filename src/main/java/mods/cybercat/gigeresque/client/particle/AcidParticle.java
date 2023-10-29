@@ -24,7 +24,7 @@ public class AcidParticle extends TextureSheetParticle {
         this.setColor(colorRed, colorGreen, colorBlue);
         this.gravity = 3.0E-6F;
         this.quadSize *= 0.75f;
-        this.lifetime = (int) (10.0 / (((double) random.nextFloat()) * 0.8 + 0.2));
+        this.lifetime = (int) (10.0 / ((random.nextFloat()) * 0.8 + 0.2));
         this.reachedGround = false;
         this.hasPhysics = true;
         this.spriteProvider = spriteProvider;
@@ -37,8 +37,8 @@ public class AcidParticle extends TextureSheetParticle {
         this.yo = this.y;
         this.zo = this.z;
         if (this.age++ < this.lifetime && this.alpha > 0.0F) {
-            this.xd += this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1);
-            this.zd += this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.xd += this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1);
+            this.zd += this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1);
             this.yd -= this.gravity;
             this.move(this.xd, this.yd, this.zd);
             if (this.age >= this.lifetime && this.alpha > 0.01F)
@@ -54,7 +54,7 @@ public class AcidParticle extends TextureSheetParticle {
 
     @Override
     public float getQuadSize(float tickDelta) {
-        return quadSize * Mth.clamp((((float) age) + tickDelta) / ((float) lifetime) * 32.0f, 0.0f, 1.0f);
+        return quadSize * Mth.clamp(((age) + tickDelta) / (lifetime) * 32.0f, 0.0f, 1.0f);
     }
 
 }

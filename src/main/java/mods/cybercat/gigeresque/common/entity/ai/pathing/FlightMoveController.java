@@ -11,6 +11,7 @@ public class FlightMoveController extends MoveControl {
         this.parentEntity = bird;
     }
 
+    @Override
     public void tick() {
         if (this.operation == MoveControl.Operation.MOVE_TO)
             parentEntity.setDeltaMovement(parentEntity.getDeltaMovement().scale(0.5D));

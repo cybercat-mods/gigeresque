@@ -119,17 +119,17 @@ public class NeobursterEntity extends RunnerbursterEntity {
                     return event.setAndContinue(GigAnimationsDefault.RUN);
                 else
                     return event.setAndContinue(GigAnimationsDefault.WALK);
-            else if (this.entityData.get(BIRTHED) == true)
+            else if (this.isBirthed())
                 return event.setAndContinue(GigAnimationsDefault.BIRTH);
             else
                 return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                if (this.level().isClientSide)
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
-            if (event.getKeyframeData().getSound().matches("stepSoundkey"))
-                if (this.level().isClientSide)
-                    this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
+            if (this.level().isClientSide) {
+                if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
+                if (event.getKeyframeData().getSound().matches("stepSoundkey"))
+                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
+            }
         }));
         controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
             return PlayState.STOP;

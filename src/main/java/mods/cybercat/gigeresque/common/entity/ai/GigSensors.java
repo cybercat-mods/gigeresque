@@ -19,7 +19,7 @@ public record GigSensors() implements GigeresqueInitializer {
     public static final Supplier<SensorType<ItemEntitySensor<?>>> FOOD_ITEMS = register("food_items", ItemEntitySensor::new);
     private static GigSensors instance;
 
-    synchronized public static GigSensors getInstance() {
+    public static synchronized GigSensors getInstance() {
         if (instance == null) {
             instance = new GigSensors();
         }
@@ -32,5 +32,8 @@ public record GigSensors() implements GigeresqueInitializer {
 
     @Override
     public void initialize() {
+        /*
+        Fine to leave empty
+         */
     }
 }

@@ -20,7 +20,7 @@ public record GigItemGroups() implements GigeresqueInitializer {
     public static final ResourceKey<CreativeModeTab> BLOCKS = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Constants.modResource("blocks"));
     private static GigItemGroups instance;
 
-    synchronized public static GigItemGroups getInstance() {
+    public static synchronized GigItemGroups getInstance() {
         if (instance == null) {
             instance = new GigItemGroups();
         }

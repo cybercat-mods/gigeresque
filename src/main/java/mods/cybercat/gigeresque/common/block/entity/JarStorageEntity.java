@@ -63,8 +63,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, JarStorageEntity blockEntity) {
-        if (level != null)
-            if (!blockEntity.isRemoved())
+        if (level != null && !blockEntity.isRemoved())
                 blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
     }
 

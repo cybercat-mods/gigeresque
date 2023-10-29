@@ -24,7 +24,7 @@ public class ClassicAlienFeatureRenderer extends GeoRenderLayer<ClassicAlienEnti
     public void render(PoseStack poseStack, ClassicAlienEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         var uv = animatable.hurtTime > 0 ? OverlayTexture.NO_WHITE_U : OverlayTexture.NO_OVERLAY;
         var rendertype = RenderType.entityTranslucent(EntityTextures.ALIEN_YOUNG);
-        if (!(animatable.getGrowth() >= animatable.getMaxGrowth()))
+        if (animatable.getGrowth() < animatable.getMaxGrowth())
             renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype, bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f, ((1200 - animatable.getGrowth()) / 1200));
     }
 }

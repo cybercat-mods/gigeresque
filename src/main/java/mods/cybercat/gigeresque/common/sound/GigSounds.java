@@ -31,7 +31,7 @@ public record GigSounds() implements GigeresqueInitializer {
     public static final SoundEvent CHESTBURSTING = SoundEvent.createVariableRangeEvent(Constants.modResource("chestbursting"));
     private static GigSounds instance;
 
-    synchronized public static GigSounds getInstance() {
+    public static synchronized GigSounds getInstance() {
         if (instance == null)
             instance = new GigSounds();
         return instance;

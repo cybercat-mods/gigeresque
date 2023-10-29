@@ -17,14 +17,13 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehaviour<E> {
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
     protected float speedModifier = 1;
-    protected Function<E, Integer> attackIntervalSupplier = entity -> 80;
     protected Vec3 hidePos = null;
 
     public FindDarknessTask<E> speedModifier(float speedMod) {
@@ -62,11 +61,6 @@ public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehavi
             return false;
 
         return walkTarget.getTarget().currentBlockPosition().equals(BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
-    }
-
-    @Override
-    protected boolean timedOut(long gameTime) {
-        return super.timedOut(gameTime);
     }
 
     @Override

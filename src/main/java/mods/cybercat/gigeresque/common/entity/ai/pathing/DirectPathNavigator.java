@@ -20,15 +20,18 @@ public class DirectPathNavigator extends GroundPathNavigation {
         this.yMobOffset = yMobOffset;
     }
 
+    @Override
     public void tick() {
         ++this.tick;
     }
 
+    @Override
     public boolean moveTo(double x, double y, double z, double speedIn) {
         mob.getMoveControl().setWantedPosition(x, y, z, speedIn);
         return true;
     }
 
+    @Override
     public boolean moveTo(Entity entityIn, double speedIn) {
         mob.getMoveControl().setWantedPosition(entityIn.getX(), entityIn.getY() + yMobOffset, entityIn.getZ(), speedIn);
         return true;

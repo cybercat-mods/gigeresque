@@ -49,14 +49,12 @@ public class SporeStatusEffect extends MobEffect {
                 entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
                 return;
             }
-            if (entity instanceof Player playerEntity) {
-                if (!playerEntity.isSpectator() && !playerEntity.isCreative()) {
-                    neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
-                    spawnEffects(playerEntity.level(), playerEntity);
-                    playerEntity.level().addFreshEntity(neoBurster);
-                    entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-                    return;
-                }
+            if (entity instanceof Player playerEntity && !playerEntity.isSpectator() && !playerEntity.isCreative()) {
+                neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
+                spawnEffects(playerEntity.level(), playerEntity);
+                playerEntity.level().addFreshEntity(neoBurster);
+                entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+                return;
             }
         }
         super.removeAttributeModifiers(entity, attributes, amplifier);

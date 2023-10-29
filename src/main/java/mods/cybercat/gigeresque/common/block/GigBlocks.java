@@ -107,7 +107,7 @@ public record GigBlocks() implements GigeresqueInitializer {
     };
     private static GigBlocks instance;
 
-    synchronized public static GigBlocks getInstance() {
+    public static synchronized GigBlocks getInstance() {
         if (instance == null)
             instance = new GigBlocks();
         return instance;
