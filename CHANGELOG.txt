@@ -1,9 +1,8 @@
-v.0.5.58
+v.0.5.59
 
-- Fixes Facehugger rendering on a Witch.
-- Fixes mobs taking damage in a wall when being carried by a Classic Xeno.
-- Adds Alexs Caves Compat datapack. - Credit to impulsivelass
-- Adds Rascal to Friends and Foes Compat. - Credit to impulsivelass
+- Fixes young texture issue on Classic Xenos when crawling. Closes #205
+- Fix added for entity placement if entity is already in that spot. Closes #195
+- Massive clean up code/publishing.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
