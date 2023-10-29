@@ -1,13 +1,12 @@
 plugins {
     id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.+"
+    id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
-import groovy.json.JsonSlurper
+
 import groovy.json.JsonOutput
-import com.modrinth.minotaur.dependencies.ModDependency
+import groovy.json.JsonSlurper
 
 base {
     archivesName = project.modName
@@ -16,32 +15,32 @@ version = project.modVersion
 group = project.mavenGroup
 
 repositories {
-	maven { url 'https://cfa2.cursemaven.com' }
-	maven { url 'https://maven.shedaniel.me/' }
-	maven { url 'https://maven.terraformersmc.com' }
-	maven { url 'https://libs.azuredoom.com:4443/mods'}
-	maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
-	maven { url 'https://maven.blamejared.com' }
-	maven { url 'https://plugins.gradle.org/m2/' }
-	maven { url 'https://maven.gegy.dev' }
-	maven { url 'https://maven.enginehub.org/repo/' }
-	maven { url 'https://plugins.gradle.org/m2/' }
-	maven { url 'https://api.modrinth.com/maven' }
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com" }
+    maven { url "https://libs.azuredoom.com:4443/mods" }
+    maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
+    maven { url "https://maven.blamejared.com" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://maven.gegy.dev" }
+    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://api.modrinth.com/maven" }
+    maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
-	modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
-	modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
-	include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
+    modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
+    modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+    include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
 }
 
 processResources {
@@ -53,11 +52,11 @@ processResources {
 }
 
 processResources {
-	doLast {
+    doLast {
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
         def jsonBytesSaved = 0
-        fileTree(dir: outputs.files.asPath, include: '**/*.json').each { 
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
             File file = it
             jsonMinified++
             def oldLength = file.length()
@@ -69,7 +68,7 @@ processResources {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/gigeresque.accesswidener")
+    accessWidenerPath = file("src/main/resources/gigeresque.accesswidener")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -77,101 +76,165 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-if (file('key.properties').exists()) {
-    curseforge {
-
-    	def curseProp = new Properties()
-    	File secretPropsFile = file("key.properties")
-    	curseProp.load(secretPropsFile.newInputStream())
-
-    	project {
-        	apiKey = curseProp.getProperty('curseKey')
-        	id = project.curseforgeID
-        	releaseType = "release"
-        	changelogType = 'text'
-        	changelog = file('CHANGELOG.txt')
-			addGameVersion(project.minecraftVersion)
-			addGameVersion("Fabric")
-			addGameVersion("Quilt")
-			addGameVersion("Java 17")
-
-        	relations {
-            	requiredDependency 'fabric-api'  
-            	requiredDependency 'azurelib'  
-            	requiredDependency 'smartbrainlib' 
-            	optionalDependency 'modmenu'
-            	optionalDependency 'dripsounds-fabric'
-            	optionalDependency 'sound-physics-remastered'
-            	optionalDependency 'ad-astra'
-            	optionalDependency 'aftershock'
-            	optionalDependency 'arachnids'
-            	optionalDependency 'happiness-is-a-warm-gun'
-            	optionalDependency 'jar-jar-binks'
-            	optionalDependency 'living-things'
-            	optionalDependency 'caracal-mod'
-            	optionalDependency 'illager-invasion'
-            	optionalDependency 'minecraft-comes-alive-mca'
-            	optionalDependency 'promenade'
-            	optionalDependency 'friends-and-foes'
-            	optionalDependency 'the-graveyard-fabric'
-            	optionalDependency 'betterend'
-        	}
-        	mainArtifact(remapJar)
-
-        	afterEvaluate {
-            	uploadTask.dependsOn("remapJar")
-        	}
-    	}
-    	options {
-        	forgeGradleIntegration = false
-    	}
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
     }
 }
 
 if (file('key.properties').exists()) {
-	modrinth {
-		def modrinthProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		modrinthProp.load(secretPropsFile.newInputStream())
-		
-		token = modrinthProp.getProperty('modrinthKey')
-		projectId = project. modrinthID
-		versionNumber = project.modVersion 
-		uploadFile = remapJar 
-		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.20.1']
-		loaders = ['fabric','quilt']
-		dependencies { 
-        	required.project "azurelib"
-        	required.project "fabric-api"
-        	required.project "smartbrainlib"
-            optional.project "modmenu"
-            optional.project "dripsounds-fabric"
-            optional.project "sound-physics-remastered"
-            optional.project "ad-astra"
-            optional.project "aftershock"
-            optional.project "arachnids"
-            optional.project "happiness-is-a-warm-gun"
-            optional.project "jar-jar-binks"
-            optional.project "living-things"
-            optional.project "betterend"
-            optional.project "caracal_mob"
-            optional.project "illager-invasion"
-            optional.project "minecraft-comes-alive-reborn"
-            optional.project "promenade"
-            optional.project "the-graveyard-fabric"
-            optional.project "cave-dweller-fabric"
-            optional.project "friends-and-foes"
-   		}
-	}
+    publishMods {
+        def releaseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        releaseProp.load(secretPropsFile.newInputStream())
+        file = remapJar.archiveFile
+        displayName = project.modVersion
+        changelog = rootProject.file("changelog.txt").text
+        type = STABLE
+
+        def cfoptions = curseforgeOptions {
+            accessToken = releaseProp.getProperty("curseKey")
+            minecraftVersions.add("1.20.1")
+            projectId = project.curseforgeID
+            projectSlug = "gigeresque" // Required for discord webhook
+        }
+        def mroptions = modrinthOptions {
+            projectId = project.modrinthID
+            accessToken = releaseProp.getProperty("modrinthKey")
+            minecraftVersions.add("1.20.1")
+        }
+        curseforge("curseforgeFabric") {
+            from cfoptions
+            modLoaders.add("fabric")
+            modLoaders.add("quilt")
+
+            requires {
+                slug = "fabric-api"
+            }
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "modmenu"
+            }
+            optional {
+                slug = "dripsounds-fabric"
+            }
+            optional {
+                slug = "sound-physics-remastered"
+            }
+            optional {
+                slug = "ad-astra"
+            }
+            optional {
+                slug = "aftershock"
+            }
+            optional {
+                slug = "arachnids"
+            }
+            optional {
+                slug = "happiness-is-a-warm-gun"
+            }
+            optional {
+                slug = "jar-jar-binks"
+            }
+            optional {
+                slug = "living-things"
+            }
+            optional {
+                slug = "caracal-mod"
+            }
+            optional {
+                slug = "illager-invasion"
+            }
+            optional {
+                slug = "minecraft-comes-alive-mca"
+            }
+            optional {
+                slug = "promenade"
+            }
+            optional {
+                slug = "friends-and-foes"
+            }
+            optional {
+                slug = "the-graveyard-fabric"
+            }
+            optional {
+                slug = "betterend"
+            }
+        }
+        modrinth("modrinthFabric") {
+            from mroptions
+            modLoaders.add("fabric")
+            modLoaders.add("quilt")
+
+            requires {
+                slug = "fabric-api"
+            }
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "modmenu"
+            }
+            optional {
+                slug = "dripsounds-fabric"
+            }
+            optional {
+                slug = "sound-physics-remastered"
+            }
+            optional {
+                slug = "ad-astra"
+            }
+            optional {
+                slug = "aftershock"
+            }
+            optional {
+                slug = "arachnids"
+            }
+            optional {
+                slug = "happiness-is-a-warm-gun"
+            }
+            optional {
+                slug = "jar-jar-binks"
+            }
+            optional {
+                slug = "living-things"
+            }
+            optional {
+                slug = "betterend"
+            }
+            optional {
+                slug = "caracal_mob"
+            }
+            optional {
+                slug = "illager-invasion"
+            }
+            optional {
+                slug = "minecraft-comes-alive-reborn"
+            }
+            optional {
+                slug = "promenade"
+            }
+            optional {
+                slug = "the-graveyard-fabric"
+            }
+            optional {
+                slug = "cave-dweller-fabric"
+            }
+            optional {
+                slug = "friends-and-foes"
+            }
+        }
+    }
 }

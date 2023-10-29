@@ -1,13 +1,12 @@
 plugins {
     id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.+"
+    id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
-import groovy.json.JsonSlurper
+
 import groovy.json.JsonOutput
-import com.modrinth.minotaur.dependencies.ModDependency
+import groovy.json.JsonSlurper
 
 base {
     archivesName = project.modNameConnector
@@ -16,33 +15,32 @@ version = project.modVersion
 group = project.mavenGroup
 
 repositories {
-	maven { url 'https://cfa2.cursemaven.com' }
-	maven { url 'https://maven.shedaniel.me/' }
-	maven { url 'https://maven.terraformersmc.com' }
-	maven { url 'https://libs.azuredoom.com:4443/mods'}
-	maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
-	maven { url 'https://maven.blamejared.com' }
-	maven { url 'https://plugins.gradle.org/m2/' }
-	maven { url 'https://maven.gegy.dev' }
-	maven { url 'https://maven.enginehub.org/repo/' }
-	maven { url 'https://plugins.gradle.org/m2/' }
-	maven { url 'https://api.modrinth.com/maven' }
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com" }
+    maven { url "https://libs.azuredoom.com:4443/mods" }
+    maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
+    maven { url "https://maven.blamejared.com" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://maven.gegy.dev" }
+    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://api.modrinth.com/maven" }
+    maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-  	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
-	include "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
-	modCompileOnly "com.terraformersmc:modmenu:${project.modmenuVersion}"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
-	modCompileOnly "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
-	modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
-	include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
+    modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
+    modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
+    include "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}"
 }
 
 processResources {
@@ -89,93 +87,164 @@ jar {
 }
 
 if (file('key.properties').exists()) {
-    curseforge {
+    publishMods {
+        def releaseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        releaseProp.load(secretPropsFile.newInputStream())
+        file = remapJar.archiveFile
+        displayName = project.modVersion
+        changelog = rootProject.file("changelog.txt").text
+        type = STABLE
 
-    	def curseProp = new Properties()
-    	File secretPropsFile = file("key.properties")
-    	curseProp.load(secretPropsFile.newInputStream())
+        def cfoptions = curseforgeOptions {
+            accessToken = releaseProp.getProperty("curseKey")
+            minecraftVersions.add("1.20.1")
+            projectId = project.curseforgeID
+            projectSlug = "gigeresque" // Required for discord webhook
+        }
+        def mroptions = modrinthOptions {
+            projectId = project.modrinthID
+            accessToken = releaseProp.getProperty("modrinthKey")
+            minecraftVersions.add("1.20.1")
+        }
+        curseforge("curseforgeConnector") {
+            from cfoptions
+            modLoaders.add("forge")
 
-    	project {
-        	apiKey = curseProp.getProperty('curseKey')
-        	id = project.curseforgeID
-        	releaseType = "release"
-        	changelogType = 'text'
-        	changelog = file('CHANGELOG.txt')
-			addGameVersion(project.minecraftVersion)
-			addGameVersion("Forge")
-			addGameVersion("Java 17")
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "forgified-fabric-api"
+            }
+            requires {
+                slug = "sinytra-connector"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "waterdripsound"
+            }
+            optional {
+                slug = "sound-physics-remastered"
+            }
+            optional {
+                slug = "ad-astra"
+            }
+            optional {
+                slug = "aftershock"
+            }
+            optional {
+                slug = "arachnids"
+            }
+            optional {
+                slug = "happiness-is-a-warm-gun"
+            }
+            optional {
+                slug = "jar-jar-binks"
+            }
+            optional {
+                slug = "living-things"
+            }
+            optional {
+                slug = "caracal-mod"
+            }
+            optional {
+                slug = "illager-invasion"
+            }
+            optional {
+                slug = "minecraft-comes-alive-mca"
+            }
+            optional {
+                slug = "the-twilight-forest"
+            }
+            optional {
+                slug = "the-graveyard-forge"
+            }
+            optional {
+                slug = "alexs-mobs"
+            }
+            optional {
+                slug = "friends-and-foes-forge"
+            }
+            optional {
+                slug = "cave-dweller-evolved"
+            }
+            optional {
+                slug = "aether"
+            }
+            optional {
+                slug = "bygone-nether"
+            }
+            optional {
+                slug = "alexs-caves"
+            }
+        }
+        modrinth("modrinthConnector") {
+            from mroptions
+            modLoaders.add("forge")
 
-        	relations {
-            	requiredDependency 'azurelib'  
-            	requiredDependency 'forgified-fabric-api'  
-            	requiredDependency 'sinytra-connector'  
-            	requiredDependency 'smartbrainlib' 
-            	optionalDependency 'waterdripsound'
-            	optionalDependency 'sound-physics-remastered'
-            	optionalDependency 'ad-astra'
-            	optionalDependency 'aftershock'
-            	optionalDependency 'arachnids'
-            	optionalDependency 'happiness-is-a-warm-gun'
-            	optionalDependency 'jar-jar-binks'
-            	optionalDependency 'living-things'
-            	optionalDependency 'caracal-mod'
-            	optionalDependency 'illager-invasion'
-            	optionalDependency 'minecraft-comes-alive-mca'
-            	optionalDependency 'the-twilight-forest'
-            	optionalDependency 'the-graveyard-forge'
-            	optionalDependency 'alexs-mobs'
-            	optionalDependency 'friends-and-foes-forge'
-            	optionalDependency 'cave-dweller-evolved'
-            	optionalDependency 'aether'
-            	optionalDependency 'bygone-nether'
-				optionalDependency 'alexs-caves'
-        	}
-        	mainArtifact(remapJar)
-
-        	afterEvaluate {
-            	uploadTask.dependsOn("remapJar")
-        	}
-    	}
-    	options {
-        	forgeGradleIntegration = false
-    	}
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "connector"
+            }
+            requires {
+                slug = "forgified-fabric-api"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "waterdripsound"
+            }
+            optional {
+                slug = "sound-physics-remastered"
+            }
+            optional {
+                slug = "ad-astra"
+            }
+            optional {
+                slug = "aftershock"
+            }
+            optional {
+                slug = "arachnids"
+            }
+            optional {
+                slug = "happiness-is-a-warm-gun"
+            }
+            optional {
+                slug = "jar-jar-binks"
+            }
+            optional {
+                slug = "living-things"
+            }
+            optional {
+                slug = "betterend"
+            }
+            optional {
+                slug = "caracal_mob"
+            }
+            optional {
+                slug = "illager-invasion"
+            }
+            optional {
+                slug = "minecraft-comes-alive-reborn"
+            }
+            optional {
+                slug = "the-graveyard-forge"
+            }
+            optional {
+                slug = "friends-and-foes-forge"
+            }
+            optional {
+                slug = "aether"
+            }
+            optional {
+                slug = "bygone-nether"
+            }
+        }
     }
-}
-
-if (file('key.properties').exists()) {
-	modrinth {
-		def modrinthProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		modrinthProp.load(secretPropsFile.newInputStream())
-		
-		token = modrinthProp.getProperty('modrinthKey')
-		projectId = project. modrinthID
-		versionNumber = project.modVersion 
-		uploadFile = remapJar 
-		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.20.1']
-		loaders = ['forge']
-		dependencies { 
-        	required.project "azurelib"
-        	required.project "connector"
-        	required.project "forgified-fabric-api"
-        	required.project "smartbrainlib"
-            optional.project "waterdripsound"
-            optional.project "sound-physics-remastered"
-            optional.project "ad-astra"
-            optional.project "aftershock"
-            optional.project "arachnids"
-            optional.project "happiness-is-a-warm-gun"
-            optional.project "jar-jar-binks"
-            optional.project "living-things"
-            optional.project "betterend"
-            optional.project "caracal_mob"
-            optional.project "illager-invasion"
-            optional.project "minecraft-comes-alive-reborn"
-            optional.project "the-graveyard-forge"
-            optional.project "friends-and-foes-forge"
-            optional.project "aether"
-            optional.project "bygone-nether"
-   		}
-	}
 }
