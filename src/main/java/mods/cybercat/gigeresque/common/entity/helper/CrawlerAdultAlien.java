@@ -157,6 +157,15 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
     }
 
     @Override
+    public void travel(Vec3 vec3) {
+        if (this.tickCount % 10 == 0) {
+            this.refreshDimensions();
+            this.updateOffsetsAndOrientation();
+        }
+        super.travel(vec3);
+    }
+
+    @Override
     public PathNavigation createNavigation(Level world) {
         return new BetterSpiderPathNavigator<CrawlerAdultAlien>(this, world, false);
     }
@@ -537,14 +546,14 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             var attachmentPoint = CollisionSmoothingUtil.findClosestPoint(consumer -> this.forEachCollisonBox(inclusionBox, consumer), s, this.attachmentNormal.scale(-1), this.collisionsSmoothingRange, 1.0f, 0.001f, 20, 0.05f, s);
             var entityBox = this.getBoundingBox();
 
-            if (attachmentPoint != null) {
+            if (attachmentPoint != null && !this.isDeadOrDying()) {
                 var attachmentPos = attachmentPoint.getLeft();
                 var dx = Math.max(entityBox.minX - attachmentPos.x, attachmentPos.x - entityBox.maxX);
                 var dy = Math.max(entityBox.minY - attachmentPos.y, attachmentPos.y - entityBox.maxY);
                 var dz = Math.max(entityBox.minZ - attachmentPos.z, attachmentPos.z - entityBox.maxZ);
 
                 if (Math.max(dx, Math.max(dy, dz)) < 0.5f) {
-                    isAttached = true;
+                    if (!this.isDeadOrDying()) isAttached = true;
                     this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2, this.getBbWidth() / 2);
                     this.lastAttachmentOffsetY = Mth.clamp(attachmentPos.y - p.y, 0, this.getBbHeight());
                     this.lastAttachmentOffsetZ = Mth.clamp(attachmentPos.z - p.z, -this.getBbWidth() / 2, this.getBbWidth() / 2);
@@ -567,6 +576,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
         if (!isAttached) this.attachedTicks = Math.max(0, this.attachedTicks - 1);
         else this.attachedTicks = Math.min(5, this.attachedTicks + 1);
+        if (this.isDeadOrDying()) this.attachedTicks = 0;
 
         this.orientation = this.calculateOrientation(1);
         var newRotations = this.getOrientation().getLocalRotation(direction);
