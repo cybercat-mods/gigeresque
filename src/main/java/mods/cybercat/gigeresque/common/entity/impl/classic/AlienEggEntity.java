@@ -38,7 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class AlienEggEntity extends AlienEntity implements GeoEntity {
@@ -138,25 +137,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     }
 
     @Override
-    protected AABB makeBoundingBox() {
-        return super.makeBoundingBox();
-    }
-
-    @Override
-    public AABB getLocalBoundsForPose(Pose pose) {
-        return this.isHatched() ? this.getBoundingBox().inflate(1.7) : this.getBoundingBox().inflate(1.2);
-    }
-
-    @Override
     public EntityDimensions getDimensions(Pose pose) {
         if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
         return super.getDimensions(pose);
-    }
-
-    @Override
-    public void refreshDimensions() {
-        super.refreshDimensions();
     }
 
     @Override
