@@ -26,6 +26,24 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     public void render(ClassicAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        if (entity.isCrawling()) {
+            if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().west()))) {
+                stack.mulPose(Axis.ZP.rotationDegrees(-90));
+            }
+            if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().above()))) {
+                stack.mulPose(Axis.XP.rotationDegrees(180));
+                stack.translate(0, -0.75, 0);
+            }
+            if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().north()))) {
+                stack.mulPose(Axis.XP.rotationDegrees(90));
+            }
+            if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().south()))) {
+                stack.mulPose(Axis.XP.rotationDegrees(-90));
+            }
+            if (entity.isColliding(entity.blockPosition(), entity.level().getBlockState(entity.blockPosition().east()))) {
+                stack.mulPose(Axis.ZP.rotationDegrees(90));
+            }
+        }
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 
@@ -42,8 +60,7 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
             animatable.setRenderOrientation(renderOrientation);
             var above = animatable.level().getBlockState(animatable.blockPosition().above()).isSolid();
             var below = animatable.level().getBlockState(animatable.blockPosition().below()).isSolid();
-            if (above)
-                poseStack.translate(0, 0.75, 0);
+            if (above) poseStack.translate(0, -0.25, 0);
             if (animatable.level().getBlockState(animatable.blockPosition().west()).isSolid() && !above && !below)
                 poseStack.translate(-0.45, 0, 0);
             if (animatable.level().getBlockState(animatable.blockPosition().east()).isSolid() && !above && !below)

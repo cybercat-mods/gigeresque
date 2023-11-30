@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -75,6 +76,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
 
     public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAdultAlien> type, @NotNull Level world) {
         super(type, world);
+        this.setMaxUpStep(0.1f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -306,6 +308,12 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
             mob.yya = this.yya;
             mob.setSpeed(0);
         }
+    }
+
+    @Override
+    public boolean onClimbable() {
+        setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
+        return !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.isAggressive() && this.fallDistance <= 0.1;
     }
 
     /*
