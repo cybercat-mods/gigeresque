@@ -319,6 +319,51 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double draconicTempleBeastXenoHealth = 60;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double draconicTempleBeastXenoArmor = 2;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double draconicTempleBeastAttackDamage = 9;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double moonlightHorrorTempleBeastXenoHealth = 60;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double moonlightHorrorTempleBeastXenoArmor = 2;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double moonlightHorrorTempleBeastAttackDamage = 9;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double ravenousTempleBeastXenoHealth = 60;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double ravenousTempleBeastXenoArmor = 2;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double ravenousTempleBeastAttackDamage = 9;
+
+    @Configurable
+    @Configurable.Synchronized
     @Configurable.Range(min = 1)
     public int alienegg_spawn_weight = 10;
 

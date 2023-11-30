@@ -30,6 +30,9 @@ public record GigItems() implements GigeresqueInitializer {
     public static final AzureSpawnEgg NEOMORPH_ADOLESCENT_SPAWN_EGG = registerItem("neomorph_adolescent_spawn_egg", new AzureSpawnEgg(Entities.NEOMORPH_ADOLESCENT, 0xe6ddd9, 0xada1a2));
     public static final AzureSpawnEgg NEOMORPH_SPAWN_EGG = registerItem("neomorph_spawn_egg", new AzureSpawnEgg(Entities.NEOMORPH, 0xfaf8f5, 0xa587a4));
     public static final AzureSpawnEgg SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new AzureSpawnEgg(Entities.SPITTER, 0xccc737, 0x383a33));
+    public static final AzureSpawnEgg DRACONICTEMPLEBEAST_SPAWN_EGG = registerItem("draconictemplebeast_spawn_egg", new AzureSpawnEgg(Entities.DRACONICTEMPLEBEAST, 0x7d7060, 0x2d2f2c));
+    public static final AzureSpawnEgg RAVENOUSTEMPLEBEAST_SPAWN_EGG = registerItem("ravenoustemplebeast_spawn_egg", new AzureSpawnEgg(Entities.RAVENOUSTEMPLEBEAST, 0x9d917b, 0x1e1d1c));
+    public static final AzureSpawnEgg MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG = registerItem("moonlighthorrortemplebeast_spawn_egg", new AzureSpawnEgg(Entities.MOONLIGHTHORRORTEMPLEBEAST, 0xDEE0E2, 0x5f6d7f));
     private static GigItems instance;
 
     public static synchronized GigItems getInstance() {
@@ -42,10 +45,6 @@ public record GigItems() implements GigeresqueInitializer {
     public static <I extends Item> I registerItem(String name, I item) {
         return Registry.register(BuiltInRegistries.ITEM, Constants.modResource(name), item);
     }
-
-//	public static final AzureSpawnEgg CRUSHER_SPAWN_EGG = registerItem("crusher_spawn_egg", new AzureSpawnEgg(Entities.CRUSHER, 0x9d917b, 0x2d2f2c));
-//	public static final AzureSpawnEgg PRAETORIAN_SPAWN_EGG = registerItem("praetorian_spawn_egg", new AzureSpawnEgg(Entities.PRAETORIAN, 0x404345, 0x949597));
-//	public static final AzureSpawnEgg ULTRAMORTH_SPAWN_EGG = registerItem("ultramorth_spawn_egg", new AzureSpawnEgg(Entities.ULTRAMORTH, 0xa4adbc, 0x5a666b));
 
     @Override
     public void initialize() {

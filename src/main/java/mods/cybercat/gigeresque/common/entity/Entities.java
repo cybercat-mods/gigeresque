@@ -11,6 +11,9 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.extra.DraconicTempleBeastEntity;
+import mods.cybercat.gigeresque.common.entity.impl.extra.MoonlightHorrorTempleBeastEntity;
+import mods.cybercat.gigeresque.common.entity.impl.extra.RavenousTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
@@ -49,6 +52,9 @@ public record Entities() implements GigeresqueInitializer {
     public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), MobCategory.MONSTER, NeomorphAdolescentEntity::new, 1.0f, 0.9f);
     public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), MobCategory.MONSTER, NeomorphEntity::new, 0.9f, 2.55f);
     public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
+    public static final EntityType<? extends DraconicTempleBeastEntity> DRACONICTEMPLEBEAST = registerAlienType(EntityIdentifiers.DRACONICTEMPLEBEAST.getPath(), MobCategory.MONSTER, DraconicTempleBeastEntity::new, 1.3f, 2.35f);
+    public static final EntityType<? extends RavenousTempleBeastEntity> RAVENOUSTEMPLEBEAST = registerAlienType(EntityIdentifiers.RAVENOUSTEMPLEBEAST.getPath(), MobCategory.MONSTER, RavenousTempleBeastEntity::new, 1.3f, 3.45f);
+    public static final EntityType<? extends MoonlightHorrorTempleBeastEntity> MOONLIGHTHORRORTEMPLEBEAST = registerAlienType(EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(), MobCategory.MONSTER, MoonlightHorrorTempleBeastEntity::new, 1.7f, 4.45f);
     private static Entities instance;
 
     public static synchronized Entities getInstance() {
@@ -63,10 +69,6 @@ public record Entities() implements GigeresqueInitializer {
     protected static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
         return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource(name), FabricBlockEntityTypeBuilder.create(factory, block).build(null));
     }
-
-//	public static final EntityType<? extends CrusherEntity> CRUSHER = registerAlienType(EntityIdentifiers.CRUSHER.getPath(), CrusherEntity::new, 1.3f, 2.35f);
-//	public static final EntityType<? extends PraetorianEntity> PRAETORIAN = registerAlienType(EntityIdentifiers.PRAETORIAN.getPath(), PraetorianEntity::new, 1.3f, 3.45f);
-//	public static final EntityType<? extends UltramorpthEntity> ULTRAMORTH = registerAlienType(EntityIdentifiers.ULTRAMORTH.getPath(), UltramorpthEntity::new, 1.7f, 4.45f);
 
     @Override
     public void initialize() {
@@ -85,10 +87,9 @@ public record Entities() implements GigeresqueInitializer {
         FabricDefaultAttributeRegistry.register(NEOMORPH_ADOLESCENT, NeomorphAdolescentEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(NEOMORPH, NeomorphEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(SPITTER, SpitterEntity.createAttributes());
-
-//		FabricDefaultAttributeRegistry.register(CRUSHER, CrusherEntity.createAttributes());
-//		FabricDefaultAttributeRegistry.register(PRAETORIAN, PraetorianEntity.createAttributes());
-//		FabricDefaultAttributeRegistry.register(ULTRAMORTH, UltramorpthEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(DRACONICTEMPLEBEAST, DraconicTempleBeastEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(RAVENOUSTEMPLEBEAST, RavenousTempleBeastEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(MOONLIGHTHORRORTEMPLEBEAST, MoonlightHorrorTempleBeastEntity.createAttributes());
     }
 
     public static BlockEntityType<AlienStorageEntity> ALIEN_STORAGE_BLOCK_ENTITY_1 = registerBlockType("alien_storage_block_entity", AlienStorageEntity::new, GigBlocks.ALIEN_STORAGE_BLOCK_1);

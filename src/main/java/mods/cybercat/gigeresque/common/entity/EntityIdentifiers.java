@@ -17,9 +17,9 @@ public record EntityIdentifiers() {
     public static final ResourceLocation MUTANT_HAMMERPEDE = Constants.modResource("hammerpede");
     public static final ResourceLocation MUTANT_STALKER = Constants.modResource("stalker");
 
-    public static final ResourceLocation PRAETORIAN = Constants.modResource("praetorian");
-    public static final ResourceLocation CRUSHER = Constants.modResource("crusher");
-    public static final ResourceLocation ULTRAMORTH = Constants.modResource("ultramorth");
+    public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource("ravenoustemplebeast");
+    public static final ResourceLocation DRACONICTEMPLEBEAST = Constants.modResource("draconictemplebeast");
+    public static final ResourceLocation MOONLIGHTHORRORTEMPLEBEAST = Constants.modResource("moonlighthorrortemplebeast");
     public static final ResourceLocation SPITTER = Constants.modResource("spitter");
 
     public static final ResourceLocation NEOBURSTER = Constants.modResource("neoburster");

@@ -29,9 +29,9 @@ public record EntityRenderers() implements GigeresqueInitializer {
         EntityRendererRegistry.register(Entities.NEOMORPH_ADOLESCENT, NeomorphAdolescentRenderer::new);
         EntityRendererRegistry.register(Entities.NEOMORPH, NeomorphRenderer::new);
         EntityRendererRegistry.register(Entities.SPITTER, SpitterRenderer::new);
-//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
-//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
-//		EntityRendererRegistry.register(Entities.MUTANT_STALKER, StalkerEntityRenderer::new);
+        EntityRendererRegistry.register(Entities.RAVENOUSTEMPLEBEAST, RavenousTempleBeastEntityRenderer::new);
+        EntityRendererRegistry.register(Entities.DRACONICTEMPLEBEAST, DraconicTempleBeastEntityRenderer::new);
+        EntityRendererRegistry.register(Entities.MOONLIGHTHORRORTEMPLEBEAST, MoonlightHorrorTempleBeastEntityRenderer::new);
         BlockEntityRenderers.register(Entities.SPORE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
         BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
         BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
