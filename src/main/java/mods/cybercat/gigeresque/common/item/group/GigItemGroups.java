@@ -50,6 +50,9 @@ public record GigItemGroups() implements GigeresqueInitializer {
                         entries.accept(GigItems.NEOBURSTER_SPAWN_EGG);
                         entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG);
                         entries.accept(GigItems.NEOMORPH_SPAWN_EGG);
+//                        entries.accept(GigItems.CRUSHER_SPAWN_EGG);
+//                        entries.accept(GigItems.PRAETORIAN_SPAWN_EGG);
+//                        entries.accept(GigItems.ULTRAMORTH_SPAWN_EGG);
                     }
                     entries.accept(GigItems.SPITTER_SPAWN_EGG);
                 }).build()); // build() no longer registers by itself
