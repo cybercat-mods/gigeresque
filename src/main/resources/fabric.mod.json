@@ -17,7 +17,7 @@
     "sources": "https://github.com/cybercat-mods/gigeresque"
   },
   "license": "CC BY-NC-ND 4.0",
-  "icon": "assets/gigeresque/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
