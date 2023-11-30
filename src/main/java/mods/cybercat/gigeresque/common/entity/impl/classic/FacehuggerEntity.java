@@ -215,7 +215,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             if (host != null) {
                 ((LivingEntity) getVehicle()).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
                 if (host.doesNotHaveParasite())
-                    host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer());
+                    host.setTicksUntilImpregnation(Gigeresque.config.getImpregnationTickTimer() + Gigeresque.config.getFacehuggerAttachTickTimer());
                 if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer()) {
                     if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
                         ((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
