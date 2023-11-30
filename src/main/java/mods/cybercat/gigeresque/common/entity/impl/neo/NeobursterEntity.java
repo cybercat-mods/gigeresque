@@ -84,11 +84,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     @Override
     public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)),
-                new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
-                new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
     }
 
     @Override
@@ -103,7 +99,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack(20));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.3F), new AnimatableMeleeAttack<>(20));
     }
 
     /*
@@ -115,14 +111,10 @@ public class NeobursterEntity extends RunnerbursterEntity {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             if (velocityLength >= 0.000000001 && !isDead)
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-            else if (this.isBirthed())
-                return event.setAndContinue(GigAnimationsDefault.BIRTH);
-            else
-                return event.setAndContinue(GigAnimationsDefault.IDLE);
+                if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
+                else return event.setAndContinue(GigAnimationsDefault.WALK);
+            else if (this.isBirthed()) return event.setAndContinue(GigAnimationsDefault.BIRTH);
+            else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
             if (this.level().isClientSide) {
                 if (event.getKeyframeData().getSound().matches("thudSoundkey"))
@@ -131,9 +123,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.3F, 1.5F, true);
             }
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

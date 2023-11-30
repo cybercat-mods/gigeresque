@@ -53,25 +53,21 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-        if (this.tickCount % 10 == 0)
-            this.refreshDimensions();
+        if (this.tickCount % 10 == 0) this.refreshDimensions();
 
         if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null)
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override
     public LivingEntity growInto() {
         var entity = Entities.AQUATIC_ALIEN.create(level());
 
-        if (hasCustomName())
-            entity.setCustomName(this.getCustomName());
+        if (hasCustomName()) entity.setCustomName(this.getCustomName());
 
         return entity;
     }
@@ -107,24 +103,19 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
-                if (this.isUnderWater())
-                    if (walkAnimation.speedOld >= 0.35F)
-                        return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    else
-                        return event.setAndContinue(GigAnimationsDefault.SWIM);
-                else if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.SLITHER);
+            if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F) if (this.isUnderWater()) {
+                if (walkAnimation.speedOld >= 0.35F) {
+                    return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+                } else {
+                    return event.setAndContinue(GigAnimationsDefault.SWIM);
+                }
+            } else if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
+            else return event.setAndContinue(GigAnimationsDefault.SLITHER);
             else {
-                if (this.tickCount < 5 && event.getAnimatable().isBirthed() == true)
-                    return event.setAndContinue(GigAnimationsDefault.BIRTH);
+                if (this.tickCount < 5 && this.isBirthed()) return event.setAndContinue(GigAnimationsDefault.BIRTH);
                 else {
-                    if (this.isUnderWater())
-                        return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-                    else
-                        return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
+                    if (this.isUnderWater()) return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+                    else return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
                 }
             }
         }).setSoundKeyframeHandler(event -> {

@@ -35,8 +35,7 @@ public class BloodParticle extends TextureSheetParticle {
         xo = x;
         yo = y;
         zo = z;
-        if (age++ >= lifetime)
-            remove();
+        if (age++ >= lifetime) remove();
         else {
             setSpriteFromAge(spriteProvider);
             if (onGround) {

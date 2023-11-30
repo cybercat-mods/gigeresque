@@ -72,8 +72,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         super(entityType, world);
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-        if (navigation != null)
-            navigation.setCanFloat(true);
+        if (navigation != null) navigation.setCanFloat(true);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.vibrationData = new VibrationSystem.Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));
@@ -158,11 +157,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("isCrawling"))
-            setIsCrawling(compound.getBoolean("isCrawling"));
+        if (compound.contains("isCrawling")) setIsCrawling(compound.getBoolean("isCrawling"));
         if (compound.contains("anger")) {
-            AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerM ->
-                    this.angerManagement = angerM);
+            AngerManagement.codec(this::canTargetEntity).parse(new Dynamic<Tag>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(angerM -> this.angerManagement = angerM);
             this.syncClientAngerLevel();
         }
         if (compound.contains("listener", 10))
@@ -195,8 +192,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     public Optional<LivingEntity> getEntityAngryAt() {
-        if (this.getAngerLevel().isAngry())
-            return this.angerManagement.getActiveEntity();
+        if (this.getAngerLevel().isAngry()) return this.angerManagement.getActiveEntity();
         return Optional.empty();
     }
 
@@ -218,8 +214,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide)
-            slowticks++;
+        if (!this.level().isClientSide) slowticks++;
         if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             slowticks = -60;
@@ -228,8 +223,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
             this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
-                if (e.is(GigTags.NEST_BLOCKS))
-                    this.heal(0.5833f);
+                if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
             });
     }
 
@@ -252,8 +246,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         var posState = level().getBlockState(pos);
         var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
 
-        if (posState.getBlock() == Blocks.WATER)
-            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
         if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
             return;
@@ -269,8 +262,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
         boolean damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
         if (damageCheck) {
-            if (getAcidDiameter() == 1)
-                generateAcidPool(0, 0);
+            if (getAcidDiameter() == 1) generateAcidPool(0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (var x = -radius; x <= radius; x++) {
@@ -304,57 +296,36 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
      */
     @Contract(value = "null->false")
     public boolean canTargetEntity(@Nullable Entity entity) {
-        if (!(entity instanceof LivingEntity))
-            return false;
+        if (!(entity instanceof LivingEntity)) return false;
         var livingEntity = (LivingEntity) entity;
-        if (this.level() != entity.level())
-            return false;
-        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
-            return false;
-        if (((Host) livingEntity).hasParasite())
-            return false;
-        if (this.isVehicle())
-            return false;
-        if (this.isAlliedTo(entity))
-            return false;
-        if (livingEntity.getMobType() == MobType.UNDEAD)
-            return false;
-        if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
-            return false;
-        if (livingEntity.getType() == EntityType.ARMOR_STAND)
-            return false;
-        if (livingEntity.getType() == EntityType.WARDEN)
-            return false;
-        if (livingEntity instanceof Bat)
-            return false;
-        if (entity instanceof Marker)
-            return false;
-        if (entity instanceof AreaEffectCloud)
-            return false;
-        if (GigEntityUtils.isFacehuggerAttached(livingEntity))
-            return false;
-        if (livingEntity.isInvulnerable())
-            return false;
-        if (livingEntity.isDeadOrDying())
-            return false;
-        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
-            return false;
+        if (this.level() != entity.level()) return false;
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity)) return false;
+        if (((Host) livingEntity).hasParasite()) return false;
+        if (this.isVehicle()) return false;
+        if (this.isAlliedTo(entity)) return false;
+        if (livingEntity.getMobType() == MobType.UNDEAD) return false;
+        if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) return false;
+        if (livingEntity.getType() == EntityType.ARMOR_STAND) return false;
+        if (livingEntity.getType() == EntityType.WARDEN) return false;
+        if (livingEntity instanceof Bat) return false;
+        if (entity instanceof Marker) return false;
+        if (entity instanceof AreaEffectCloud) return false;
+        if (GigEntityUtils.isFacehuggerAttached(livingEntity)) return false;
+        if (livingEntity.isInvulnerable()) return false;
+        if (livingEntity.isDeadOrDying()) return false;
+        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox())) return false;
         var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
-        if (list2.anyMatch(NEST))
-            return false;
+        if (list2.anyMatch(NEST)) return false;
         if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance))
             return false;
-        if (livingEntity instanceof AlienEntity)
-            return false;
-        if (this.isAggressive())
-            return false;
+        if (livingEntity instanceof AlienEntity) return false;
+        if (this.isAggressive()) return false;
         return this.level().getBlockState(this.blockPosition().below()).isSolid();
     }
 
     @Nullable
     public ItemEntity drop(LivingEntity target, ItemStack itemStack, boolean bl) {
-        if (itemStack.isEmpty())
-            return null;
+        if (itemStack.isEmpty()) return null;
 
         var d = target.getEyeY() - 0.3f;
         var itemEntity = new ItemEntity(target.level(), target.getX(), d, target.getZ(), itemStack);

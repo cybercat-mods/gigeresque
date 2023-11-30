@@ -32,8 +32,7 @@ public record GigSounds() implements GigeresqueInitializer {
     private static GigSounds instance;
 
     public static synchronized GigSounds getInstance() {
-        if (instance == null)
-            instance = new GigSounds();
+        if (instance == null) instance = new GigSounds();
         return instance;
     }
 

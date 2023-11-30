@@ -8,22 +8,6 @@ public record NestBlockData(int coverage, boolean isCorner, boolean isFloor, boo
         return coverage;
     }
 
-    public boolean isCorner() {
-        return isCorner;
-    }
-
-    public boolean isFloor() {
-        return isFloor;
-    }
-
-    public boolean isCeiling() {
-        return isCeiling;
-    }
-
-    public boolean isWall() {
-        return isWall;
-    }
-
     public boolean hasUpCoverage() {
         return upCoverage;
     }

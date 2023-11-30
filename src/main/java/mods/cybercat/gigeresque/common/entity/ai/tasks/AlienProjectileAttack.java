@@ -69,14 +69,11 @@ public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedR
     protected void doDelayedAction(E entity) {
         BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
-        if (this.target == null)
-            return;
+        if (this.target == null) return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target))
-            return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target)) return;
 
-        if (entity instanceof SpitterEntity spitterEntity)
-            spitterEntity.shootAcid(this.target, entity);
+        if (entity instanceof SpitterEntity spitterEntity) spitterEntity.shootAcid(this.target, entity);
     }
 
 }

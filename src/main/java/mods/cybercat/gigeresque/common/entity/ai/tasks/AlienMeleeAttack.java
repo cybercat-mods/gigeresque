@@ -69,11 +69,9 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
     protected void doDelayedAction(E entity) {
         BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
-        if (this.target == null)
-            return;
+        if (this.target == null) return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
-            return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target)) return;
 
         if (entity instanceof StalkerEntity) {
             this.target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 1, true, true));

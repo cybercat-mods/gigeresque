@@ -78,8 +78,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.classicXenoHealth).add(Attributes.ARMOR, Gigeresque.config.classicXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0)
-                .add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.classicXenoHealth).add(Attributes.ARMOR, Gigeresque.config.classicXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
     }
 
     @Override
@@ -88,17 +87,14 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
-        if (this.tickCount % 10 == 0)
-            this.refreshDimensions();
+        if (this.tickCount % 10 == 0) this.refreshDimensions();
 
         if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.5));
-            if (getTarget() == null)
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override
@@ -118,23 +114,19 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
         if (!this.isInWater())
             this.setIsCrawling(this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
 
-        if (!this.isVehicle())
-            this.setIsExecuting(false);
+        if (!this.isVehicle()) this.setIsExecuting(false);
 
-        if (this.isExecuting())
-            this.setPassedOutStatus(false);
+        if (this.isExecuting()) this.setPassedOutStatus(false);
 
         // Attack logic
 
-        if (this.isExecuting())
-            this.setDeltaMovement(0, 0, 0);
+        if (this.isExecuting()) this.setDeltaMovement(0, 0, 0);
 
         if (this.isVehicle()) {
             var yOffset = this.getEyeY() - ((this.getFirstPassenger().getEyeY() - this.getFirstPassenger().blockPosition().getY()) / 2.0);
             var e = this.getFirstPassenger().getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
             var f = this.getFirstPassenger().getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-            if (!this.isExecuting())
-                this.triggerAnim("attackController", "kidnap");
+            if (!this.isExecuting()) this.triggerAnim("attackController", "kidnap");
             if (this.getFirstPassenger() instanceof Mob mob && !mob.isPersistenceRequired())
                 mob.setPersistenceRequired();
             if (this.isBiting()) {
@@ -183,8 +175,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-        if (spawnReason != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
+        if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
@@ -329,15 +320,12 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                     if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                         return event.setAndContinue(GigAnimationsDefault.RUN);
                     else if (!this.isCrawling())
-                        if (this.isVehicle())
-                            return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
-                        else
-                            return event.setAndContinue(GigAnimationsDefault.WALK);
+                        if (this.isVehicle()) return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
+                        else return event.setAndContinue(GigAnimationsDefault.WALK);
                 } else if (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())
                     if (this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    else
-                        return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+                    else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
             } else if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && !this.onGround() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle())
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             else if (this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle() && !this.isInWater())

@@ -49,7 +49,6 @@ public class Gigeresque implements ModInitializer {
         GigCompats.getInstance().initialize();
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         if (config.enableSneakyEggs)
-            FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer ->
-                    ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED)));
+            FabricLoader.getInstance().getModContainer(Gigeresque.MOD_ID).ifPresent((modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(Constants.modResource("stealthyegg"), modContainer, Component.literal("stealthyegg"), ResourcePackActivationType.DEFAULT_ENABLED)));
     }
 }

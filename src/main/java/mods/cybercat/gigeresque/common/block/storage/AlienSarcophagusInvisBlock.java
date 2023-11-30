@@ -67,25 +67,14 @@ public class AlienSarcophagusInvisBlock extends Block {
 
     @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (world.isClientSide)
-            return;
+        if (world.isClientSide) return;
         var radius = new Vec3i(2, 2, 2);
         for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
             BlockState testState;
-            if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1)) {
+            if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
                 world.destroyBlock(testPos, true);
                 Block.dropResources(testState, world, testPos);
-            } else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
-                world.destroyBlock(testPos, true);
-                Block.dropResources(testState, world, testPos);
-            } else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
-                world.destroyBlock(testPos, true);
-                Block.dropResources(testState, world, testPos);
-            } else if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
-                world.destroyBlock(testPos, true);
-                Block.dropResources(testState, world, testPos);
-            } else if (testState.is(this))
-                world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            } else if (testState.is(this)) world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
     }
 

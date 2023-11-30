@@ -37,7 +37,7 @@ public record GigBlocks() implements GigeresqueInitializer {
     public static final Block NEST_RESIN_BLOCK = new GigBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
     public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
     public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
-//	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
+    //	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
 //	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_5 = new AlienJarBlock();
     public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
     public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
@@ -108,8 +108,7 @@ public record GigBlocks() implements GigeresqueInitializer {
     private static GigBlocks instance;
 
     public static synchronized GigBlocks getInstance() {
-        if (instance == null)
-            instance = new GigBlocks();
+        if (instance == null) instance = new GigBlocks();
         return instance;
     }
 

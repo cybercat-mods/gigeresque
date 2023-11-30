@@ -66,13 +66,10 @@ public class NearbyLightsBlocksSensor<E extends LivingEntity> extends PredicateS
         for (BlockPos pos : BlockPos.betweenClosed(entity.blockPosition().subtract(this.radius.toVec3i()), entity.blockPosition().offset(this.radius.toVec3i()))) {
             BlockState state = level.getBlockState(pos);
 
-            if (this.predicate().test(state, entity))
-                blocks.add(Pair.of(pos.immutable(), state));
+            if (this.predicate().test(state, entity)) blocks.add(Pair.of(pos.immutable(), state));
         }
 
-        if (blocks.isEmpty())
-            BrainUtils.clearMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get());
-        else
-            BrainUtils.setMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), blocks);
+        if (blocks.isEmpty()) BrainUtils.clearMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get());
+        else BrainUtils.setMemory(entity, GigMemoryTypes.NEARBY_LIGHT_BLOCKS.get(), blocks);
     }
 }

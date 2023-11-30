@@ -15,10 +15,7 @@ import java.util.SplittableRandom;
 
 public class GigSculkDungeonStructure extends Structure {
 
-    public static final Codec<GigSculkDungeonStructure> CODEC = RecordCodecBuilder.<GigSculkDungeonStructure>mapCodec(
-                    instance -> instance.group(Structure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 16).fieldOf("size").forGetter(structure -> structure.size), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance,
-                            GigSculkDungeonStructure::new))
-            .codec();
+    public static final Codec<GigSculkDungeonStructure> CODEC = RecordCodecBuilder.<GigSculkDungeonStructure>mapCodec(instance -> instance.group(Structure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 16).fieldOf("size").forGetter(structure -> structure.size), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance, GigSculkDungeonStructure::new)).codec();
 
     private final Holder<StructureTemplatePool> startPool;
     private final Optional<ResourceLocation> startJigsawName;

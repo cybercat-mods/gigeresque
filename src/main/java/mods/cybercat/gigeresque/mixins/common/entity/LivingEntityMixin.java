@@ -111,8 +111,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"doPush"}, at = {@At("HEAD")}, cancellable = true)
     void pushAway(CallbackInfo callbackInfo) {
-        if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this))
-            callbackInfo.cancel();
+        if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this)) callbackInfo.cancel();
     }
 
     @Inject(method = {"tick"}, at = {@At("HEAD")})
@@ -153,15 +152,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"isPushable"}, at = {@At("RETURN")}, cancellable = true)
     public void noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this))
-            callbackInfo.setReturnValue(false);
+        if (this.isEggmorphing() && GigEntityUtils.isTargetHostable(this)) callbackInfo.setReturnValue(false);
     }
 
     private void handleEggingLogic() {
         if (isEggmorphing() && GigEntityUtils.isTargetHostable(this) && !hasParasite())
             setTicksUntilEggmorphed(ticksUntilEggmorpth++);
-        else
-            resetEggmorphing();
+        else resetEggmorphing();
 
         if (getTicksUntilEggmorphed() == Gigeresque.config.getEggmorphTickTimer() && !this.isDeadOrDying()) {
             var egg = new AlienEggEntity(Entities.EGG, level());
@@ -185,8 +182,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
         if (ticksUntilImpregnation == 0L) {
             if (tickCount % Constants.TPS == 0L) {
-                if (Boolean.TRUE.equals(!isBleeding()))
-                    setBleeding(true);
+                if (Boolean.TRUE.equals(!isBleeding())) setBleeding(true);
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), this.getMaxHealth() / 8f);
             }
 
@@ -199,16 +195,14 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
                         ((RunnerbursterEntity) burster).setHostId("runner");
                     } else if (this.getType().is(GigTags.AQUATIC_HOSTS))
                         burster = Entities.AQUATIC_CHESTBURSTER.create(this.level());
-                    else
-                        burster = Entities.CHESTBURSTER.create(this.level());
+                    else burster = Entities.CHESTBURSTER.create(this.level());
                 } else if (this.getType().is(GigTags.NEOHOST) && this.hasEffect(GigStatusEffects.SPORE))
                     burster = Entities.NEOBURSTER.create(this.level());
                 else if (this.getType().is(GigTags.CLASSIC_HOSTS) && this.hasEffect(GigStatusEffects.DNA))
                     burster = Entities.SPITTER.create(this.level());
 
                 if (burster != null) {
-                    if (this.hasCustomName())
-                        burster.setCustomName(this.getCustomName());
+                    if (this.hasCustomName()) burster.setCustomName(this.getCustomName());
                     burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
                     burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
                     this.level().addFreshEntity(burster);
@@ -241,12 +235,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"readAdditionalSaveData"}, at = {@At("RETURN")})
     void readAdditionalSaveData(CompoundTag nbt, CallbackInfo callbackInfo) {
-        if (nbt.contains("ticksUntilImpregnation"))
-            ticksUntilImpregnation = nbt.getInt("ticksUntilImpregnation");
-        if (nbt.contains("ticksUntilEggmorphed"))
-            setTicksUntilEggmorphed(nbt.getInt("ticksUntilEggmorphed"));
-        if (nbt.contains("isBleeding"))
-            setBleeding(nbt.getBoolean("isBleeding"));
+        if (nbt.contains("ticksUntilImpregnation")) ticksUntilImpregnation = nbt.getInt("ticksUntilImpregnation");
+        if (nbt.contains("ticksUntilEggmorphed")) setTicksUntilEggmorphed(nbt.getInt("ticksUntilEggmorphed"));
+        if (nbt.contains("isBleeding")) setBleeding(nbt.getBoolean("isBleeding"));
     }
 
     @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
@@ -274,10 +265,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
         var notHost = GigEntityUtils.isTargetHostable(this);
         if (((((Object) this) instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator()))) && !(((Object) this) instanceof AlienEntity))
             return false;
-        if (GigEntityUtils.isFacehuggerAttached(this))
-            return false;
-        if (!GigEntityUtils.isTargetHostable(this))
-            return false;
+        if (GigEntityUtils.isFacehuggerAttached(this)) return false;
+        if (!GigEntityUtils.isTargetHostable(this)) return false;
         return notAlien && isCoveredInResin && notHost;
     }
 

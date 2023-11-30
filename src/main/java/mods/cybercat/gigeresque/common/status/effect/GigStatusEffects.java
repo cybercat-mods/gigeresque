@@ -21,8 +21,7 @@ public record GigStatusEffects() implements GigeresqueInitializer {
     private static GigStatusEffects instance;
 
     public static synchronized GigStatusEffects getInstance() {
-        if (instance == null)
-            instance = new GigStatusEffects();
+        if (instance == null) instance = new GigStatusEffects();
         return instance;
     }
 

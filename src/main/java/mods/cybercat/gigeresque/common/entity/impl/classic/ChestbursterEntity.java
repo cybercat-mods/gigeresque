@@ -141,8 +141,8 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (attacker != null && attacker instanceof LivingEntity)
-                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+            if (attacker != null && attacker instanceof LivingEntity livingEntity)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -151,14 +151,10 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
         if (!this.level().isClientSide && source != damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
@@ -177,22 +173,19 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
             setBlood(bloodRendering++);
             grow(this, 1 * getGrowthMultiplier());
         }
-        if (this.isEating())
-            eatingCounter++;
+        if (this.isEating()) eatingCounter++;
         if (eatingCounter >= 20) {
             this.setEatingStatus(false);
             eatingCounter = 0;
         }
-        if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
-            this.setBirthStatus(false);
+        if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200) this.setBirthStatus(false);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putFloat("growth", getGrowth());
-        if (hostId != null)
-            nbt.putString("hostId", hostId);
+        if (hostId != null) nbt.putString("hostId", hostId);
         nbt.putBoolean("is_eating", isEating());
         nbt.putBoolean("is_birthed", isBirthed());
     }
@@ -200,14 +193,10 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("growth"))
-            setGrowth(nbt.getFloat("growth"));
-        if (nbt.contains("hostId"))
-            hostId = nbt.getString("hostId");
-        if (nbt.contains("is_eating"))
-            setEatingStatus(nbt.getBoolean("is_eating"));
-        if (nbt.contains("is_birthed"))
-            setBirthStatus(nbt.getBoolean("is_birthed"));
+        if (nbt.contains("growth")) setGrowth(nbt.getFloat("growth"));
+        if (nbt.contains("hostId")) hostId = nbt.getString("hostId");
+        if (nbt.contains("is_eating")) setEatingStatus(nbt.getBoolean("is_eating"));
+        if (nbt.contains("is_birthed")) setBirthStatus(nbt.getBoolean("is_birthed"));
     }
 
     @Override
@@ -259,8 +248,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     public LivingEntity growInto() {
         var entity = Entities.RUNNERBURSTER.create(level());
         entity.hostId = this.hostId;
-        if (hasCustomName())
-            entity.setCustomName(this.getCustomName());
+        if (hasCustomName()) entity.setCustomName(this.getCustomName());
         return entity;
     }
 
@@ -272,14 +260,11 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.SLITHER);
+                if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
+                else return event.setAndContinue(GigAnimationsDefault.SLITHER);
             else if (this.tickCount < 60 && event.getAnimatable().isBirthed())
                 return event.setAndContinue(GigAnimationsDefault.BIRTH);
-            else
-                return event.setAndContinue(GigAnimationsDefault.IDLE);
+            else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("stepSoundkey") && this.level().isClientSide)
                 this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);

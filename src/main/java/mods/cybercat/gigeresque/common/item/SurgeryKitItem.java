@@ -48,22 +48,22 @@ public class SurgeryKitItem extends Item {
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
         var host = (Host) entity;
         if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE) && !entity.level().isClientSide) {
-                entity.removeEffect(MobEffects.HUNGER);
-                entity.removeEffect(MobEffects.WEAKNESS);
-                entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-                host.setBleeding(false);
-                spawnParasite(entity);
-                host.setTicksUntilImpregnation(-1);
+            entity.removeEffect(MobEffects.HUNGER);
+            entity.removeEffect(MobEffects.WEAKNESS);
+            entity.removeEffect(MobEffects.DIG_SLOWDOWN);
+            host.setBleeding(false);
+            spawnParasite(entity);
+            host.setTicksUntilImpregnation(-1);
 
-                host.removeParasite();
-                if (entity instanceof Player playerentity) {
-                    playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
-                    stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-                }
-                if (entity.level().isClientSide)
-                    entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
-                entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
+            host.removeParasite();
+            if (entity instanceof Player playerentity) {
+                playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
+                stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
             }
+            if (entity.level().isClientSide)
+                entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
+            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
+        }
     }
 
     private void spawnParasite(LivingEntity entity) {
@@ -75,15 +75,13 @@ public class SurgeryKitItem extends Item {
                 ((ChestbursterEntity) burster).setHostId("runner");
             } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
                 burster = Entities.AQUATIC_CHESTBURSTER.create(entity.level());
-            else
-                burster = Entities.CHESTBURSTER.create(entity.level());
+            else burster = Entities.CHESTBURSTER.create(entity.level());
         } else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE))
             burster = Entities.NEOBURSTER.create(entity.level());
         else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA))
             burster = Entities.SPITTER.create(entity.level());
 
-        if (entity.hasCustomName() && entity != null)
-                burster.setCustomName(entity.getCustomName());
+        if (entity.hasCustomName() && entity != null) burster.setCustomName(entity.getCustomName());
         if (burster instanceof ChestbursterEntity chest)
             chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());

@@ -22,16 +22,12 @@ public abstract class HostileEntityMixin extends LivingEntity {
     }
 
     @Inject(method = {"isDarkEnoughToSpawn"}, at = {@At("RETURN")})
-    private static boolean isDarkEnoughToSpawn(ServerLevelAccessor world, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS))
-            return false;
-        return callbackInfo.getReturnValue();
+    private static void isDarkEnoughToSpawn(ServerLevelAccessor world, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
+        if (world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS)) callbackInfo.setReturnValue(false);
     }
 
     @Inject(method = {"checkMonsterSpawnRules"}, at = {@At("RETURN")})
-    private static boolean checkMonsterSpawnRules(EntityType<? extends Monster> type, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS))
-            return false;
-        return callbackInfo.getReturnValue();
+    private static void checkMonsterSpawnRules(EntityType<? extends Monster> type, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
+        if (world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS)) callbackInfo.setReturnValue(false);
     }
 }

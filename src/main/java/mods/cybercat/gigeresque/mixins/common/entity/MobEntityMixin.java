@@ -30,18 +30,14 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(method = {"playAmbientSound"}, at = {@At("HEAD")}, cancellable = true)
     public void playAmbientSound(CallbackInfo callbackInfo) {
-        if (((Eggmorphable) this).isEggmorphing())
-            callbackInfo.cancel();
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
-            callbackInfo.cancel();
+        if (((Eggmorphable) this).isEggmorphing()) callbackInfo.cancel();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
     }
 
     @Inject(method = {"requiresCustomPersistence"}, at = {@At("RETURN")}, cancellable = true)
     public void cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this instanceof Host host && host.hasParasite())
-            callbackInfo.setReturnValue(true);
-        if (((Eggmorphable) this).isEggmorphing())
-            callbackInfo.setReturnValue(true);
+        if (this instanceof Host host && host.hasParasite()) callbackInfo.setReturnValue(true);
+        if (((Eggmorphable) this).isEggmorphing()) callbackInfo.setReturnValue(true);
     }
 
     @Inject(method = {"tick"}, at = {@At("HEAD")})

@@ -88,14 +88,12 @@ public class AlienJarBlock extends BaseEntityBlock {
 
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
-            jarStorageEntity.tick();
+        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity) jarStorageEntity.tick();
     }
 
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock()))
-            return;
+        if (blockState.is(blockState2.getBlock())) return;
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof Container container) {
             Containers.dropContents(level, blockPos, container);

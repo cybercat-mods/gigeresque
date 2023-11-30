@@ -115,10 +115,8 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
                 } else if (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())
                     if (this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    else
-                        return event.setAndContinue(GigAnimationsDefault.SWIM);
-            if (event.getAnimatable().getAttckingState() == 1)
-                return PlayState.CONTINUE;
+                    else return event.setAndContinue(GigAnimationsDefault.SWIM);
+            if (event.getAnimatable().getAttckingState() == 1) return PlayState.CONTINUE;
             else
                 return event.setAndContinue((this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
@@ -127,8 +125,6 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
                 if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.5F, true);
-//			if (event.getKeyframeData().getSound().matches("idleSoundkey"))
-//					this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
                 if (event.getKeyframeData().getSound().matches("thudSoundkey"))
                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 0.5F, 2.6F, true);
                 if (event.getKeyframeData().getSound().matches("clawSoundkey"))
@@ -179,8 +175,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
     @Override
     public List<ExtendedSensor<NeomorphEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<NeomorphEntity>().setRadius(7), new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<NeomorphEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
     }
 
     @Override
@@ -190,8 +185,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
     @Override
     public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.75f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.75f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
@@ -207,14 +201,12 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
             this.level().removeBlock(this.blockPosition(), false);
 
         if (!this.isVehicle() && !this.isDeadOrDying() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (!this.level().isClientSide)
-                breakingCounter++;
+            if (!this.level().isClientSide) breakingCounter++;
             if (breakingCounter > 10)
                 for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
                     if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
                         if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
-                            if (!level().isClientSide)
-                                this.level().destroyBlock(testPos, true, null, 512);
+                            if (!level().isClientSide) this.level().destroyBlock(testPos, true, null, 512);
                             this.triggerAnim("attackController", "swipe");
                             breakingCounter = -90;
                             if (level().isClientSide()) {
@@ -229,8 +221,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
                             breakingCounter = -90;
                         }
                 }
-            if (breakingCounter >= 25)
-                breakingCounter = 0;
+            if (breakingCounter >= 25) breakingCounter = 0;
         }
     }
 
@@ -261,8 +252,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper)
-            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }

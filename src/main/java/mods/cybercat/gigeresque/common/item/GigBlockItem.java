@@ -41,8 +41,7 @@ public class GigBlockItem extends BlockItem implements GeoItem {
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null)
-                    renderer = new SporeItemBlockRender();
+                if (renderer == null) renderer = new SporeItemBlockRender();
 
                 return renderer;
             }

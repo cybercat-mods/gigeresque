@@ -85,7 +85,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class, EntityDataSerializers.BOOLEAN);
-    private final BetterSpiderPathNavigator<?> landNavigation = new BetterSpiderPathNavigator<FacehuggerEntity>(this, level(), false);
+    private final BetterSpiderPathNavigator<?> landNavigation = new BetterSpiderPathNavigator<>(this, level(), false);
     private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
     private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
     private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
@@ -162,8 +162,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     public void detachFromHost(boolean removesParasite) {
         this.ticksAttachedToHost = -1.0f;
         var vehicle = this.getVehicle();
-        if (vehicle instanceof LivingEntity && removesParasite)
-            ((Host) vehicle).removeParasite();
+        if (vehicle instanceof LivingEntity && removesParasite) ((Host) vehicle).removeParasite();
         this.unRide();
     }
 
@@ -178,8 +177,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
-        if (fallDistance <= 12)
-            return 0;
+        if (fallDistance <= 12) return 0;
         return super.calculateFallDamage(fallDistance, damageMultiplier);
     }
 
@@ -241,16 +239,14 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 setIsInfertile(true);
                 this.kill();
             }
-        } else
-            ticksAttachedToHost = -1.0f;
+        } else ticksAttachedToHost = -1.0f;
 
         if (isInfertile()) {
             this.kill();
             this.removeFreeWill();
             return;
         }
-        if (this.isEggSpawn() && this.tickCount > 30)
-            this.setEggSpawnState(false);
+        if (this.isEggSpawn() && this.tickCount > 30) this.setEggSpawnState(false);
     }
 
     @Override
@@ -263,10 +259,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("isInfertile"))
-            setIsInfertile(nbt.getBoolean("isInfertile"));
-        if (nbt.contains("ticksAttachedToHost"))
-            ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
+        if (nbt.contains("isInfertile")) setIsInfertile(nbt.getBoolean("isInfertile"));
+        if (nbt.contains("ticksAttachedToHost")) ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
     }
 
     @Override
@@ -276,8 +270,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
-            return false;
+        if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown())) return false;
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity livingEntity)
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
@@ -290,8 +283,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public void knockback(double strength, double x, double z) {
-        if (!isInfertile())
-            super.knockback(strength, x, z);
+        if (!isInfertile()) super.knockback(strength, x, z);
     }
 
     @Override
@@ -340,10 +332,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null)
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override
@@ -385,8 +375,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new UnreachableTargetSensor<>(),
-                new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7), new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
     }
 
     @Override
@@ -415,21 +404,18 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
-                if (!this.isAttacking() && event.isMoving())
-                    return event.setAndContinue(GigAnimationsDefault.SWIM);
+                if (!this.isAttacking() && event.isMoving()) return event.setAndContinue(GigAnimationsDefault.SWIM);
                 else if (this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            if (this.isJumping())
-                return event.setAndContinue(GigAnimationsDefault.CHARGE);
+                else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+            if (this.isJumping()) return event.setAndContinue(GigAnimationsDefault.CHARGE);
             if (this.isEggSpawn() && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
             if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
             }
-            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isAttacking() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }

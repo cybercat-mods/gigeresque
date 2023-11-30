@@ -14,7 +14,6 @@ public class WardenEntityMixin {
 
     @Inject(method = {"canTargetEntity"}, at = {@At("HEAD")}, cancellable = true)
     void tick(@Nullable Entity entity, CallbackInfoReturnable<Boolean> ci) {
-        if (entity instanceof AlienEntity)
-            ci.setReturnValue(false);
+        if (entity instanceof AlienEntity) ci.setReturnValue(false);
     }
 }

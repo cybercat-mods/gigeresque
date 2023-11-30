@@ -122,8 +122,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     private void setThickness(ServerLevel world, BlockPos pos, BlockState state, int consume) {
         var newState = state.setValue(THICKNESS, Math.max(getThickness(state) - consume, 0));
 
-        if (world.getBlockState(pos).getBlock() == Blocks.WATER)
-            newState = newState.setValue(WATERLOGGED, true);
+        if (world.getBlockState(pos).getBlock() == Blocks.WATER) newState = newState.setValue(WATERLOGGED, true);
 
         world.setBlockAndUpdate(pos, newState);
     }
@@ -152,12 +151,12 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
         if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1) {
-                setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-                if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !world.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
-                    world.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
-                    world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-                }
+            setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
+            if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !world.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
+                world.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
+                world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
             }
+        }
         super.tick(state, world, pos, random);
         scheduleTickIfNotScheduled(world, pos);
     }
@@ -193,12 +192,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
             if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
             if (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))
-                    livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
+                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
         }
         if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2)
-                if (itemEntity.getItem().getMaxDamage() < 2)
-                    itemEntity.getItem().shrink(1);
-                else
-                    itemEntity.getItem().setDamageValue(itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
+            if (itemEntity.getItem().getMaxDamage() < 2) itemEntity.getItem().shrink(1);
+            else
+                itemEntity.getItem().setDamageValue(itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
     }
 }

@@ -13,19 +13,15 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.User;
 
 public interface AzureTicker {
     static void tick(Level level, Data data, User user) {
-        if (!(level instanceof ServerLevel))
-            return;
+        if (!(level instanceof ServerLevel)) return;
         if (level instanceof ServerLevel serverLevel) {
-            if (data.getCurrentVibration() == null)
-                AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
-            if (data.getCurrentVibration() == null)
-                return;
+            if (data.getCurrentVibration() == null) AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
+            if (data.getCurrentVibration() == null) return;
             var travelCheck = data.getTravelTimeInTicks() > 0;
             data.decrementTravelTime();
             if (data.getTravelTimeInTicks() <= 0)
                 travelCheck = AzureTicker.receiveVibration(serverLevel, data, user, data.getCurrentVibration());
-            if (travelCheck)
-                user.onDataChanged();
+            if (travelCheck) user.onDataChanged();
         }
     }
 
@@ -56,8 +52,7 @@ public interface AzureTicker {
         for (var i = chunkPos.x - 1; i < chunkPos.x + 1; ++i)
             for (var j = chunkPos.z - 1; j < chunkPos.z + 1; ++j) {
                 var chunkAccess = level.getChunkSource().getChunkNow(i, j);
-                if (chunkAccess != null && level.shouldTickBlocksAt(chunkAccess.getPos().toLong()))
-                    continue;
+                if (chunkAccess != null && level.shouldTickBlocksAt(chunkAccess.getPos().toLong())) continue;
                 return false;
             }
         return true;

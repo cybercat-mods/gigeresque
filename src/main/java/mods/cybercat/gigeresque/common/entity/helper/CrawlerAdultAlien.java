@@ -121,48 +121,39 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
         if (other.maxY > aabb.minY && other.minY < aabb.maxY && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
             if (offsetX > 0.0D && other.maxX <= aabb.minX) {
                 var dx = aabb.minX - other.maxX;
-                if (dx < offsetX)
-                    offsetX = dx;
+                if (dx < offsetX) offsetX = dx;
             } else if (offsetX < 0.0D && other.minX >= aabb.maxX) {
                 var dx = aabb.maxX - other.minX;
-                if (dx > offsetX)
-                    offsetX = dx;
+                if (dx > offsetX) offsetX = dx;
             }
             return offsetX;
-        } else
-            return offsetX;
+        } else return offsetX;
     }
 
     private static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
         if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
             if (offsetY > 0.0D && other.maxY <= aabb.minY) {
                 var dy = aabb.minY - other.maxY;
-                if (dy < offsetY)
-                    offsetY = dy;
+                if (dy < offsetY) offsetY = dy;
             } else if (offsetY < 0.0D && other.minY >= aabb.maxY) {
                 var dy = aabb.maxY - other.minY;
-                if (dy > offsetY)
-                    offsetY = dy;
+                if (dy > offsetY) offsetY = dy;
             }
             return offsetY;
-        } else
-            return offsetY;
+        } else return offsetY;
     }
 
     private static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
         if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxY > aabb.minY && other.minY < aabb.maxY) {
             if (offsetZ > 0.0D && other.maxZ <= aabb.minZ) {
                 var dz = aabb.minZ - other.maxZ;
-                if (dz < offsetZ)
-                    offsetZ = dz;
+                if (dz < offsetZ) offsetZ = dz;
             } else if (offsetZ < 0.0D && other.minZ >= aabb.maxZ) {
                 var dz = aabb.maxZ - other.minZ;
-                if (dz > offsetZ)
-                    offsetZ = dz;
+                if (dz > offsetZ) offsetZ = dz;
             }
             return offsetZ;
-        } else
-            return offsetZ;
+        } else return offsetZ;
     }
 
     @Override
@@ -189,12 +180,10 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 if (sides.test(offset)) {
                     offsetPos.set(pos.getX() + offset.getStepX(), pos.getY() + offset.getStepY(), pos.getZ() + offset.getStepZ());
                     var state = cache.getBlockState(offsetPos);
-                    if (this.canClimbOnBlock(state, offsetPos))
-                        hasClimbableNeigbor = true;
+                    if (this.canClimbOnBlock(state, offsetPos)) hasClimbableNeigbor = true;
                 }
             }
-            if (!hasClimbableNeigbor)
-                return -1.0f;
+            if (!hasClimbableNeigbor) return -1.0f;
         }
         return entity.getPathfindingMalus(nodeType);
     }
@@ -294,8 +283,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
         var stickingDistance = this.zza != 0 ? 1.5f : 0.1f;
 
         for (var facing : Direction.values()) {
-            if (avoidPathingFacing == facing)
-                continue;
+            if (avoidPathingFacing == facing) continue;
             var collisionBoxes = this.getCollisionBoxes(entityBox.inflate(0.2f).expandTowards(facing.getStepX() * stickingDistance, facing.getStepY() * stickingDistance, facing.getStepZ() * stickingDistance));
             var closestDst = Double.MAX_VALUE;
 
@@ -324,10 +312,8 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 weighting = weighting.add(new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(1 - Math.min(closestDst, stickingDistance) / stickingDistance));
         }
 
-        if (closestFacing == null)
-            this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
-        else
-            this.groundDirection = Pair.of(closestFacing, weighting.normalize().add(0, -0.001f, 0).normalize());
+        if (closestFacing == null) this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
+        else this.groundDirection = Pair.of(closestFacing, weighting.normalize().add(0, -0.001f, 0).normalize());
     }
 
     @Override
@@ -410,10 +396,8 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                                 this.entityData.set(pathingTarget, Optional.of(new BlockPos(point.x, point.y, point.z)));
                                 if (point instanceof DirectionalPathPoint dirpoint) {
                                     var dir = dirpoint.getPathSide();
-                                    if (dir != null)
-                                        this.entityData.set(pathingSide, dir);
-                                    else
-                                        this.entityData.set(pathingSide, Direction.DOWN);
+                                    if (dir != null) this.entityData.set(pathingSide, dir);
+                                    else this.entityData.set(pathingSide, Direction.DOWN);
                                 }
 
                             } else {
@@ -454,8 +438,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             var i = 0;
             for (var key : PATHING_TARGETS) {
                 var pos = this.entityData.get(key).orElse(null);
-                if (pos != null)
-                    pathingTargets.add(new PathingTarget(pos, this.entityData.get(PATHING_SIDES.get(i))));
+                if (pos != null) pathingTargets.add(new PathingTarget(pos, this.entityData.get(PATHING_SIDES.get(i))));
                 i++;
             }
             return pathingTargets;
@@ -582,10 +565,8 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
         this.attachmentOffsetZ = baseStickingOffsetZ + (this.lastAttachmentOffsetZ - baseStickingOffsetZ) * attachmentBlend;
         this.attachmentNormal = baseOrientationNormal.add(this.lastAttachmentOrientationNormal.subtract(baseOrientationNormal).scale(attachmentBlend)).normalize();
 
-        if (!isAttached)
-            this.attachedTicks = Math.max(0, this.attachedTicks - 1);
-        else
-            this.attachedTicks = Math.min(5, this.attachedTicks + 1);
+        if (!isAttached) this.attachedTicks = Math.max(0, this.attachedTicks - 1);
+        else this.attachedTicks = Math.min(5, this.attachedTicks + 1);
 
         this.orientation = this.calculateOrientation(1);
         var newRotations = this.getOrientation().getLocalRotation(direction);
@@ -612,10 +593,8 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
     }
 
     private float wrapAngleInRange(float angle, float target) {
-        while (target - angle < -180.0F)
-            angle -= 360.0F;
-        while (target - angle >= 180.0F)
-            angle += 360.0F;
+        while (target - angle < -180.0F) angle -= 360.0F;
+        while (target - angle >= 180.0F) angle += 360.0F;
         return angle;
     }
 
@@ -679,12 +658,10 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
     }
 
     private double getGravity() {
-        if (this.isNoGravity())
-            return 0;
+        if (this.isNoGravity()) return 0;
         var gravity = 0.08d;
         var isFalling = this.getDeltaMovement().y <= 0.0D;
-        if (isFalling && this.hasEffect(MobEffects.SLOW_FALLING))
-            gravity = 0.1D;
+        if (isFalling && this.hasEffect(MobEffects.SLOW_FALLING)) gravity = 0.1D;
         return gravity;
     }
 
@@ -726,12 +703,9 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
             if (!this.canClimbInWater && this.isInWater() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidState)) {
                 this.isTravelingInFluid = true;
-                if (canTravel)
-                    return false;
-            } else if (canTravel)
-                this.travelOnGround(relative);
-            if (!canTravel)
-                this.calculateEntityAnimation(true);
+                if (canTravel) return false;
+            } else if (canTravel) this.travelOnGround(relative);
+            if (!canTravel) this.calculateEntityAnimation(true);
             this.updateOffsetsAndOrientation();
             return true;
         } else {
@@ -753,8 +727,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
         var stickingForce = this.getStickingForce(groundDirection);
         var isFalling = this.getDeltaMovement().y <= 0.0D;
 
-        if (isFalling && this.hasEffect(MobEffects.SLOW_FALLING))
-            this.fallDistance = 0;
+        if (isFalling && this.hasEffect(MobEffects.SLOW_FALLING)) this.fallDistance = 0;
 
         var forward = (float) relative.z;
         var strafe = (float) relative.x;
@@ -794,8 +767,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 var surfaceMovementDir = movementDir.subtract(collisionNormal.scale(collisionNormal.dot(movementDir))).normalize();
                 var isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(collisionNormal.z) > 1.0001f;
                 // Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
-                if (!isInnerCorner)
-                    movementDir = surfaceMovementDir;
+                if (!isInnerCorner) movementDir = surfaceMovementDir;
                 // Nullify sticking force along movement vector projected to surface
                 stickingForce = stickingForce.subtract(surfaceMovementDir.scale(surfaceMovementDir.normalize().dot(stickingForce)));
                 this.setDeltaMovement(this.getDeltaMovement().add(movementDir.scale(Mth.sqrt(forward * forward + strafe * strafe))));
@@ -844,8 +816,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
             else if (Math.abs(attachVector.y) > Math.abs(attachVector.z))
                 attachVector = new Vec3(0, Math.signum(attachVector.y), 0);
-            else
-                attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
+            else attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
 
             var attachDst = motion.length() + 0.1f;
             var aabb = this.getBoundingBox();
@@ -865,8 +836,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 this.setOnGround(prevOnGround);
                 this.horizontalCollision = prevCollidedHorizontally;
                 this.verticalCollision = prevCollidedVertically;
-            } else
-                this.setDeltaMovement(Vec3.ZERO);
+            } else this.setDeltaMovement(Vec3.ZERO);
         }
 
         this.calculateEntityAnimation(true);
@@ -924,8 +894,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             if (this.moveDist > this.nextStepDistance && !state.isAir()) {
                 this.nextStepDistance = this.nextStep();
                 this.playStepSound(pos, state);
-            } else if (state.isAir())
-                this.processFlappingMovement();
+            } else if (state.isAir()) this.processFlappingMovement();
         }
 
         return false;

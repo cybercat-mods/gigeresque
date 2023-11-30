@@ -15,8 +15,7 @@ public interface Growable {
 
     default void grow(LivingEntity entity, float amount) {
         setGrowth(min(getGrowth() + amount, getMaxGrowth()));
-        if (getGrowth() >= getMaxGrowth())
-            growUp(entity);
+        if (getGrowth() >= getMaxGrowth()) growUp(entity);
     }
 
     LivingEntity growInto();
@@ -25,14 +24,11 @@ public interface Growable {
         var world = entity.level();
         if (!world.isClientSide()) {
             var newEntity = growInto();
-            if (newEntity == null)
-                return;
+            if (newEntity == null) return;
             newEntity.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-            if (newEntity instanceof RunnerbursterEntity runnerBurster)
-                runnerBurster.setBirthStatus(false);
+            if (newEntity instanceof RunnerbursterEntity runnerBurster) runnerBurster.setBirthStatus(false);
             world.addFreshEntity(newEntity);
-            if (entity.hasCustomName() && entity != null)
-                    newEntity.setCustomName(entity.getCustomName());
+            if (entity.hasCustomName() && entity != null) newEntity.setCustomName(entity.getCustomName());
             entity.remove(Entity.RemovalReason.DISCARDED);
         }
     }

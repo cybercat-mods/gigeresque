@@ -49,16 +49,11 @@ public class NestResinWebBlock extends Block {
 
     private static VoxelShape getShapeForState(BlockState state) {
         var voxelShape = Shapes.empty();
-        if (Boolean.TRUE.equals(state.getValue(UP)))
-            voxelShape = UP_SHAPE;
-        if (Boolean.TRUE.equals(state.getValue(NORTH)))
-            voxelShape = Shapes.or(voxelShape, SOUTH_SHAPE);
-        if (Boolean.TRUE.equals(state.getValue(SOUTH)))
-            voxelShape = Shapes.or(voxelShape, NORTH_SHAPE);
-        if (Boolean.TRUE.equals(state.getValue(EAST)))
-            voxelShape = Shapes.or(voxelShape, WEST_SHAPE);
-        if (Boolean.TRUE.equals(state.getValue(WEST)))
-            voxelShape = Shapes.or(voxelShape, EAST_SHAPE);
+        if (Boolean.TRUE.equals(state.getValue(UP))) voxelShape = UP_SHAPE;
+        if (Boolean.TRUE.equals(state.getValue(NORTH))) voxelShape = Shapes.or(voxelShape, SOUTH_SHAPE);
+        if (Boolean.TRUE.equals(state.getValue(SOUTH))) voxelShape = Shapes.or(voxelShape, NORTH_SHAPE);
+        if (Boolean.TRUE.equals(state.getValue(EAST))) voxelShape = Shapes.or(voxelShape, WEST_SHAPE);
+        if (Boolean.TRUE.equals(state.getValue(WEST))) voxelShape = Shapes.or(voxelShape, EAST_SHAPE);
         return voxelShape.isEmpty() ? Shapes.block() : voxelShape;
     }
 
@@ -101,14 +96,11 @@ public class NestResinWebBlock extends Block {
     }
 
     private boolean shouldHaveSide(LevelReader world, BlockPos pos, Direction side) {
-        if (side == Direction.DOWN)
-            return false;
+        if (side == Direction.DOWN) return false;
         else {
             var blockPos = pos.relative(side);
-            if (shouldConnectTo(world, blockPos, side))
-                return true;
-            else if (side.getAxis() == Direction.Axis.Y)
-                return false;
+            if (shouldConnectTo(world, blockPos, side)) return true;
+            else if (side.getAxis() == Direction.Axis.Y) return false;
             else {
                 var blockState = world.getBlockState(pos.above());
                 return blockState.is(this) && blockState.getValue(FACING_PROPERTIES.get(side));
@@ -134,8 +126,7 @@ public class NestResinWebBlock extends Block {
             } while (!Boolean.TRUE.equals(state.getValue(booleanProperty)));
             var bl = shouldHaveSide(world, pos, direction);
             if (!bl) {
-                if (blockState == null)
-                    blockState = world.getBlockState(blockPos);
+                if (blockState == null) blockState = world.getBlockState(blockPos);
                 bl = blockState.is(this) && blockState.getValue(booleanProperty);
             }
             state = state.setValue(booleanProperty, bl);
@@ -184,9 +175,12 @@ public class NestResinWebBlock extends Block {
     @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
         return switch (rotation) {
-            case CLOCKWISE_180 -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST)).setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
-            case COUNTERCLOCKWISE_90 -> state.setValue(NORTH, state.getValue(EAST)).setValue(EAST, state.getValue(SOUTH)).setValue(SOUTH, state.getValue(WEST)).setValue(WEST, state.getValue(NORTH));
-            case CLOCKWISE_90 -> state.setValue(NORTH, state.getValue(WEST)).setValue(EAST, state.getValue(NORTH)).setValue(SOUTH, state.getValue(EAST)).setValue(WEST, state.getValue(SOUTH));
+            case CLOCKWISE_180 ->
+                    state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST)).setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
+            case COUNTERCLOCKWISE_90 ->
+                    state.setValue(NORTH, state.getValue(EAST)).setValue(EAST, state.getValue(SOUTH)).setValue(SOUTH, state.getValue(WEST)).setValue(WEST, state.getValue(NORTH));
+            case CLOCKWISE_90 ->
+                    state.setValue(NORTH, state.getValue(WEST)).setValue(EAST, state.getValue(NORTH)).setValue(SOUTH, state.getValue(EAST)).setValue(WEST, state.getValue(SOUTH));
             default -> state;
         };
     }

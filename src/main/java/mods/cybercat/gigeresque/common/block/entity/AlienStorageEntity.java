@@ -52,8 +52,7 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
         @Override
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof ChestMenu menu)
-                return menu.getContainer() == AlienStorageEntity.this;
+            if (player.containerMenu instanceof ChestMenu menu) return menu.getContainer() == AlienStorageEntity.this;
             return false;
         }
     };
@@ -66,11 +65,10 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
     public static void tick(Level level, BlockPos pos, BlockState state, AlienStorageEntity blockEntity) {
         if (level != null) {
-            if (!blockEntity.level.isClientSide)
-                BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
-                    if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
-                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
-                });
+            if (!blockEntity.level.isClientSide) BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
+                if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
+                    level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
+            });
             if (!blockEntity.isRemoved())
                 blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
         }
@@ -80,15 +78,13 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(nbt))
-            ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
-        if (!this.trySaveLootTable(nbt))
-            ContainerHelper.saveAllItems(nbt, this.items);
+        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
     }
 
     @Override
@@ -136,10 +132,8 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
         if (oldViewerCount != newViewerCount)
-            if (newViewerCount > 0)
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-            else
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+            if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
     }
 
     public StorageStates getChestState() {

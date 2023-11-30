@@ -13,7 +13,7 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-public class MobSpawn {
+public record MobSpawn() {
 
     public static void addSpawnEntries() {
         BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(GigTags.EGGSPAWN_BIOMES, context)), MobCategory.MONSTER, Entities.EGG, Gigeresque.config.alienegg_spawn_weight, Gigeresque.config.alienegg_min_group, Gigeresque.config.alienegg_max_group);

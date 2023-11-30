@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 import java.util.HashMap;
 
 public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-    private static final HashMap<ResourceLocation, EggmorphLayerTexture> textureCache = new HashMap<ResourceLocation, EggmorphLayerTexture>();
+    private static final HashMap<ResourceLocation, EggmorphLayerTexture> textureCache = new HashMap<>();
 
     public EggmorphFeatureRenderer(RenderLayerParent<T, M> context) {
         super(context);

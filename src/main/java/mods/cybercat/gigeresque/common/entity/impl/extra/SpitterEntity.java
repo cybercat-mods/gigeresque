@@ -90,13 +90,12 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                         if (this.onGround() && !this.wasEyeInWater) {
                             if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                                 return event.setAndContinue(GigAnimationsDefault.RUN);
-                            else
-                                return event.setAndContinue(GigAnimationsDefault.WALK);
-                        } else if (this.wasEyeInWater && !this.isVehicle())
-                            if (this.isAggressive() && !this.isVehicle())
-                                return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                            else
-                                return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+                            else return event.setAndContinue(GigAnimationsDefault.WALK);
+                        } else if (this.wasEyeInWater && !this.isVehicle()) if (this.isAggressive() && !this.isVehicle()) {
+                            return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+                        } else {
+                            return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+                        }
                     } else if (this.isCrawling() && !this.isVehicle() && !this.isInWater())
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
                     return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
@@ -135,8 +134,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                                 if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
                                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
                             }
-                        }))
-                .add(new AnimationController<>(this, "hissController", 0, event -> {
+                        })).add(new AnimationController<>(this, "hissController", 0, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
                         return event.setAndContinue(GigAnimationsDefault.HISS);
@@ -236,8 +234,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-        if (spawnReason != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
+        if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
@@ -259,7 +256,9 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : this.isCrawling() ? EntityDimensions.scalable(0.9f, 0.9f) : EntityDimensions.scalable(0.9f, 1.9f);
+        if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
+        if (this.isCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
+        return EntityDimensions.scalable(0.9f, 1.9f);
     }
 
     @Override
@@ -268,17 +267,14 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
-        if (this.tickCount % 10 == 0)
-            this.refreshDimensions();
+        if (this.tickCount % 10 == 0) this.refreshDimensions();
 
         if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.5));
-            if (getTarget() == null)
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override
@@ -297,8 +293,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper)
-            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }

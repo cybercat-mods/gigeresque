@@ -34,8 +34,7 @@ public class SporeStatusEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
-        if (this == GigStatusEffects.SPORE)
-            entity.heal(0);
+        if (this == GigStatusEffects.SPORE) entity.heal(0);
     }
 
     @Override
@@ -61,9 +60,8 @@ public class SporeStatusEffect extends MobEffect {
     }
 
     private void spawnEffects(Level world, LivingEntity entity) {
-        if (!world.isClientSide())
-            for (var i = 0; i < 2; i++)
-                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(), entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
+        if (!world.isClientSide()) for (var i = 0; i < 2; i++)
+            ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(), entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
     }
 
 }

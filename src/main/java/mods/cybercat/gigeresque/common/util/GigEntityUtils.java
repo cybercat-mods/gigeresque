@@ -77,7 +77,6 @@ public record GigEntityUtils() {
     }
 
     public static void spawnMutant(LivingEntity entity) {
-        var randomPhase = entity.getRandom().nextInt(0, 50);
         var randomPhase2 = entity.getRandom().nextInt(0, 2);
         Entity summon;
         if (GigEntityUtils.isTargetSmallMutantHost(entity)) {

@@ -24,10 +24,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
     }
 
     @Inject(method = {"wantsToStopRiding"}, at = {@At("RETURN")})
-    protected boolean shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getVehicle() instanceof AlienEntity)
-            return false;
-        return callbackInfo.getReturnValue();
+    protected void shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
+        if (this.getVehicle() instanceof AlienEntity) callbackInfo.setReturnValue(false);
     }
 
     @Inject(method = {"interactOn"}, at = {@At("HEAD")}, cancellable = true)
@@ -38,14 +36,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
 
     @Inject(method = {"attack"}, at = {@At("HEAD")}, cancellable = true)
     protected void noAttacking(Entity target, CallbackInfo callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
-            this.stopUsingItem();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) this.stopUsingItem();
     }
 
     @Inject(method = {"aiStep"}, at = {@At("HEAD")}, cancellable = true)
     public void tickMovement(CallbackInfo callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
-            callbackInfo.cancel();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
     }
 
 }

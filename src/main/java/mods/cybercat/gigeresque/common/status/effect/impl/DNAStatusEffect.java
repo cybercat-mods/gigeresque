@@ -37,31 +37,27 @@ public class DNAStatusEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
-        if (!(entity instanceof AlienEntity) && this == GigStatusEffects.DNA)
-            entity.heal(0);
+        if (!(entity instanceof AlienEntity) && this == GigStatusEffects.DNA) entity.heal(0);
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
-        if (!(entity instanceof AlienEntity))
-            if (randomPhase > 25) {
-                if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                    GigEntityUtils.spawnMutant(entity);
-                } else if (entity instanceof Creeper)
-                    return;
-                else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-                    GigEntityUtils.spawnMutant(entity);
-                }
-            } else {
-                if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                    placeGoo(entity);
-                } else if (entity instanceof Creeper)
-                    return;
-                else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-                    placeGoo(entity);
-                }
+        if (!(entity instanceof AlienEntity)) if (randomPhase > 25) {
+            if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
+                GigEntityUtils.spawnMutant(entity);
+            } else if (entity instanceof Creeper) return;
+            else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
+                GigEntityUtils.spawnMutant(entity);
             }
+        } else {
+            if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
+                placeGoo(entity);
+            } else if (entity instanceof Creeper) return;
+            else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
+                placeGoo(entity);
+            }
+        }
         super.removeAttributeModifiers(entity, attributes, amplifier);
     }
 
@@ -74,21 +70,18 @@ public class DNAStatusEffect extends MobEffect {
     private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
         if (lightBlockPos == null) {
             lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 1);
-            if (lightBlockPos == null)
-                return;
+            if (lightBlockPos == null) return;
             var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
             areaEffectCloudEntity.setRadius(2.0F);
             areaEffectCloudEntity.setDuration(300);
             areaEffectCloudEntity.setRadiusPerTick(0);
             areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
             entity.level().addFreshEntity(areaEffectCloudEntity);
-        } else
-            lightBlockPos = null;
+        } else lightBlockPos = null;
     }
 
     private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
-        if (blockPos == null)
-            return null;
+        if (blockPos == null) return null;
 
         var offsets = new int[maxDistance * 2 + 1];
         offsets[0] = 0;
@@ -101,8 +94,7 @@ public class DNAStatusEffect extends MobEffect {
                 for (var z : offsets) {
                     var offsetPos = blockPos.offset(x, y, z);
                     var state = world.getBlockState(offsetPos);
-                    if (state.isAir() || state.getBlock().equals(GigBlocks.NEST_RESIN_WEB_CROSS))
-                        return offsetPos;
+                    if (state.isAir() || state.getBlock().equals(GigBlocks.NEST_RESIN_WEB_CROSS)) return offsetPos;
                 }
 
         return null;

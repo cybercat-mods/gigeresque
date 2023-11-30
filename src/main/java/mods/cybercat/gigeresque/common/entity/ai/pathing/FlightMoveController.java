@@ -15,7 +15,6 @@ public class FlightMoveController extends MoveControl {
     public void tick() {
         if (this.operation == MoveControl.Operation.MOVE_TO)
             parentEntity.setDeltaMovement(parentEntity.getDeltaMovement().scale(0.5D));
-        else if (this.operation == Operation.STRAFE)
-            this.operation = Operation.WAIT;
+        else if (this.operation == Operation.STRAFE) this.operation = Operation.WAIT;
     }
 }

@@ -4,15 +4,12 @@ import com.mojang.datafixers.util.Pair;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public record NestBuildingHelper() {
@@ -28,10 +25,10 @@ public record NestBuildingHelper() {
                     if (level.getLightEmission(pos) < 6) {
                         var resinBlock = GigBlocks.NEST_RESIN.defaultBlockState();
                         if (nestBlockData.isFloor() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
-                                level.setBlockAndUpdate(blockPos, resinBlock);
+                            level.setBlockAndUpdate(blockPos, resinBlock);
 
                         if (nestBlockData.isCorner() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS))
-                                level.setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+                            level.setBlockAndUpdate(blockPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
 
                         if (nestBlockData.isWall() || nestBlockData.isCeiling()) {
                             var nestResinWebState = GigBlocks.NEST_RESIN_WEB.defaultBlockState().setValue(NestResinWebBlock.UP, nestBlockData.hasUpCoverage()).setValue(NestResinWebBlock.NORTH, nestBlockData.hasNorthCoverage()).setValue(NestResinWebBlock.SOUTH, nestBlockData.hasSouthCoverage()).setValue(NestResinWebBlock.EAST, nestBlockData.hasEastCoverage()).setValue(NestResinWebBlock.WEST, nestBlockData.hasWestCoverage()).setValue(NestResinWebBlock.VARIANTS,

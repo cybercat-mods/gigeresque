@@ -59,8 +59,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     }
 
     public static boolean canSpawn(EntityType<? extends AlienEntity> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        if (world.getDifficulty() == Difficulty.PEACEFUL)
-            return false;
+        if (world.getDifficulty() == Difficulty.PEACEFUL) return false;
         if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
             return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
         return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
@@ -150,7 +149,9 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return (this.isHatched() && !this.isDeadOrDying()) ? EntityDimensions.scalable(0.7f, 1.0f) : this.isDeadOrDying() ? EntityDimensions.scalable(0.7f, 0.6f) : super.getDimensions(pose);
+        if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
+        if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
+        return super.getDimensions(pose);
     }
 
     @Override
@@ -160,29 +161,24 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
     @Override
     public void travel(Vec3 vec3) {
-        if (this.tickCount % 10 == 0)
-            this.refreshDimensions();
+        if (this.tickCount % 10 == 0) this.refreshDimensions();
         super.travel(vec3);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.isNoAi())
-            return;
+        if (this.isNoAi()) return;
 
-        if (this.isHatched() && this.isAlive() && !this.level().isClientSide)
-            this.setTicksUntilNest(ticksUntilNest++);
+        if (this.isHatched() && this.isAlive() && !this.level().isClientSide) this.setTicksUntilNest(ticksUntilNest++);
         if (this.getTicksUntilNest() == 6000f) {
-            if (this.level().isClientSide)
-                for (var i = 0; i < 2; i++)
-                    this.level().addAlwaysVisibleParticle(Particles.GOO, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+            if (this.level().isClientSide) for (var i = 0; i < 2; i++)
+                this.level().addAlwaysVisibleParticle(Particles.GOO, this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0.0, 0.0, 0.0);
             this.level().setBlockAndUpdate(this.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
             this.kill();
         }
 
-        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
-            hatchProgress++;
+        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS) hatchProgress++;
 
         if (hatchProgress == 40L && !level().isClientSide)
             this.level().playSound(this, blockPosition(), GigSounds.EGG_OPEN, SoundSource.HOSTILE, 1.0F, 1.0F);
@@ -193,8 +189,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
             ticksOpen++;
         }
 
-        if (isHatched() && hasFacehugger())
-            ticksOpen++;
+        if (isHatched() && hasFacehugger()) ticksOpen++;
 
         if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
             var facehugger = Entities.FACEHUGGER.create(level());
@@ -258,8 +253,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (attacker != null && attacker instanceof LivingEntity)
-                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, (LivingEntity) attacker);
+            if (attacker != null && attacker instanceof LivingEntity livingEntity)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
         }
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
@@ -268,14 +263,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         if (!this.level().isClientSide && source != damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
@@ -292,8 +283,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         super.baseTick();
         this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(Gigeresque.config.alieneggHatchRange)).forEach(target -> {
             if (target.isAlive() && GigEntityUtils.faceHuggerTest(target, this)) {
-                if (target instanceof Mob)
-                    setIsHatching(true);
+                if (target instanceof Mob) setIsHatching(true);
                 if (target instanceof Player player && (!(player.isCreative() || player.isSpectator())))
                     setIsHatching(true);
             }
@@ -315,8 +305,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
 
     @Override
     public void checkDespawn() {
-        if (this.isHatched() && !this.hasFacehugger())
-            super.checkDespawn();
+        if (this.isHatched() && !this.hasFacehugger()) super.checkDespawn();
     }
 
     /*
@@ -326,12 +315,10 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             if (isHatched() && !this.isDeadOrDying()) {
-                if (!hasFacehugger())
-                    return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
+                if (!hasFacehugger()) return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
                 return event.setAndContinue(GigAnimationsDefault.HATCHED);
             }
-            if (this.isDeadOrDying())
-                return event.setAndContinue(GigAnimationsDefault.DEATH);
+            if (this.isDeadOrDying()) return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (isHatching() && !this.isDeadOrDying())
                 event.getController().setAnimation(GigAnimationsDefault.HATCHING);
             return event.setAndContinue(GigAnimationsDefault.IDLE);

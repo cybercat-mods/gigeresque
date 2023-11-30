@@ -114,8 +114,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     private void setThickness(ServerLevel world, BlockPos pos, BlockState state, int consume) {
         var newState = state.setValue(THICKNESS, Math.max(getThickness(state) - consume, 0));
 
-        if (world.getBlockState(pos).getBlock() == Blocks.WATER)
-            newState = newState.setValue(WATERLOGGED, true);
+        if (world.getBlockState(pos).getBlock() == Blocks.WATER) newState = newState.setValue(WATERLOGGED, true);
 
         world.setBlockAndUpdate(pos, newState);
     }
@@ -140,9 +139,8 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
         if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1)
-                setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-        if (this.age > 600)
-            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+            setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
+        if (this.age > 600) world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         super.tick(state, world, pos, random);
         scheduleTickIfNotScheduled(world, pos);
     }
@@ -169,12 +167,11 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
-                if (livingEntity.hasEffect(GigStatusEffects.DNA))
-                    return;
-                if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(GigTags.DNAIMMUNE))
-                    livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-                if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
-                        livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-            }
+            if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
+            if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(GigTags.DNAIMMUNE))
+                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+            if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
+                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+        }
     }
 }

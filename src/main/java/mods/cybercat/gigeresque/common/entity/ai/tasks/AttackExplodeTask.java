@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.SplittableRandom;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMeleeBehaviour<E> {
@@ -50,7 +49,7 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
-        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && !this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
+        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).noneMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
     }
 
     @Override

@@ -79,16 +79,12 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-            else if (isDead)
-                return event.setAndContinue(GigAnimationsDefault.DEATH);
+                if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
+                else return event.setAndContinue(GigAnimationsDefault.WALK);
+            else if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
             else if (event.getAnimatable().getAttckingState() == 1 && !isDead && !this.onGround())
                 return event.setAndContinue(GigAnimationsDefault.CHARGE);
-            else
-                return event.setAndContinue(GigAnimationsDefault.IDLE);
+            else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
@@ -167,14 +163,10 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
         if (!this.level().isClientSide && source != damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
 
@@ -192,11 +184,9 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
         var posState = level().getBlockState(pos);
         var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
 
-        if (posState.getBlock() == Blocks.WATER)
-            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-        if (!(posState.getBlock() instanceof LiquidBlock))
-            return;
+        if (!(posState.getBlock() instanceof LiquidBlock)) return;
         level().setBlockAndUpdate(pos, newState);
     }
 

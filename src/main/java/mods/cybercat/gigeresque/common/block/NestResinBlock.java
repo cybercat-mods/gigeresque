@@ -29,6 +29,7 @@ public class NestResinBlock extends Block {
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
     protected static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false, true);
     protected static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true, true);
+
     public NestResinBlock(Properties settings) {
         super(settings);
 
@@ -37,8 +38,7 @@ public class NestResinBlock extends Block {
 
     private static List<VoxelShape> interpolateShapes(boolean divide, boolean includeEmptyVoxelShape) {
         ArrayList<VoxelShape> list = new ArrayList<>();
-        if (includeEmptyVoxelShape)
-            list.add(Shapes.empty());
+        if (includeEmptyVoxelShape) list.add(Shapes.empty());
         for (var i = 0; i < 8; i++)
             list.add(box(0.0, 0.0, 0.0, 16.0, divide ? (i * 2.0) / 2.0 : i * 2.0, 16.0));
         return list;
@@ -85,10 +85,8 @@ public class NestResinBlock extends Block {
         if (!isIce && !isPackedIce && !isBarrier) {
             if (!isHoney && !isSoulSand)
                 return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP) || blockState.is(this) && blockState.getValue(LAYERS) == 8;
-            else
-                return true;
-        } else
-            return false;
+            else return true;
+        } else return false;
     }
 
     @Override
@@ -100,22 +98,17 @@ public class NestResinBlock extends Block {
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
         var i = state.getValue(LAYERS);
         if (context.getItemInHand().is(asItem()) && i < 8)
-            if (context.replacingClickedOnBlock())
-                return context.getClickedFace() == Direction.UP;
-            else
-                return true;
-        else
-            return i == 1;
+            if (context.replacingClickedOnBlock()) return context.getClickedFace() == Direction.UP;
+            else return true;
+        else return i == 1;
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         var blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
-        if (blockState.is(this))
-            return blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1));
-        else
-            return super.getStateForPlacement(ctx);
+        if (blockState.is(this)) return blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1));
+        else return super.getStateForPlacement(ctx);
     }
 
     @Override

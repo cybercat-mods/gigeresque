@@ -104,16 +104,14 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         hasSpawnGoo(nbt.getBoolean("spawngoo"));
-        if (!this.tryLoadLootTable(nbt))
-            ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
         nbt.putBoolean("spawngoo", check);
-        if (!this.trySaveLootTable(nbt))
-            ContainerHelper.saveAllItems(nbt, this.items);
+        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
     }
 
     @Override
@@ -161,10 +159,8 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
         if (oldViewerCount != newViewerCount)
-            if (newViewerCount > 0)
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-            else
-                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+            if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
     }
 
     public StorageStates getChestState() {

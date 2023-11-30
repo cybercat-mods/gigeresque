@@ -79,26 +79,22 @@ public abstract class BlackFluid extends FlowingFluid {
     @Override
     protected void randomTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
         int i = randomSource.nextInt(50);
-        if (i > 40)
-            for (var j = 0; j < 10; ++j) {
-                if (!level.isLoaded(blockPos = blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
-                    return;
-                if (this.isSporeReplaceable(level, blockPos)) {
-                    if (!this.hasSporeReplacements(level, blockPos))
-                        continue;
-                    if (!level.getBlockState(blockPos).is(GigBlocks.BLACK_FLUID))
-                        level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.defaultBlockState());
-                    return;
-                }
-                if (!level.getBlockState(blockPos).blocksMotion())
-                    return;
+        if (i > 40) for (var j = 0; j < 10; ++j) {
+            if (!level.isLoaded(blockPos = blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
+                return;
+            if (this.isSporeReplaceable(level, blockPos)) {
+                if (!this.hasSporeReplacements(level, blockPos)) continue;
+                if (!level.getBlockState(blockPos).is(GigBlocks.BLACK_FLUID))
+                    level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.defaultBlockState());
+                return;
             }
+            if (!level.getBlockState(blockPos).blocksMotion()) return;
+        }
     }
 
     private boolean hasSporeReplacements(LevelReader levelReader, BlockPos blockPos) {
         for (var direction : Direction.values()) {
-            if (!this.isSporeReplaceable(levelReader, blockPos.relative(direction)))
-                continue;
+            if (!this.isSporeReplaceable(levelReader, blockPos.relative(direction))) continue;
             return true;
         }
         return false;

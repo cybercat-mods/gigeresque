@@ -52,8 +52,7 @@ public record Entities() implements GigeresqueInitializer {
     private static Entities instance;
 
     public static synchronized Entities getInstance() {
-        if (instance == null)
-            instance = new Entities();
+        if (instance == null) instance = new Entities();
         return instance;
     }
 

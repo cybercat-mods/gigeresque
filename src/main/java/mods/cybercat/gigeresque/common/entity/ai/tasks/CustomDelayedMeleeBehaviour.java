@@ -93,21 +93,20 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
             });
         }
 
-        if (entity instanceof HammerpedeEntity hammer)
-            hammer.triggerAnim(cName, "attack");
+        if (entity instanceof HammerpedeEntity hammer) hammer.triggerAnim(cName, "attack");
 
         if (entity instanceof FacehuggerEntity hugger && hugger.getTarget() != null) {
-                var vec3d2 = new Vec3(hugger.getTarget().getX() - hugger.getX(), 0.0, hugger.getTarget().getZ() - hugger.getZ());
-                vec3d2 = vec3d2.normalize().scale(0.2).add(hugger.getDeltaMovement().scale(0.2));
-                hugger.setDeltaMovement(vec3d2.x, hugger.getTarget().getEyeHeight() > 0.8 ? 0.5F : 0.4, vec3d2.z);
-                hugger.setJumping(true);
-            }
+            var vec3d2 = new Vec3(hugger.getTarget().getX() - hugger.getX(), 0.0, hugger.getTarget().getZ() - hugger.getZ());
+            vec3d2 = vec3d2.normalize().scale(0.2).add(hugger.getDeltaMovement().scale(0.2));
+            hugger.setDeltaMovement(vec3d2.x, hugger.getTarget().getEyeHeight() > 0.8 ? 0.5F : 0.4, vec3d2.z);
+            hugger.setJumping(true);
+        }
 
         if (entity instanceof PopperEntity popper && popper.getTarget() != null) {
-                var vec3d2 = new Vec3(popper.getTarget().getX() - popper.getX(), 0.0, popper.getTarget().getZ() - popper.getZ());
-                vec3d2 = vec3d2.normalize().scale(0.2).add(popper.getDeltaMovement().scale(0.2));
-                popper.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
-            }
+            var vec3d2 = new Vec3(popper.getTarget().getX() - popper.getX(), 0.0, popper.getTarget().getZ() - popper.getZ());
+            vec3d2 = vec3d2.normalize().scale(0.2).add(popper.getDeltaMovement().scale(0.2));
+            popper.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+        }
     }
 
     @Override

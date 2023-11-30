@@ -90,18 +90,15 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
     @Override
     public LivingEntity growInto() {
         LivingEntity alien;
-        if (hostId == "runner")
-            alien = Entities.RUNNER_ALIEN.create(level());
-        else
-            alien = Entities.ALIEN.create(level());
+        if (hostId == "runner") alien = Entities.RUNNER_ALIEN.create(level());
+        else alien = Entities.ALIEN.create(level());
 
         return alien;
     }
 
     @Override
     public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)),
-                new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<ChestbursterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self) || !(target instanceof Creeper || target instanceof IronGolem)), new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
     }
 
     @Override
@@ -127,10 +124,8 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead)
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
+                if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
+                else return event.setAndContinue(GigAnimationsDefault.WALK);
             return event.setAndContinue(GigAnimationsDefault.IDLE);
         }));
         controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("birth", GigAnimationsDefault.BIRTH).triggerableAnim("death", GigAnimationsDefault.DEATH));

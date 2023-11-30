@@ -154,10 +154,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
             this.moveRelative(getSpeed(), movementInput);
             this.move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null)
-                this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override
@@ -212,8 +210,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
     @Override
     public int calculateFallDamage(float fallDistance, float damageMultiplier) {
-        if (fallDistance <= 15)
-            return 0;
+        if (fallDistance <= 15) return 0;
         return super.calculateFallDamage(fallDistance, damageMultiplier);
     }
 
@@ -225,11 +222,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && this.isAlive())
-            this.grow(this, 1 * getGrowthMultiplier());
+        if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
 
-        if (!level().isClientSide && this.isVehicle())
-            this.setAggressive(false);
+        if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
 
         if (this.isAggressive()) {
             this.wakeupCounter = 0;
@@ -239,27 +234,24 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
         // Passing and waking up logic
         var velocityLength = this.getDeltaMovement().horizontalDistance();
         if (!this.getTypeName().getString().equalsIgnoreCase("neomorph") && (velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
-                if (!this.level().isClientSide)
-                    this.passoutCounter++;
-                if (this.passoutCounter >= 6000) {
-                    this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
-                    this.triggerAnim("attackController", "passout");
-                    this.passoutCounter = -6000;
-                    this.setPassedOutStatus(true);
-                }
+            if (!this.level().isClientSide) this.passoutCounter++;
+            if (this.passoutCounter >= 6000) {
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+                this.triggerAnim("attackController", "passout");
+                this.passoutCounter = -6000;
+                this.setPassedOutStatus(true);
             }
+        }
         if (this.isPassedOut()) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
             if (this.isAggressive()) {
                 this.triggerAnim("attackController", "wakeup");
                 this.setPassedOutStatus(false);
-                if (!this.level().isClientSide)
-                    this.passoutCounter = -6000;
+                if (!this.level().isClientSide) this.passoutCounter = -6000;
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
         }
-        if (this.isAggressive() && !this.level().isClientSide)
-                this.passoutCounter = 0;
+        if (this.isAggressive() && !this.level().isClientSide) this.passoutCounter = 0;
 
         if (this.isInWater()) {
             this.hissingCooldown = 0;
@@ -268,11 +260,9 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
         // Hissing Logic
         if (velocityLength == 0 && !this.isInWater() && !level().isClientSide && (!this.isSearching() && !this.isVehicle() && this.isAlive() && !this.isPassedOut()) && !this.isAggressive() && !this.isCrawling()) {
-            if (!this.level().isClientSide)
-                this.hissingCooldown++;
+            if (!this.level().isClientSide) this.hissingCooldown++;
 
-            if (hissingCooldown == 80)
-                this.setIsHissing(true);
+            if (hissingCooldown == 80) this.setIsHissing(true);
 
             if (hissingCooldown > 160) {
                 this.setIsHissing(false);
@@ -282,8 +272,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
         // Searching Logic
         if ((this.level().getBlockState(this.blockPosition().below()).isSolid() && velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
-            if (!this.level().isClientSide)
-                this.searchingProgress++;
+            if (!this.level().isClientSide) this.searchingProgress++;
 
             if (this.searchingProgress == 80) {
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
@@ -300,18 +289,14 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
             this.level().removeBlock(this.blockPosition(), false);
 
         if (!this.isAggressive() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (!this.level().isClientSide)
-                this.breakingCounter++;
+            if (!this.level().isClientSide) this.breakingCounter++;
             if (this.breakingCounter > 10)
                 for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(4))) {
                     if (!(this.level().getBlockState(testPos).is(Blocks.GRASS) || this.level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
                         if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(testPos).isAir()) {
-                            if (!this.level().isClientSide)
-                                this.level().destroyBlock(testPos, true, null, 512);
-                            if (!this.isVehicle())
-                                this.triggerAnim("attackController", "swipe");
-                            if (this.isVehicle())
-                                this.triggerAnim("attackController", "swipe_left_tail");
+                            if (!this.level().isClientSide) this.level().destroyBlock(testPos, true, null, 512);
+                            if (!this.isVehicle()) this.triggerAnim("attackController", "swipe");
+                            if (this.isVehicle()) this.triggerAnim("attackController", "swipe_left_tail");
                             this.breakingCounter = -90;
                             if (this.level().isClientSide()) {
                                 for (var i = 2; i < 10; i++)
@@ -325,19 +310,17 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
                             this.breakingCounter = -90;
                         }
                 }
-            if (this.breakingCounter >= 25)
-                this.breakingCounter = 0;
+            if (this.breakingCounter >= 25) this.breakingCounter = 0;
         }
     }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
         var multiplier = 1.0f;
-        if (source == this.damageSources().onFire())
-            multiplier = 2.0f;
+        if (source == this.damageSources().onFire()) multiplier = 2.0f;
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
-                    this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
+            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
 
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
@@ -345,14 +328,10 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
         if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 

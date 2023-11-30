@@ -91,8 +91,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                     if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && event.getAnimatable().getAttckingState() == 0)
                         if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
                             return event.setAndContinue(GigAnimationsDefault.RUNNING);
-                        else
-                            return event.setAndContinue(GigAnimationsDefault.MOVING);
+                        else return event.setAndContinue(GigAnimationsDefault.MOVING);
                     if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
                         return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
                     return event.setAndContinue(GigAnimationsDefault.IDLE);
@@ -121,8 +120,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public List<ExtendedSensor<StalkerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<StalkerEntity>().setRadius(7), new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<StalkerEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<StalkerEntity>().setRadius(7), new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<StalkerEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new UnreachableTargetSensor<>(), new HurtBySensor<>());
     }
 
     @Override
@@ -132,8 +130,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.9f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.9f), new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
@@ -147,14 +144,12 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
         super.tick();
 
         if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && this.isAggressive()) {
-            if (!this.level().isClientSide)
-                breakingCounter++;
+            if (!this.level().isClientSide) breakingCounter++;
             if (breakingCounter > 10)
                 for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(3))) {
                     if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
                         if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(testPos).isAir()) {
-                            if (!level().isClientSide)
-                                this.level().destroyBlock(testPos, true, null, 512);
+                            if (!level().isClientSide) this.level().destroyBlock(testPos, true, null, 512);
                             this.triggerAnim("attackController", "swipe");
                             breakingCounter = -90;
                             if (level().isClientSide()) {
@@ -169,8 +164,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                             breakingCounter = -90;
                         }
                 }
-            if (breakingCounter >= 25)
-                breakingCounter = 0;
+            if (breakingCounter >= 25) breakingCounter = 0;
         }
         this.setNoGravity(!this.level().getBlockState(this.blockPosition().above()).isAir() && !this.level().getBlockState(this.blockPosition().above()).is(BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
         this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
@@ -190,14 +184,10 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
         if (!this.level().isClientSide && source != damageSources().genericKill()) {
             var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
 
-            if (this.getHealth() < (this.getMaxHealth() / 4))
-                acidThickness += 1;
-            if (amount >= 5)
-                acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10))
-                acidThickness += 1;
-            if (acidThickness == 0)
-                return super.hurt(source, amount);
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
 
             var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
 
@@ -215,11 +205,9 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
         var posState = level().getBlockState(pos);
         var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
 
-        if (posState.getBlock() == Blocks.WATER)
-            newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
-        if (!(posState.getBlock() instanceof LiquidBlock))
-            return;
+        if (!(posState.getBlock() instanceof LiquidBlock)) return;
         level().setBlockAndUpdate(pos, newState);
     }
 
@@ -246,8 +234,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
-        if (target instanceof Creeper creeper)
-            creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
+        if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
@@ -274,10 +261,8 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null)
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else
-            super.travel(movementInput);
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override

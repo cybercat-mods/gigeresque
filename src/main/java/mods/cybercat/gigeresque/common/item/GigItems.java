@@ -32,7 +32,7 @@ public record GigItems() implements GigeresqueInitializer {
     public static final AzureSpawnEgg SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new AzureSpawnEgg(Entities.SPITTER, 0xccc737, 0x383a33));
     private static GigItems instance;
 
-    synchronized public static GigItems getInstance() {
+    public static synchronized GigItems getInstance() {
         if (instance == null) {
             instance = new GigItems();
         }

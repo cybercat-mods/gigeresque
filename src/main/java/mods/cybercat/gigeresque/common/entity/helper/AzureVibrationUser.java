@@ -59,17 +59,13 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @Override
     public boolean isValidVibration(GameEvent gameEvent, Context context) {
-        if (!gameEvent.is(this.getListenableEvents()))
-            return false;
+        if (!gameEvent.is(this.getListenableEvents())) return false;
 
         var entity = context.sourceEntity();
         if (entity != null) {
-            if (entity.isSpectator())
-                return false;
-            if (entity.isSteppingCarefully() && gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))
-                return false;
-            if (entity.dampensVibrations())
-                return false;
+            if (entity.isSpectator()) return false;
+            if (entity.isSteppingCarefully() && gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) return false;
+            if (entity.dampensVibrations()) return false;
         }
         if (context.affectedState() != null)
             return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GigBlocks.ACID_BLOCK);
@@ -86,15 +82,12 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @Override
     public void onReceiveVibration(ServerLevel serverLevel, BlockPos blockPos, GameEvent gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
-        if (this.mob.isDeadOrDying())
-            return;
-        if (this.mob.isVehicle())
-            return;
+        if (this.mob.isDeadOrDying()) return;
+        if (this.mob.isVehicle()) return;
         var cName = "attackController";
         if (this.mob instanceof AdultAlienEntity adult) {
             adult.wakeupCounter++;
-            if (adult.isPassedOut() & adult.wakeupCounter == 1)
-                adult.triggerAnim(cName, "wakeup");
+            if (adult.isPassedOut() & adult.wakeupCounter == 1) adult.triggerAnim(cName, "wakeup");
             if (adult.wakeupCounter == 2) {
                 if (adult.level().getBlockState(adult.blockPosition().below()).isSolid())
                     adult.setPassedOutStatus(false);
@@ -110,6 +103,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
             }
         }
         if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
-                mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+            mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
     }
 }
