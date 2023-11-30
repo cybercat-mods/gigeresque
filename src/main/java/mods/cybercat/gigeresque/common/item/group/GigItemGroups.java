@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.item.group;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
@@ -45,7 +46,7 @@ public record GigItemGroups() implements GigeresqueInitializer {
                     entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG);
                     entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG);
                     entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG);
-                    if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+                    if (FabricLoader.getInstance().isDevelopmentEnvironment() || Gigeresque.config.enableDevEntites) {
                         entries.accept(GigItems.NEOBURSTER_SPAWN_EGG);
                         entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG);
                         entries.accept(GigItems.NEOMORPH_SPAWN_EGG);
@@ -67,7 +68,7 @@ public record GigItemGroups() implements GigeresqueInitializer {
                     entries.accept(GigBlocks.NEST_RESIN_BLOCK);
                     entries.accept(GigBlocks.NEST_RESIN_WEB);
                     entries.accept(GigBlocks.NEST_RESIN_WEB_CROSS);
-                    if (FabricLoader.getInstance().isDevelopmentEnvironment())
+                    if (FabricLoader.getInstance().isDevelopmentEnvironment() || Gigeresque.config.enableDevEntites)
                         entries.accept(GigBlocks.SPORE_BLOCK);
                     entries.accept(GigBlocks.ORGANIC_ALIEN_BLOCK);
                     entries.accept(GigBlocks.ORGANIC_ALIEN_SLAB);
