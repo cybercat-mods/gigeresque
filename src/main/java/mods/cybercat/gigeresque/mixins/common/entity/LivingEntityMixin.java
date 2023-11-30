@@ -7,8 +7,8 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.impl.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
@@ -20,7 +20,6 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -192,12 +191,12 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             }
 
             if (this.isDeadOrDying() && !hasParasiteSpawned) {
-                LivingEntity burster = Entities.CHESTBURSTER.create(this.level());
+                LivingEntity burster = null;
 
                 if (!this.hasEffect(GigStatusEffects.SPORE) && !this.hasEffect(GigStatusEffects.DNA)) {
                     if (this.getType().is(GigTags.RUNNER_HOSTS)) {
                         burster = Entities.RUNNERBURSTER.create(this.level());
-                        ((ChestbursterEntity) burster).setHostId("runner");
+                        ((RunnerbursterEntity) burster).setHostId("runner");
                     } else if (this.getType().is(GigTags.AQUATIC_HOSTS))
                         burster = Entities.AQUATIC_CHESTBURSTER.create(this.level());
                     else
@@ -207,16 +206,16 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
                 else if (this.getType().is(GigTags.CLASSIC_HOSTS) && this.hasEffect(GigStatusEffects.DNA))
                     burster = Entities.SPITTER.create(this.level());
 
-                if (this.hasCustomName())
-                    burster.setCustomName(this.getCustomName());
-                burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
-                if (burster instanceof ChestbursterEntity chest)
-                    chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()).toString());
-                burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
-                this.level().addFreshEntity(burster);
-                if (level().isClientSide)
-                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
-                hasParasiteSpawned = true;
+                if (burster != null) {
+                    if (this.hasCustomName())
+                        burster.setCustomName(this.getCustomName());
+                    burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
+                    burster.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
+                    this.level().addFreshEntity(burster);
+                    if (level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
+                    hasParasiteSpawned = true;
+                }
             }
         }
     }
