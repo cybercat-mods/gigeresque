@@ -103,11 +103,11 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
         if ((this.getVehicle() != null && this.getVehicle() instanceof ClassicAlienEntity) && source == damageSources().inWall())
             callbackInfo.setReturnValue(false);
         if (amount >= 2 && this.getFirstPassenger() != null && this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) {
-                    this.getFirstPassenger().hurt(source, amount / 2);
-                    ((FacehuggerEntity) this.getFirstPassenger()).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100, false, false));
-                    ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim("livingController", "stun");
-                    ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
-                }
+            this.getFirstPassenger().hurt(source, amount / 2);
+            ((FacehuggerEntity) this.getFirstPassenger()).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100, false, false));
+            ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim("livingController", "stun");
+            ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
+        }
     }
 
     @Inject(method = {"doPush"}, at = {@At("HEAD")}, cancellable = true)
@@ -127,23 +127,23 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
                 this.level().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15, 0.0);
         }
         if (!this.level().isClientSide && (this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_STILL || this.level().getFluidState(this.blockPosition()).getType() == GigFluids.BLACK_FLUID_FLOWING) && !GigEntityUtils.isTargetDNAImmune(this)) {
-                if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(GigEntityUtils.isTargetDNAImmune(this)))
-                    this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
-                if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
-                    this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
-                if (!this.hasEffect(GigStatusEffects.DNA) && (((Object) this) instanceof Player playerEntity && !(playerEntity.isCreative() || this.isSpectator())) && !(((Object) this) instanceof AlienEntity))
-                    this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
-            }
+            if (!this.hasEffect(GigStatusEffects.DNA) && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity) && !(((Object) this) instanceof Creeper) && !(GigEntityUtils.isTargetDNAImmune(this)))
+                this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
+            if (!this.hasEffect(GigStatusEffects.DNA) && ((Object) this) instanceof Creeper && !(((Object) this) instanceof Player) && !(((Object) this) instanceof AlienEntity))
+                this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
+            if (!this.hasEffect(GigStatusEffects.DNA) && (((Object) this) instanceof Player playerEntity && !(playerEntity.isCreative() || this.isSpectator())) && !(((Object) this) instanceof AlienEntity))
+                this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
+        }
 
         if (!this.level().isClientSide && ((((Object) this) instanceof Player playerEntity && (playerEntity.isCreative() || this.isSpectator())) || level().getDifficulty() == Difficulty.PEACEFUL) || (((Object) this) instanceof AlienEntity) || this.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
-                removeParasite();
-                resetEggmorphing();
-                setBleeding(false);
-            }
+            removeParasite();
+            resetEggmorphing();
+            setBleeding(false);
+        }
         if (!this.level().isClientSide && GigEntityUtils.isTargetHostable(this)) {
-                handleEggingLogic();
-                handleHostLogic();
-            }
+            handleEggingLogic();
+            handleHostLogic();
+        }
     }
 
     @Inject(method = {"isUsingItem"}, at = {@At("RETURN")}, cancellable = true)
