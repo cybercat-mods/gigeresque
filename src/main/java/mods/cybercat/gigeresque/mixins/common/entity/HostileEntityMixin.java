@@ -21,12 +21,12 @@ public abstract class HostileEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    @Inject(method = {"isDarkEnoughToSpawn"}, at = {@At("RETURN")})
+    @Inject(method = {"isDarkEnoughToSpawn"}, at = {@At("RETURN")}, cancellable = true)
     private static void isDarkEnoughToSpawn(ServerLevelAccessor world, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (world.getBlockState(pos.below()).is(GigTags.DUNGEON_BLOCKS)) callbackInfo.setReturnValue(false);
     }
 
-    @Inject(method = {"checkMonsterSpawnRules"}, at = {@At("RETURN")})
+    @Inject(method = {"checkMonsterSpawnRules"}, at = {@At("RETURN")}, cancellable = true)
     private static void checkMonsterSpawnRules(EntityType<? extends Monster> type, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (world.getBlockState(pos).is(GigTags.DUNGEON_BLOCKS)) callbackInfo.setReturnValue(false);
     }

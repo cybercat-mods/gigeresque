@@ -23,7 +23,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
         super(entityType, world);
     }
 
-    @Inject(method = {"wantsToStopRiding"}, at = {@At("RETURN")})
+    @Inject(method = {"wantsToStopRiding"}, at = {@At("RETURN")}, cancellable = true)
     protected void shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getVehicle() instanceof AlienEntity) callbackInfo.setReturnValue(false);
     }
