@@ -52,9 +52,9 @@ public record Entities() implements GigeresqueInitializer {
     public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), MobCategory.MONSTER, NeomorphAdolescentEntity::new, 1.0f, 0.9f);
     public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), MobCategory.MONSTER, NeomorphEntity::new, 0.9f, 2.55f);
     public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
-    public static final EntityType<? extends DraconicTempleBeastEntity> DRACONICTEMPLEBEAST = registerAlienType(EntityIdentifiers.DRACONICTEMPLEBEAST.getPath(), MobCategory.MONSTER, DraconicTempleBeastEntity::new, 1.3f, 2.35f);
-    public static final EntityType<? extends RavenousTempleBeastEntity> RAVENOUSTEMPLEBEAST = registerAlienType(EntityIdentifiers.RAVENOUSTEMPLEBEAST.getPath(), MobCategory.MONSTER, RavenousTempleBeastEntity::new, 1.3f, 3.45f);
-    public static final EntityType<? extends MoonlightHorrorTempleBeastEntity> MOONLIGHTHORRORTEMPLEBEAST = registerAlienType(EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(), MobCategory.MONSTER, MoonlightHorrorTempleBeastEntity::new, 1.7f, 4.45f);
+    public static final EntityType<? extends DraconicTempleBeastEntity> DRACONICTEMPLEBEAST = registerAlienType(EntityIdentifiers.DRACONICTEMPLEBEAST.getPath(), MobCategory.MONSTER, DraconicTempleBeastEntity::new, 1.9f, 2.35f);
+    public static final EntityType<? extends RavenousTempleBeastEntity> RAVENOUSTEMPLEBEAST = registerAlienType(EntityIdentifiers.RAVENOUSTEMPLEBEAST.getPath(), MobCategory.MONSTER, RavenousTempleBeastEntity::new, 1.6f, 3.95f);
+    public static final EntityType<? extends MoonlightHorrorTempleBeastEntity> MOONLIGHTHORRORTEMPLEBEAST = registerAlienType(EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(), MobCategory.MONSTER, MoonlightHorrorTempleBeastEntity::new, 2.1f, 4.95f);
     private static Entities instance;
 
     public static synchronized Entities getInstance() {

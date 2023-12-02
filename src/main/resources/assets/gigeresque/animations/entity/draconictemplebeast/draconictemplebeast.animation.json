@@ -1,132 +1,6 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"pose": {
-			"loop": true,
-			"bones": {
-				"head": {
-					"rotation": {
-						"vector": [7.5, 0, 0]
-					}
-				},
-				"rArm01": {
-					"rotation": {
-						"vector": [12.5, 0, -7.5]
-					},
-					"position": {
-						"vector": [0, 0, -2]
-					}
-				},
-				"rArm02": {
-					"rotation": {
-						"vector": [-15, 7.5, -7.5]
-					}
-				},
-				"rHand": {
-					"rotation": {
-						"vector": [-5, -2.5, 12.5]
-					}
-				},
-				"lArm01": {
-					"rotation": {
-						"vector": [5, 0, 7.5]
-					},
-					"position": {
-						"vector": [0, 0, -2]
-					}
-				},
-				"lArm02": {
-					"rotation": {
-						"vector": [-17.5, -7.5, 7.5]
-					}
-				},
-				"lHand": {
-					"rotation": {
-						"vector": [2.5, 2.5, -12.5]
-					}
-				},
-				"stomach": {
-					"rotation": {
-						"vector": [-5, 0, 0]
-					}
-				},
-				"tail01": {
-					"rotation": {
-						"vector": [7.5, 0, 0]
-					}
-				},
-				"tail04": {
-					"rotation": {
-						"vector": [-7.5, 0, 0]
-					}
-				},
-				"tail05": {
-					"rotation": {
-						"vector": [7.5, 0, 0]
-					}
-				},
-				"tail07": {
-					"rotation": {
-						"vector": [-7.5, 0, 0]
-					}
-				},
-				"lLeg01": {
-					"rotation": {
-						"vector": [17.5, 0, 0]
-					}
-				},
-				"lLeg02": {
-					"rotation": {
-						"vector": [12.5, 0, 0]
-					}
-				},
-				"lLeg03": {
-					"rotation": {
-						"vector": [-7.5, 0, 0]
-					}
-				},
-				"rLeg01": {
-					"rotation": {
-						"vector": [5, 0, 0]
-					}
-				},
-				"rLeg02": {
-					"rotation": {
-						"vector": [12.5, 0, 0]
-					}
-				},
-				"rLeg03": {
-					"rotation": {
-						"vector": [-12.5, 0, 0]
-					}
-				},
-				"upperChest": {
-					"rotation": {
-						"vector": [5, 0, 0]
-					}
-				},
-				"neck": {
-					"rotation": {
-						"vector": [2.5, 0, 0]
-					}
-				},
-				"innerJaw": {
-					"scale": {
-						"vector": [0, 0, 0]
-					}
-				},
-				"lFoot": {
-					"rotation": {
-						"vector": [-20, 0, 0]
-					}
-				},
-				"rFoot": {
-					"rotation": {
-						"vector": [-2.5, 0, 0]
-					}
-				}
-			}
-		},
 		"idle": {
 			"loop": true,
 			"animation_length": 2,
@@ -284,7 +158,7 @@
 				}
 			}
 		},
-		"moving_noaggro": {
+		"walk": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -909,7 +783,7 @@
 				}
 			}
 		},
-		"moving_aggro": {
+		"run": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -2188,7 +2062,7 @@
 				}
 			}
 		},
-		"moving_crawling": {
+		"crawl": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -3009,6 +2883,119 @@
 					}
 				}
 			}
+		},
+		"hiss": {
+			"animation_length": 3,
+			"bones": {
+				"upperLip": {
+					"position": {
+						"0.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"0.9583": {
+							"post": {
+								"vector": [0, 0.8, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": {
+								"vector": [0, 1, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"4.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						}
+					}
+				},
+				"lowerJaw": {
+					"rotation": {
+						"0.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"0.9583": {
+							"post": {
+								"vector": [15, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": {
+								"vector": [20, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"4.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						}
+					}
+				},
+				"lowerLip": {
+					"position": {
+						"0.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"0.9583": {
+							"post": {
+								"vector": [0, -0.4, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"3.0": {
+							"post": {
+								"vector": [0, -0.6, 0]
+							},
+							"lerp_mode": "catmullrom"
+						},
+						"4.0": {
+							"post": {
+								"vector": [0, 0, 0]
+							},
+							"lerp_mode": "catmullrom"
+						}
+					}
+				}
+			}
+		},
+		"death": {
+			"loop": true
+		},
+		"stasis_loop": {
+			"loop": true
+		},
+		"stasis_enter": {
+			"loop": true
+		},
+		"stasis_leave": {
+			"loop": true
+		},
+		"left_claw": {
+			"loop": true
+		},
+		"right_claw": {
+			"loop": true
+		},
+		"left_tail": {
+			"loop": true
+		},
+		"right_tail": {
+			"loop": true
 		}
 	},
 	"azurelib_format_version": 2
