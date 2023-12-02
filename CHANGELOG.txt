@@ -1,24 +1,6 @@
-v.0.5.60
+v.0.5.61
 
-- Fixes Runners not generating from the proper mobs.
-- Fixes Classic Xenos crawling rotations.
-- Adds config option to enable dev entities and blocks in Creative tabs.
-- Increases max Impregnation timer.
-- Adds Russian translation thanks to Korben.
-- Adds Auto Generated Spanish Argentina translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish Mexican translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish Chilean translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish Ecuadorian translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish European translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish Uruguayan translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Spanish Venezuelan translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated German translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated European French translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Canadian French translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Japanese translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Korean translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Brazil translation. PRs welcome for improvements/fixes.
-- Adds Auto Generated Thai translation. PRs welcome for improvements/fixes.
+- Fixes Mixin crash.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu without the config option.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
