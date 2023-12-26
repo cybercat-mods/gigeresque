@@ -17,10 +17,6 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
-    public boolean enableSneakyEggs = false;
-
-    @Configurable
-    @Configurable.Synchronized
     public boolean blackfuildNonrepacle = false;
 
     @Configurable
