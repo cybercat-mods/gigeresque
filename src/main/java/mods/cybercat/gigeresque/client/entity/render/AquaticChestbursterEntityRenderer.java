@@ -9,6 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<AquaticChestbursterEntity> {
@@ -19,7 +20,7 @@ public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<Aquatic
     }
 
     @Override
-    public void render(AquaticChestbursterEntity entity, float entityYaw, float partialTicks, PoseStack stack, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(AquaticChestbursterEntity entity, float entityYaw, float partialTicks, PoseStack stack, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);

@@ -18,25 +18,26 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BlackFluid extends FlowingFluid {
     @Override
-    public boolean isSame(Fluid fluid) {
+    public boolean isSame(@NotNull Fluid fluid) {
         return fluid == GigFluids.BLACK_FLUID_STILL || fluid == GigFluids.BLACK_FLUID_FLOWING;
     }
 
     @Override
-    public Item getBucket() {
+    public @NotNull Item getBucket() {
         return GigItems.BLACK_FLUID_BUCKET;
     }
 
     @Override
-    public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid, Direction direction) {
+    public boolean canBeReplacedWith(@NotNull FluidState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Fluid fluid, @NotNull Direction direction) {
         return false;
     }
 
     @Override
-    public int getTickDelay(LevelReader world) {
+    public int getTickDelay(@NotNull LevelReader world) {
         return 20;
     }
 
@@ -46,41 +47,41 @@ public abstract class BlackFluid extends FlowingFluid {
     }
 
     @Override
-    protected BlockState createLegacyBlock(FluidState state) {
+    protected @NotNull BlockState createLegacyBlock(@NotNull FluidState state) {
         return GigBlocks.BLACK_FLUID.defaultBlockState().setValue(BlockStateProperties.LEVEL, getLegacyLevel(state));
     }
 
     @Override
-    public Fluid getFlowing() {
+    public @NotNull Fluid getFlowing() {
         return GigFluids.BLACK_FLUID_FLOWING;
     }
 
     @Override
-    public Fluid getSource() {
+    public @NotNull Fluid getSource() {
         return GigFluids.BLACK_FLUID_STILL;
     }
 
     @Override
-    protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
+    protected void beforeDestroyingBlock(@NotNull LevelAccessor world, @NotNull BlockPos pos, BlockState state) {
         var blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
         Block.dropResources(state, world, pos, blockEntity);
     }
 
     @Override
-    protected int getSlopeFindDistance(LevelReader world) {
+    protected int getSlopeFindDistance(@NotNull LevelReader world) {
         return 2;
     }
 
     @Override
-    protected int getDropOff(LevelReader world) {
+    protected int getDropOff(@NotNull LevelReader world) {
         return 2;
     }
 
     @Override
-    protected void randomTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
+    protected void randomTick(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull FluidState fluidState, RandomSource randomSource) {
         int i = randomSource.nextInt(50);
         if (i > 40) for (var j = 0; j < 10; ++j) {
-            if (!level.isLoaded(blockPos = blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
+            if (!level.isLoaded(blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
                 return;
             if (this.isSporeReplaceable(level, blockPos)) {
                 if (!this.hasSporeReplacements(level, blockPos)) continue;
@@ -113,7 +114,7 @@ public abstract class BlackFluid extends FlowingFluid {
 
     static class Flowing extends BlackFluid {
         @Override
-        public void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+        public void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid, FluidState> builder) {
             super.createFluidStateDefinition(builder);
             builder.add(LEVEL);
         }
@@ -124,12 +125,12 @@ public abstract class BlackFluid extends FlowingFluid {
         }
 
         @Override
-        public boolean isSource(FluidState fluidState) {
+        public boolean isSource(@NotNull FluidState fluidState) {
             return false;
         }
 
         @Override
-        protected boolean canConvertToSource(Level var1) {
+        protected boolean canConvertToSource(@NotNull Level level) {
             return false;
         }
     }
@@ -137,17 +138,17 @@ public abstract class BlackFluid extends FlowingFluid {
     static class Still extends BlackFluid {
 
         @Override
-        public int getAmount(FluidState fluidState) {
+        public int getAmount(@NotNull FluidState fluidState) {
             return 8;
         }
 
         @Override
-        public boolean isSource(FluidState fluidState) {
+        public boolean isSource(@NotNull FluidState fluidState) {
             return true;
         }
 
         @Override
-        protected boolean canConvertToSource(Level var1) {
+        protected boolean canConvertToSource(@NotNull Level level) {
             return false;
         }
     }

@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum NestResinWebVariant implements StringRepresentable {
     ONE("one"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six");
@@ -12,7 +13,7 @@ public enum NestResinWebVariant implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
         return dirName;
     }
 }

@@ -35,7 +35,7 @@ public class EggmorphLayerTexture implements AutoCloseable {
                 }
                 texture.upload();
                 baseImage.close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
         ResourceLocation id = textureManager.register("eggmorph_layer/" + base.getPath(), texture);
@@ -43,7 +43,7 @@ public class EggmorphLayerTexture implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         texture.close();
     }
 }

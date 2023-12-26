@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class AcidStatusEffect extends MobEffect {
     public AcidStatusEffect() {
@@ -18,7 +19,7 @@ public class AcidStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
         entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.ACID), Gigeresque.config.acidDamage);
     }

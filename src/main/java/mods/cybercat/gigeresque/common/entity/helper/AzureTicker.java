@@ -13,16 +13,14 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.User;
 
 public interface AzureTicker {
     static void tick(Level level, Data data, User user) {
-        if (!(level instanceof ServerLevel)) return;
-        if (level instanceof ServerLevel serverLevel) {
-            if (data.getCurrentVibration() == null) AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
-            if (data.getCurrentVibration() == null) return;
-            var travelCheck = data.getTravelTimeInTicks() > 0;
-            data.decrementTravelTime();
-            if (data.getTravelTimeInTicks() <= 0)
-                travelCheck = AzureTicker.receiveVibration(serverLevel, data, user, data.getCurrentVibration());
-            if (travelCheck) user.onDataChanged();
-        }
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        if (data.getCurrentVibration() == null) AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
+        if (data.getCurrentVibration() == null) return;
+        var travelCheck = data.getTravelTimeInTicks() > 0;
+        data.decrementTravelTime();
+        if (data.getTravelTimeInTicks() <= 0)
+            travelCheck = AzureTicker.receiveVibration(serverLevel, data, user, data.getCurrentVibration());
+        if (travelCheck) user.onDataChanged();
     }
 
     private static void trySelectAndScheduleVibration(ServerLevel serverLevel, Data data, User user) {

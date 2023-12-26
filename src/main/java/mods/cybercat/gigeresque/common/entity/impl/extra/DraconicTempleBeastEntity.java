@@ -23,7 +23,8 @@ public class DraconicTempleBeastEntity extends CrawlerAdultAlien implements GeoE
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.draconicTempleBeastXenoHealth)
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
+                        Gigeresque.config.draconicTempleBeastXenoHealth)
                 .add(Attributes.ARMOR, Gigeresque.config.draconicTempleBeastXenoArmor)
                 .add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
                 .add(Attributes.FOLLOW_RANGE, 16.0)

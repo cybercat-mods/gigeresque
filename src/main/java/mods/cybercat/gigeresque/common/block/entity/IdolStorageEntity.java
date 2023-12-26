@@ -30,6 +30,9 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class IdolStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
@@ -37,17 +40,21 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
         @Override
-        protected void onOpen(Level world, BlockPos pos, BlockState state) {
-            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
+            assert IdolStorageEntity.this.level != null;
+            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f,
+                    1.0f);
         }
 
         @Override
-        protected void onClose(Level world, BlockPos pos, BlockState state) {
-            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
+            assert IdolStorageEntity.this.level != null;
+            IdolStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f,
+                    1.0f);
         }
 
         @Override
-        protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+        protected void openerCountChanged(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, int oldViewerCount, int newViewerCount) {
             IdolStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
         }
 
@@ -65,26 +72,30 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, IdolStorageEntity blockEntity) {
-        if (level != null) {
+        if (blockEntity.level != null) {
             if (!blockEntity.level.isClientSide)
-                BlockPos.betweenClosed(pos, pos.relative(state.getValue(SittingIdolBlock.FACING), 2).above(2)).forEach(testPos -> {
-                    if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2))
-                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.defaultBlockState(), Block.UPDATE_ALL);
-                });
+                BlockPos.betweenClosed(pos, pos.relative(state.getValue(SittingIdolBlock.FACING), 2).above(2)).forEach(
+                        testPos -> {
+                            if (!testPos.equals(pos) && !level.getBlockState(testPos).is(
+                                    GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2))
+                                level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.defaultBlockState(),
+                                        Block.UPDATE_ALL);
+                        });
             if (!blockEntity.isRemoved())
-                blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
+                blockEntity.stateManager.recheckOpeners(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos(),
+                        blockEntity.getBlockState());
         }
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
+    public void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
         if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
     }
@@ -95,40 +106,40 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     }
 
     @Override
-    public NonNullList<ItemStack> getItems() {
+    public @NotNull NonNullList<ItemStack> getItems() {
         return this.items;
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> list) {
+    protected void setItems(@NotNull NonNullList<ItemStack> list) {
         this.items = list;
     }
 
     @Override
-    protected Component getDefaultName() {
+    protected @NotNull Component getDefaultName() {
         return Component.translatable("block.gigeresque.alien_storage_block3");
     }
 
     @Override
-    protected AbstractContainerMenu createMenu(int syncId, Inventory inventory) {
+    protected @NotNull AbstractContainerMenu createMenu(int syncId, @NotNull Inventory inventory) {
         return new ChestMenu(MenuType.GENERIC_3x3, syncId, inventory, this, 1);
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.incrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.decrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     public void tick() {
         if (!this.isRemoved())
-            this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.recheckOpeners(Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
@@ -136,14 +147,6 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
         if (oldViewerCount != newViewerCount)
             if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
             else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
-    }
-
-    public StorageStates getChestState() {
-        return this.getBlockState().getValue(IdolStorageEntity.CHEST_STATE);
-    }
-
-    public void setChestState(StorageStates state) {
-        this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(CHEST_STATE, state));
     }
 
     @Override

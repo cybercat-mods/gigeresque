@@ -58,6 +58,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     public void setBirthStatus(boolean birth) {
-        this.entityData.set(BIRTHED, Boolean.valueOf(birth));
+        this.entityData.set(BIRTHED, birth);
     }
 
     public boolean isEating() {
@@ -117,7 +118,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     public void setEatingStatus(boolean birth) {
-        this.entityData.set(EAT, Boolean.valueOf(birth));
+        this.entityData.set(EAT, birth);
     }
 
     public float getGrowth() {
@@ -138,10 +139,10 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
-            if (attacker != null && attacker instanceof LivingEntity livingEntity)
+            if (attacker instanceof LivingEntity livingEntity)
                 this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
         }
 
@@ -182,7 +183,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putFloat("growth", getGrowth());
         if (hostId != null) nbt.putString("hostId", hostId);
@@ -191,7 +192,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
+    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         if (nbt.contains("growth")) setGrowth(nbt.getFloat("growth"));
         if (nbt.contains("hostId")) hostId = nbt.getString("hostId");
@@ -200,7 +201,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -212,7 +213,8 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
     @Override
     public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new ItemEntitySensor<ChestbursterEntity>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(BlockTags.CROPS)), new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+                new ItemEntitySensor<>(), new HurtBySensor<>());
     }
 
     @Override
@@ -222,7 +224,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new EatFoodTask<ChestbursterEntity>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new EatFoodTask<>(0), new KillCropsTask<>(), new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override

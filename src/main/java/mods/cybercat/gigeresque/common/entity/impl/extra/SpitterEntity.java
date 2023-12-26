@@ -65,6 +65,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -151,7 +152,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -167,7 +168,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                 // Player Sensor
                 new NearbyPlayersSensor<>(),
                 // Living Sensor
-                new NearbyLivingEntitySensor<SpitterEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)),
+                new NearbyLivingEntitySensor<SpitterEntity>().setPredicate(GigEntityUtils::entityTest),
                 // Block Sensor
                 new NearbyBlocksSensor<SpitterEntity>().setRadius(7),
                 // Fire Sensor
@@ -212,13 +213,13 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
     public BrainActivityGroup<SpitterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 // Invalidate Target
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)),
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
                 // Xeno Acid Spit
-                new AlienProjectileAttack(18),
+                new AlienProjectileAttack<>(18),
                 // Xeno attacking
-                new AlienMeleeAttack(5));
+                new AlienMeleeAttack<>(5));
     }
 
     @Override
@@ -233,7 +234,7 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
         if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
@@ -255,14 +256,14 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
         if (this.isCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
         return EntityDimensions.scalable(0.9f, 1.9f);
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
@@ -278,14 +279,15 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(@NotNull Entity target) {
         if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
             if (livingEntity instanceof Player playerEntity) {
                 playerEntity.drop(playerEntity.getInventory().getSelected(), false);
                 playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
             }
-            if (livingEntity instanceof Mob mobEntity && mobEntity.getMainHandItem() != null) {
-                this.drop(mobEntity, mobEntity.getMainHandItem(), false);
+            if (livingEntity instanceof Mob mobEntity) {
+                mobEntity.getMainHandItem();
+                this.drop(mobEntity, mobEntity.getMainHandItem());
                 mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);

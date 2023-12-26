@@ -9,6 +9,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.SplittableRandom;
@@ -31,7 +32,7 @@ public class GigDungeonStructure extends Structure {
     }
 
     @Override
-    public Optional<GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
+    public @NotNull Optional<GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
         var random = new SplittableRandom().nextInt(-18, 0);
         var blockpos = new BlockPos(context.chunkPos().getMinBlockX(), random, context.chunkPos().getMinBlockZ());
 
@@ -39,7 +40,7 @@ public class GigDungeonStructure extends Structure {
     }
 
     @Override
-    public StructureType<?> type() {
+    public @NotNull StructureType<?> type() {
         return GigStructures.GIG_DUNGEON;
     }
 }

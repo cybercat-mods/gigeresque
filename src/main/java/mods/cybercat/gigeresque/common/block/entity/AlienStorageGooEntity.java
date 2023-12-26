@@ -33,6 +33,9 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class AlienStorageGooEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
@@ -40,17 +43,21 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
         @Override
-        protected void onOpen(Level world, BlockPos pos, BlockState state) {
-            AlienStorageGooEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
+            assert AlienStorageGooEntity.this.level != null;
+            AlienStorageGooEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS,
+                    1.0f, 1.0f);
         }
 
         @Override
-        protected void onClose(Level world, BlockPos pos, BlockState state) {
-            AlienStorageGooEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+        protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
+            assert AlienStorageGooEntity.this.level != null;
+            AlienStorageGooEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS,
+                    1.0f, 1.0f);
         }
 
         @Override
-        protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+        protected void openerCountChanged(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, int oldViewerCount, int newViewerCount) {
             AlienStorageGooEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
         }
 
@@ -70,20 +77,23 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, AlienStorageGooEntity blockEntity) {
-        if (level != null) {
+        if (blockEntity.getLevel() != null) {
             if (!blockEntity.getLevel().isClientSide()) {
                 BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
                     if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
-                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(), Block.UPDATE_ALL);
+                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(),
+                                Block.UPDATE_ALL);
                 });
                 if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkGoostatus()) {
                     blockEntity.particleCloud();
                     blockEntity.hasSpawnGoo(false);
-                    blockEntity.getLevel().playSound(null, pos, SoundEvents.SPLASH_POTION_BREAK, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    blockEntity.getLevel().playSound(null, pos, SoundEvents.SPLASH_POTION_BREAK, SoundSource.BLOCKS,
+                            1.0f, 1.0f);
                 }
             }
             if (!blockEntity.isRemoved())
-                blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState());
+                blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(),
+                        blockEntity.getBlockState());
         }
     }
 
@@ -93,14 +103,14 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("spawngoo", checkGoostatus());
         return nbt;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         hasSpawnGoo(nbt.getBoolean("spawngoo"));
@@ -108,7 +118,7 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
+    protected void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
         nbt.putBoolean("spawngoo", check);
         if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
@@ -120,40 +130,40 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    public NonNullList<ItemStack> getItems() {
+    public @NotNull NonNullList<ItemStack> getItems() {
         return this.items;
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> list) {
+    protected void setItems(@NotNull NonNullList<ItemStack> list) {
         this.items = list;
     }
 
     @Override
-    protected Component getDefaultName() {
+    protected @NotNull Component getDefaultName() {
         return Component.translatable("block.gigeresque.alien_storage_block1");
     }
 
     @Override
-    protected AbstractContainerMenu createMenu(int syncId, Inventory inventory) {
+    protected @NotNull AbstractContainerMenu createMenu(int syncId, @NotNull Inventory inventory) {
         return new ChestMenu(MenuType.GENERIC_9x4, syncId, inventory, this, 4);
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.incrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.decrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     public void tick() {
         if (!this.isRemoved())
-            this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.stateManager.recheckOpeners(Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
     }
 
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
@@ -167,16 +177,14 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
         return this.getBlockState().getValue(AlienStorageGooEntity.CHEST_STATE);
     }
 
-    public void setChestState(StorageStates state) {
-        this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(CHEST_STATE, state));
-    }
-
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, event -> {
-            if (getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")))
+            if (getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")))
                 return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-            else if (getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")))
+            else if (getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")))
                 return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
             return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
         }));
@@ -196,10 +204,13 @@ public class AlienStorageGooEntity extends RandomizableContainerBlockEntity impl
     }
 
     public void particleCloud() {
-        var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5, worldPosition.getZ());
+        assert this.level != null;
+        var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5,
+                worldPosition.getZ());
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(3);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+        areaEffectCloudEntity.setRadiusPerTick(
+                -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
         this.level.addFreshEntity(areaEffectCloudEntity);
     }

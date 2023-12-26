@@ -24,6 +24,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AzureVibrationUser implements VibrationSystem.User {
@@ -43,12 +44,12 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public PositionSource getPositionSource() {
+    public @NotNull PositionSource getPositionSource() {
         return this.positionSource;
     }
 
     @Override
-    public TagKey<GameEvent> getListenableEvents() {
+    public @NotNull TagKey<GameEvent> getListenableEvents() {
         return GigTags.ALIEN_CAN_LISTEN;
     }
 
@@ -58,7 +59,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public boolean isValidVibration(GameEvent gameEvent, Context context) {
+    public boolean isValidVibration(GameEvent gameEvent, @NotNull Context context) {
         if (!gameEvent.is(this.getListenableEvents())) return false;
 
         var entity = context.sourceEntity();
@@ -73,7 +74,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public boolean canReceiveVibration(ServerLevel serverLevel, BlockPos blockPos, GameEvent gameEvent, GameEvent.Context context) {
+    public boolean canReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, GameEvent.@NotNull Context context) {
         if (mob.isNoAi() || mob.isDeadOrDying() || !mob.level().getWorldBorder().isWithinBounds(blockPos) || mob.isRemoved())
             return false;
         var entity = context.sourceEntity();
@@ -81,7 +82,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public void onReceiveVibration(ServerLevel serverLevel, BlockPos blockPos, GameEvent gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
+    public void onReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
         var cName = "attackController";

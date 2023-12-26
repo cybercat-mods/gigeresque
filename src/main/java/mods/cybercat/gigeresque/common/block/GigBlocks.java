@@ -37,8 +37,6 @@ public record GigBlocks() implements GigeresqueInitializer {
     public static final Block NEST_RESIN_BLOCK = new GigBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
     public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
     public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
-    //	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_4 = new AlienJarBlock();
-//	public static final AlienJarBlock ALIEN_STORAGE_BLOCK_5 = new AlienJarBlock();
     public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
     public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
@@ -102,7 +100,7 @@ public record GigBlocks() implements GigeresqueInitializer {
     /*
      * FLUID BLOCKS
      */
-    protected static Properties replaceCheck = Gigeresque.config.blackfuildNonrepacle ? BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY) : BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY);
+    private static Properties replaceCheck = Gigeresque.config.blackfuildNonrepacle ? BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY) : BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY);
     public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, replaceCheck) {
     };
     private static GigBlocks instance;

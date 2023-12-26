@@ -51,12 +51,14 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
 
+        assert this.target != null;
         return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
     }
 
     @Override
     protected void start(E entity) {
         entity.swing(InteractionHand.MAIN_HAND);
+        assert this.target != null;
         BehaviorUtils.lookAtEntity(entity, this.target);
     }
 

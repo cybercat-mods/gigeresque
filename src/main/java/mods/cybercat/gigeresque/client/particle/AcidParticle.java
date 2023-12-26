@@ -5,6 +5,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public class AcidParticle extends TextureSheetParticle {
     protected final SpriteSet spriteProvider;
@@ -46,7 +47,7 @@ public class AcidParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 

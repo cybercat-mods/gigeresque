@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -35,29 +36,29 @@ public class AlienPanic extends Behavior<PathfinderMob> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel serverLevel, PathfinderMob pathfinderMob) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, @NotNull PathfinderMob pathfinderMob) {
         return this.shouldPanic.test(pathfinderMob) && !pathfinderMob.isAggressive();
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
+    protected boolean canStillUse(@NotNull ServerLevel serverLevel, @NotNull PathfinderMob pathfinderMob, long l) {
         return true;
     }
 
     @Override
-    protected void start(ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
+    protected void start(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
         pathfinderMob.getBrain().setMemory(MemoryModuleType.IS_PANICKING, true);
         pathfinderMob.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
     }
 
     @Override
-    protected void stop(ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
+    protected void stop(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
         Brain<?> brain = pathfinderMob.getBrain();
         brain.eraseMemory(MemoryModuleType.IS_PANICKING);
     }
 
     @Override
-    protected void tick(ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
+    protected void tick(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob, long l) {
         Vec3 vec3;
         if (pathfinderMob.getNavigation().isDone() && (vec3 = this.getPanicPos(pathfinderMob, serverLevel)) != null) {
             pathfinderMob.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(vec3, this.speedMultiplier, 0));

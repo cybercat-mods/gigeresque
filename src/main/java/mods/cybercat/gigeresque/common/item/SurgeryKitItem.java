@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class SurgeryKitItem extends Item {
 
@@ -29,7 +30,7 @@ public class SurgeryKitItem extends Item {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack, @NotNull Player player, LivingEntity livingEntity, @NotNull InteractionHand interactionHand) {
         if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance)) {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
@@ -39,7 +40,7 @@ public class SurgeryKitItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand) {
         if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance))
             tryRemoveParasite(user.getItemInHand(hand), user);
         return super.use(world, user, hand);
@@ -72,6 +73,7 @@ public class SurgeryKitItem extends Item {
         if (!entity.hasEffect(GigStatusEffects.SPORE) && !entity.hasEffect(GigStatusEffects.DNA)) {
             if (entity.getType().is(GigTags.RUNNER_HOSTS)) {
                 burster = Entities.RUNNERBURSTER.create(entity.level());
+                assert burster != null;
                 ((ChestbursterEntity) burster).setHostId("runner");
             } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
                 burster = Entities.AQUATIC_CHESTBURSTER.create(entity.level());
@@ -81,9 +83,13 @@ public class SurgeryKitItem extends Item {
         else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA))
             burster = Entities.SPITTER.create(entity.level());
 
-        if (entity.hasCustomName() && entity != null) burster.setCustomName(entity.getCustomName());
+        if (entity.hasCustomName()) {
+            assert burster != null;
+            burster.setCustomName(entity.getCustomName());
+        }
         if (burster instanceof ChestbursterEntity chest)
             chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
+        assert burster != null;
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
         entity.level().addFreshEntity(burster);
     }

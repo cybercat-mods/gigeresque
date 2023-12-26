@@ -68,6 +68,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -101,7 +102,7 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
@@ -119,26 +120,16 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
-    public PathNavigation createNavigation(Level world) {
+    public @NotNull PathNavigation createNavigation(@NotNull Level world) {
         return swimNavigation;
     }
 
     @Override
-    public boolean isPushedByFluid() {
-        return false;
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
     }
 
     @Override
-    protected void jumpInLiquid(TagKey<Fluid> fluid) {
-    }
-
-    @Override
-    public EntityDimensions getDimensions(Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
     }
 
@@ -148,13 +139,13 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
         if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -166,7 +157,8 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
     @Override
     public List<ExtendedSensor<AquaticAlienEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<AquaticAlienEntity>().setRadius(30).setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7), new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<AquaticAlienEntity>().setRadius(30).setPredicate(
+                GigEntityUtils::entityTest), new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7), new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)), new HurtBySensor<>(), new UnreachableTargetSensor<>(), new HurtBySensor<>());
     }
 
     @Override
@@ -181,18 +173,19 @@ public class AquaticAlienEntity extends AdultAlienEntity implements SmartBrainOw
 
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> !this.wasTouchingWater ? 0.95F : 1.5F), new AlienMeleeAttack(10));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> !this.wasTouchingWater ? 0.95F : 1.5F), new AlienMeleeAttack<>(10));
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(@NotNull Entity target) {
         if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
             if (target instanceof Player playerEntity) {
                 playerEntity.drop(playerEntity.getInventory().getSelected(), false);
                 playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
             }
-            if (livingEntity instanceof Mob mobEntity && mobEntity.getMainHandItem() != null) {
-                this.drop(mobEntity, mobEntity.getMainHandItem(), false);
+            if (livingEntity instanceof Mob mobEntity) {
+                mobEntity.getMainHandItem();
+                this.drop(mobEntity, mobEntity.getMainHandItem());
                 mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);

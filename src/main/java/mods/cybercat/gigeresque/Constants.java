@@ -9,7 +9,7 @@ public record Constants() {
     public static final int TPM = TPS * 60; // Ticks per minute
     public static final int TPD = TPM * 20; // Ticks per day
 
-    public static final ResourceLocation modResource(String name) {
+    public static ResourceLocation modResource(String name) {
         return new ResourceLocation(Gigeresque.MOD_ID, name);
     }
 }

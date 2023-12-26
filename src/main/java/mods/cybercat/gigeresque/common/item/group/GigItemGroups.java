@@ -67,8 +67,6 @@ public record GigItemGroups() implements GigeresqueInitializer {
                     entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE);
                     entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_2);
                     entries.accept(GigBlocks.ALIEN_STORAGE_BLOCK_3);
-                    // entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_4);
-                    // entries.accept(GIgBlocks.ALIEN_STORAGE_BLOCK_5);
                     entries.accept(GigBlocks.NEST_RESIN);
                     entries.accept(GigBlocks.NEST_RESIN_BLOCK);
                     entries.accept(GigBlocks.NEST_RESIN_WEB);

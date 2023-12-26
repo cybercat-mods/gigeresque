@@ -26,6 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
 
@@ -48,7 +49,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
@@ -73,12 +74,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
-    public PathNavigation createNavigation(Level world) {
+    public @NotNull PathNavigation createNavigation(@NotNull Level world) {
         return swimNavigation;
     }
 
@@ -88,11 +84,11 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
     }
 
     @Override
-    protected void jumpInLiquid(TagKey<Fluid> fluid) {
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return this.wasEyeInWater ? super.getDimensions(pose).scale(1.0f, 0.5f) : super.getDimensions(pose);
     }
 

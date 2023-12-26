@@ -27,6 +27,7 @@ public class InGameOverlayRendererMixin {
 
     @Inject(method = {"renderScreenEffect"}, at = {@At("RETURN")})
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
+        assert client.player != null;
         if (!client.player.isSpectator()) {
             var d = client.player.getEyeY() - 0.1111111119389534D;
             var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
@@ -46,6 +47,7 @@ public class InGameOverlayRendererMixin {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        assert client.player != null;
         var f = client.player.getLightLevelDependentMagicValue();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -66,6 +68,7 @@ public class InGameOverlayRendererMixin {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        assert client.player != null;
         var f = client.player.getLightLevelDependentMagicValue();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

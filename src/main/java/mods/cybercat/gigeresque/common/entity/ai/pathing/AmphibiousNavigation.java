@@ -6,6 +6,7 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
+import org.jetbrains.annotations.NotNull;
 
 public class AmphibiousNavigation extends WaterBoundPathNavigation {
     public AmphibiousNavigation(Mob entity, Level world) {
@@ -18,7 +19,7 @@ public class AmphibiousNavigation extends WaterBoundPathNavigation {
     }
 
     @Override
-    protected PathFinder createPathFinder(int range) {
+    protected @NotNull PathFinder createPathFinder(int range) {
         nodeEvaluator = new AmphibiousNodeEvaluator(true);
         nodeEvaluator.setCanOpenDoors(false);
         nodeEvaluator.setCanPassDoors(false);

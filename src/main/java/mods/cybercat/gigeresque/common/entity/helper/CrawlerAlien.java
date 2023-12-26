@@ -42,20 +42,16 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, ILivingEntityJumpHook {
-    private static final UUID SLOW_FALLING_ID = UUID.fromString("A5B6CF2A-2F7C-31EF-9222-7C3E7D5E6ABA");
-    public static final AttributeModifier SLOW_FALLING = new AttributeModifier(SLOW_FALLING_ID, "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION);
     private static final UUID FOLLOW_RANGE_INCREASE_ID = UUID.fromString("9e815957-3a8e-4b65-cfbc-eba39d2a06b4");
-    private static final AttributeModifier FOLLOW_RANGE_INCREASE = new AttributeModifier(FOLLOW_RANGE_INCREASE_ID, " Better Crawling follow range increase", 8.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier FOLLOW_RANGE_INCREASE = new AttributeModifier(FOLLOW_RANGE_INCREASE_ID,
+            " Better Crawling follow range increase", 8.0D, AttributeModifier.Operation.ADDITION);
     private static final EntityDataAccessor<Float> MOVEMENT_TARGET_X;
     private static final EntityDataAccessor<Float> MOVEMENT_TARGET_Y;
     private static final EntityDataAccessor<Float> MOVEMENT_TARGET_Z;
@@ -64,36 +60,40 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     private static final EntityDataAccessor<Rotations> ROTATION_BODY;
 
     static {
-        Class<Entity> cls = (Class<Entity>) MethodHandles.lookup().lookupClass();
-
-        MOVEMENT_TARGET_X = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Y = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Z = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_X = SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_Y = SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.FLOAT);
+        MOVEMENT_TARGET_Z = SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.FLOAT);
 
         ImmutableList.Builder<EntityDataAccessor<Optional<BlockPos>>> pathingTargets = ImmutableList.builder();
         ImmutableList.Builder<EntityDataAccessor<Direction>> pathingSides = ImmutableList.builder();
-        for (int i = 0; i < 8; i++) {
-            pathingTargets.add(SynchedEntityData.defineId(cls, EntityDataSerializers.OPTIONAL_BLOCK_POS));
-            pathingSides.add(SynchedEntityData.defineId(cls, EntityDataSerializers.DIRECTION));
+        for (var i = 0; i < 8; i++) {
+            pathingTargets.add(
+                    SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.OPTIONAL_BLOCK_POS));
+            pathingSides.add(SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.DIRECTION));
         }
         PATHING_TARGETS = pathingTargets.build();
         PATHING_SIDES = pathingSides.build();
 
-        ROTATION_BODY = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
+        ROTATION_BODY = SynchedEntityData.defineId(CrawlerAlien.class, EntityDataSerializers.ROTATIONS);
     }
 
     public float prevOrientationYawDelta;
-    public float nextStepDistance, nextFlap;
-    private double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
-    private double attachmentOffsetX, attachmentOffsetY, attachmentOffsetZ;
+    public float nextStepDistance;
+    private double prevAttachmentOffsetX;
+    private double prevAttachmentOffsetY;
+    private double prevAttachmentOffsetZ;
+    private double attachmentOffsetX;
+    private double attachmentOffsetY;
+    private double attachmentOffsetZ;
     private Vec3 attachmentNormal = new Vec3(0, 1, 0);
     private Vec3 prevAttachmentNormal = new Vec3(0, 1, 0);
     private float orientationYawDelta;
-    private double lastAttachmentOffsetX, lastAttachmentOffsetY, lastAttachmentOffsetZ;
+    private double lastAttachmentOffsetX;
+    private double lastAttachmentOffsetY;
+    private double lastAttachmentOffsetZ;
     private Vec3 lastAttachmentOrientationNormal = new Vec3(0, 1, 0);
     private int attachedTicks = 5;
     private Vec3 attachedSides = new Vec3(0, 0, 0);
-    private Vec3 prevAttachedSides = new Vec3(0, 0, 0);
     private boolean canClimbInWater = false;
     private boolean canClimbInLava = false;
     private boolean isTravelingInFluid = false;
@@ -114,11 +114,11 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         this.moveControl = new ClimberMoveController<>(this);
         this.lookControl = new ClimberLookController<>(this);
         this.jumpControl = new ClimberJumpController<>(this);
-        this.getAttribute(Attributes.FOLLOW_RANGE).addPermanentModifier(FOLLOW_RANGE_INCREASE);
+        Objects.requireNonNull(this.getAttribute(Attributes.FOLLOW_RANGE)).addPermanentModifier(FOLLOW_RANGE_INCREASE);
     }
 
     @Override
-    public void travel(Vec3 vec3) {
+    public void travel(@NotNull Vec3 vec3) {
         if (this.tickCount % 10 == 0) {
             this.refreshDimensions();
             this.updateOffsetsAndOrientation();
@@ -135,8 +135,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 var dx = aabb.maxX - other.minX;
                 if (dx > offsetX) offsetX = dx;
             }
-            return offsetX;
-        } else return offsetX;
+        }
+        return offsetX;
     }
 
     private static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
@@ -148,8 +148,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 var dy = aabb.maxY - other.minY;
                 if (dy > offsetY) offsetY = dy;
             }
-            return offsetY;
-        } else return offsetY;
+        }
+        return offsetY;
     }
 
     private static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
@@ -161,14 +161,13 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 var dz = aabb.maxZ - other.minZ;
                 if (dz > offsetZ) offsetZ = dz;
             }
-            return offsetZ;
-        } else return offsetZ;
+        }
+        return offsetZ;
     }
 
     @Override
-    public PathNavigation createNavigation(Level world) {
-        var navigate = new BetterSpiderPathNavigator<CrawlerAlien>(this, world, false);
-        return navigate;
+    public @NotNull PathNavigation createNavigation(@NotNull Level world) {
+        return new BetterSpiderPathNavigator<>(this, world, false);
     }
 
     @Override
@@ -188,7 +187,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             var offsetPos = new BlockPos.MutableBlockPos();
             for (var offset : Direction.values()) {
                 if (sides.test(offset)) {
-                    offsetPos.set(pos.getX() + offset.getStepX(), pos.getY() + offset.getStepY(), pos.getZ() + offset.getStepZ());
+                    offsetPos.set(pos.getX() + offset.getStepX(), pos.getY() + offset.getStepY(),
+                            pos.getZ() + offset.getStepZ());
                     var state = cache.getBlockState(offsetPos);
                     if (this.canClimbOnBlock(state, offsetPos)) hasClimbableNeigbor = true;
                 }
@@ -223,7 +223,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public void onRead(CompoundTag nbt) {
-        this.prevAttachmentNormal = this.attachmentNormal = new Vec3(nbt.getDouble("bettercrawling.AttachmentNormalX"), nbt.getDouble("bettercrawling.AttachmentNormalY"), nbt.getDouble("bettercrawling.AttachmentNormalZ"));
+        this.prevAttachmentNormal = this.attachmentNormal = new Vec3(nbt.getDouble("bettercrawling.AttachmentNormalX"),
+                nbt.getDouble("bettercrawling.AttachmentNormalY"), nbt.getDouble("bettercrawling.AttachmentNormalZ"));
         this.attachedTicks = nbt.getInt("bettercrawling.AttachedTicks");
         this.orientation = this.calculateOrientation(1);
     }
@@ -285,7 +286,6 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     private void updateWalkingSide() {
-        Direction avoidPathingFacing = null;
         var entityBox = this.getBoundingBox();
         var closestFacingDst = Double.MAX_VALUE;
         Direction closestFacing = null;
@@ -293,33 +293,30 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         var stickingDistance = this.zza != 0 ? 1.5f : 0.1f;
 
         for (var facing : Direction.values()) {
-            if (avoidPathingFacing == facing) continue;
-            var collisionBoxes = this.getCollisionBoxes(entityBox.inflate(0.2f).expandTowards(facing.getStepX() * stickingDistance, facing.getStepY() * stickingDistance, facing.getStepZ() * stickingDistance));
+            if (null == facing) continue;
+            var collisionBoxes = this.getCollisionBoxes(
+                    entityBox.inflate(0.2f).expandTowards(facing.getStepX() * stickingDistance,
+                            facing.getStepY() * stickingDistance, facing.getStepZ() * stickingDistance));
             var closestDst = Double.MAX_VALUE;
 
             for (var collisionBox : collisionBoxes) {
-                switch (facing) {
-                    case EAST:
-                    case WEST:
-                        closestDst = Math.min(closestDst, Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
-                        break;
-                    case UP:
-                    case DOWN:
-                        closestDst = Math.min(closestDst, Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
-                        break;
-                    case NORTH:
-                    case SOUTH:
-                        closestDst = Math.min(closestDst, Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
-                        break;
-                }
+                closestDst = switch (facing) {
+                    case EAST, WEST -> Math.min(closestDst, Math.abs(
+                            calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
+                    case UP, DOWN -> Math.min(closestDst, Math.abs(
+                            calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
+                    case NORTH, SOUTH -> Math.min(closestDst, Math.abs(
+                            calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
+                };
             }
 
             if (closestDst < closestFacingDst) {
                 closestFacingDst = closestDst;
                 closestFacing = facing;
             }
-            if (closestDst < Double.MAX_VALUE)
-                weighting = weighting.add(new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(1 - Math.min(closestDst, stickingDistance) / stickingDistance));
+            if (closestDst < Double.MAX_VALUE) weighting = weighting.add(
+                    new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(
+                            1 - Math.min(closestDst, stickingDistance) / stickingDistance));
         }
 
         if (closestFacing == null) this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
@@ -353,15 +350,14 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public float getAttachmentOffset(Direction.Axis axis, float partialTicks) {
-        switch (axis) {
-            default:
-            case X:
-                return (float) (this.prevAttachmentOffsetX + (this.attachmentOffsetX - this.prevAttachmentOffsetX) * partialTicks);
-            case Y:
-                return (float) (this.prevAttachmentOffsetY + (this.attachmentOffsetY - this.prevAttachmentOffsetY) * partialTicks);
-            case Z:
-                return (float) (this.prevAttachmentOffsetZ + (this.attachmentOffsetZ - this.prevAttachmentOffsetZ) * partialTicks);
-        }
+        return switch (axis) {
+            case Y ->
+                    (float) (this.prevAttachmentOffsetY + (this.attachmentOffsetY - this.prevAttachmentOffsetY) * partialTicks);
+            case Z ->
+                    (float) (this.prevAttachmentOffsetZ + (this.attachmentOffsetZ - this.prevAttachmentOffsetZ) * partialTicks);
+            default ->
+                    (float) (this.prevAttachmentOffsetX + (this.attachmentOffsetX - this.prevAttachmentOffsetX) * partialTicks);
+        };
     }
 
     @Override
@@ -378,18 +374,18 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
             // Prevent premature syncing of position causing overly smoothed movement
             if (entityTracker != null && entityTracker.serverEntity.tickCount % entityTracker.serverEntity.updateInterval == 0) {
-                var orientation = this.getOrientation();
-                var look = orientation.getGlobal(this.getYRot(), this.getXRot());
+                var look = this.getOrientation().getGlobal(this.getYRot(), this.getXRot());
                 this.entityData.set(ROTATION_BODY, new Rotations((float) look.x, (float) look.y, (float) look.z));
 
                 if (this.shouldTrackPathingTargets()) {
                     if (this.xxa != 0) {
-                        var forwardVector = orientation.getGlobal(this.getYRot(), 0);
-                        var strafeVector = orientation.getGlobal(this.getYRot() + 90.0f, 0);
+                        var forwardVector = this.getOrientation().getGlobal(this.getYRot(), 0);
+                        var strafeVector = this.getOrientation().getGlobal(this.getYRot() + 90.0f, 0);
                         var offset = forwardVector.scale(this.zza).add(strafeVector.scale(this.xxa)).normalize();
 
                         this.entityData.set(MOVEMENT_TARGET_X, (float) (this.getX() + offset.x));
-                        this.entityData.set(MOVEMENT_TARGET_Y, (float) (this.getY() + this.getBbHeight() * 0.5f + offset.y));
+                        this.entityData.set(MOVEMENT_TARGET_Y,
+                                (float) (this.getY() + this.getBbHeight() * 0.5f + offset.y));
                         this.entityData.set(MOVEMENT_TARGET_Z, (float) (this.getZ() + offset.z));
                     } else {
                         this.entityData.set(MOVEMENT_TARGET_X, (float) this.getMoveControl().getWantedX());
@@ -403,11 +399,11 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                             var pathingSide = PATHING_SIDES.get(i);
                             if (path.getNextNodeIndex() + i < path.getNodeCount()) {
                                 var point = path.getNode(path.getNextNodeIndex() + i);
-                                this.entityData.set(pathingTarget, Optional.of(new BlockPos(point.x, point.y, point.z)));
+                                this.entityData.set(pathingTarget,
+                                        Optional.of(new BlockPos(point.x, point.y, point.z)));
                                 if (point instanceof DirectionalPathPoint dirpoint) {
                                     var dir = dirpoint.getPathSide();
-                                    if (dir != null) this.entityData.set(pathingSide, dir);
-                                    else this.entityData.set(pathingSide, Direction.DOWN);
+                                    this.entityData.set(pathingSide, Objects.requireNonNullElse(dir, Direction.DOWN));
                                 }
 
                             } else {
@@ -436,7 +432,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     @Nullable
     public Vec3 getTrackedMovementTarget() {
         if (this.shouldTrackPathingTargets())
-            return new Vec3(this.entityData.get(MOVEMENT_TARGET_X), this.entityData.get(MOVEMENT_TARGET_Y), this.entityData.get(MOVEMENT_TARGET_Z));
+            return new Vec3(this.entityData.get(MOVEMENT_TARGET_X), this.entityData.get(MOVEMENT_TARGET_Y),
+                    this.entityData.get(MOVEMENT_TARGET_Z));
         return null;
     }
 
@@ -474,7 +471,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
         for (var cx = minChunkX; cx <= maxChunkX; cx++)
             for (var cz = minChunkZ; cz <= maxChunkZ; cz++)
-                blockReaderCache[(cx - minChunkX) + (cz - minChunkZ) * width] = collisionReader.getChunkForCollisions(cx, cz);
+                blockReaderCache[(cx - minChunkX) + (cz - minChunkZ) * width] = collisionReader.getChunkForCollisions(
+                        cx, cz);
 
         CollisionGetter cachedCollisionReader = new CollisionGetter() {
             @Override
@@ -488,27 +486,27 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             }
 
             @Override
-            public BlockEntity getBlockEntity(BlockPos pos) {
+            public BlockEntity getBlockEntity(@NotNull BlockPos pos) {
                 return collisionReader.getBlockEntity(pos);
             }
 
             @Override
-            public BlockState getBlockState(BlockPos pos) {
+            public @NotNull BlockState getBlockState(@NotNull BlockPos pos) {
                 return collisionReader.getBlockState(pos);
             }
 
             @Override
-            public FluidState getFluidState(BlockPos pos) {
+            public @NotNull FluidState getFluidState(@NotNull BlockPos pos) {
                 return collisionReader.getFluidState(pos);
             }
 
             @Override
-            public WorldBorder getWorldBorder() {
+            public @NotNull WorldBorder getWorldBorder() {
                 return collisionReader.getWorldBorder();
             }
 
             @Override
-            public List<VoxelShape> getEntityCollisions(Entity entity, AABB aabb) {
+            public @NotNull List<VoxelShape> getEntityCollisions(Entity entity, @NotNull AABB aabb) {
                 return collisionReader.getEntityCollisions(entity, aabb);
             }
 
@@ -523,7 +521,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     private List<AABB> getCollisionBoxes(AABB aabb) {
         List<AABB> boxes = new ArrayList<>();
-        this.forEachCollisonBox(aabb, (minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ)));
+        this.forEachCollisonBox(aabb,
+                (minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ)));
         return boxes;
     }
 
@@ -544,7 +543,9 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             var p = this.position();
             var s = p.add(0, this.getBbHeight() * 0.5f, 0);
             var inclusionBox = new AABB(s.x, s.y, s.z, s.x, s.y, s.z).inflate(this.collisionsInclusionRange);
-            var attachmentPoint = CollisionSmoothingUtil.findClosestPoint(consumer -> this.forEachCollisonBox(inclusionBox, consumer), s, this.attachmentNormal.scale(-1), this.collisionsSmoothingRange, 1.0f, 0.001f, 20, 0.05f, s);
+            var attachmentPoint = CollisionSmoothingUtil.findClosestPoint(
+                    consumer -> this.forEachCollisonBox(inclusionBox, consumer), s, this.attachmentNormal.scale(-1),
+                    this.collisionsSmoothingRange, 1.0f, 0.001f, 20, 0.05f, s);
             var entityBox = this.getBoundingBox();
 
             if (attachmentPoint != null && !this.isDeadOrDying()) {
@@ -555,12 +556,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
                 if (Math.max(dx, Math.max(dy, dz)) < 0.5f) {
                     if (!this.isDeadOrDying()) isAttached = true;
-                    this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2, this.getBbWidth() / 2);
+                    this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2,
+                            this.getBbWidth() / 2);
                     this.lastAttachmentOffsetY = Mth.clamp(attachmentPos.y - p.y, 0, this.getBbHeight());
-                    this.lastAttachmentOffsetZ = Mth.clamp(attachmentPos.z - p.z, -this.getBbWidth() / 2, this.getBbWidth() / 2);
+                    this.lastAttachmentOffsetZ = Mth.clamp(attachmentPos.z - p.z, -this.getBbWidth() / 2,
+                            this.getBbWidth() / 2);
                     this.lastAttachmentOrientationNormal = attachmentPoint.getRight();
-                } else {
-                    isAttached = false;
                 }
             }
         }
@@ -573,7 +574,9 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         this.attachmentOffsetX = baseStickingOffsetX + (this.lastAttachmentOffsetX - baseStickingOffsetX) * attachmentBlend;
         this.attachmentOffsetY = baseStickingOffsetY + (this.lastAttachmentOffsetY - baseStickingOffsetY) * attachmentBlend;
         this.attachmentOffsetZ = baseStickingOffsetZ + (this.lastAttachmentOffsetZ - baseStickingOffsetZ) * attachmentBlend;
-        this.attachmentNormal = baseOrientationNormal.add(this.lastAttachmentOrientationNormal.subtract(baseOrientationNormal).scale(attachmentBlend)).normalize();
+        this.attachmentNormal = baseOrientationNormal.add(
+                this.lastAttachmentOrientationNormal.subtract(baseOrientationNormal).scale(
+                        attachmentBlend)).normalize();
 
         if (!isAttached) this.attachedTicks = Math.max(0, this.attachedTicks - 1);
         else this.attachedTicks = Math.min(5, this.attachedTicks + 1);
@@ -611,7 +614,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public Orientation calculateOrientation(float partialTicks) {
-        var attachmentNormal = this.prevAttachmentNormal.add(this.attachmentNormal.subtract(this.prevAttachmentNormal).scale(partialTicks));
+        var attachmentNormal = this.prevAttachmentNormal.add(
+                this.attachmentNormal.subtract(this.prevAttachmentNormal).scale(partialTicks));
         var localZ = new Vec3(0, 0, 1);
         var localY = new Vec3(0, 1, 0);
         var localX = new Vec3(1, 0, 0);
@@ -628,18 +632,22 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         componentY = (float) localY.dot(attachmentNormal);
         componentX = (float) localX.dot(attachmentNormal);
 
-        var pitch = (float) Math.toDegrees(Mth.atan2(Mth.sqrt(componentX * componentX + componentZ * componentZ), componentY));
+        var pitch = (float) Math.toDegrees(
+                Mth.atan2(Mth.sqrt(componentX * componentX + componentZ * componentZ), componentY));
         var m = new Matrix4f();
 
         m.multiply(new Matrix4f((float) Math.toRadians(yaw), 0, 1, 0));
         m.multiply(new Matrix4f((float) Math.toRadians(pitch), 1, 0, 0));
-        m.multiply(new Matrix4f((float) Math.toRadians(Math.signum(0.5f - componentY - componentZ - componentX) * yaw), 0, 1, 0));
+        m.multiply(
+                new Matrix4f((float) Math.toRadians(Math.signum(0.5f - componentY - componentZ - componentX) * yaw), 0,
+                        1, 0));
 
         localZ = m.multiply(new Vec3(0, 0, -1));
         localY = m.multiply(new Vec3(0, 1, 0));
         localX = m.multiply(new Vec3(1, 0, 0));
 
-        return new Orientation(attachmentNormal, localZ, localY, localX, componentZ, componentY, componentX, yaw, pitch);
+        return new Orientation(attachmentNormal, localZ, localY, localX, componentZ, componentY, componentX, yaw,
+                pitch);
     }
 
     @Override
@@ -692,13 +700,15 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         if (this.jumpDir != null) {
             var jumpStrength = this.getJumpPower();
             if (this.hasEffect(MobEffects.JUMP))
-                jumpStrength += 0.1F * (float) (this.getEffect(MobEffects.JUMP).getAmplifier() + 1);
+                jumpStrength += 0.1F * (float) (Objects.requireNonNull(this.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
             var motion = this.getDeltaMovement();
             var orthogonalMotion = this.jumpDir.scale(this.jumpDir.dot(motion));
             var tangentialMotion = motion.subtract(orthogonalMotion);
-            this.setDeltaMovement(tangentialMotion.x + this.jumpDir.x * jumpStrength, tangentialMotion.y + this.jumpDir.y * jumpStrength, tangentialMotion.z + this.jumpDir.z * jumpStrength);
-            if (this.isSprinting())
-                this.setDeltaMovement(this.getDeltaMovement().add(this.getOrientation().getGlobal(this.yRot, 0).scale(0.2f)));
+            this.setDeltaMovement(tangentialMotion.x + this.jumpDir.x * jumpStrength,
+                    tangentialMotion.y + this.jumpDir.y * jumpStrength,
+                    tangentialMotion.z + this.jumpDir.z * jumpStrength);
+            if (this.isSprinting()) this.setDeltaMovement(
+                    this.getDeltaMovement().add(this.getOrientation().getGlobal(this.yRot, 0).scale(0.2f)));
             this.hasImpulse = true;
             return true;
         }
@@ -712,10 +722,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             this.isTravelingInFluid = false;
             var fluidState = this.level().getFluidState(this.blockPosition());
 
-            if (!this.canClimbInWater && this.isInWater() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidState)) {
+            if (!this.canClimbInWater && this.isInWater() && this.isAffectedByFluids() && !this.canStandOnFluid(
+                    fluidState)) {
                 this.isTravelingInFluid = true;
                 if (canTravel) return false;
-            } else if (!this.canClimbInLava && this.isInLava() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidState)) {
+            } else if (!this.canClimbInLava && this.isInLava() && this.isAffectedByFluids() && !this.canStandOnFluid(
+                    fluidState)) {
                 this.isTravelingInFluid = true;
                 if (canTravel) return false;
             } else if (canTravel) this.travelOnGround(relative);
@@ -733,12 +745,10 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     private void travelOnGround(Vec3 relative) {
-        var orientation = this.getOrientation();
-        var forwardVector = orientation.getGlobal(this.yRot, 0);
-        var strafeVector = orientation.getGlobal(this.yRot + 90.0f, 0);
-        var upVector = orientation.getGlobal(this.yRot, -90.0f);
-        var groundDirection = this.getGroundDirection();
-        var stickingForce = this.getStickingForce(groundDirection);
+        var forwardVector = this.getOrientation().getGlobal(this.yRot, 0);
+        var strafeVector = this.getOrientation().getGlobal(this.yRot + 90.0f, 0);
+        var upVector = this.getOrientation().getGlobal(this.yRot, -90.0f);
+        var stickingForce = this.getStickingForce(this.getGroundDirection());
         var isFalling = this.getDeltaMovement().y <= 0.0D;
 
         if (isFalling && this.hasEffect(MobEffects.SLOW_FALLING)) this.fallDistance = 0;
@@ -749,8 +759,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         if (forward != 0 || strafe != 0) {
             var slipperiness = 0.91f;
 
-            if (this.onGround())
-                slipperiness = this.getBlockSlipperiness(new BlockPos(this.blockPosition()).relative(groundDirection.getLeft()));
+            if (this.onGround()) slipperiness = this.getBlockSlipperiness(
+                    new BlockPos(this.blockPosition()).relative(this.getGroundDirection().getLeft()));
 
             var f = forward * forward + strafe * strafe;
             if (f >= 1.0E-4F) {
@@ -758,7 +768,9 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 f = this.getRelevantMoveFactor(slipperiness) / f;
                 forward *= f;
                 strafe *= f;
-                var movementOffset = new Vec3(forwardVector.x * forward + strafeVector.x * strafe, forwardVector.y * forward + strafeVector.y * strafe, forwardVector.z * forward + strafeVector.z * strafe);
+                var movementOffset = new Vec3(forwardVector.x * forward + strafeVector.x * strafe,
+                        forwardVector.y * forward + strafeVector.y * strafe,
+                        forwardVector.z * forward + strafeVector.z * strafe);
                 var px = this.getX();
                 var py = this.getY();
                 var pz = this.getZ();
@@ -771,20 +783,30 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 this.setLocationFromBoundingbox();
                 this.setDeltaMovement(motion);
                 // Probe collision normal
-                var probeVector = new Vec3(Math.abs(movementDir.x) < 0.001D ? -Math.signum(upVector.x) : 0, Math.abs(movementDir.y) < 0.001D ? -Math.signum(upVector.y) : 0, Math.abs(movementDir.z) < 0.001D ? -Math.signum(upVector.z) : 0).normalize().scale(0.0001D);
+                var probeVector = new Vec3(Math.abs(movementDir.x) < 0.001D ? -Math.signum(upVector.x) : 0,
+                        Math.abs(movementDir.y) < 0.001D ? -Math.signum(upVector.y) : 0,
+                        Math.abs(movementDir.z) < 0.001D ? -Math.signum(upVector.z) : 0).normalize().scale(0.0001D);
                 this.move(MoverType.SELF, probeVector);
-                var collisionNormal = new Vec3(Math.abs(this.getX() - px - probeVector.x) > 0.000001D ? Math.signum(-probeVector.x) : 0, Math.abs(this.getY() - py - probeVector.y) > 0.000001D ? Math.signum(-probeVector.y) : 0, Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(-probeVector.z) : 0).normalize();
+                var collisionNormal = new Vec3(
+                        Math.abs(this.getX() - px - probeVector.x) > 0.000001D ? Math.signum(-probeVector.x) : 0,
+                        Math.abs(this.getY() - py - probeVector.y) > 0.000001D ? Math.signum(-probeVector.y) : 0,
+                        Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(
+                                -probeVector.z) : 0).normalize();
                 this.setBoundingBox(aabb);
                 this.setLocationFromBoundingbox();
                 this.setDeltaMovement(motion);
                 // Movement vector projected to surface
-                var surfaceMovementDir = movementDir.subtract(collisionNormal.scale(collisionNormal.dot(movementDir))).normalize();
-                var isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(collisionNormal.z) > 1.0001f;
+                var surfaceMovementDir = movementDir.subtract(
+                        collisionNormal.scale(collisionNormal.dot(movementDir))).normalize();
+                var isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(
+                        collisionNormal.z) > 1.0001f;
                 // Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
                 if (!isInnerCorner) movementDir = surfaceMovementDir;
                 // Nullify sticking force along movement vector projected to surface
-                stickingForce = stickingForce.subtract(surfaceMovementDir.scale(surfaceMovementDir.normalize().dot(stickingForce)));
-                this.setDeltaMovement(this.getDeltaMovement().add(movementDir.scale(Mth.sqrt(forward * forward + strafe * strafe))));
+                stickingForce = stickingForce.subtract(
+                        surfaceMovementDir.scale(surfaceMovementDir.normalize().dot(stickingForce)));
+                this.setDeltaMovement(
+                        this.getDeltaMovement().add(movementDir.scale(Mth.sqrt(forward * forward + strafe * strafe))));
             }
         }
 
@@ -795,8 +817,10 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         var pz = this.getZ();
         var motion = this.getDeltaMovement();
         this.move(MoverType.SELF, motion);
-        this.prevAttachedSides = this.attachedSides;
-        this.attachedSides = new Vec3(Math.abs(this.getX() - px - motion.x) > 0.001D ? -Math.signum(motion.x) : 0, Math.abs(this.getY() - py - motion.y) > 0.001D ? -Math.signum(motion.y) : 0, Math.abs(this.getZ() - pz - motion.z) > 0.001D ? -Math.signum(motion.z) : 0);
+        Vec3 prevAttachedSides = this.attachedSides;
+        this.attachedSides = new Vec3(Math.abs(this.getX() - px - motion.x) > 0.001D ? -Math.signum(motion.x) : 0,
+                Math.abs(this.getY() - py - motion.y) > 0.001D ? -Math.signum(motion.y) : 0,
+                Math.abs(this.getZ() - pz - motion.z) > 0.001D ? -Math.signum(motion.z) : 0);
         var slipperiness = 0.91f;
 
         if (this.onGround()) {
@@ -808,11 +832,13 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         var orthogonalMotion = upVector.scale(upVector.dot(motion));
         var tangentialMotion = motion.subtract(orthogonalMotion);
 
-        this.setDeltaMovement(tangentialMotion.x * slipperiness + orthogonalMotion.x * 0.98f, tangentialMotion.y * slipperiness + orthogonalMotion.y * 0.98f, tangentialMotion.z * slipperiness + orthogonalMotion.z * 0.98f);
+        this.setDeltaMovement(tangentialMotion.x * slipperiness + orthogonalMotion.x * 0.98f,
+                tangentialMotion.y * slipperiness + orthogonalMotion.y * 0.98f,
+                tangentialMotion.z * slipperiness + orthogonalMotion.z * 0.98f);
 
-        var detachedX = this.attachedSides.x != this.prevAttachedSides.x && Math.abs(this.attachedSides.x) < 0.001D;
-        var detachedY = this.attachedSides.y != this.prevAttachedSides.y && Math.abs(this.attachedSides.y) < 0.001D;
-        var detachedZ = this.attachedSides.z != this.prevAttachedSides.z && Math.abs(this.attachedSides.z) < 0.001D;
+        var detachedX = this.attachedSides.x != prevAttachedSides.x && Math.abs(this.attachedSides.x) < 0.001D;
+        var detachedY = this.attachedSides.y != prevAttachedSides.y && Math.abs(this.attachedSides.y) < 0.001D;
+        var detachedZ = this.attachedSides.z != prevAttachedSides.z && Math.abs(this.attachedSides.z) < 0.001D;
 
         if (detachedX || detachedY || detachedZ) {
             var stepHeight = this.maxUpStep();
@@ -821,13 +847,15 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             var prevCollidedHorizontally = this.horizontalCollision;
             var prevCollidedVertically = this.verticalCollision;
             // Offset so that AABB is moved above the new surface
-            this.move(MoverType.SELF, new Vec3(detachedX ? -this.prevAttachedSides.x * 0.25f : 0, detachedY ? -this.prevAttachedSides.y * 0.25f : 0, detachedZ ? -this.prevAttachedSides.z * 0.25f : 0));
-            var axis = this.prevAttachedSides.normalize();
+            this.move(MoverType.SELF,
+                    new Vec3(detachedX ? -prevAttachedSides.x * 0.25f : 0, detachedY ? -prevAttachedSides.y * 0.25f : 0,
+                            detachedZ ? -prevAttachedSides.z * 0.25f : 0));
+            var axis = prevAttachedSides.normalize();
             var attachVector = upVector.scale(-1);
             attachVector = attachVector.subtract(axis.scale(axis.dot(attachVector)));
 
-            if (Math.abs(attachVector.x) > Math.abs(attachVector.y) && Math.abs(attachVector.x) > Math.abs(attachVector.z))
-                attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
+            if (Math.abs(attachVector.x) > Math.abs(attachVector.y) && Math.abs(attachVector.x) > Math.abs(
+                    attachVector.z)) attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
             else if (Math.abs(attachVector.y) > Math.abs(attachVector.z))
                 attachVector = new Vec3(0, Math.signum(attachVector.y), 0);
             else attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
@@ -874,17 +902,20 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     @Override
     public BlockPos getAdjustedOnPosition(BlockPos onPosition) {
         var verticalOffset = this.getVerticalOffset(1);
-        var x = Mth.floor(this.getX() + this.attachmentOffsetX - (float) this.attachmentNormal.x * (verticalOffset + 0.2f));
-        var y = Mth.floor(this.getY() + this.attachmentOffsetY - (float) this.attachmentNormal.y * (verticalOffset + 0.2f));
-        var z = Mth.floor(this.getZ() + this.attachmentOffsetZ - (float) this.attachmentNormal.z * (verticalOffset + 0.2f));
+        var x = Mth.floor(
+                this.getX() + this.attachmentOffsetX - (float) this.attachmentNormal.x * (verticalOffset + 0.2f));
+        var y = Mth.floor(
+                this.getY() + this.attachmentOffsetY - (float) this.attachmentNormal.y * (verticalOffset + 0.2f));
+        var z = Mth.floor(
+                this.getZ() + this.attachmentOffsetZ - (float) this.attachmentNormal.z * (verticalOffset + 0.2f));
         var pos = new BlockPos(x, y, z);
 
         if (this.level().isEmptyBlock(pos) && this.attachmentNormal.y < 0.0f) {
             var posDown = pos.below();
             var stateDown = this.level().getBlockState(pos.below());
 
-            if (stateDown.is(BlockTags.FENCES) || stateDown.is(BlockTags.WALLS) || stateDown.getBlock() instanceof FenceGateBlock)
-                return posDown;
+            if (stateDown.is(BlockTags.FENCES) || stateDown.is(
+                    BlockTags.WALLS) || stateDown.getBlock() instanceof FenceGateBlock) return posDown;
         }
 
         return pos;
@@ -921,7 +952,8 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     public void setLocationFromBoundingbox() {
         AABB axisalignedbb = this.getBoundingBox();
-        this.setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2.0D, axisalignedbb.minY, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D);
+        this.setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2.0D, axisalignedbb.minY,
+                (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D);
     }
 
 }

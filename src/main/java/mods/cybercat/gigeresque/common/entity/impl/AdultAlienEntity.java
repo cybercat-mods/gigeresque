@@ -61,7 +61,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
     protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f, false);
     protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
-    public int statisCounter = 0;
     public int holdingCounter = 0;
     public int breakingCounter = 0;
     public int biteCounter = 0;
@@ -69,8 +68,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     public int wakeupCounter = 0;
     protected long hissingCooldown = 0L;
     protected long searchingProgress = 0L;
-    protected long searchingCooldown = 0L;
-    protected int attackProgress = 0;
 
     protected AdultAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
         super(type, world);
@@ -81,7 +78,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     public void setWakingUpStatus(boolean passout) {
-        this.entityData.set(WAKING_UP, Boolean.valueOf(passout));
+        this.entityData.set(WAKING_UP, passout);
     }
 
     public boolean isWakingUp() {
@@ -89,7 +86,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     public void setPassedOutStatus(boolean passout) {
-        this.entityData.set(PASSED_OUT, Boolean.valueOf(passout));
+        this.entityData.set(PASSED_OUT, passout);
     }
 
     public boolean isPassedOut() {
@@ -145,7 +142,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
@@ -156,11 +153,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
             this.setDeltaMovement(getDeltaMovement().scale(0.9));
             if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
         } else super.travel(movementInput);
-    }
-
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
     }
 
     @Override
@@ -182,7 +174,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putFloat("growth", getGrowth());
         nbt.putBoolean("isStasis", this.isPassedOut());
@@ -195,7 +187,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
+    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         this.setGrowth(nbt.getFloat("getStatisTimer"));
         this.setGrowth(nbt.getFloat("growth"));
@@ -315,7 +307,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
         var multiplier = 1.0f;
         if (source == this.damageSources().onFire()) multiplier = 2.0f;
 
@@ -349,7 +341,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     @Override
-    protected void jumpInLiquid(TagKey<Fluid> fluid) {
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
         super.jumpInLiquid(fluid);
     }
 
@@ -375,7 +367,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
      * SOUNDS
      */
     @Override
-    public SoundEvent getHurtSound(DamageSource source) {
+    public SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.ALIEN_HURT;
     }
 

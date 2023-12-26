@@ -20,8 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
@@ -29,21 +29,21 @@ public record FluidRenderHandlers() implements GigeresqueInitializer {
 
     @Override
     public void initialize() {
-        setupFluidRendering(GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING, Constants.modResource("black_fluid"));
+        setupFluidRendering(Constants.modResource("black_fluid"));
         BlockRenderLayerMap.INSTANCE.putFluids(RenderType.solid(), GigFluids.BLACK_FLUID_STILL, GigFluids.BLACK_FLUID_FLOWING);
     }
 
-    private void setupFluidRendering(Fluid still, Fluid flowing, ResourceLocation textureFluidId) {
+    private void setupFluidRendering(ResourceLocation textureFluidId) {
         var stillSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
         var flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
 
-        var fluidId = BuiltInRegistries.FLUID.getKey(still);
+        var fluidId = BuiltInRegistries.FLUID.getKey(GigFluids.BLACK_FLUID_STILL);
         var listenerId = new ResourceLocation(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
         var fluidSprites = new TextureAtlasSprite[2];
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
-            public void onResourceManagerReload(ResourceManager manager) {
+            public void onResourceManagerReload(@NotNull ResourceManager manager) {
                 var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
                 fluidSprites[0] = atlas.apply(stillSpriteId);
                 fluidSprites[1] = atlas.apply(flowingSpriteId);
@@ -62,7 +62,7 @@ public record FluidRenderHandlers() implements GigeresqueInitializer {
             }
         };
 
-        FluidRenderHandlerRegistry.INSTANCE.register(still, renderHandler);
-        FluidRenderHandlerRegistry.INSTANCE.register(flowing, renderHandler);
+        FluidRenderHandlerRegistry.INSTANCE.register(GigFluids.BLACK_FLUID_STILL, renderHandler);
+        FluidRenderHandlerRegistry.INSTANCE.register(GigFluids.BLACK_FLUID_FLOWING, renderHandler);
     }
 }

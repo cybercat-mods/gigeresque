@@ -53,23 +53,28 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<HammerpedeEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final AzureNavigation landNavigation = new AzureNavigation(this, level());
 
     public HammerpedeEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         setMaxUpStep(1.5f);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
+        AzureNavigation landNavigation = new AzureNavigation(this, level());
         navigation = landNavigation;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.hammerpedeHealth).add(Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.hammerpedeAttackDamage).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.hammerpedeHealth).add(
+                Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE,
+                0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE,
+                Gigeresque.config.hammerpedeAttackDamage).add(Attributes.FOLLOW_RANGE, 16.0).add(
+                Attributes.MOVEMENT_SPEED, 0.3300000041723251);
     }
 
     @Override
@@ -85,7 +90,8 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
             else if (this.isAggressive()) return event.setAndContinue(RawAnimation.begin().thenLoop("idle_alert"));
             else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("attack", GigAnimationsDefault.ATTACK).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                "attack", GigAnimationsDefault.ATTACK).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override
@@ -94,7 +100,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
@@ -106,22 +112,36 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
 
     @Override
     public List<ExtendedSensor<HammerpedeEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate((target, self) -> GigEntityUtils.entityTest(target, self)), new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7), new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)), new HurtBySensor<>());
+        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+                new NearbyLivingEntitySensor<HammerpedeEntity>().setPredicate(
+                        GigEntityUtils::entityTest),
+                new NearbyBlocksSensor<HammerpedeEntity>().setRadius(7),
+                new NearbyRepellentsSensor<HammerpedeEntity>().setRadius(15).setPredicate(
+                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+                new HurtBySensor<>());
     }
 
     @Override
     public BrainActivityGroup<HammerpedeEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.2F), new AlienPanic(2.0f),
+                new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<HammerpedeEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<HammerpedeEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<HammerpedeEntity>(new TargetOrRetaliate<>(),
+                new SetPlayerLookTarget<>().predicate(
+                        target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
+                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
+                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
     public BrainActivityGroup<HammerpedeEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target, this)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new AlienMeleeAttack(7).attackInterval(entity -> 80));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (entity, target) -> GigEntityUtils.removeTarget(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new AlienMeleeAttack<>(7).attackInterval(entity -> 80));
     }
 
     @Override
@@ -129,7 +149,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();
             if (source.getEntity() != null && attacker instanceof LivingEntity living)
@@ -147,7 +167,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
             if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
             if (acidThickness == 0) return super.hurt(source, amount);
 
-            var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, Math.min(4, acidThickness));
+            var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
 
             if (this.getFeetBlockState().getBlock() == Blocks.WATER)
                 newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);

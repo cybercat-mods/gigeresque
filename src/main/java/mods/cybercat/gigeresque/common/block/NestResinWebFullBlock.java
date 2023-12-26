@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class NestResinWebFullBlock extends Block {
     public NestResinWebFullBlock(Properties settings) {
@@ -20,7 +21,7 @@ public class NestResinWebFullBlock extends Block {
     }
 
     @Override
-    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+    public void entityInside(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity) {
         if (entity instanceof AlienEntity) return;
         if (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator())) return;
         if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {

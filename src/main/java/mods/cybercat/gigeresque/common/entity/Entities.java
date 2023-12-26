@@ -37,24 +37,42 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public record Entities() implements GigeresqueInitializer {
 
-    public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(EntityIdentifiers.ALIEN.getPath(), MobCategory.MONSTER, ClassicAlienEntity::new, 0.9f, 2.45f);
-    public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(), MobCategory.MONSTER, AquaticAlienEntity::new, 2.0f, 2.0f);
-    public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(), MobCategory.MONSTER, AquaticChestbursterEntity::new, 0.5f, 0.25f);
-    public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(), MobCategory.MONSTER, ChestbursterEntity::new, 0.5f, 0.25f);
-    public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(), MobCategory.MONSTER, AlienEggEntity::new, 0.7f, 0.9f);
-    public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(), MobCategory.MONSTER, FacehuggerEntity::new, 0.95f, 0.3f);
-    public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(), MobCategory.MONSTER, RunnerAlienEntity::new, 1.25f, 1.75f);
-    public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(), MobCategory.MONSTER, RunnerbursterEntity::new, 0.5f, 0.5f);
-    public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(EntityIdentifiers.MUTANT_POPPER.getPath(), MobCategory.MONSTER, PopperEntity::new, 1.0f, 0.75f);
-    public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(), MobCategory.MONSTER, HammerpedeEntity::new, 1.4f, 0.75f);
-    public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(EntityIdentifiers.MUTANT_STALKER.getPath(), MobCategory.MONSTER, StalkerEntity::new, 1.25f, 1.75f);
-    public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(), MobCategory.MONSTER, NeobursterEntity::new, 0.5f, 0.45f);
-    public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(), MobCategory.MONSTER, NeomorphAdolescentEntity::new, 1.0f, 0.9f);
-    public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(), MobCategory.MONSTER, NeomorphEntity::new, 0.9f, 2.55f);
-    public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(), MobCategory.MONSTER, SpitterEntity::new, 0.9f, 2.0f);
-    public static final EntityType<? extends DraconicTempleBeastEntity> DRACONICTEMPLEBEAST = registerAlienType(EntityIdentifiers.DRACONICTEMPLEBEAST.getPath(), MobCategory.MONSTER, DraconicTempleBeastEntity::new, 1.9f, 2.35f);
-    public static final EntityType<? extends RavenousTempleBeastEntity> RAVENOUSTEMPLEBEAST = registerAlienType(EntityIdentifiers.RAVENOUSTEMPLEBEAST.getPath(), MobCategory.MONSTER, RavenousTempleBeastEntity::new, 1.6f, 3.95f);
-    public static final EntityType<? extends MoonlightHorrorTempleBeastEntity> MOONLIGHTHORRORTEMPLEBEAST = registerAlienType(EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(), MobCategory.MONSTER, MoonlightHorrorTempleBeastEntity::new, 2.1f, 4.95f);
+    public static final EntityType<? extends ClassicAlienEntity> ALIEN = registerAlienType(EntityIdentifiers.ALIEN.getPath(),
+            ClassicAlienEntity::new, 0.9f, 2.45f);
+    public static final EntityType<? extends AquaticAlienEntity> AQUATIC_ALIEN = registerAlienType(EntityIdentifiers.AQUATIC_ALIEN.getPath(),
+            AquaticAlienEntity::new, 2.0f, 2.0f);
+    public static final EntityType<? extends AquaticChestbursterEntity> AQUATIC_CHESTBURSTER = registerAlienType(EntityIdentifiers.AQUATIC_CHESTBURSTER.getPath(),
+            AquaticChestbursterEntity::new, 0.5f, 0.25f);
+    public static final EntityType<? extends ChestbursterEntity> CHESTBURSTER = registerAlienType(EntityIdentifiers.CHESTBURSTER.getPath(),
+            ChestbursterEntity::new, 0.5f, 0.25f);
+    public static final EntityType<? extends AlienEggEntity> EGG = registerAlienType(EntityIdentifiers.EGG.getPath(),
+            AlienEggEntity::new, 0.7f, 0.9f);
+    public static final EntityType<? extends FacehuggerEntity> FACEHUGGER = registerAlienType(EntityIdentifiers.FACEHUGGER.getPath(),
+            FacehuggerEntity::new, 0.95f, 0.3f);
+    public static final EntityType<? extends RunnerAlienEntity> RUNNER_ALIEN = registerAlienType(EntityIdentifiers.RUNNER_ALIEN.getPath(),
+            RunnerAlienEntity::new, 1.25f, 1.75f);
+    public static final EntityType<? extends RunnerbursterEntity> RUNNERBURSTER = registerAlienType(EntityIdentifiers.RUNNERBURSTER.getPath(),
+            RunnerbursterEntity::new, 0.5f, 0.5f);
+    public static final EntityType<? extends PopperEntity> MUTANT_POPPER = registerAlienType(EntityIdentifiers.MUTANT_POPPER.getPath(),
+            PopperEntity::new, 1.0f, 0.75f);
+    public static final EntityType<? extends HammerpedeEntity> MUTANT_HAMMERPEDE = registerAlienType(EntityIdentifiers.MUTANT_HAMMERPEDE.getPath(),
+            HammerpedeEntity::new, 1.4f, 0.75f);
+    public static final EntityType<? extends StalkerEntity> MUTANT_STALKER = registerAlienType(EntityIdentifiers.MUTANT_STALKER.getPath(),
+            StalkerEntity::new, 1.25f, 1.75f);
+    public static final EntityType<? extends NeobursterEntity> NEOBURSTER = registerAlienType(EntityIdentifiers.NEOBURSTER.getPath(),
+            NeobursterEntity::new, 0.5f, 0.45f);
+    public static final EntityType<? extends NeomorphAdolescentEntity> NEOMORPH_ADOLESCENT = registerAlienType(EntityIdentifiers.NEOMORPH_ADOLESCENT.getPath(),
+            NeomorphAdolescentEntity::new, 1.0f, 0.9f);
+    public static final EntityType<? extends NeomorphEntity> NEOMORPH = registerAlienType(EntityIdentifiers.NEOMORPH.getPath(),
+            NeomorphEntity::new, 0.9f, 2.55f);
+    public static final EntityType<? extends SpitterEntity> SPITTER = registerAlienType(EntityIdentifiers.SPITTER.getPath(),
+            SpitterEntity::new, 0.9f, 2.0f);
+    public static final EntityType<? extends DraconicTempleBeastEntity> DRACONICTEMPLEBEAST = registerAlienType(EntityIdentifiers.DRACONICTEMPLEBEAST.getPath(),
+            DraconicTempleBeastEntity::new, 1.9f, 2.35f);
+    public static final EntityType<? extends RavenousTempleBeastEntity> RAVENOUSTEMPLEBEAST = registerAlienType(EntityIdentifiers.RAVENOUSTEMPLEBEAST.getPath(),
+            RavenousTempleBeastEntity::new, 1.6f, 3.95f);
+    public static final EntityType<? extends MoonlightHorrorTempleBeastEntity> MOONLIGHTHORRORTEMPLEBEAST = registerAlienType(EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(),
+            MoonlightHorrorTempleBeastEntity::new, 2.1f, 4.95f);
     private static Entities instance;
 
     public static synchronized Entities getInstance() {
@@ -62,11 +80,12 @@ public record Entities() implements GigeresqueInitializer {
         return instance;
     }
 
-    protected static <T extends Entity> EntityType<T> registerAlienType(String name, MobCategory category, EntityType.EntityFactory<T> factory, float width, float height) {
-        return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(category, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
+    private static <T extends Entity> EntityType<T> registerAlienType(String name, EntityType.EntityFactory<T> factory, float width, float height) {
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, Constants.modResource(name), FabricEntityTypeBuilder.create(
+                MobCategory.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).trackedUpdateRate(1).build());
     }
 
-    protected static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
+    private static <T extends BlockEntity> BlockEntityType<T> registerBlockType(String name, FabricBlockEntityTypeBuilder.Factory<T> factory, Block block) {
         return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.modResource(name), FabricBlockEntityTypeBuilder.create(factory, block).build(null));
     }
 

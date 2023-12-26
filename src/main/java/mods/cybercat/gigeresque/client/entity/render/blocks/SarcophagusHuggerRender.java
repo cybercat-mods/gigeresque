@@ -15,6 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class SarcophagusHuggerRender extends GeoBlockRenderer<AlienStorageHuggerEntity> {
     public SarcophagusHuggerRender() {
         super(new SarcophagusHuggerModel());
@@ -22,17 +24,12 @@ public class SarcophagusHuggerRender extends GeoBlockRenderer<AlienStorageHugger
             @Nullable
             @Override
             protected ItemStack getStackForBone(GeoBone bone, AlienStorageHuggerEntity animatable) {
-                return switch (bone.getName()) {
-                    case "item" -> new ItemStack(Items.AIR);
-                    default -> null;
-                };
+                return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
             }
 
             @Override
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, AlienStorageHuggerEntity animatable) {
-                return switch (bone.getName()) {
-                    default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                };
+                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
             }
 
             @Override
@@ -43,8 +40,12 @@ public class SarcophagusHuggerRender extends GeoBlockRenderer<AlienStorageHugger
                 poseStack.translate(0.0D, 0.0D, -2.0D);
                 poseStack.scale(0.7F, 0.7F, 0.7F);
                 if (animatable.checkHuggerstatus())
-                    Minecraft.getInstance().getEntityRenderDispatcher().render(Entities.FACEHUGGER.create(animatable.getLevel()), 0.0, 0.0, 0.0, 0.0f, partialTick, poseStack, bufferSource, packedLight);
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                    Minecraft.getInstance().getEntityRenderDispatcher().render(
+                            Objects.requireNonNull(Entities.FACEHUGGER.create(
+                                    Objects.requireNonNull(animatable.getLevel()))), 0.0, 0.0, 0.0, 0.0f, partialTick,
+                            poseStack, bufferSource, packedLight);
+                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
+                        packedOverlay);
             }
         });
     }

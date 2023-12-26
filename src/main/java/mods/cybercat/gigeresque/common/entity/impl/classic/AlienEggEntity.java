@@ -120,7 +120,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean("isHatching", isHatching());
         nbt.putBoolean("isHatched", isHatched());
@@ -131,7 +131,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
+    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setIsHatching(nbt.getBoolean("isHatching"));
         setIsHatched(nbt.getBoolean("isHatched"));
@@ -200,8 +200,8 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
      */
     @Override
     public void doPush(@NotNull Entity entity) {
-        if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living,
-                this))) setIsHatching(true);
+        if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living
+        ))) setIsHatching(true);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         super.baseTick();
         this.level().getEntitiesOfClass(LivingEntity.class,
                 this.getBoundingBox().inflate(Gigeresque.config.alieneggHatchRange)).forEach(target -> {
-            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target, this)) {
+            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
                 if (target instanceof Player player && !player.isSteppingCarefully() && !(player.isCreative() || player.isSpectator())) {
                     setIsHatching(true);
                 }
@@ -287,7 +287,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
             }
         });
         this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
-            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target, this)) {
+            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
                 if (target instanceof Player player && !(player.isCreative() || player.isSpectator())) {
                     setIsHatching(true);
                 }

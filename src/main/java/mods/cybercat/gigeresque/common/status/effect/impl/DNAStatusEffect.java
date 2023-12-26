@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class DNAStatusEffect extends MobEffect {
     private BlockPos lightBlockPos = null;
@@ -35,13 +36,13 @@ public class DNAStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
         if (!(entity instanceof AlienEntity) && this == GigStatusEffects.DNA) entity.heal(0);
     }
 
     @Override
-    public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
+    public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
         if (!(entity instanceof AlienEntity)) if (randomPhase > 25) {
             if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
@@ -63,15 +64,15 @@ public class DNAStatusEffect extends MobEffect {
 
     private void placeGoo(LivingEntity entity) {
         entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
-        var isInsideWaterBlock = entity.level().isWaterAt(entity.blockPosition());
-        spawnGoo(entity, isInsideWaterBlock);
+        spawnGoo(entity);
     }
 
-    private void spawnGoo(LivingEntity entity, boolean isInWaterBlock) {
+    private void spawnGoo(LivingEntity entity) {
         if (lightBlockPos == null) {
-            lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 1);
+            lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition());
             if (lightBlockPos == null) return;
-            var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
+            var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(),
+                    entity.getZ());
             areaEffectCloudEntity.setRadius(2.0F);
             areaEffectCloudEntity.setDuration(300);
             areaEffectCloudEntity.setRadiusPerTick(0);
@@ -80,12 +81,11 @@ public class DNAStatusEffect extends MobEffect {
         } else lightBlockPos = null;
     }
 
-    private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
+    private BlockPos findFreeSpace(Level world, BlockPos blockPos) {
         if (blockPos == null) return null;
 
-        var offsets = new int[maxDistance * 2 + 1];
-        offsets[0] = 0;
-        for (var i = 2; i <= maxDistance * 2; i += 2) {
+        var offsets = new int[2 + 1];
+        for (var i = 2; i <= 2; i += 2) {
             offsets[i - 1] = i / 2;
             offsets[i] = -i / 2;
         }

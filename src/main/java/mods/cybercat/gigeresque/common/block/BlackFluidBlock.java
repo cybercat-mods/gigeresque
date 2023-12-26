@@ -34,7 +34,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("ALL")
 public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     private static final int MAX_THICKNESS = 4;
     public static final IntegerProperty THICKNESS = IntegerProperty.create("thickness", 0, MAX_THICKNESS);
@@ -63,12 +65,12 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
+    public void onPlace(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean notify) {
         scheduleTickIfNotScheduled(world, pos);
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState state) {
+    public boolean isRandomlyTicking(@NotNull BlockState state) {
         return true;
     }
 
@@ -78,22 +80,22 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
         return true;
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return Boolean.TRUE.equals(state.getValue(StairBlock.WATERLOGGED)) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
         if (!world.isClientSide() && Boolean.TRUE.equals(state.getValue(WATERLOGGED)))
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
@@ -104,7 +106,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public void playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
     }
 
     protected void setThickness(ServerLevel world, BlockPos pos, BlockState state) {
@@ -120,15 +122,15 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+    public void playerDestroy(@NotNull Level world, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
     }
 
     @Override
-    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean dropExperience) {
+    public void spawnAfterBreak(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull ItemStack stack, boolean dropExperience) {
     }
 
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+    public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         for (var i = 0; i < (getThickness(state) * 2) + 1; i++)
             world.addAlwaysVisibleParticle(Particles.GOO, pos.getX() + random.nextDouble(), pos.getY() + (Boolean.TRUE.equals(state.getValue(WATERLOGGED)) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
         if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
@@ -136,7 +138,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
         if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1)
             setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
@@ -146,26 +148,26 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+    public void randomTick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         scheduleTickIfNotScheduled(world, pos);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter view, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Block.box(0, 0, 0, 16, 2, 16);
     }
 
     @Override
-    public void attack(BlockState state, Level world, BlockPos pos, Player player) {
+    public void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+    public boolean canSurvive(@NotNull BlockState state, LevelReader world, @NotNull BlockPos pos) {
         return world.getBlockState(pos).isAir();
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
             if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(GigTags.DNAIMMUNE))

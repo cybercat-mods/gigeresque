@@ -21,17 +21,12 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
             @Nullable
             @Override
             protected ItemStack getStackForBone(GeoBone bone, IdolStorageEntity animatable) {
-                return switch (bone.getName()) {
-                    case "heldItem" -> new ItemStack(Items.NETHERITE_SCRAP);
-                    default -> null;
-                };
+                return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.NETHERITE_SCRAP) : null;
             }
 
             @Override
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, IdolStorageEntity animatable) {
-                return switch (bone.getName()) {
-                    default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                };
+                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
             }
 
             @Override
@@ -39,7 +34,8 @@ public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
                 poseStack.mulPose(Axis.XP.rotationDegrees(0));
                 poseStack.mulPose(Axis.YP.rotationDegrees(0));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
+                        packedOverlay);
             }
         });
     }

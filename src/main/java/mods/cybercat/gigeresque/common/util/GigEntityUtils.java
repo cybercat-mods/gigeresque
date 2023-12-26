@@ -44,19 +44,19 @@ public record GigEntityUtils() {
         return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
     }
 
-    public static boolean faceHuggerTest(LivingEntity target, AlienEntity self) {
-        return !(target instanceof AlienEntity || target instanceof AmbientCreature) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(target) && !GigEntityUtils.removeFaceHuggerTarget(target, self) && GigEntityUtils.isTargetHostable(target);
+    public static boolean faceHuggerTest(LivingEntity target) {
+        return !(target instanceof AlienEntity || target instanceof AmbientCreature) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
     public static boolean entityTest(LivingEntity target, AlienEntity self) {
         return !((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(target) || self.isVehicle() && target.isAlive());
     }
 
-    public static boolean removeTarget(LivingEntity target, AlienEntity self) {
+    public static boolean removeTarget(LivingEntity target) {
         return ((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) && !target.isAlive());
     }
 
-    public static boolean removeFaceHuggerTarget(LivingEntity target, AlienEntity self) {
+    public static boolean removeFaceHuggerTarget(LivingEntity target) {
         return ((target instanceof AlienEntity || target.getType().is(GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
     }
 
@@ -84,17 +84,18 @@ public record GigEntityUtils() {
                 summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
             else
                 summon = Entities.MUTANT_POPPER.create(entity.level());
+            assert summon != null;
             summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(summon);
         } else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
             summon = Entities.MUTANT_STALKER.create(entity.level());
+            assert summon != null;
             summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(summon);
         }
         entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
-        return;
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {

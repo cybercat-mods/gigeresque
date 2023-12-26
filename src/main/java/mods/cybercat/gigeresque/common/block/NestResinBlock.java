@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ import java.util.List;
 
 public class NestResinBlock extends Block {
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
-    protected static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false, true);
-    protected static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true, true);
+    protected static final List<VoxelShape> ALIEN_LAYERS_TO_SHAPE = interpolateShapes(false);
+    protected static final List<VoxelShape> LAYERS_TO_SHAPE = interpolateShapes(true);
 
     public NestResinBlock(Properties settings) {
         super(settings);
@@ -36,46 +37,46 @@ public class NestResinBlock extends Block {
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LAYERS, 1));
     }
 
-    private static List<VoxelShape> interpolateShapes(boolean divide, boolean includeEmptyVoxelShape) {
+    private static List<VoxelShape> interpolateShapes(boolean divide) {
         ArrayList<VoxelShape> list = new ArrayList<>();
-        if (includeEmptyVoxelShape) list.add(Shapes.empty());
+        list.add(Shapes.empty());
         for (var i = 0; i < 8; i++)
             list.add(box(0.0, 0.0, 0.0, 16.0, divide ? (i * 2.0) / 2.0 : i * 2.0, 16.0));
         return list;
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
         return type == PathComputationType.LAND;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
-    public VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
+    public @NotNull VoxelShape getBlockSupportShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getVisualShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
-    public boolean useShapeForLightOcclusion(BlockState state) {
+    public boolean useShapeForLightOcclusion(@NotNull BlockState state) {
         return true;
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+    public boolean canSurvive(@NotNull BlockState state, LevelReader world, BlockPos pos) {
         var blockState = world.getBlockState(pos.below());
         var isIce = blockState.is(Blocks.ICE);
         var isPackedIce = blockState.is(Blocks.PACKED_ICE);
@@ -90,17 +91,17 @@ public class NestResinBlock extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
         return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-        var i = state.getValue(LAYERS);
-        if (context.getItemInHand().is(asItem()) && i < 8)
+        int layers = state.getValue(LAYERS);
+        if (context.getItemInHand().is(asItem()) && layers < 8)
             if (context.replacingClickedOnBlock()) return context.getClickedFace() == Direction.UP;
             else return true;
-        else return i == 1;
+        else return layers == 1;
     }
 
     @Nullable
@@ -117,12 +118,12 @@ public class NestResinBlock extends Block {
     }
 
     @Override
-    public boolean isRandomlyTicking(BlockState state) {
+    public boolean isRandomlyTicking(@NotNull BlockState state) {
         return true;
     }
 
     @Override
-    public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
+    public void randomTick(@NotNull BlockState blockState, ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull RandomSource randomSource) {
 //		var test = RandomUtil.getRandomPositionWithinRange(blockPos, 3, 1, 3, false, serverLevel);
         if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN))
             if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
