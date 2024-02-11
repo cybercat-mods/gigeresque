@@ -200,8 +200,9 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
      */
     @Override
     public void doPush(@NotNull Entity entity) {
-        if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living
-        ))) setIsHatching(true);
+        if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living))) {
+            setIsHatching(true);
+        }
     }
 
     @Override

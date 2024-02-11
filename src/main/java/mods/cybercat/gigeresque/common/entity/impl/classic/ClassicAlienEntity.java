@@ -24,12 +24,10 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -38,6 +36,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -98,7 +97,8 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isVehicle() ? new MoveControl(
+                this) : new ClimberMoveController<>(this);
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
@@ -122,16 +122,8 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
     }
 
     @Override
-    public void refreshDimensions() {
-        super.refreshDimensions();
-    }
-
-    @Override
     public void tick() {
         super.tick();
-
-        if (!this.isInWater()) this.setIsCrawling(
-                this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
 
         if (!this.isVehicle()) this.setIsExecuting(false);
 
@@ -368,14 +360,6 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
         }
     }
 
-    @Override
-    public boolean onClimbable() {
-        setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(
-                this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-        return !this.level().getBlockState(this.blockPosition().above()).is(
-                BlockTags.STAIRS) && !this.isAggressive() && this.fallDistance <= 0.1;
-    }
-
     /*
      * ANIMATIONS
      */
@@ -396,12 +380,11 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                     else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
             } else if (!(this.level().getFluidState(this.blockPosition()).is(
                     Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8) && !this.onGround() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle())
+                    this.blockPosition()).getAmount() >= 8) && !this.onGround() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle()) {
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            else if (this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle() && !this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
+            }
             return event.setAndContinue(
-                    this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() && !this.isVehicle() && !this.isAggressive() && this.level().getBlockState(
+                    this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle() && !this.isInWater() ? GigAnimationsDefault.CRAWL : this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() && !this.isVehicle() && !this.isAggressive() && this.level().getBlockState(
                             this.blockPosition().below()).isSolid() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
                     if (this.level().isClientSide) {
@@ -427,6 +410,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 }).triggerableAnim("carry", GigAnimationsDefault.EXECUTION_CARRY) // carry
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
+                .triggerableAnim("crawl", GigAnimationsDefault.CRAWL) // grab
                 .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)); // idle
         controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
             if (event.getAnimatable().isPassedOut())
