@@ -86,7 +86,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
         var cName = "attackController";
-        if (this.mob instanceof AdultAlienEntity adult) {
+        if (this.mob instanceof AdultAlienEntity adult && !adult.isCrawling()) {
             adult.wakeupCounter++;
             if (adult.isPassedOut() & adult.wakeupCounter == 1) adult.triggerAnim(cName, "wakeup");
             if (adult.wakeupCounter == 2) {
@@ -102,6 +102,11 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
                 adult.wakeupCounter = 0;
             }
+        }
+        if (this.mob instanceof AdultAlienEntity adult && adult.isCrawling()) {
+            adult.setPassedOutStatus(false);
+            adult.setAggressive(true);
+            adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
         if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
             mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
