@@ -301,12 +301,12 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
             for (var collisionBox : collisionBoxes) {
                 closestDst = switch (facing) {
-                    case EAST, WEST -> Math.min(closestDst, Math.abs(
-                            calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
-                    case UP, DOWN -> Math.min(closestDst, Math.abs(
-                            calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
-                    case NORTH, SOUTH -> Math.min(closestDst, Math.abs(
-                            calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
+                    case EAST, WEST -> Math.min(closestDst,
+                            Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
+                    case UP, DOWN -> Math.min(closestDst,
+                            Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
+                    case NORTH, SOUTH -> Math.min(closestDst,
+                            Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
                 };
             }
 
@@ -314,9 +314,9 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
                 closestFacingDst = closestDst;
                 closestFacing = facing;
             }
-            if (closestDst < Double.MAX_VALUE)
-                weighting = weighting.add(new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(
-                        1 - Math.min(closestDst, stickingDistance) / stickingDistance));
+            if (closestDst < Double.MAX_VALUE) weighting = weighting.add(
+                    new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ()).scale(
+                            1 - Math.min(closestDst, stickingDistance) / stickingDistance));
         }
 
         if (closestFacing == null) this.groundDirection = Pair.of(Direction.DOWN, new Vec3(0, -1, 0));
@@ -699,17 +699,16 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
     public boolean onJump() {
         if (this.jumpDir != null) {
             var jumpStrength = this.getJumpPower();
-            if (this.hasEffect(MobEffects.JUMP))
-                jumpStrength += 0.1F * (float) (Objects.requireNonNull(this.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
+            if (this.hasEffect(MobEffects.JUMP)) jumpStrength += 0.1F * (float) (Objects.requireNonNull(
+                    this.getEffect(MobEffects.JUMP)).getAmplifier() + 1);
             var motion = this.getDeltaMovement();
             var orthogonalMotion = this.jumpDir.scale(this.jumpDir.dot(motion));
             var tangentialMotion = motion.subtract(orthogonalMotion);
             this.setDeltaMovement(tangentialMotion.x + this.jumpDir.x * jumpStrength,
                     tangentialMotion.y + this.jumpDir.y * jumpStrength,
                     tangentialMotion.z + this.jumpDir.z * jumpStrength);
-            if (this.isSprinting())
-                this.setDeltaMovement(
-                        this.getDeltaMovement().add(this.getOrientation().getGlobal(this.yRot, 0).scale(0.2f)));
+            if (this.isSprinting()) this.setDeltaMovement(
+                    this.getDeltaMovement().add(this.getOrientation().getGlobal(this.yRot, 0).scale(0.2f)));
             this.hasImpulse = true;
             return true;
         }
@@ -841,16 +840,15 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             var prevCollidedHorizontally = this.horizontalCollision;
             var prevCollidedVertically = this.verticalCollision;
             // Offset so that AABB is moved above the new surface
-            this.move(MoverType.SELF, new Vec3(detachedX ? -prevAttachedSides.x * 0.25f : 0,
-                    detachedY ? -prevAttachedSides.y * 0.25f : 0,
-                    detachedZ ? -prevAttachedSides.z * 0.25f : 0));
+            this.move(MoverType.SELF,
+                    new Vec3(detachedX ? -prevAttachedSides.x * 0.25f : 0, detachedY ? -prevAttachedSides.y * 0.25f : 0,
+                            detachedZ ? -prevAttachedSides.z * 0.25f : 0));
             var axis = prevAttachedSides.normalize();
             var attachVector = upVector.scale(-1);
             attachVector = attachVector.subtract(axis.scale(axis.dot(attachVector)));
 
             if (Math.abs(attachVector.x) > Math.abs(attachVector.y) && Math.abs(attachVector.x) > Math.abs(
-                    attachVector.z))
-                attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
+                    attachVector.z)) attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
             else if (Math.abs(attachVector.y) > Math.abs(attachVector.z))
                 attachVector = new Vec3(0, Math.signum(attachVector.y), 0);
             else attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
@@ -910,8 +908,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
             var stateDown = this.level().getBlockState(pos.below());
 
             if (stateDown.is(BlockTags.FENCES) || stateDown.is(
-                    BlockTags.WALLS) || stateDown.getBlock() instanceof FenceGateBlock)
-                return posDown;
+                    BlockTags.WALLS) || stateDown.getBlock() instanceof FenceGateBlock) return posDown;
         }
 
         return pos;
@@ -919,7 +916,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
     @Override
     public boolean getAdjustedCanTriggerWalking(boolean canTriggerWalking) {
-        if (this.preWalkingPosition != null && this.canClimberTriggerWalking() && !this.isPassenger()) {
+        if (this.preWalkingPosition != null && this.canClimberTriggerWalking() && !this.isVehicle()) {
             var moved = this.position().subtract(this.preWalkingPosition);
             this.preWalkingPosition = null;
             var pos = this.getOnPos();
@@ -943,7 +940,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
     @Override
     public boolean canClimberTriggerWalking() {
-        return true;
+        return false;
     }
 
     public void setLocationFromBoundingbox() {
@@ -954,7 +951,7 @@ public abstract class CrawlerAdultAlien extends AdultAlienEntity implements ICli
 
     @Override
     public int getMaxStuckCheckTicks() {
-        return 10;
+        return 20;
     }
 
 }

@@ -47,19 +47,28 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
 
-    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AdultAlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
     protected final AzureNavigation landNavigation = new AzureNavigation(this, level());
     protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
     protected final MoveControl landMoveControl = new MoveControl(this);
     protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
-    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f, false);
+    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
+            false);
     protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
     public int holdingCounter = 0;
     public int breakingCounter = 0;
@@ -143,11 +152,18 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-        if (this.isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+        if (this.isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             this.moveRelative(getSpeed(), movementInput);
             this.move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(0.9));
@@ -225,7 +241,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
         // Passing and waking up logic
         var velocityLength = this.getDeltaMovement().horizontalDistance();
-        if (!this.getTypeName().getString().equalsIgnoreCase("neomorph") && (velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
+        if (!this.getTypeName().getString().equalsIgnoreCase(
+                "neomorph") && (velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
             if (!this.level().isClientSide) this.passoutCounter++;
             if (this.passoutCounter >= 6000) {
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
@@ -263,7 +280,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
         }
 
         // Searching Logic
-        if ((this.level().getBlockState(this.blockPosition().below()).isSolid() && velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
+        if ((this.level().getBlockState(
+                this.blockPosition().below()).isSolid() && velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
             if (!this.level().isClientSide) this.searchingProgress++;
 
             if (this.searchingProgress == 80) {
@@ -280,24 +298,38 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
         if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
             this.level().removeBlock(this.blockPosition(), false);
 
-        if (!this.isAggressive() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (!this.isAggressive() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(
+                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(
+                GameRules.RULE_MOBGRIEFING)) {
             if (!this.level().isClientSide) this.breakingCounter++;
             if (this.breakingCounter > 10)
-                for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()), blockPosition().relative(getDirection()).above(4))) {
-                    if (!(this.level().getBlockState(testPos).is(Blocks.GRASS) || this.level().getBlockState(testPos).is(Blocks.TALL_GRASS)))
-                        if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(testPos).isAir()) {
+                for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
+                        blockPosition().relative(getDirection()).above(4))) {
+                    if (!(this.level().getBlockState(testPos).is(Blocks.GRASS) || this.level().getBlockState(
+                            testPos).is(Blocks.TALL_GRASS)))
+                        if (this.level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !this.level().getBlockState(
+                                testPos).isAir()) {
                             if (!this.level().isClientSide) this.level().destroyBlock(testPos, true, null, 512);
                             if (!this.isVehicle()) this.triggerAnim("attackController", "swipe");
                             if (this.isVehicle()) this.triggerAnim("attackController", "swipe_left_tail");
                             this.breakingCounter = -90;
                             if (this.level().isClientSide()) {
                                 for (var i = 2; i < 10; i++)
-                                    this.level().addAlwaysVisibleParticle(Particles.ACID, this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0), this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1), 0.0, -0.15, 0.0);
-                                this.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+                                    this.level().addAlwaysVisibleParticle(Particles.ACID,
+                                            this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
+                                            this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
+                                            this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
+                                            0.0, -0.15, 0.0);
+                                this.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
+                                        SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
+                                        0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
                             }
-                        } else if (!this.isVehicle() && !this.level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !this.level().getBlockState(testPos).isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
-                            if (!this.level().isClientSide)
-                                this.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
+                        } else if (!this.isVehicle() && !this.level().getBlockState(testPos).is(
+                                GigTags.ACID_RESISTANT) && !this.level().getBlockState(
+                                testPos).isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
+                            if (!this.level().isClientSide) this.level().setBlockAndUpdate(testPos.above(),
+                                    GigBlocks.ACID_BLOCK.defaultBlockState());
                             this.hurt(damageSources().generic(), 5);
                             this.breakingCounter = -90;
                         }
@@ -377,7 +409,8 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     }
 
     public void grabTarget(Entity entity) {
-        if (entity == this.getTarget() && !entity.hasPassenger(this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
+        if (entity == this.getTarget() && !entity.hasPassenger(
+                this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
             entity.startRiding(this, true);
             this.setAggressive(false);
             if (entity instanceof ServerPlayer player)

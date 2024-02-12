@@ -69,13 +69,15 @@ public class AzureVibrationUser implements VibrationSystem.User {
             if (entity.dampensVibrations()) return false;
         }
         if (context.affectedState() != null)
-            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(GigBlocks.ACID_BLOCK);
+            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(
+                    GigBlocks.ACID_BLOCK);
         return true;
     }
 
     @Override
     public boolean canReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, GameEvent.@NotNull Context context) {
-        if (mob.isNoAi() || mob.isDeadOrDying() || !mob.level().getWorldBorder().isWithinBounds(blockPos) || mob.isRemoved())
+        if (mob.isNoAi() || mob.isDeadOrDying() || !mob.level().getWorldBorder().isWithinBounds(
+                blockPos) || mob.isRemoved())
             return false;
         var entity = context.sourceEntity();
         return !(entity instanceof LivingEntity) || mob.canTargetEntity(entity);
@@ -105,7 +107,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
         }
         if (this.mob instanceof AdultAlienEntity adult && adult.isCrawling()) {
             adult.setPassedOutStatus(false);
-            adult.setAggressive(true);
             adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
         if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
