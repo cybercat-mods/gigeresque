@@ -214,7 +214,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 ((LivingEntity) getVehicle()).addEffect(
                         new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
                 if (((LivingEntity) getVehicle()).getHealth() > ((LivingEntity) getVehicle()).getMaxHealth())
-                    ((LivingEntity) getVehicle()).heal(2);
+                    ((LivingEntity) getVehicle()).heal(6);
                 if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
                     player.getFoodData().setFoodLevel(20);
                 if (host.doesNotHaveParasite()) host.setTicksUntilImpregnation(
