@@ -195,9 +195,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         entity.yya = 0;
         entity.yBodyRot = 0;
         entity.setSpeed(0.0f);
-        if (Gigeresque.config.facehuggerGivesBlindness)
-            entity.addEffect(
-                    new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
+        if (Gigeresque.config.facehuggerGivesBlindness) entity.addEffect(
+                new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
         if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
             player.connection.send(new ClientboundSetPassengersPacket(entity));
     }
@@ -214,9 +213,12 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             if (host != null) {
                 ((LivingEntity) getVehicle()).addEffect(
                         new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-                if (host.doesNotHaveParasite())
-                    host.setTicksUntilImpregnation(
-                            Gigeresque.config.getImpregnationTickTimer() + Gigeresque.config.getFacehuggerAttachTickTimer());
+                if (((LivingEntity) getVehicle()).getHealth() > ((LivingEntity) getVehicle()).getMaxHealth())
+                    ((LivingEntity) getVehicle()).heal(2);
+                if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
+                    player.getFoodData().setFoodLevel(20);
+                if (host.doesNotHaveParasite()) host.setTicksUntilImpregnation(
+                        Gigeresque.config.getImpregnationTickTimer() + Gigeresque.config.getFacehuggerAttachTickTimer());
                 if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer()) {
                     if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
                         ((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
