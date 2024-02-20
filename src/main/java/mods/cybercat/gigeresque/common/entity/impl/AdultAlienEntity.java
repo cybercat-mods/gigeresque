@@ -342,6 +342,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
     public boolean hurt(@NotNull DamageSource source, float amount) {
         var multiplier = 1.0f;
         if (source == this.damageSources().onFire()) multiplier = 2.0f;
+        if (source == damageSources().inWall()) return false;
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
