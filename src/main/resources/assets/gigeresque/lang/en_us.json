@@ -211,6 +211,6 @@
   "config.gigeresque.option.alienblockResistance": "Dungeon Block Resistance",
   "config.gigeresque.option.enableDevparticles": "Enable Dev Particles",
   "config.gigeresque.option.blackfuildNonrepacle": "Makes Black Fluid Nonreplacable",
-  "config.gigeresque.option.enableSneakyEggs": "Enables the Sneaky Eggs Datapack",
+  "config.gigeresque.option.facehuggerStunTickTimer": "Facehugger Stun Timer",
   "config.screen.gigeresque": "Gigeresque Options"
 }
