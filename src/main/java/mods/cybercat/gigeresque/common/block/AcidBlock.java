@@ -156,6 +156,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
                         SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
             }
         }
+
         super.tick(state, world, pos, random);
         scheduleTickIfNotScheduled(world, pos);
     }
@@ -181,7 +182,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     @Deprecated(since = "1.20")
     @Override
     public boolean canSurvive(@NotNull BlockState state, LevelReader world, @NotNull BlockPos pos) {
-        return world.getBlockState(pos).isAir();
+        return world.getBlockState(pos).isAir() && !world.getBlockState(pos).is(Blocks.LAVA);
     }
 
     @Deprecated(since = "1.20")
