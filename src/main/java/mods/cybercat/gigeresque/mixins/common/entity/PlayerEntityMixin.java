@@ -55,13 +55,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
             if (player != null) {
                 if (Gigeresque.config.enableFacehuggerTimerTicks) {
                     // Ticks
-                    player.displayClientMessage(Component.literal("Attachment Timer: " + String.valueOf(
-                                    ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost) + " ticks /" + Gigeresque.config.facehuggerAttachTickTimer + " ticks"),
+                    player.displayClientMessage(Component.literal("Attachment Timer: " + ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost + " ticks /" + Gigeresque.config.facehuggerAttachTickTimer + " ticks"),
                             true);
                 } else {
                     // Seconds
-                    player.displayClientMessage(Component.literal("Attachment Timer: " + String.valueOf(
-                                    ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost / 20) + " seconds /" + Gigeresque.config.facehuggerAttachTickTimer / 20 + " seconds"),
+                    player.displayClientMessage(Component.literal("Attachment Timer: " + ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost / 20 + " seconds /" + Gigeresque.config.facehuggerAttachTickTimer / 20 + " seconds"),
                             true);
                 }
             }
