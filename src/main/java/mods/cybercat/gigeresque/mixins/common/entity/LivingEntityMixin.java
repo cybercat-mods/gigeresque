@@ -36,6 +36,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -173,7 +174,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
         if (getTicksUntilEggmorphed() == Gigeresque.config.getEggmorphTickTimer() && !this.isDeadOrDying()) {
             var egg = new AlienEggEntity(Entities.EGG, level());
-            egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
+            egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());;
+            level().setBlockAndUpdate(this.blockPosition(), Blocks.AIR.defaultBlockState());
             level().addFreshEntity(egg);
             hasEggSpawned = true;
             hurt(GigDamageSources.of(level(), GigDamageSources.EGGMORPHING), Float.MAX_VALUE);
