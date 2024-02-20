@@ -1,8 +1,11 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
+import mod.azure.azurelib.util.ClientUtils;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -42,6 +45,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
     @Inject(method = {"aiStep"}, at = {@At("HEAD")}, cancellable = true)
     public void tickMovement(CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
+    }
+
+    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    public void tellPlayer(CallbackInfo ci) {
+        if (this.level().isClientSide() && this.getPassengers().stream().anyMatch(
+                FacehuggerEntity.class::isInstance) && Gigeresque.config.enableFacehuggerAttachmentTimer) {
+            var player = ClientUtils.getClientPlayer();
+            if (player != null) {
+                if (Gigeresque.config.enableFacehuggerTimerTicks) {
+                    // Ticks
+                    player.displayClientMessage(Component.literal("Attachment Timer: " + String.valueOf(
+                                    ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost) + " ticks /" + Gigeresque.config.facehuggerAttachTickTimer + " ticks"),
+                            true);
+                } else {
+                    // Seconds
+                    player.displayClientMessage(Component.literal("Attachment Timer: " + String.valueOf(
+                                    ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost / 20) + " seconds /" + Gigeresque.config.facehuggerAttachTickTimer / 20 + " seconds"),
+                            true);
+                }
+            }
+        }
     }
 
 }

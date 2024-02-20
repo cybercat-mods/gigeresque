@@ -212,5 +212,7 @@
   "config.gigeresque.option.enableDevparticles": "Enable Dev Particles",
   "config.gigeresque.option.blackfuildNonrepacle": "Makes Black Fluid Nonreplacable",
   "config.gigeresque.option.facehuggerStunTickTimer": "Facehugger Stun Timer",
+  "config.gigeresque.option.enableFacehuggerAttachmentTimer": "Enable Facehugger On Screen Timer",
+  "config.gigeresque.option.enableFacehuggerTimerTicks": "Make Facehugger Timer Screen Use Ticks",
   "config.screen.gigeresque": "Gigeresque Options"
 }

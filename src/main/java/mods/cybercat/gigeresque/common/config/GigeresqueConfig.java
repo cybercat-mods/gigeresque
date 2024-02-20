@@ -25,6 +25,14 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enableFacehuggerAttachmentTimer = true;
+
+    @Configurable
+    @Configurable.Synchronized
+    public boolean enableFacehuggerTimerTicks = false;
+
+    @Configurable
+    @Configurable.Synchronized
     @Configurable.Range(min = 1)
     public float alienblockHardness = 3.0f;
 
