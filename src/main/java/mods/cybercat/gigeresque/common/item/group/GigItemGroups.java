@@ -121,6 +121,7 @@ public record GigItemGroups() implements GigeresqueInitializer {
                     entries.accept(GigBlocks.MURAL_ALIEN_BLOCK_22);
                     entries.accept(GigBlocks.MURAL_ALIEN_BLOCK_23);
                     entries.accept(GigBlocks.MURAL_ALIEN_BLOCK_24);
+                    entries.accept(GigBlocks.PETRIFIED_OBJECT_BLOCK);
                 }).build()); // build() no longer registers by itself
     }
 

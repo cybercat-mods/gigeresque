@@ -32,6 +32,7 @@ public record EntityRenderers() implements GigeresqueInitializer {
         EntityRendererRegistry.register(Entities.RAVENOUSTEMPLEBEAST, RavenousTempleBeastEntityRenderer::new);
         EntityRendererRegistry.register(Entities.DRACONICTEMPLEBEAST, DraconicTempleBeastEntityRenderer::new);
         EntityRendererRegistry.register(Entities.MOONLIGHTHORRORTEMPLEBEAST, MoonlightHorrorTempleBeastEntityRenderer::new);
+        BlockEntityRenderers.register(Entities.PETRIFIED_OBJECT, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
         BlockEntityRenderers.register(Entities.SPORE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
         BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
         BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());

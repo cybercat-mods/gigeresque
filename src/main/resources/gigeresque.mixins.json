@@ -8,6 +8,7 @@
   },
   "mixins": [
     "common.PointOfInterestTypesInvoker",
+    "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.HorseMixin",
     "common.entity.HostileEntityMixin",

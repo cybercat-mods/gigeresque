@@ -1,5 +1,6 @@
 {
   "block.gigeresque.acid_block": "Acid",
+  "block.gigeresque.petrified_object": "Petrified Object",
   "block.gigeresque.black_fuild_block": "Black Fluid",
   "block.gigeresque.nest_resin": "Nest Resin",
   "block.gigeresque.nest_resin_block": "Nest Resin Block",
@@ -78,6 +79,7 @@
   "effect.gigeresque.acid": "Acid Burn",
   "effect.gigeresque.dna_disintegration": "DNA Disintegration",
   "effect.gigeresque.neo_spore": "Mycosis",
+  "entity.gigeresque.petrified_object": "Petrified Object",
   "entity.gigeresque.alien": "Alien",
   "entity.gigeresque.aquatic_alien": "Aquatic Alien",
   "entity.gigeresque.aquatic_chestburster": "Aquaburster",
@@ -96,6 +98,7 @@
   "entity.gigeresque.ravenoustemplebeast": "Ravenous Templebeast",
   "entity.gigeresque.draconictemplebeast": "Draconic Templebeast",
   "entity.gigeresque.moonlighthorrortemplebeast": "Moonlight Horror Templebeast",
+  "item.gigeresque.petrified_object": "Petrified Object",
   "item.gigeresque.black_fluid_bucket": "Black Fluid Bucket",
   "item.gigeresque.alien_spawn_egg": "Alien Spawn Egg",
   "item.gigeresque.aquatic_alien_spawn_egg": "Aquatic Alien Spawn Egg",
