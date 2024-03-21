@@ -298,7 +298,7 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
         if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
             this.level().removeBlock(this.blockPosition(), false);
 
-        if (!this.isAggressive() && !this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && this.isAggressive() && !(this.level().getFluidState(
+        if (!this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && !(this.level().getFluidState(
                 this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(
                 GameRules.RULE_MOBGRIEFING)) {
