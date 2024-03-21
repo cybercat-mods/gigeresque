@@ -354,12 +354,13 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 // Invalidate Target
-                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new InvalidateAttackTarget<>().invalidateIf(
+                        (entity, target) -> GigEntityUtils.removeTarget(target) && !this.isCrawling()),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
                         (owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
-                        entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
+                        entity -> this.isCrawling() || this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
                 // Classic Xeno attacking
                 new ClassicXenoMeleeAttackTask<>(5).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
