@@ -77,7 +77,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
 
     public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAdultAlien> type, @NotNull Level world) {
         super(type, world);
-        this.setMaxUpStep(0.1f);
+        this.setMaxUpStep(3.1f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
