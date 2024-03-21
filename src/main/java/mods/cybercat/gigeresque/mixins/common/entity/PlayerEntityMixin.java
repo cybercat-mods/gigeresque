@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorphable {
 
@@ -47,20 +49,33 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Eggmorph
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
     }
 
+    private long lastUpdateTime = 0L;
+
+    private String generateTimerMessage() {
+        var ticksAttached = ((FacehuggerEntity) Objects.requireNonNull(this.getFirstPassenger())).ticksAttachedToHost;
+        var tickTimer = Gigeresque.config.facehuggerAttachTickTimer;
+
+        // Calculate seconds if needed
+        var secondsAttached = Gigeresque.config.enableFacehuggerTimerTicks ? ticksAttached : Math.round(
+                ticksAttached / 20);
+        var secondsTimer = Gigeresque.config.enableFacehuggerTimerTicks ? tickTimer : Math.round(tickTimer / 20);
+
+        return "Attachment Timer: " + secondsAttached + " seconds / " + secondsTimer + " seconds";
+    }
+
     @Inject(method = {"tick"}, at = {@At("HEAD")})
     public void tellPlayer(CallbackInfo ci) {
         if (this.level().isClientSide() && this.getPassengers().stream().anyMatch(
                 FacehuggerEntity.class::isInstance) && Gigeresque.config.enableFacehuggerAttachmentTimer) {
             var player = ClientUtils.getClientPlayer();
             if (player != null) {
-                if (Gigeresque.config.enableFacehuggerTimerTicks) {
-                    // Ticks
-                    player.displayClientMessage(Component.literal("Attachment Timer: " + ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost + " ticks /" + Gigeresque.config.facehuggerAttachTickTimer + " ticks"),
-                            true);
-                } else {
-                    // Seconds
-                    player.displayClientMessage(Component.literal("Attachment Timer: " + ((FacehuggerEntity) this.getFirstPassenger()).ticksAttachedToHost / 20 + " seconds /" + Gigeresque.config.facehuggerAttachTickTimer / 20 + " seconds"),
-                            true);
+                // Get the current time in milliseconds
+                var currentTime = System.currentTimeMillis();
+                // Check if enough time has elapsed since the last update
+                if (currentTime - lastUpdateTime >= 1000L) {
+                    lastUpdateTime = currentTime; // Update last update time
+                    var timerMessage = generateTimerMessage();
+                    player.displayClientMessage(Component.literal(timerMessage), true);
                 }
             }
         }
