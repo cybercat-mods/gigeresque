@@ -297,20 +297,42 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
                 }
             }
         });
-        for (var testPos : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().above(1)))
-            for (var testPos1 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().below(1)))
-                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().east(1)))
-                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().west(1)))
-                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().south(1)))
+        // Loop through nearby blocks in different directions
+        for (var testPos : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().above(1))) {
+            for (var testPos1 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().below(1))) {
+                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().east(1))) {
+                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().west(1))) {
+                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition(),
+                                this.blockPosition().south(1))) {
                             for (var testPos5 : BlockPos.betweenClosed(this.blockPosition(),
-                                    this.blockPosition().north(1)))
-                                if (!this.level().getBlockState(testPos).isAir() && !this.level().getBlockState(
+                                    this.blockPosition().north(1))) {
+                                // Check if any of the nearby blocks are not air
+                                boolean isAnyBlockSolid = !this.level().getBlockState(
+                                        testPos).isSolid() && !this.level().getBlockState(
                                         testPos1).isAir() && !this.level().getBlockState(
                                         testPos2).isAir() && !this.level().getBlockState(
                                         testPos3).isAir() && !this.level().getBlockState(
-                                        testPos4).isAir() && !this.level().getBlockState(testPos5).isAir()) {
+                                        testPos4).isAir() && !this.level().getBlockState(testPos5).isAir();
+
+                                // Check if any of the nearby blocks are not GigBlocks.NEST_RESIN_WEB_CROSS
+                                boolean isAnyBlockNotWebCross = !this.level().getBlockState(testPos).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos1).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos2).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos3).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos4).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos5).is(
+                                        GigBlocks.NEST_RESIN_WEB_CROSS);
+
+                                // Set isHatching to false if conditions are met
+                                if (isAnyBlockSolid && isAnyBlockNotWebCross) {
                                     setIsHatching(false);
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
