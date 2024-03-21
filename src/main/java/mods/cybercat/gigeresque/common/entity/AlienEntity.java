@@ -74,7 +74,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         super(entityType, world);
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-        navigation.setCanFloat(true);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.vibrationData = new VibrationSystem.Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));

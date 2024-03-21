@@ -337,6 +337,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
+        this.navigation.setCanFloat(true);
         if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);

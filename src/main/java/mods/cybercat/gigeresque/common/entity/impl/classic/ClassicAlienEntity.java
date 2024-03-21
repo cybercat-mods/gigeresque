@@ -101,7 +101,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
-
+        this.navigation.setCanFloat(true);
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
         if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
