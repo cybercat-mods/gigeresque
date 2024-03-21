@@ -27,11 +27,9 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     public void render(ClassicAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
-        if (entity.isCrawling()) {
-            var above = animatable.level().getBlockState(animatable.blockPosition().above()).isSolid();
-            if (above) {
-                stack.translate(0, -0.5, 0);
-            }
+        if (entity.isCrawling() && entity.level() != null && entity.level().getBlockState(
+                entity.blockPosition().above()).isSolid()) {
+            stack.translate(0, -0.5, 0);
         }
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
