@@ -96,7 +96,7 @@ if (file('key.properties').exists()) {
         releaseProp.load(secretPropsFile.newInputStream())
         file = remapJar.archiveFile
         displayName = project.modVersion
-        changelog = rootProject.file("changelog.txt").text
+        changelog = rootProject.file("changelog.md").text
         type = STABLE
 
         def cfoptions = curseforgeOptions {
