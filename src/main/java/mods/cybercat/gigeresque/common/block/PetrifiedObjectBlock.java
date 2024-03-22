@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
+import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -27,16 +30,17 @@ import java.util.stream.Stream;
 
 public class PetrifiedObjectBlock extends BaseEntityBlock {
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
+    public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
 
     protected PetrifiedObjectBlock() {
         super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15));
         this.registerDefaultState(
-                (BlockState) ((BlockState) ((BlockState) this.stateDefinition.any()).setValue(HATCH, 0)));
+                this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HATCH);
+        builder.add(HATCH, STORAGE_STATE);
     }
 
     @Nullable
