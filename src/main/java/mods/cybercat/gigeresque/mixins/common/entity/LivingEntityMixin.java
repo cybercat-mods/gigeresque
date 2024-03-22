@@ -174,8 +174,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
         if (getTicksUntilEggmorphed() == Gigeresque.config.getEggmorphTickTimer() && !this.isDeadOrDying()) {
             var egg = new AlienEggEntity(Entities.EGG, level());
             egg.moveTo(this.blockPosition(), this.getYRot(), this.getXRot());
-            ;
             level().setBlockAndUpdate(this.blockPosition(), Blocks.AIR.defaultBlockState());
+            level().setBlockAndUpdate(this.blockPosition().above(), Blocks.AIR.defaultBlockState());
             level().addFreshEntity(egg);
             hasEggSpawned = true;
             hurt(GigDamageSources.of(level(), GigDamageSources.EGGMORPHING), Float.MAX_VALUE);
