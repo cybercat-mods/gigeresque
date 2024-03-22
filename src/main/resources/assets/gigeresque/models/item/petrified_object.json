@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "gigeresque:item/container_canister_item"
+    "layer0": "gigeresque:item/petrified_object"
   }
 }
