@@ -11,7 +11,7 @@ public class PetrifiedObjectModel extends GeoModel<PetrifiedOjbectEntity> {
 
     @Override
     public ResourceLocation getModelResource(PetrifiedOjbectEntity petrifiedOjbectEntity) {
-        return Constants.modResource("geo/entity/egg/egg.geo.json");
+        return Constants.modResource("geo/block/egg_petrified/egg_petrified.geo.json");
     }
 
     @Override

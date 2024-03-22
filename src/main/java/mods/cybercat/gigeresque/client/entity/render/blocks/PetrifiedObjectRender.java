@@ -17,6 +17,7 @@ public class PetrifiedObjectRender extends GeoBlockRenderer<PetrifiedOjbectEntit
     public void preRender(PoseStack poseStack, PetrifiedOjbectEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
                 packedOverlay, red, green, blue, alpha);
-        model.getBone("resin").get().setHidden(true);
+        if (animatable instanceof PetrifiedOjbectEntity)
+            model.getBone("resin").get().setHidden(true);
     }
 }
