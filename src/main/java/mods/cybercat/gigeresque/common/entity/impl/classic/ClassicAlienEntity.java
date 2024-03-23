@@ -54,6 +54,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
@@ -341,9 +342,9 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                         new FindDarknessTask<>().startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()),
                         // Randomly walk around
-//                        new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
-//                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
-//                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive()),
+                        new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
+                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
+                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive()),
                         // Idle
                         new Idle<>().startCondition(
                                 entity -> (!this.isPassedOut() || !this.isAggressive() || this.isFleeing())).runFor(
