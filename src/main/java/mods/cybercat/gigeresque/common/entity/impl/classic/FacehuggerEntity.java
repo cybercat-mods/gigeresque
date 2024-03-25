@@ -386,7 +386,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
                 new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate(
                         (target, self) -> GigEntityUtils.entityTest(target,
-                                self) || !(target instanceof Creeper || target instanceof IronGolem)),
+                                self) || !(target instanceof Creeper || target instanceof IronGolem) && target.getMobType() != MobType.UNDEAD),
                 new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
                 new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -410,7 +410,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     @Override
     public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(target)),
+                        (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(target) || target.getMobType() == MobType.UNDEAD),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new FacehuggerPounceTask<>(6));
     }
 
