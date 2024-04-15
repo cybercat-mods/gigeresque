@@ -2,11 +2,16 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
+import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -14,15 +19,23 @@ import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
@@ -37,8 +50,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +63,7 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity {
+public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity, Growable {
 
     public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -63,22 +78,42 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             AlienEntity.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_SEARCHING = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_EXECUTION = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
+    protected final AzureNavigation landNavigation = new AzureNavigation(this, level());
+    protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
+    protected final MoveControl landMoveControl = new MoveControl(this);
+    protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
+    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
+            false);
+    protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
     private static final Logger LOGGER = LogUtils.getLogger();
     private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
     protected VibrationSystem.User vibrationUser;
     protected int slowticks = 0;
     private VibrationSystem.Data vibrationData;
-    public static final EntityDataAccessor<Boolean> CRAWLING_ACCESSOR = SynchedEntityData.defineId(AlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
+        this.setMaxUpStep(2.5f);
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+        this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new VibrationSystem.Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));
+        this.navigation = landNavigation;
+        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0.0f);
     }
 
     @Override
@@ -126,6 +161,54 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.refreshDimensions();
     }
 
+    public void setWakingUpStatus(boolean passout) {
+        this.entityData.set(WAKING_UP, passout);
+    }
+
+    public boolean isWakingUp() {
+        return this.entityData.get(WAKING_UP);
+    }
+
+    public boolean isExecuting() {
+        return entityData.get(IS_EXECUTION);
+    }
+
+    public void setIsExecuting(boolean isExecuting) {
+        entityData.set(IS_EXECUTION, isExecuting);
+    }
+
+    public boolean isBiting() {
+        return entityData.get(IS_HEADBITE);
+    }
+
+    public void setIsBiting(boolean isBiting) {
+        entityData.set(IS_HEADBITE, isBiting);
+    }
+
+    public boolean isSearching() {
+        return entityData.get(IS_SEARCHING);
+    }
+
+    public void setIsSearching(boolean isHissing) {
+        entityData.set(IS_SEARCHING, isHissing);
+    }
+
+    public boolean isHissing() {
+        return entityData.get(IS_HISSING);
+    }
+
+    public void setIsHissing(boolean isHissing) {
+        entityData.set(IS_HISSING, isHissing);
+    }
+
+    public float getGrowth() {
+        return entityData.get(GROWTH);
+    }
+
+    public void setGrowth(float growth) {
+        entityData.set(GROWTH, growth);
+    }
+
     public boolean isPassedOut() {
         return this.entityData.get(PASSED_OUT);
     }
@@ -142,6 +225,13 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.entityData.define(IS_CLIMBING, false);
         this.entityData.define(STATE, 0);
         this.entityData.define(CLIENT_ANGER_LEVEL, 0);
+        this.entityData.define(GROWTH, 0.0f);
+        this.entityData.define(PASSED_OUT, false);
+        this.entityData.define(WAKING_UP, false);
+        this.entityData.define(IS_HISSING, false);
+        this.entityData.define(IS_EXECUTION, false);
+        this.entityData.define(IS_HEADBITE, false);
+        this.entityData.define(IS_SEARCHING, false);
     }
 
     @Override
@@ -152,6 +242,13 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 LOGGER::error).ifPresent(tag -> compound.put("listener", tag));
         AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(
                 LOGGER::error).ifPresent(tag -> compound.put("anger", tag));
+        compound.putFloat("growth", getGrowth());
+        compound.putBoolean("isStasis", this.isPassedOut());
+        compound.putBoolean("wakingup", this.isWakingUp());
+        compound.putBoolean("isHissing", isHissing());
+        compound.putBoolean("isSearching", isSearching());
+        compound.putBoolean("isExecuting", isExecuting());
+        compound.putBoolean("isHeadBite", isBiting());
     }
 
     @Override
@@ -168,6 +265,51 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             VibrationSystem.Data.CODEC.parse(
                     new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(
                     LOGGER::error).ifPresent(data -> this.vibrationData = data);
+        this.setGrowth(compound.getFloat("getStatisTimer"));
+        this.setGrowth(compound.getFloat("growth"));
+        this.setIsHissing(compound.getBoolean("isHissing"));
+        this.setIsSearching(compound.getBoolean("isSearching"));
+        this.setIsExecuting(compound.getBoolean("isExecuting"));
+        this.setIsExecuting(compound.getBoolean("isHeadBite"));
+        this.setPassedOutStatus(compound.getBoolean("isStasis"));
+        this.setWakingUpStatus(compound.getBoolean("wakingup"));
+    }
+
+    @Override
+    public void travel(@NotNull Vec3 movementInput) {
+        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+
+        if (this.isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+            this.moveRelative(getSpeed(), movementInput);
+            this.move(MoverType.SELF, getDeltaMovement());
+            this.setDeltaMovement(getDeltaMovement().scale(0.9));
+            if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
+    public int calculateFallDamage(float fallDistance, float damageMultiplier) {
+        if (fallDistance <= 15) return 0;
+        return super.calculateFallDamage(fallDistance, damageMultiplier);
+    }
+
+    @Override
+    public int getMaxFallDistance() {
+        return 9;
     }
 
     protected void syncClientAngerLevel() {
@@ -196,6 +338,16 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
+        if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
+
+        if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
+
+        if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
+            this.level().removeBlock(this.blockPosition(), false);
+
+        if (this.isAggressive()) {
+            this.setPassedOutStatus(false);
+        }
         if (!this.level().isClientSide) slowticks++;
         if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(
                 this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
@@ -265,6 +417,80 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
         if (this.level() instanceof ServerLevel serverLevel)
             biConsumer.accept(this.dynamicGameEventListener, serverLevel);
+    }
+
+    /*
+     * SOUNDS
+     */
+    @Override
+    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+        return GigSounds.ALIEN_HURT;
+    }
+
+    @Override
+    public SoundEvent getDeathSound() {
+        return GigSounds.ALIEN_DEATH;
+    }
+
+    public void grabTarget(Entity entity) {
+        if (entity == this.getTarget() && !entity.hasPassenger(
+                this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
+            entity.startRiding(this, true);
+            this.setAggressive(false);
+            if (entity instanceof ServerPlayer player)
+                player.connection.send(new ClientboundSetPassengersPacket(entity));
+        }
+    }
+
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        var multiplier = 1.0f;
+        if (source == this.damageSources().onFire()) multiplier = 2.0f;
+        if (source == damageSources().inWall()) return false;
+
+        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
+            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
+
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+            return super.hurt(source, amount);
+
+        if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
+            var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
+
+            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
+            if (amount >= 5) acidThickness += 1;
+            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
+            if (acidThickness == 0) return super.hurt(source, amount);
+
+            var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
+
+            if (this.getFeetBlockState().getBlock() == Blocks.WATER)
+                newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
+            if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
+                this.level().setBlockAndUpdate(this.blockPosition(), newState);
+        }
+        return super.hurt(source, amount * multiplier);
+    }
+
+    @Override
+    public boolean onClimbable() {
+        return this.fallDistance <= 0.1;
+    }
+
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    /*
+     * GROWTH
+     */
+    public float getMaxGrowth() {
+        return Constants.TPM;
+    }
+
+    public LivingEntity growInto() {
+        return null;
     }
 
     @Override
