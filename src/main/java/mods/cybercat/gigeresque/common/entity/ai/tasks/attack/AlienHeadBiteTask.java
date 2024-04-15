@@ -70,7 +70,6 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
                     if (entity.level().isClientSide)
                         entity.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
                                 -0.15, 0.0);
-                    entity.setIsExecuting(false);
                     entity.triggerAnim("attackController", "reset");
                     lastUpdateTime = currentTime;
                 }
