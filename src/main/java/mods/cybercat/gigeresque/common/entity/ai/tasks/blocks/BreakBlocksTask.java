@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.tasks;
+package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

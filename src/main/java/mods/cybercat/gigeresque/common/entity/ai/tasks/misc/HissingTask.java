@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.ai.tasks;
+package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
