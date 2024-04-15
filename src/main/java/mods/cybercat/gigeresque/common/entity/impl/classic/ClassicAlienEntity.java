@@ -132,36 +132,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         super.tick();
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
-
-        if (level() instanceof ServerLevel) {
-            var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
-            var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
-            var offset = getDirectionVector();
-            var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isSolid();
-
-            /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
-             *  -----o                  -----o
-             *       o                       o <- offset
-             *  -----o <- current       -----o
-             **/
-            if (isFacingSolid) {
-                offset = offset.offset(0, 1, 0);
-            }
-
-            var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isSolid();
-            var isOffsetFacingAboveSolid = this.level().getBlockState(blockPosition().offset(offset).above()).isSolid();
-
-            /** [- : blocks | o : alien | + : alien in solid block]
-             *   To handle these variants among other things:
-             *       o           o
-             *   ----+       ----o       ----+
-             *       o           o           o
-             *   -----       -----       ----o
-             **/
-            var shouldCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
-            this.setIsCrawling(shouldCrawl || !this.onGround());
-        }
-        this.refreshDimensions();
+        if (!this.level().isClientSide())
+            AzureLib.LOGGER.debug(this.getOrientation().pitch());
+//        this.setIsCrawling(this.getOrientation().pitch());
     }
 
     @Override
