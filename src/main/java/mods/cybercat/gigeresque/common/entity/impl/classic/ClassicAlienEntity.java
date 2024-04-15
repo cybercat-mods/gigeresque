@@ -1,12 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.AzureLib;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.platform.Services;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
@@ -34,7 +36,6 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -103,11 +104,12 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isVehicle() ? new MoveControl(
-                this) : new ClimberMoveController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isCrawling() ? new ClimberMoveController<>(
+                this) : new MoveControl(this);
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : this.isCrawling() ? new ClimberLookController<>(
+                this) : landLookControl;
         this.navigation.setCanFloat(true);
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
@@ -123,7 +125,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isCrawling()) return EntityDimensions.scalable(0.5f, 0.5f);
+        if (this.isTunnelCrawling()) return EntityDimensions.scalable(0.5f, 0.5f);
         return EntityDimensions.scalable(0.9f, 2.9f);
     }
 
@@ -132,9 +134,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         super.tick();
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
-        if (!this.level().isClientSide())
-            AzureLib.LOGGER.debug(this.getOrientation().pitch());
-//        this.setIsCrawling(this.getOrientation().pitch());
+//        if (!this.level().isClientSide() && Services.PLATFORM.isDevelopmentEnvironment())
+//            AzureLib.LOGGER.info(this.getOrientation().pitch());
+        this.setIsCrawling(this.getOrientation().pitch() > 29 || this.getOrientation().pitch() < -29);
     }
 
     @Override
@@ -342,7 +344,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
             }
-            if (event.isMoving() && this.isCrawling() && !isDead && !this.isInWater())
+            if (this.isCrawling() && !this.isTunnelCrawling() && !isDead && !this.isInWater())
+                return event.setAndContinue(GigAnimationsDefault.CRAWL);
+            if (this.isTunnelCrawling() && !this.isCrawling() && !isDead && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
             if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);

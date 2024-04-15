@@ -11,7 +11,6 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -27,7 +26,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -51,7 +49,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
@@ -79,6 +76,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             AlienEntity.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
+            AlienEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AlienEntity.class,
@@ -163,6 +162,15 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.refreshDimensions();
     }
 
+    public boolean isTunnelCrawling() {
+        return this.entityData.get(IS_TUNNEL_CRAWLING);
+    }
+
+    public void setIsTunnelCrawling(boolean shouldTunnelCrawl) {
+        this.getEntityData().set(IS_TUNNEL_CRAWLING, shouldTunnelCrawl);
+        this.refreshDimensions();
+    }
+
     public void setWakingUpStatus(boolean passout) {
         this.entityData.set(WAKING_UP, passout);
     }
@@ -225,6 +233,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.entityData.define(UPSIDE_DOWN, false);
         this.entityData.define(FLEEING_FIRE, false);
         this.entityData.define(IS_CLIMBING, false);
+        this.entityData.define(IS_TUNNEL_CRAWLING, false);
         this.entityData.define(STATE, 0);
         this.entityData.define(CLIENT_ANGER_LEVEL, 0);
         this.entityData.define(GROWTH, 0.0f);
@@ -240,6 +249,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("isCrawling", isCrawling());
+        compound.putBoolean("isTunnelCrawling", isTunnelCrawling());
         VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(
                 LOGGER::error).ifPresent(tag -> compound.put("listener", tag));
         AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(
@@ -263,12 +273,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                     angerM -> this.angerManagement = angerM);
             this.syncClientAngerLevel();
         }
-        if (compound.contains("listener", 10))
-            VibrationSystem.Data.CODEC.parse(
-                    new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(
-                    LOGGER::error).ifPresent(data -> this.vibrationData = data);
+        if (compound.contains("listener", 10)) VibrationSystem.Data.CODEC.parse(
+                new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))).resultOrPartial(
+                LOGGER::error).ifPresent(data -> this.vibrationData = data);
         this.setGrowth(compound.getFloat("getStatisTimer"));
         this.setGrowth(compound.getFloat("growth"));
+        this.setIsTunnelCrawling(compound.getBoolean("isTunnelCrawling"));
         this.setIsHissing(compound.getBoolean("isHissing"));
         this.setIsSearching(compound.getBoolean("isSearching"));
         this.setIsExecuting(compound.getBoolean("isExecuting"));
@@ -369,6 +379,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
         }
+        if (this.isNoGravity()) this.setNoGravity(false);
         if (level() instanceof ServerLevel) {
             var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
             var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
@@ -394,8 +405,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
              *       o           o           o
              *   -----       -----       ----o
              **/
-            var shouldCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
-            this.setIsCrawling(shouldCrawl);
+            var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
+            this.setIsTunnelCrawling(shouldTunnelCrawl);
         }
         this.refreshDimensions();
     }
@@ -422,8 +433,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
         if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(
-                GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock))
-            return;
+                GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock)) return;
         level().setBlockAndUpdate(pos, newState);
     }
 
@@ -563,8 +573,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
         if (list2.anyMatch(NEST)) return false;
         if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(
-                AlienEntity.class::isInstance))
-            return false;
+                AlienEntity.class::isInstance)) return false;
         if (livingEntity instanceof AlienEntity) return false;
         if (this.isAggressive()) return false;
         return this.level().getBlockState(this.blockPosition().below()).isSolid();
