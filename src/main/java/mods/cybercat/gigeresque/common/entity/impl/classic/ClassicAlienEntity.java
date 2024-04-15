@@ -306,6 +306,8 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
+                // Hisses
+                new HissingTask<>(80),
                 // Move to target
                 new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(
                         entity -> this.isExecuting()));
