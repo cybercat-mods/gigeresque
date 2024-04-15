@@ -1229,6 +1229,11 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     @Override
+    public int getMaxStuckCheckTicks() {
+        return 10;
+    }
+
+    @Override
     public void onRegisterGoals() {
 
     }
