@@ -25,7 +25,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetT
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -78,11 +78,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.SplittableRandom;
 
-public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainOwner<ClassicAlienEntity> {
+public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<ClassicAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAdultAlien> type, @NotNull Level world) {
+    public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAlien> type, @NotNull Level world) {
         super(type, world);
         this.setMaxUpStep(3.1f);
     }

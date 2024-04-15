@@ -14,7 +14,7 @@ import mod.azure.bettercrawling.entity.mob.Orientation;
 import mod.azure.bettercrawling.entity.mob.PathingTarget;
 import mod.azure.bettercrawling.platform.Services;
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
         if (!(entity instanceof IClimberEntity climber)) {
             return;
         }
-        if (climber instanceof AdultAlienEntity alienEntity && alienEntity.isPassedOut()) {
+        if (climber instanceof AlienEntity alienEntity && alienEntity.isPassedOut()) {
             return;
         }
 

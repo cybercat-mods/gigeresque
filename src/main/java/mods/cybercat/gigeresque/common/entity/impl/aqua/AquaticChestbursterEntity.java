@@ -35,7 +35,8 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
     private final MoveControl landMoveControl = new MoveControl(this);
     private final LookControl landLookControl = new LookControl(this);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f, false);
+    private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
+            false);
     private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 
     public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
@@ -50,13 +51,20 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
+        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.9));
@@ -116,9 +124,12 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
             }
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("stepSoundkey") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL,
+                        SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }));
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat",
+                        GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

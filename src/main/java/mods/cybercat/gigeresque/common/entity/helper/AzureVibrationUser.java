@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.helper;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
@@ -77,8 +76,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     @Override
     public boolean canReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, GameEvent.@NotNull Context context) {
         if (mob.isNoAi() || mob.isDeadOrDying() || !mob.level().getWorldBorder().isWithinBounds(
-                blockPos) || mob.isRemoved())
-            return false;
+                blockPos) || mob.isRemoved()) return false;
         var entity = context.sourceEntity();
         return !(entity instanceof LivingEntity) || mob.canTargetEntity(entity);
     }
@@ -88,26 +86,26 @@ public class AzureVibrationUser implements VibrationSystem.User {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
         var cName = "attackController";
-        if (this.mob instanceof AdultAlienEntity adult && !adult.isCrawling()) {
-            adult.wakeupCounter++;
-            if (adult.isPassedOut() & adult.wakeupCounter == 1) adult.triggerAnim(cName, "wakeup");
-            if (adult.wakeupCounter == 2) {
-                if (adult.level().getBlockState(adult.blockPosition().below()).isSolid())
-                    adult.setPassedOutStatus(false);
-                adult.triggerAnim(cName, "alert");
-                adult.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
+        if (!this.mob.isCrawling()) {
+            this.mob.wakeupCounter++;
+            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(cName, "wakeup");
+            if (this.mob.wakeupCounter == 2) {
+                if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
+                    this.mob.setPassedOutStatus(false);
+                this.mob.triggerAnim(cName, "alert");
+                this.mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             }
-            if (adult.wakeupCounter >= 3) {
-                adult.triggerAnim(cName, "run");
-                adult.setPassedOutStatus(false);
-                adult.setAggressive(true);
-                adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
-                adult.wakeupCounter = 0;
+            if (this.mob.wakeupCounter >= 3) {
+                this.mob.triggerAnim(cName, "run");
+                this.mob.setPassedOutStatus(false);
+                this.mob.setAggressive(true);
+                this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+                this.mob.wakeupCounter = 0;
             }
         }
-        if (this.mob instanceof AdultAlienEntity adult && adult.isCrawling()) {
-            adult.setPassedOutStatus(false);
-            adult.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+        if (this.mob.isCrawling()) {
+            this.mob.setPassedOutStatus(false);
+            this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
         if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
             mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);

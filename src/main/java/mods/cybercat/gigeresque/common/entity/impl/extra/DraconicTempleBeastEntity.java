@@ -6,19 +6,18 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class DraconicTempleBeastEntity extends CrawlerAdultAlien implements GeoEntity {
+public class DraconicTempleBeastEntity extends CrawlerAlien implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public DraconicTempleBeastEntity(EntityType<? extends AdultAlienEntity> entityType, Level level) {
+    public DraconicTempleBeastEntity(EntityType<? extends CrawlerAlien> entityType, Level level) {
         super(entityType, level);
     }
 

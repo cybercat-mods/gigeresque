@@ -17,11 +17,10 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -67,7 +66,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, SmartBrainOwner<NeomorphEntity> {
+public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private final AzureNavigation landNavigation = new AzureNavigation(this, level());
@@ -130,10 +129,9 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.SWIM);
             if (event.getAnimatable().getAttckingState() == 1) return PlayState.CONTINUE;
-            else
-                return event.setAndContinue((this.level().getFluidState(this.blockPosition()).is(
-                        Fluids.WATER) && this.level().getFluidState(
-                        this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+            else return event.setAndContinue(
+                    (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
+                            this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
             if (this.level().isClientSide) {
                 if (event.getKeyframeData().getSound().matches("runstepSoundkey"))
@@ -173,8 +171,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level().getFluidState(
                     this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
-                return event.setAndContinue(GigAnimationsDefault.HISS);
+                    this.blockPosition()).getAmount() >= 8)) return event.setAndContinue(GigAnimationsDefault.HISS);
             return PlayState.STOP;
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
@@ -202,8 +199,7 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
     @Override
     public List<ExtendedSensor<NeomorphEntity>> getSensors() {
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
+                new NearbyLivingEntitySensor<NeomorphEntity>().setPredicate(GigEntityUtils::entityTest),
                 new NearbyBlocksSensor<NeomorphEntity>().setRadius(7),
                 new NearbyRepellentsSensor<NeomorphEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -232,8 +228,8 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
 
     @Override
     public BrainActivityGroup<NeomorphEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
                 new AlienMeleeAttack<>(12).whenStopping(e -> this.addEffect(
                         new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
@@ -274,9 +270,8 @@ public class NeomorphEntity extends AdultAlienEntity implements GeoEntity, Smart
                             }
                         } else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(
                                 testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-                            if (!level().isClientSide)
-                                this.level().setBlockAndUpdate(testPos.above(),
-                                        GigBlocks.ACID_BLOCK.defaultBlockState());
+                            if (!level().isClientSide) this.level().setBlockAndUpdate(testPos.above(),
+                                    GigBlocks.ACID_BLOCK.defaultBlockState());
                             this.hurt(damageSources().generic(), 5);
                             breakingCounter = -90;
                         }

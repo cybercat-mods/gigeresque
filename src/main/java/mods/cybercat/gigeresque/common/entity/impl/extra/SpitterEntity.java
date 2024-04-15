@@ -17,10 +17,10 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienProjectileAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -69,18 +69,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, SmartBrainOwner<SpitterEntity> {
+public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<SpitterEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int breakingCounter = 0;
 
-    public SpitterEntity(EntityType<? extends CrawlerAdultAlien> entityType, Level world) {
+    public SpitterEntity(EntityType<? extends CrawlerAlien> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.3F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.spitterXenoHealth).add(Attributes.ARMOR, Gigeresque.config.spitterXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE, Gigeresque.config.spitterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
+                Gigeresque.config.spitterXenoHealth).add(Attributes.ARMOR, Gigeresque.config.spitterXenoArmor).add(
+                Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE,
+                16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
+                Gigeresque.config.spitterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
@@ -99,17 +103,22 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                         }
                     } else if (this.isCrawling() && !this.isVehicle() && !this.isInWater())
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
-                    return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
+                    return event.setAndContinue(
+                            this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
                 }).setSoundKeyframeHandler(event -> {
                             if (this.level().isClientSide) {
                                 if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
+                                            SoundSource.HOSTILE, 0.5F, 1.0F, true);
                                 if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP, SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
+                                            SoundSource.HOSTILE, 0.5F, 1.0F, true);
                                 if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
                                 if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
                             }
                         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                         .triggerableAnim("idle", GigAnimationsDefault.IDLE)) // idle
@@ -129,11 +138,14 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                         .setSoundKeyframeHandler(event -> {
                             if (this.level().isClientSide) {
                                 if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
                                 if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
                                 if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
-                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
                             }
                         })).add(new AnimationController<>(this, "hissController", 0, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
@@ -142,7 +154,8 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                     return PlayState.STOP;
                 }).setSoundKeyframeHandler(event -> {
                     if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
+                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
                 }));
     }
 
@@ -172,9 +185,11 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                 // Block Sensor
                 new NearbyBlocksSensor<SpitterEntity>().setRadius(7),
                 // Fire Sensor
-                new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate((block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+                new NearbyRepellentsSensor<SpitterEntity>().setRadius(15).setPredicate(
+                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
                 // Lights Sensor
-                new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate((block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
+                new NearbyLightsBlocksSensor<SpitterEntity>().setRadius(7).setPredicate(
+                        (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
                 // Nest Sensor
                 new HurtBySensor<>());
     }
@@ -196,17 +211,23 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                 // Do first
                 new FirstApplicableBehaviour<SpitterEntity>(
                         // Targeting
-                        new TargetOrRetaliate<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
+                        new TargetOrRetaliate<>().stopIf(
+                                target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
                         // Look at players
-                        new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                        new SetPlayerLookTarget<>().predicate(
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())).stopIf(
+                                entity -> this.isPassedOut() || this.isExecuting()),
                         // Look around randomly
-                        new SetRandomLookTarget<>().startCondition(entity -> !this.isPassedOut() || !this.isSearching())).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                        new SetRandomLookTarget<>().startCondition(
+                                entity -> !this.isPassedOut() || !this.isSearching())).stopIf(
+                        entity -> this.isPassedOut() || this.isExecuting()),
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
                         new SetRandomWalkTarget<>().speedModifier(1.15f),
                         // Idle
-                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(entity -> entity.getRandom().nextInt(30, 60))));
+                        new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
+                                entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
@@ -227,7 +248,8 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
         super.tick();
 
         if (!this.isInWater())
-            this.setIsCrawling(this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
+            this.setIsCrawling(
+                    this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
 
         if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
             this.level().removeBlock(this.blockPosition(), false);
@@ -264,13 +286,20 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
+        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.5));
@@ -280,7 +309,8 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
 
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
-        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0, 10) > 7) {
+        if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
+                10) > 7) {
             if (livingEntity instanceof Player playerEntity) {
                 playerEntity.drop(playerEntity.getInventory().getSelected(), false);
                 playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
@@ -291,7 +321,8 @@ public class SpitterEntity extends CrawlerAdultAlien implements GeoEntity, Smart
                 mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-            livingEntity.hurt(damageSources().mobAttack(this), this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
+            livingEntity.hurt(damageSources().mobAttack(this),
+                    this.getRandom().nextInt(4) > 2 ? Gigeresque.config.stalkerTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

@@ -14,12 +14,12 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAdultAlien;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -65,11 +65,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOwner<RunnerAlienEntity> {
+public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<RunnerAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public RunnerAlienEntity(EntityType<? extends CrawlerAdultAlien> type, Level world) {
+    public RunnerAlienEntity(EntityType<? extends CrawlerAlien> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.75F);
     }

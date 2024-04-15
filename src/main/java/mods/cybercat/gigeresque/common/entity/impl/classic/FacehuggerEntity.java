@@ -410,7 +410,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     @Override
     public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(target) || target.getMobType() == MobType.UNDEAD),
+                        (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
+                                target) || target.getMobType() == MobType.UNDEAD),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new FacehuggerPounceTask<>(6));
     }
 

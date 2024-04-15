@@ -104,6 +104,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected VibrationSystem.User vibrationUser;
     protected int slowticks = 0;
     private VibrationSystem.Data vibrationData;
+    public int holdingCounter = 0;
+    public int biteCounter = 0;
+    public int passoutCounter = 0;
+    public int wakeupCounter = 0;
+    protected long searchingProgress = 0L;
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
@@ -362,6 +367,52 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
                 if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
             });
+
+        /**
+        TODO: Move to Task instead of being here
+         */
+        // Passing and waking up logic
+        var velocityLength = this.getDeltaMovement().horizontalDistance();
+        if (!this.getTypeName().getString().equalsIgnoreCase(
+                "neomorph") && (velocityLength == 0 && !this.isVehicle() && this.isAlive() && !this.isSearching() && !this.isHissing() && !this.isPassedOut())) {
+            if (!this.level().isClientSide) this.passoutCounter++;
+            if (this.passoutCounter >= 6000) {
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+                this.triggerAnim("attackController", "passout");
+                this.passoutCounter = -6000;
+                this.setPassedOutStatus(true);
+            }
+        }
+        if (this.isPassedOut()) {
+            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
+            if (this.isAggressive()) {
+                this.triggerAnim("attackController", "wakeup");
+                this.setPassedOutStatus(false);
+                if (!this.level().isClientSide) this.passoutCounter = -6000;
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
+            }
+        }
+        if (this.isAggressive() && !this.level().isClientSide) this.passoutCounter = 0;
+
+        if (this.isInWater()) {
+            this.searchingProgress = 0;
+        }
+
+        // Searching Logic
+        if ((this.level().getBlockState(
+                this.blockPosition().below()).isSolid() && velocityLength == 0 && !this.isInWater() && !this.isAggressive() && !this.isVehicle() && !this.isHissing() && this.isAlive() && !this.isPassedOut() && !this.isCrawling())) {
+            if (!this.level().isClientSide) this.searchingProgress++;
+
+            if (this.searchingProgress == 80) {
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
+                this.setIsSearching(true);
+            }
+
+            if (this.searchingProgress > 160) {
+                this.setIsSearching(false);
+                this.searchingProgress = -500;
+            }
+        }
     }
 
     @Override

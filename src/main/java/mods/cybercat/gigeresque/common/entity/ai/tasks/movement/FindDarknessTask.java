@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.impl.AdultAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -19,9 +19,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehaviour<E> {
+public class FindDarknessTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
+            Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
     protected float speedModifier = 1;
     protected Vec3 hidePos = null;
 
@@ -41,7 +43,9 @@ public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehavi
 
         this.hidePos = getHidePos(entity);
 
-        return !entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(32)).anyMatch(NEST) && !entity.isVehicle() && !entity.isAggressive() && !entity.isPassedOut() && this.hidePos != null && entity.level().getBrightness(LightLayer.SKY, entity.blockPosition()) > 5;
+        return !entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(32)).anyMatch(
+                NEST) && !entity.isVehicle() && !entity.isAggressive() && !entity.isPassedOut() && this.hidePos != null && entity.level().getBrightness(
+                LightLayer.SKY, entity.blockPosition()) > 5;
     }
 
     @Override
@@ -59,7 +63,8 @@ public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehavi
         if (walkTarget == null)
             return false;
 
-        return walkTarget.getTarget().currentBlockPosition().equals(BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
+        return walkTarget.getTarget().currentBlockPosition().equals(
+                BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
     }
 
     @Override
@@ -73,7 +78,8 @@ public class FindDarknessTask<E extends AdultAlienEntity> extends ExtendedBehavi
         var entityPos = entity.blockPosition();
 
         for (var i = 0; i < 50; ++i) {
-            var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3, randomsource.nextInt(20) - 50);
+            var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
+                    randomsource.nextInt(20) - 50);
 
             if (!entity.level().canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
                 return Vec3.atBottomCenterOf(hidePos);
