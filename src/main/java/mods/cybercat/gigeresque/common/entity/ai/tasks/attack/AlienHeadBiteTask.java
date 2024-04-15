@@ -31,12 +31,6 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
     }
 
     @Override
-    protected void start(E entity) {
-        entity.setIsExecuting(true);
-        super.start(entity);
-    }
-
-    @Override
     protected void doDelayedAction(E entity) {
         entity.setDeltaMovement(0, 0, 0);
         if (entity.getFirstPassenger() != null) {
@@ -65,7 +59,6 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
                 }
             } else if (entity.getFirstPassenger() != null) {
                 if (currentTime - lastUpdateTime == 38000L) {
-                    entity.triggerAnim("livingController", "grab");
                     entity.setDeltaMovement(0, 0, 0);
                     entity.setIsExecuting(true);
                     entity.setAggressive(false);

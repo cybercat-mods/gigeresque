@@ -374,6 +374,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
             if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+            if (this.isVehicle() && this.isExecuting())
+                return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
             return event.setAndContinue(
                     this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
@@ -406,7 +408,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
             if (event.getAnimatable().isPassedOut())
                 return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
             if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-            if (this.isVehicle()) return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
+            if (this.isVehicle() && !this.isExecuting())
+                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
             return PlayState.STOP;
         }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
                 .triggerableAnim("run", RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
@@ -428,6 +431,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 .triggerableAnim("right_claw_basic", GigAnimationsDefault.RIGHT_CLAW_BASIC) // attack
                 .triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
                 .triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
+                .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
                 .setSoundKeyframeHandler(event -> {
                     if (this.level().isClientSide) {
                         if (event.getKeyframeData().getSound().matches("clawSoundkey"))
