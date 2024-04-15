@@ -16,13 +16,14 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
+import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-public class BreakBlocksTask<E extends AlienEntity> extends CustomDelayedRangedBehaviour<E> {
+public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> {
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
             Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 

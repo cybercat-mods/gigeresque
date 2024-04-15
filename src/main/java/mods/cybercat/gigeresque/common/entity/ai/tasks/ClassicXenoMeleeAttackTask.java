@@ -56,7 +56,6 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
     @Override
     protected void start(E entity) {
-        entity.swing(InteractionHand.MAIN_HAND);
         BehaviorUtils.lookAtEntity(entity, this.target);
     }
 
@@ -82,7 +81,9 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
         else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)) {
             entity.grabTarget(target);
             entity.setIsBiting(true);
-        } else if (!entity.isVehicle())
+        } else if (!entity.isVehicle()) {
+            entity.swing(InteractionHand.MAIN_HAND);
             entity.doHurtTarget(target);
+        }
     }
 }

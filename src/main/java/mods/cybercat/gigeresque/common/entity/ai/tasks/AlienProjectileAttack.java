@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedRangedBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
 
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 90;
 
@@ -54,7 +56,6 @@ public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedR
 
     @Override
     protected void start(E entity) {
-        entity.swing(InteractionHand.MAIN_HAND);
         BehaviorUtils.lookAtEntity(entity, this.target);
         entity.setAttackingState(0);
     }
@@ -67,13 +68,17 @@ public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedR
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
+                this.attackIntervalSupplier.applyAsInt(entity));
 
         if (this.target == null) return;
 
         if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target)) return;
 
-        if (entity instanceof SpitterEntity spitterEntity) spitterEntity.shootAcid(this.target, entity);
+        if (entity instanceof SpitterEntity spitterEntity) {
+            entity.swing(InteractionHand.MAIN_HAND);
+            spitterEntity.shootAcid(this.target, entity);
+        }
     }
 
 }

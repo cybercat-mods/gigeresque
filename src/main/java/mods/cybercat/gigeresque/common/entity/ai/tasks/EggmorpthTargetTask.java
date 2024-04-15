@@ -42,6 +42,8 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 
     @Override
     protected void tick(ServerLevel level, E entity, long gameTime) {
+        if (entity.isCrawling())
+            return;
         var lightSourceLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_NEST_BLOCKS.get()).orElse(null);
         var target = entity.getFirstPassenger();
         if (lightSourceLocation == null || !lightSourceLocation.stream().findAny().isPresent())

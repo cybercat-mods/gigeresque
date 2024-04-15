@@ -57,7 +57,6 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
 
     @Override
     protected void start(E entity) {
-        entity.swing(InteractionHand.MAIN_HAND);
         assert this.target != null;
         BehaviorUtils.lookAtEntity(entity, this.target);
     }
@@ -80,6 +79,7 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
             this.target.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 1, true, true));
         }
 
+        entity.swing(InteractionHand.MAIN_HAND);
         entity.doHurtTarget(this.target);
     }
 }

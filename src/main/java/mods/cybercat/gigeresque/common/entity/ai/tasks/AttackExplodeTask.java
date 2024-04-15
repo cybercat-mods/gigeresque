@@ -19,7 +19,9 @@ import java.util.SplittableRandom;
 import java.util.function.ToIntFunction;
 
 public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMeleeBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
     @Nullable
@@ -49,12 +51,13 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
-        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).noneMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
+        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(
+                this.target) && this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).noneMatch(
+                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
     }
 
     @Override
     protected void start(E entity) {
-        entity.swing(InteractionHand.MAIN_HAND);
         BehaviorUtils.lookAtEntity(entity, this.target);
     }
 
@@ -65,7 +68,8 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
+                this.attackIntervalSupplier.applyAsInt(entity));
 
         if (this.target == null)
             return;
@@ -73,7 +77,8 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
         if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
             return;
 
-        if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)))
+        if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(
+                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)))
             return;
 
         var random = new SplittableRandom();
@@ -81,7 +86,9 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
         if (randomPhase >= 90) {
             entity.explode();
             entity.remove(RemovalReason.KILLED);
-        } else
+        } else {
             entity.doHurtTarget(this.target);
+            entity.swing(InteractionHand.MAIN_HAND);
+        }
     }
 }
