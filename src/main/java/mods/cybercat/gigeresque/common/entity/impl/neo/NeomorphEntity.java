@@ -117,12 +117,12 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
-            if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !this.isCrawling() && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
+            if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
                 if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                         this.blockPosition()).getAmount() >= 8) && !this.isExecuting()) {
                     if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                         return event.setAndContinue(GigAnimationsDefault.RUN);
-                    else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
+                    else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!(this.isCrawling() || this.isTunnelCrawling()) && !this.onGround()))
                         return event.setAndContinue(GigAnimationsDefault.WALK);
                 } else if (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())
                     if (this.isAggressive() && !this.isVehicle())

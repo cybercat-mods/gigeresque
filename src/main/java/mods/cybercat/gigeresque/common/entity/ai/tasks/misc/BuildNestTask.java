@@ -31,15 +31,16 @@ public class BuildNestTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E alien) {
-        return !alien.isCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth() && !alien.level().canSeeSky(
+        return !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien.getMaxGrowth() && !alien.level().canSeeSky(
                 alien.blockPosition()) && !alien.level().getBlockState(alien.blockPosition()).is(
                 Blocks.SOUL_SAND) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5;
     }
 
     @Override
     protected void doDelayedAction(E alien) {
-        if (!alien.isCrawling() && !alien.getFeetBlockState().is(GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(
-                alien.blockPosition()) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5)
+        if (!alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getFeetBlockState().is(
+                GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(
+                LightLayer.SKY, alien.blockPosition()) <= 5)
             NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition());
     }
 }

@@ -224,12 +224,12 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (event.isMoving() && !this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
+            if (event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
                     this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8) && !this.isExecuting())
+                    this.blockPosition()).getAmount() >= 8))
                 if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                     return event.setAndContinue(GigAnimationsDefault.RUN);
-                else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!this.isCrawling() && !this.onGround()))
+                else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!(this.isCrawling() || this.isTunnelCrawling()) && !this.onGround()))
                     return event.setAndContinue(GigAnimationsDefault.WALK);
                 else if ((this.level().getFluidState(this.blockPosition()).is(
                         Fluids.WATER) && this.level().getFluidState(

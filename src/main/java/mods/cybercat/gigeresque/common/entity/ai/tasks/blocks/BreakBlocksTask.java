@@ -58,7 +58,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
         var notinWater = !(entity.level().getFluidState(entity.blockPosition()).is(
                 Fluids.WATER) && entity.level().getFluidState(entity.blockPosition()).getAmount() >= 8);
         var canGrief = entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-        return !entity.isCrawling() && !entity.isDeadOrDying() && !entity.isPassedOut() && notinWater && canGrief;
+        return !entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isDeadOrDying() && !entity.isPassedOut() && notinWater && canGrief;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
                                 0.2f + entity.getRandom().nextFloat() * 0.2f,
                                 0.9f + entity.getRandom().nextFloat() * 0.15f, false);
                     }
-                } else if (!entity.isCrawling() && !entity.isVehicle() && !state.is(
+                } else if (!entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isVehicle() && !state.is(
                         GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50))) {
                     if (!entity.level().isClientSide) {
                         entity.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());

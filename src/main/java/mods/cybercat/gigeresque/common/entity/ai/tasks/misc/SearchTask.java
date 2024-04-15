@@ -24,7 +24,7 @@ public class SearchTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isInWater() && !entity.isAggressive() && !entity.isVehicle() && !entity.isHissing() && entity.isAlive() && !entity.isPassedOut() && !entity.isCrawling();
+        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isInWater() && !entity.isAggressive() && !entity.isVehicle() && !entity.isHissing() && entity.isAlive() && !entity.isPassedOut() && !entity.isTunnelCrawling() && !entity.isCrawling();
     }
 
     @Override

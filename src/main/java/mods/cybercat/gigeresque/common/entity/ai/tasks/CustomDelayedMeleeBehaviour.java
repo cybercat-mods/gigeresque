@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
@@ -11,6 +10,7 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
@@ -56,7 +56,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
         var rightClaw = "right_claw";
         var attackNormal = "attack_normal";
         if (entity instanceof ClassicAlienEntity classic) {
-            boolean basicCheck = classic.isCrawling() || classic.isInWater();
+            boolean basicCheck = classic.isCrawling() || classic.isTunnelCrawling() || classic.isInWater();
             classic.triggerAnim(cName, switch (classic.getRandom().nextInt(4)) {
                 case 0 -> basicCheck ? "left_claw_basic" : leftClaw;
                 case 1 -> basicCheck ? "right_claw_basic" : rightClaw;
@@ -96,14 +96,16 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
         if (entity instanceof HammerpedeEntity hammer) hammer.triggerAnim(cName, "attack");
 
         if (entity instanceof FacehuggerEntity hugger && hugger.getTarget() != null) {
-            var vec3d2 = new Vec3(hugger.getTarget().getX() - hugger.getX(), 0.0, hugger.getTarget().getZ() - hugger.getZ());
+            var vec3d2 = new Vec3(hugger.getTarget().getX() - hugger.getX(), 0.0,
+                    hugger.getTarget().getZ() - hugger.getZ());
             vec3d2 = vec3d2.normalize().scale(0.2).add(hugger.getDeltaMovement().scale(0.2));
             hugger.setDeltaMovement(vec3d2.x, hugger.getTarget().getEyeHeight() > 0.8 ? 0.5F : 0.4, vec3d2.z);
             hugger.setJumping(true);
         }
 
         if (entity instanceof PopperEntity popper && popper.getTarget() != null) {
-            var vec3d2 = new Vec3(popper.getTarget().getX() - popper.getX(), 0.0, popper.getTarget().getZ() - popper.getZ());
+            var vec3d2 = new Vec3(popper.getTarget().getX() - popper.getX(), 0.0,
+                    popper.getTarget().getZ() - popper.getZ());
             vec3d2 = vec3d2.normalize().scale(0.2).add(popper.getDeltaMovement().scale(0.2));
             popper.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
         }

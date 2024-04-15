@@ -27,7 +27,7 @@ public class HissingTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isInWater() && !entity.level().isClientSide && (!entity.isSearching() && !entity.isVehicle() && entity.isAlive() && !entity.isPassedOut()) && !entity.isAggressive() && !entity.isCrawling();
+        return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isInWater() && !entity.level().isClientSide && (!entity.isSearching() && !entity.isVehicle() && entity.isAlive() && !entity.isPassedOut()) && !entity.isAggressive() && !entity.isTunnelCrawling() && !entity.isCrawling();
     }
 
     @Override

@@ -136,7 +136,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         if (this.isExecuting()) this.setPassedOutStatus(false);
 //        if (!this.level().isClientSide() && Services.PLATFORM.isDevelopmentEnvironment())
 //            AzureLib.LOGGER.info(this.getOrientation().pitch());
-        this.setIsCrawling(this.getOrientation().pitch() > 29 || this.getOrientation().pitch() < -29);
+        this.setIsCrawling(this.getOrientation().pitch() > 10 || this.getOrientation().pitch() < -10);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
-                new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing() || this.isCrawling()),
+                new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling()),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
@@ -249,7 +249,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         return BrainActivityGroup.idleTasks(
                 // Build Nest
                 new BuildNestTask<>(90).startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()).stopIf(
+                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()).stopIf(
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Kill Lights
                 new KillLightsTask<>().startCondition(
@@ -274,7 +274,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new OneRandomBehaviour<>(
                         // Find Darkness
                         new FindDarknessTask<>().startCondition(
-                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()),
+                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()),
                         // Randomly walk around
                         new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
@@ -344,9 +344,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
             }
-            if (this.isCrawling() && !this.isTunnelCrawling() && !isDead && !this.isInWater())
+            if (this.isCrawling() && !isDead && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            if (this.isTunnelCrawling() && !this.isCrawling() && !isDead && !this.isInWater())
+            if (this.isTunnelCrawling() && !isDead && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
             if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);

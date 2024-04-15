@@ -101,7 +101,7 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                         } else {
                             return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
                         }
-                    } else if (this.isCrawling() && !this.isVehicle() && !this.isInWater())
+                    } else if ((this.isCrawling() || this.isTunnelCrawling()) && !this.isVehicle() && !this.isInWater())
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
                     return event.setAndContinue(
                             this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
@@ -280,7 +280,7 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
+        if (this.isTunnelCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
         return EntityDimensions.scalable(0.9f, 1.9f);
     }
 

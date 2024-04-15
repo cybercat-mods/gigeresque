@@ -425,7 +425,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
             if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !this.isCrawling() && !this.isDeadOrDying())
+            if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying())
                 if (!this.isAttacking() && event.isMoving()) return event.setAndContinue(GigAnimationsDefault.SWIM);
                 else if (this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
@@ -437,11 +437,11 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
             }
-            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !this.isCrawling() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }
-            if (!this.isUpsideDown() && !this.isJumping() && this.isCrawling() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && (this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }

@@ -86,7 +86,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
         var cName = "attackController";
-        if (!this.mob.isCrawling()) {
+        if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;
             if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(cName, "wakeup");
             if (this.mob.wakeupCounter == 2) {
@@ -103,7 +103,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 this.mob.wakeupCounter = 0;
             }
         }
-        if (this.mob.isCrawling()) {
+        if (this.mob.isCrawling() || this.mob.isTunnelCrawling()) {
             this.mob.setPassedOutStatus(false);
             this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
