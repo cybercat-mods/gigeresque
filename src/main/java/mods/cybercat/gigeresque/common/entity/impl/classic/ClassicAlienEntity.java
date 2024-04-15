@@ -43,7 +43,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -208,7 +207,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
              *   -----       -----       ----o
              **/
             var shouldCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
-            this.setIsCrawling(shouldCrawl);
+            this.setIsCrawling(shouldCrawl || !this.onGround());
         }
         this.refreshDimensions();
     }
@@ -286,7 +285,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
                 // Fire Sensor
                 new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
+                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)),
                 // Lights Sensor
                 new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7).setPredicate(
                         (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)),
@@ -303,7 +302,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
-                new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing()),
+                new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing() || this.isCrawling()),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
@@ -323,6 +322,8 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 new KillLightsTask<>().startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
+                // Break blocks
+                new BreakBlocksTask<>(90),
                 // Do first
                 new FirstApplicableBehaviour<ClassicAlienEntity>(
                         // Targeting
@@ -361,7 +362,7 @@ public class ClassicAlienEntity extends CrawlerAdultAlien implements SmartBrainO
                 new SetWalkTargetToAttackTarget<>().speedMod(
                         (owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
-                        entity ->  this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
+                        entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
                 // Classic Xeno attacking
                 new ClassicXenoMeleeAttackTask<>(5).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(

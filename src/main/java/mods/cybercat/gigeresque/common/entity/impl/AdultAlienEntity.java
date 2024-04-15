@@ -286,58 +286,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
         if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
             this.level().removeBlock(this.blockPosition(), false);
-
-        if (!this.isCrawling() && !this.isDeadOrDying() && !this.isPassedOut() && !(this.level().getFluidState(
-                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8) && this.level().getGameRules().getBoolean(
-                GameRules.RULE_MOBGRIEFING)) {
-            if (!this.level().isClientSide) {
-                this.breakingCounter++;
-            }
-            if (this.breakingCounter > 10) {
-                for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
-                        blockPosition().relative(getDirection()).above(2))) {
-                    var state = this.level().getBlockState(testPos);
-                    if (!(state.is(Blocks.GRASS) || state.is(Blocks.TALL_GRASS))) {
-                        if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
-                            if (!this.level().isClientSide) {
-                                this.level().destroyBlock(testPos, true, null, 512);
-                            }
-                            if (!this.isVehicle()) {
-                                this.triggerAnim("attackController", "swipe");
-                            }
-                            if (this.isVehicle()) {
-                                this.triggerAnim("attackController", "swipe_left_tail");
-                            }
-                            this.breakingCounter = -90;
-                            if (this.level().isClientSide()) {
-                                for (var i = 2; i < 10; i++) {
-                                    this.level().addAlwaysVisibleParticle(Particles.ACID,
-                                            this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
-                                            this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
-                                            this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
-                                            0.0, -0.15, 0.0);
-                                }
-                                this.level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-                                        SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-                                        0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-                            }
-                        } else if (!this.isVehicle() && !state.is(
-                                GigTags.ACID_RESISTANT) && !state.isAir() && (this.getHealth() >= (this.getMaxHealth() * 0.50))) {
-                            if (!this.level().isClientSide) {
-                                this.level().setBlockAndUpdate(testPos.above(),
-                                        GigBlocks.ACID_BLOCK.defaultBlockState());
-                            }
-                            this.hurt(damageSources().generic(), 5);
-                            this.breakingCounter = -90;
-                        }
-                    }
-                }
-            }
-            if (this.breakingCounter >= 25) {
-                this.breakingCounter = 0;
-            }
-        }
     }
 
     @Override
