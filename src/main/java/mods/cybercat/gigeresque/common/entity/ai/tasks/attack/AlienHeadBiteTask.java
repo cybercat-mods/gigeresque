@@ -42,8 +42,8 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
                 mob.setPersistenceRequired();
             // Get the current time in milliseconds
             var currentTime = System.currentTimeMillis();
-            // Check if enough time has elapsed since the last update
             if (entity.isBiting() && entity.getFirstPassenger() != null) {
+                // Check if enough time has elapsed since the last update
                 if (currentTime - lastUpdateTime >= 4400L) {
                     lastUpdateTime = currentTime;
                     entity.getFirstPassenger().hurt(GigDamageSources.of(entity.level(), GigDamageSources.EXECUTION),
