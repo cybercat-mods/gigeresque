@@ -176,7 +176,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     }
 
     @Override
-    protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
+    public int calculateFallDamage(float fallDistance, float damageMultiplier) {
         if (fallDistance <= 12) return 0;
         return super.calculateFallDamage(fallDistance, damageMultiplier);
     }
@@ -295,13 +295,13 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     }
 
     @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return (isAttachedToHost() || isInfertile()) ? null : GigSounds.HUGGER_HURT;
+    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+        return (isAttachedToHost() || isInfertile()) ? SoundEvents.EMPTY : GigSounds.HUGGER_HURT;
     }
 
     @Override
-    protected SoundEvent getDeathSound() {
-        return (isAttachedToHost() || isInfertile()) ? null : GigSounds.HUGGER_DEATH;
+    public SoundEvent getDeathSound() {
+        return (isAttachedToHost() || isInfertile()) ? SoundEvents.EMPTY : GigSounds.HUGGER_DEATH;
     }
 
     @Override
