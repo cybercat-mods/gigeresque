@@ -34,7 +34,7 @@ public class BuildNestTask<E extends AdultAlienEntity> extends DelayedBehaviour<
 
     @Override
     protected void doDelayedAction(E alien) {
-        if (!alien.getFeetBlockState().is(GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5)
+        if (!alien.isCrawling() && !alien.getFeetBlockState().is(GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) <= 5)
             NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition());
     }
 }
