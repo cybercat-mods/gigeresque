@@ -1184,7 +1184,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public boolean canClimbOnBlock(BlockState state, BlockPos pos) {
-        return true;
+        return !state.is(GigTags.NEST_BLOCKS);
     }
 
     @Override
