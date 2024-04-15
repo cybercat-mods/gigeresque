@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.RunnerAlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.RunnerAlienFeatureRenderer;
-import mods.cybercat.gigeresque.common.entity.impl.RunnerAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
