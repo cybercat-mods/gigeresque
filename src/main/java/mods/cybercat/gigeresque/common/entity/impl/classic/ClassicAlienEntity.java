@@ -358,7 +358,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !this.isCrawling() && !this.isExecuting() && !isDead && !this.isPassedOut()) {
+            if (event.isMoving() && !this.isCrawling() && !isDead) {
                 if (this.onGround() && !this.wasEyeInWater && !this.isExecuting()) {
                     if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
                         return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -369,14 +369,13 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                     if (this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            } else if (!(this.level().getFluidState(this.blockPosition()).is(
-                    Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8) && !this.onGround() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle()) {
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }
+            if (event.isMoving() && this.isCrawling() && !isDead)
+                return event.setAndContinue(GigAnimationsDefault.CRAWL);
+            if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+            if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
             return event.setAndContinue(
-                    this.isCrawling() && !this.isExecuting() && !this.isPassedOut() && !this.isVehicle() && !this.isInWater() ? GigAnimationsDefault.CRAWL : this.isNoAi() ? GigAnimationsDefault.STATIS_ENTER : this.isSearching() && !this.isVehicle() && !this.isAggressive() && this.level().getBlockState(
-                            this.blockPosition().below()).isSolid() ? GigAnimationsDefault.AMBIENT : this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+                    this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
                     if (this.level().isClientSide) {
                         if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
@@ -406,6 +405,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
             if (event.getAnimatable().isPassedOut())
                 return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+            if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+            if (this.isVehicle()) return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
             return PlayState.STOP;
         }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
                 .triggerableAnim("run", RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
