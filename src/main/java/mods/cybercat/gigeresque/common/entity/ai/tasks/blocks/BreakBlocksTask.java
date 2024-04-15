@@ -90,7 +90,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
                                 0.2f + entity.getRandom().nextFloat() * 0.2f,
                                 0.9f + entity.getRandom().nextFloat() * 0.15f, false);
                     }
-                } else if (!entity.isVehicle() && !state.is(
+                } else if (!entity.isCrawling() && !entity.isVehicle() && !state.is(
                         GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50))) {
                     if (!entity.level().isClientSide) {
                         entity.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
