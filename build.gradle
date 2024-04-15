@@ -43,7 +43,7 @@ dependencies {
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
     modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
-    include(modImplementation "mod.azuredoom.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}")
+    include(modImplementation "mod.azure.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}")
 }
 
 processResources {
