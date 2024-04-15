@@ -10,17 +10,19 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
-import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienHeadBiteTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
@@ -75,7 +77,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.SplittableRandom;
 
 public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<ClassicAlienEntity> {
@@ -130,64 +131,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     @Override
     public void tick() {
         super.tick();
-
         if (!this.isVehicle()) this.setIsExecuting(false);
-
         if (this.isExecuting()) this.setPassedOutStatus(false);
 
-        // Attack logic
-
-        if (this.isExecuting()) this.setDeltaMovement(0, 0, 0);
-
-        if (this.isVehicle()) {
-            var yOffset = this.getEyeY() - ((Objects.requireNonNull(
-                    this.getFirstPassenger()).getEyeY() - this.getFirstPassenger().blockPosition().getY()) / 2.0);
-            var e = this.getFirstPassenger().getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-            var f = this.getFirstPassenger().getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-            if (!this.isExecuting()) this.triggerAnim("attackController", "kidnap");
-            if (this.getFirstPassenger() instanceof Mob mob && !mob.isPersistenceRequired())
-                mob.setPersistenceRequired();
-            if (this.isBiting()) {
-                biteCounter++;
-                if (biteCounter == 5) {
-                    this.triggerAnim("livingController", "grab");
-                    this.setDeltaMovement(0, 0, 0);
-                    this.setIsExecuting(true);
-                    this.setAggressive(false);
-                }
-                if (biteCounter >= 88) {
-                    this.getFirstPassenger().hurt(GigDamageSources.of(this.level(), GigDamageSources.EXECUTION),
-                            Integer.MAX_VALUE);
-                    this.heal(50);
-                    if (this.level().isClientSide)
-                        this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
-                                -0.15, 0.0);
-                    this.setIsBiting(false);
-                    this.setIsExecuting(false);
-                    this.triggerAnim("attackController", "reset");
-                    biteCounter = 0;
-                }
-            } else {
-                holdingCounter++;
-                if (holdingCounter == 760) {
-                    this.triggerAnim("livingController", "grab");
-                    this.setDeltaMovement(0, 0, 0);
-                    this.setIsExecuting(true);
-                    this.setAggressive(false);
-                }
-                if (holdingCounter >= 843) {
-                    this.getFirstPassenger().hurt(GigDamageSources.of(this.level(), GigDamageSources.EXECUTION),
-                            Integer.MAX_VALUE);
-                    this.heal(50);
-                    if (this.level().isClientSide)
-                        this.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
-                                -0.15, 0.0);
-                    this.setIsExecuting(false);
-                    this.triggerAnim("attackController", "reset");
-                    holdingCounter = 0;
-                }
-            }
-        }
         if (level() instanceof ServerLevel) {
             var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
             var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
@@ -315,6 +261,10 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
                 // Hisses
                 new HissingTask<>(80),
+                // Searches
+                new SearchTask<>(6000),
+                // Headbite
+                new AlienHeadBiteTask<>(this.isBiting() ? 44 : 760),
                 // Move to target
                 new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting()).stopIf(
                         entity -> this.isExecuting()));
@@ -355,6 +305,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive()),
+                        // Searches
+                        new EnterStasisTask<>(6000),
                         // Idle
                         new Idle<>().startCondition(
                                 entity -> (!this.isPassedOut() || !this.isAggressive() || this.isFleeing())).runFor(
@@ -365,8 +317,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 // Invalidate Target
-                new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
                         (owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(
