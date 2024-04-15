@@ -8,8 +8,8 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azuredoom.bettercrawling.common.ClimberLookController;
-import mod.azuredoom.bettercrawling.common.ClimberMoveController;
+import mod.azure.bettercrawling.entity.movement.ClimberLookController;
+import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -289,5 +289,10 @@ public class RunnerAlienEntity extends CrawlerAdultAlien implements SmartBrainOw
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @Override
+    public void onRegisterGoals() {
+
     }
 }
