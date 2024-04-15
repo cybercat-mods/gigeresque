@@ -3,8 +3,6 @@ package mods.cybercat.gigeresque.common.block;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -57,7 +55,8 @@ public class NestResinBlock extends Block {
 
     @Override
     public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
+        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(
+                state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
     @Override
@@ -85,14 +84,16 @@ public class NestResinBlock extends Block {
         var isSoulSand = blockState.is(Blocks.SOUL_SAND);
         if (!isIce && !isPackedIce && !isBarrier) {
             if (!isHoney && !isSoulSand)
-                return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP) || blockState.is(this) && blockState.getValue(LAYERS) == 8;
+                return isFaceFull(blockState.getCollisionShape(world, pos.below()), Direction.UP) || blockState.is(
+                        this) && blockState.getValue(LAYERS) == 8;
             else return true;
         } else return false;
     }
 
     @Override
     public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
-        return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction,
+                neighborState, world, pos, neighborPos);
     }
 
     @Override
@@ -115,29 +116,5 @@ public class NestResinBlock extends Block {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LAYERS);
-    }
-
-    @Override
-    public boolean isRandomlyTicking(@NotNull BlockState state) {
-        return true;
-    }
-
-    @Override
-    public void randomTick(@NotNull BlockState blockState, ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull RandomSource randomSource) {
-//		var test = RandomUtil.getRandomPositionWithinRange(blockPos, 3, 1, 3, false, serverLevel);
-        if (serverLevel.getBlockState(blockPos).is(GigBlocks.NEST_RESIN))
-            if (serverLevel.getBlockState(blockPos).getValue(LAYERS) < 8)
-                serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
-            else if (serverLevel.getBlockState(blockPos.above()).isAir() && serverLevel.getBlockState(blockPos.below()).isSolid())
-                serverLevel.setBlockAndUpdate(blockPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-//			else
-//				for (var testPos : BlockPos.betweenClosed(test, test.above(1)))
-//					if (serverLevel.getBlockState(testPos).isAir() && serverLevel.getBlockState(testPos.below()).isSolid())
-//						if (serverLevel.getBlockState(testPos).getLightEmission() < 5)
-//							if (randomSource.nextIntBetweenInclusive(0, 30) > 25)
-//								NestBuildingHelper.tryBuildNestAround(serverLevel, testPos);
-//							else
-//								serverLevel.setBlockAndUpdate(testPos, (BlockState) blockState.setValue(LAYERS, Math.min(8, blockState.getValue(LAYERS) + 1)));
-        super.randomTick(blockState, serverLevel, blockPos, randomSource);
     }
 }
