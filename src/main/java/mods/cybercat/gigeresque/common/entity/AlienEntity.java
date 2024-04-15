@@ -56,6 +56,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AlienEntity.class,
+            EntityDataSerializers.BOOLEAN);
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
     protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
             AlienEntity.class, EntityDataSerializers.INT);
@@ -122,6 +124,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void setIsCrawling(boolean shouldCrawl) {
         this.getEntityData().set(IS_CLIMBING, shouldCrawl);
         this.refreshDimensions();
+    }
+
+    public boolean isPassedOut() {
+        return this.entityData.get(PASSED_OUT);
+    }
+
+    public void setPassedOutStatus(boolean passout) {
+        this.entityData.set(PASSED_OUT, passout);
     }
 
     @Override

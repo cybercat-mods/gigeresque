@@ -46,9 +46,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity, Growable {
-
-    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AdultAlienEntity.class,
-            EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AdultAlienEntity.class,
             EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AdultAlienEntity.class,
@@ -92,14 +89,6 @@ public abstract class AdultAlienEntity extends AlienEntity implements GeoEntity,
 
     public boolean isWakingUp() {
         return this.entityData.get(WAKING_UP);
-    }
-
-    public void setPassedOutStatus(boolean passout) {
-        this.entityData.set(PASSED_OUT, passout);
-    }
-
-    public boolean isPassedOut() {
-        return this.entityData.get(PASSED_OUT);
     }
 
     public boolean isExecuting() {
