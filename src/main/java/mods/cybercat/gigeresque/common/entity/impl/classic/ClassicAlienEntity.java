@@ -85,7 +85,6 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
 
     public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAlien> type, @NotNull Level world) {
         super(type, world);
-        this.setMaxUpStep(3.1f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -125,7 +124,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
         if (this.isCrawling()) return EntityDimensions.scalable(0.5f, 0.5f);
-        return EntityDimensions.scalable(0.9f, 1.9f);
+        return EntityDimensions.scalable(0.9f, 2.9f);
     }
 
     @Override
@@ -370,7 +369,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
             }
-            if (event.isMoving() && this.isCrawling() && !isDead)
+            if (event.isMoving() && this.isCrawling() && !isDead && !this.isInWater())
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
             if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
