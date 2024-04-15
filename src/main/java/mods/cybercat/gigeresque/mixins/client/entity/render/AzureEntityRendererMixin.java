@@ -14,6 +14,7 @@ import mod.azure.bettercrawling.entity.mob.Orientation;
 import mod.azure.bettercrawling.entity.mob.PathingTarget;
 import mod.azure.bettercrawling.platform.Services;
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -110,7 +111,7 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
                         0.5F - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
                 matrixStack.mulPose(Axis.XP.rotationDegrees(-renderOrientation.pitch()));
                 matrixStack.mulPose(Axis.YP.rotationDegrees(-renderOrientation.yaw()));
-                if (Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes() && Services.PLATFORM.isDevelopmentEnvironment()) {
+                if (Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes() && (Services.PLATFORM.isDevelopmentEnvironment() || Gigeresque.config.enableDevparticles)) {
                     LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
                             (new AABB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)).inflate(0.20000000298023224), 1.0F, 1.0F, 1.0F,
                             1.0F);
