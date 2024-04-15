@@ -298,33 +298,34 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
             }
         });
         // Loop through nearby blocks in different directions
-        for (var testPos : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().above(1))) {
-            for (var testPos1 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().below(1))) {
-                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().east(1))) {
-                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition(), this.blockPosition().west(1))) {
-                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition(),
+        for (var testPos : BlockPos.betweenClosed(this.blockPosition().above(1), this.blockPosition().above(1))) {
+            for (var testPos1 : BlockPos.betweenClosed(this.blockPosition().below(1), this.blockPosition().below(1))) {
+                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1),
+                        this.blockPosition().east(1))) {
+                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1),
+                            this.blockPosition().west(1))) {
+                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1),
                                 this.blockPosition().south(1))) {
-                            for (var testPos5 : BlockPos.betweenClosed(this.blockPosition(),
+                            for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1),
                                     this.blockPosition().north(1))) {
                                 // Check if any of the nearby blocks are not air
-                                boolean isAnyBlockSolid = !this.level().getBlockState(
-                                        testPos).isSolid() && !this.level().getBlockState(
+                                boolean isAnyBlockNotAir = !this.level().getBlockState(
+                                        testPos).isAir() && !this.level().getBlockState(
                                         testPos1).isAir() && !this.level().getBlockState(
                                         testPos2).isAir() && !this.level().getBlockState(
                                         testPos3).isAir() && !this.level().getBlockState(
                                         testPos4).isAir() && !this.level().getBlockState(testPos5).isAir();
 
-                                // Check if any of the nearby blocks are not GigBlocks.NEST_RESIN_WEB_CROSS
-                                boolean isAnyBlockNotWebCross = !this.level().getBlockState(testPos).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos1).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos2).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos3).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos4).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS) && !this.level().getBlockState(testPos5).is(
-                                        GigBlocks.NEST_RESIN_WEB_CROSS);
+                                // Check if any of the nearby blocks are not solid
+                                boolean isAnyBlockSolid = !this.level().getBlockState(
+                                        testPos).isSolid() && !this.level().getBlockState(
+                                        testPos1).isSolid() && !this.level().getBlockState(
+                                        testPos2).isSolid() && !this.level().getBlockState(
+                                        testPos3).isSolid() && !this.level().getBlockState(
+                                        testPos4).isSolid() && !this.level().getBlockState(testPos5).isSolid();
 
                                 // Set isHatching to false if conditions are met
-                                if (isAnyBlockSolid && isAnyBlockNotWebCross) {
+                                if (isAnyBlockSolid || isAnyBlockNotAir) {
                                     setIsHatching(false);
                                 }
                             }
