@@ -185,8 +185,6 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     private void handleHostLogic() {
         if (hasParasite()) {
             ticksUntilImpregnation = Math.max(ticksUntilImpregnation - 1.0F, 0f);
-            if (!this.level().isClientSide && FabricLoader.getInstance().isDevelopmentEnvironment())
-                AzureLib.LOGGER.info(ticksUntilImpregnation);
 
             handleStatusEffect(Constants.TPM * 12L, MobEffects.HUNGER, false);
             handleStatusEffect(Constants.TPM * 7L, MobEffects.WEAKNESS, true);
