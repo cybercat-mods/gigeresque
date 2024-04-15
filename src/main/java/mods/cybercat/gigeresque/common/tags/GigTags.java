@@ -37,6 +37,16 @@ public record GigTags() {
     public static final TagKey<EntityType<?>> XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("xenoattackblacklist"));
     public static final TagKey<EntityType<?>> SMALL_XENO_ATTACK_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("smallxenoattackblacklist"));
 
+    /* GIG MOBS */
+    public static final TagKey<EntityType<?>> GIG_ALIENS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquealiens"));
+    public static final TagKey<EntityType<?>> GIG_AQUA = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresqueaqua"));
+    public static final TagKey<EntityType<?>> GIG_CLASSIC = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresqueclassic"));
+    public static final TagKey<EntityType<?>> GIG_RUNNERS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquerunners"));
+    public static final TagKey<EntityType<?>> GIG_MUTANTS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquemutants"));
+    public static final TagKey<EntityType<?>> GIG_NEOS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresqueneos"));
+    public static final TagKey<EntityType<?>> GIG_TEMPLEBEASTS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquetemplebeasts"));
+    public static final TagKey<EntityType<?>> GIG_MISC = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquemisc"));
+
     /* SPAWN BIOMES */
     public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
 
