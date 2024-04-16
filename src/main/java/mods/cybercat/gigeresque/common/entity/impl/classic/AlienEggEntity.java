@@ -307,14 +307,6 @@ public class AlienEggEntity extends AlienEntity {
         }
     }
 
-    /**
-     * Prevents the egg from drowning.
-     */
-    @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
     @Override
     public boolean requiresCustomPersistence() {
         return (!this.isHatched() || this.hasFacehugger());

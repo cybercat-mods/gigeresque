@@ -423,11 +423,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
     public void checkDespawn() {
     }
 
