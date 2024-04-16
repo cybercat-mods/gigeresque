@@ -9,15 +9,20 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.util.BrainUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -43,22 +48,40 @@ public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
     }
 
     @Override
-    protected void tick(ServerLevel level, E entity, long gameTime) {
-        var lightSourceLocation = entity.getBrain().getMemory(SBLMemoryTypes.NEARBY_BLOCKS.get()).orElse(null);
-        if (lightSourceLocation == null)
-            return;
-        if (!entity.isAggressive()) {
-            if (!lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 3.4))
-                startMovingToTarget(entity, lightSourceLocation.stream().findFirst().get().getFirst());
-            if (lightSourceLocation.stream().findFirst().get().getFirst().closerToCenterThan(entity.position(), 7.0)) {
+    protected void tick(@NotNull ServerLevel level, E entity, long gameTime) {
+        var cropBlock = entity.getBrain().getMemory(SBLMemoryTypes.NEARBY_BLOCKS.get()).orElse(null);
+        if (cropBlock != null && cropBlock.stream().findFirst().isPresent() && !entity.isAggressive()) {
+            var blockPos = cropBlock.stream().findFirst().get().getFirst();
+
+            // Check if the block is within the entity's view direction and reachable via pathfinding
+            if (isBlockInViewAndReachable(entity, blockPos)) {
                 entity.swing(InteractionHand.MAIN_HAND);
-                entity.level().destroyBlock(lightSourceLocation.stream().findFirst().get().getFirst(), true, null, 512);
+                entity.level().destroyBlock(blockPos, true, null, 512);
+            } else {
+                this.startMovingToTarget(entity, blockPos);
             }
         }
     }
 
+    private boolean isBlockInViewAndReachable(E entity, BlockPos blockPos) {
+        var blockCenter = Vec3.atCenterOf(blockPos);
+        var entityPos = entity.position();
+        // Calculate the squared distance between the entity and the block
+        var distanceSquared = blockCenter.distanceToSqr(entityPos);
+
+        // Check if the distance is less than or equal to one block
+        if (distanceSquared <= 1.0) {
+            // Don't start moving towards the target if already within one block distance
+            return false;
+        }
+
+        // Check if the block is reachable via pathfinding
+        var path = entity.getNavigation().createPath(blockPos, 0);
+        return path != null && !path.isDone();
+    }
+
     private void startMovingToTarget(E alien, BlockPos targetPos) {
-        alien.getNavigation().moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 2.5F);
+        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 2.5F, 0));
     }
 
 }
