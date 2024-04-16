@@ -122,7 +122,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
     }
 
     public double getPassengersRidingOffset(Entity entity) {
-        return (double)entity.getBbHeight() * 0.75;
+        return entity.getBbHeight() * 0.75;
     }
 
     @Override
