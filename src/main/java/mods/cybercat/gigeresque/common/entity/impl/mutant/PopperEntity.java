@@ -169,34 +169,6 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (!this.level().isClientSide) {
-            var attacker = source.getEntity();
-            if (source.getEntity() != null && attacker instanceof LivingEntity living)
-                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
-        }
-
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-            return super.hurt(source, amount);
-
-        if (!this.level().isClientSide && source != damageSources().genericKill()) {
-            var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-
-            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
-            if (amount >= 5) acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
-            if (acidThickness == 0) return super.hurt(source, amount);
-
-            var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS,
-                    Math.min(4, acidThickness));
-
-            if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-                newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-            if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-                level().setBlockAndUpdate(this.blockPosition(), newState);
-        }
-        return super.hurt(source, amount);
-    }
 
     @Override
     public void generateAcidPool(int xOffset, int zOffset) {
