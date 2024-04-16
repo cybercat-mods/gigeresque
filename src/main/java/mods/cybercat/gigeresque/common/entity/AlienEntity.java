@@ -428,7 +428,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void generateAcidPool(int xOffset, int zOffset) {
         var pos = this.blockPosition().offset(xOffset, 0, zOffset);
         var posState = level().getBlockState(pos);
-        var newState = GigBlocks.ACID_BLOCK.defaultBlockState();
+        var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS,
+                Math.min(4, level().getRandom().nextInt(3) + 1));
 
         if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
