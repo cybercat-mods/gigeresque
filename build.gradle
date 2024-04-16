@@ -42,7 +42,7 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraftVersion}:${project.sblVersion}"
-	modImplementation "curse.maven:geckolib-388172:5188390"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
     include(modImplementation "mod.azure.bettercrawling:better-crawling-fabric-${project.minecraftVersion}:${project.bettercrawlingVersion}")
 }
 
