@@ -8,7 +8,6 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
@@ -16,8 +15,9 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
@@ -27,8 +27,6 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -40,7 +38,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -127,8 +124,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     @Override
     public List<ExtendedSensor<StalkerEntity>> getSensors() {
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<StalkerEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
+                new NearbyLivingEntitySensor<StalkerEntity>().setPredicate(GigEntityUtils::entityTest),
                 new NearbyBlocksSensor<StalkerEntity>().setRadius(7),
                 new NearbyRepellentsSensor<StalkerEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -146,7 +142,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     public BrainActivityGroup<StalkerEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
+                new BreakBlocksTask<>(90, false), new FirstApplicableBehaviour<StalkerEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
@@ -157,58 +153,12 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public BrainActivityGroup<StalkerEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)), new LeapAtTargetTask<>(0),
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new LeapAtTargetTask<>(0),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed),
                 // move to
                 new AlienMeleeAttack<>(13));// attack
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!this.isVehicle() && !this.isDeadOrDying() && !this.isInWater() && this.level().getGameRules().getBoolean(
-                GameRules.RULE_MOBGRIEFING) && this.isAggressive()) {
-            if (!this.level().isClientSide) breakingCounter++;
-            if (breakingCounter > 10)
-                for (var testPos : BlockPos.betweenClosed(blockPosition().relative(getDirection()),
-                        blockPosition().relative(getDirection()).above(3))) {
-                    if (!(level().getBlockState(testPos).is(Blocks.GRASS) || level().getBlockState(testPos).is(
-                            Blocks.TALL_GRASS)))
-                        if (level().getBlockState(testPos).is(GigTags.WEAK_BLOCKS) && !level().getBlockState(
-                                testPos).isAir()) {
-                            if (!level().isClientSide) this.level().destroyBlock(testPos, true, null, 512);
-                            this.triggerAnim("attackController", "swipe");
-                            breakingCounter = -90;
-                            if (level().isClientSide()) {
-                                for (var i = 2; i < 10; i++)
-                                    level().addAlwaysVisibleParticle(Particles.GOO,
-                                            this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
-                                            this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0),
-                                            this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1),
-                                            0.0, -0.15, 0.0);
-                                level().playLocalSound(testPos.getX(), testPos.getY(), testPos.getZ(),
-                                        SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-                                        0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
-                            }
-                        } else if (!level().getBlockState(testPos).is(GigTags.ACID_RESISTANT) && !level().getBlockState(
-                                testPos).isAir() && (getHealth() >= (getMaxHealth() * 0.50))) {
-                            if (!level().isClientSide)
-                                this.level().setBlockAndUpdate(testPos.above(),
-                                        GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS,
-                                                4));
-                            this.hurt(damageSources().generic(), 5);
-                            breakingCounter = -90;
-                        }
-                }
-            if (breakingCounter >= 25) breakingCounter = 0;
-        }
-        this.setNoGravity(
-                !this.level().getBlockState(this.blockPosition().above()).isAir() && !this.level().getBlockState(
-                        this.blockPosition().above()).is(
-                        BlockTags.STAIRS) && !this.verticalCollision && !this.isDeadOrDying() && !this.isAggressive());
-        this.setSpeed(this.isNoGravity() ? 0.7F : this.flyDist);
     }
 
     @Override
