@@ -1,9 +1,11 @@
-v.0.5.67
+v.0.5.68
 
-***THE MOD WILL BE MOVING TO 1.20.4/5 AND 1.20.1 WILL BE SUNSET OUTSIDE ANY MAJOR CRASHES***
+***THE MOD WILL BE MOVING TO 1.20.5 ONCE IT RELEASES AND 1.20.1 WILL BE SUNSET OUTSIDE ANY MAJOR CRASHES***
 
 ## FIXES
-- Fixes spawn issue on Aliens.
+- Fixes face hugging position
+- Fixes Eggmorphing a target sometimes just idling
+- Fixes Facehugging a target sometimes just idling
 
 ## NEW
 
