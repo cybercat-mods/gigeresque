@@ -14,6 +14,6 @@ public class CustomStairsBlock extends StairBlock {
     }
 
     public CustomStairsBlock(Block block) {
-        this(block, Properties.copy(block));
+        this(block, Properties.ofFullCopy(block));
     }
 }
