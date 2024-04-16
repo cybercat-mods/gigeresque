@@ -145,20 +145,22 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
 
     @Deprecated(since = "1.20")
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, RandomSource random) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         var currentThickness = getThickness(state);
+        var canGrief = level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        if (level.getBlockState(pos.above()).is(GigBlocks.ACID_BLOCK) && currentThickness < 4)
+            this.setThickness(level, pos, state, currentThickness + 1);
         if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1) {
-            setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-            if (world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) && !world.getBlockState(pos.below()).is(
-                    GigTags.ACID_RESISTANT)) {
-                world.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
-                world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH,
+            if (currentThickness < 4) setThickness(level, pos, state, Math.min(4, level.getRandom().nextInt(3) + 1));
+            if (canGrief && !level.getBlockState(pos.below()).is(GigTags.ACID_RESISTANT)) {
+                level.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), 2);
+                level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH,
                         SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
             }
         }
 
-        super.tick(state, world, pos, random);
-        scheduleTickIfNotScheduled(world, pos);
+        super.tick(state, level, pos, random);
+        scheduleTickIfNotScheduled(level, pos);
     }
 
     @Deprecated(since = "1.20")
