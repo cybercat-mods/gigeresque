@@ -6,7 +6,6 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.Animation;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.BetterSpiderPathNavigator;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
@@ -172,7 +171,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
     }
 
     public boolean isAttachedToHost() {
-        return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity;
+        return this.getVehicle() instanceof LivingEntity;
     }
 
     @Override
@@ -240,6 +239,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
                 this.kill();
             }
             if (vehicle instanceof Player player && (player.isCreative() || player.isSpectator())) {
+                assert host != null;
                 host.setTicksUntilImpregnation(-1);
                 detachFromHost(true);
                 setIsInfertile(true);
@@ -287,10 +287,6 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
     @Override
     public void knockback(double strength, double x, double z) {
         if (!isInfertile()) super.knockback(strength, x, z);
-    }
-
-    public double getMeleeAttackRangeSqr(@NotNull LivingEntity target) {
-        return 4.5;
     }
 
     @Override
@@ -348,11 +344,6 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
 
     @Override
     public boolean isPathFinding() {
-        return false;
-    }
-
-    @Override
-    public boolean isPushedByFluid() {
         return false;
     }
 
