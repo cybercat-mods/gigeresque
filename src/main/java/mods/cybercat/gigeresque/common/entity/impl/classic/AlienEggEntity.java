@@ -245,31 +245,6 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (source != damageSources().genericKill() && source.getDirectEntity() != null || source != damageSources().inWall() && !this.isHatched())
             setIsHatching(true);
-
-        if (!this.level().isClientSide) {
-            var attacker = source.getEntity();
-            if (attacker instanceof LivingEntity livingEntity)
-                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
-        }
-
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-            return super.hurt(source, amount);
-
-        if (!this.level().isClientSide && source != damageSources().genericKill()) {
-            var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-
-            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
-            if (amount >= 5) acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
-            if (acidThickness == 0) return super.hurt(source, amount);
-
-            var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
-
-            if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-                newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-            if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-                level().setBlockAndUpdate(this.blockPosition(), newState);
-        }
         return source != damageSources().inWall() && super.hurt(source, amount);
     }
 
