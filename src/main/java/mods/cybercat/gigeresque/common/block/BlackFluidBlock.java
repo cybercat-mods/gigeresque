@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -177,7 +178,8 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
             if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
             if (livingEntity.getType().is(GigTags.DNAIMMUNE)) return;
             if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
-                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+                livingEntity.addEffect(
+                        new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.gooEffectTickTimer / 2, 0));
             }
         }
     }
