@@ -55,13 +55,11 @@ public record GigMeleeAttackSelector() {
         runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> {
-        hammerpedeEntity.triggerAnim(Constants.ATTACK_CONTROLLER, Constants.ATTACK);
-    };
+    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.triggerAnim(
+            Constants.ATTACK_CONTROLLER, Constants.ATTACK);
 
-    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR = runnerbursterEntity -> {
-        runnerbursterEntity.triggerAnim(Constants.LIVING_CONTROLLER, Constants.EAT);
-    };
+    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR = runnerbursterEntity -> runnerbursterEntity.triggerAnim(
+            Constants.LIVING_CONTROLLER, Constants.EAT);
 
     public static final AnimationSelector<FacehuggerEntity> HUGGER_SELECTOR = facehuggerEntity -> {
         if (facehuggerEntity.getTarget() != null) {
