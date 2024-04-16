@@ -65,8 +65,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
         super(entityType, world);
         setMaxUpStep(1.5f);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
-        AzureNavigation landNavigation = new AzureNavigation(this, level());
-        navigation = landNavigation;
+        navigation = new AzureNavigation(this, level());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
