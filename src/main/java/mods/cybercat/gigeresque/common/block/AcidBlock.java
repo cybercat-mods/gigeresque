@@ -194,7 +194,8 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
             if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, this.getThickness(blockState)));
         }
-        if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2)
+        if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2) {
+            if (itemEntity.getItem().is(GigTags.ACID_RESISTANT_ITEMS)) return;
             if (itemEntity.getItem().getMaxDamage() < 2) {
                 itemEntity.getItem().shrink(1);
             } else {
@@ -202,5 +203,6 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
                         itemEntity.getItem().getDamageValue() + (level.getRandom().nextInt(2) * this.getThickness(
                                 blockState)));
             }
+        }
     }
 }
