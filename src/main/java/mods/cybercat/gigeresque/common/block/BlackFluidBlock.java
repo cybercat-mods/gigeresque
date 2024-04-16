@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -14,7 +13,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -177,8 +175,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
-            if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(
-                    GigTags.DNAIMMUNE))
+            if (!(livingEntity.getType().is(GigTags.DNAIMMUNE) || livingEntity instanceof Player))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
             if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
