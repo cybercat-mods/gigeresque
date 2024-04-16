@@ -1,23 +1,30 @@
-v.0.5.65
+v.0.5.66
 
-***THE MOD WILL BE MOVING TO 1.20.5 AND 1.20.1 WILL BE SUNSET OUTSIDE ANY MAJOR CRASHES***
+***THE MOD WILL BE MOVING TO 1.20.4/5 AND 1.20.1 WILL BE SUNSET OUTSIDE ANY MAJOR CRASHES***
 
 ## FIXES
-- Fixes Eggs not hatching in anything not solid like fluids or other non-solid blocks like resin.
+- Fixes Acid not generating with random thickness.
+- Fixes Goo blood not generating with random thickness.
+- Fixes Goo blood not using gooEffectTickTimer configuration, which it halves the gooEffectTickTimer value.
+- Fixes Xenos getting stuck in the water.
+- Fixes Light breaking from trying to break lights it can't see directly.
+- Fixes Food eating from trying to pathfind to food it can't see directly.
+- Fixes Crop breaking from trying to break crops it can't see directly.
+- Fixes Spores being placed without checking enableDevEntites is true.
+- Fixes missing lang for enableDevEntites.
 
 ## NEW
-- Adds tags for each group of xenos, allowing better datapack support for calling any gig aliens by type.
-- Adds Gig Stairs to vanilla stair tag.
-- enableDevparticles now enables pathfinding debug when enabled and hitboxes are shown for Gig crawlers.
+- Adds item tag for "acidresistant", items that won't break down in acid.
 
 ## CHANGES
-- Completely reworked crawling library to better crawl and pathfind. Getting stuck on corners is a known issue and is being looked into.
-- Heavy tweaks rotations when crawling and tunnel crawling (some issues still exist for tunnel animations)
-- Refactored AdultAlienEntity into base AlienEntity.
-- Moved Classic Xenos task checks to AI tasks.
-- New sound for p̷͔͈͖̹̰͖̱̲̙̭͓̺̮̾̿̉̀͝é̷͚̖̲͐͗t̸̳̺̲͙̎͊͛͗̐̕r̴̟̰̹̒͊͛̆̌̓̈́̍̍̑̉͐͊̕i̸͖̼̘͈͂̀̉͑͂̋̎̇̂͌́̊͐̕̚ͅf̶̛͔̳͔̘̪̘̟͛͐̀̿̋̌̾̈́̇̌̕͘̕i̶̢̭̋̎̏̔͜ẻ̶̡̛̜͈̘͇̾́̂̈́d̴̝̼͍͕̭̗͒̐̒͂̍̓̆̍̑̌̑̾̈́̕͠ ̶͉̋̔̀́̈̈́͠ȍ̴̱̠̦̱͚̞b̷̬̟͔͓͇̬͉̗͆̊̓̚͠j̷̡̨͙̈́̂͗͌̏͒̏̈́̕͝͝ē̵̦͕͈̮͂̇͒̊͐̌̌̽͗̓̏͋͌͝c̴̡̲̤̖̦͎̖͖͓̽̃͘t̴̡̲̹̼̣̦̘͔̮̟͖̼͎͓͋̏̑̀̈́́̅̚͜
-- Resin is now placed by Xenos in random sizes.
-- Refactors Task AI.
+- Moves acid generation to use entity method, reducing duplicated code/chance of errors.
+- Cleans up some entity code as per the merges down to AlienEntity in last update.
+- Moves all block breaking in ticks to tasks.
+- enableDevEntites now unhides all eggs in creative tab. 
+  - (Any entity in this group with a bug report submitted will be closed as they are ***heavy*** WIP)
+- Acid effect will only damage entities not in the resistant tag.
+- Acid will damage armor boots that aren't in the acidresistant tag.
+- Moves instance checks to check for tags instead of the entities.
 
 Please note that Neos are still heavily WIP and not considered released until posted. This is why you can't find eggs in the creative menu without the config option.
 No bug reports will be accepted for them until they have reached what we feel is release status ready.
