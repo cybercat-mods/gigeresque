@@ -175,10 +175,10 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
-            if (!(livingEntity.getType().is(GigTags.DNAIMMUNE) || livingEntity instanceof Player))
+            if (livingEntity.getType().is(GigTags.DNAIMMUNE)) return;
+            if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-            if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
-                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+            }
         }
     }
 }
