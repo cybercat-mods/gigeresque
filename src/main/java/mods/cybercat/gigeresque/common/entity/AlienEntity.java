@@ -36,6 +36,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
@@ -290,23 +291,27 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
+        this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
+        this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
 
-        if (this.isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+        if (isEffectiveAi()) {
             this.moveRelative(getSpeed(), movementInput);
             this.move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(0.9));
             if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
         } else super.travel(movementInput);
+    }
+
+    @Override
+    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
+        PathNavigation pathNavigation;
+        if (this.isUnderWater()) {
+            pathNavigation = this.swimNavigation;
+        } else {
+            pathNavigation = this.landNavigation;
+        }
+        this.navigation.setCanFloat(true);
+        return pathNavigation;
     }
 
     @Override

@@ -46,6 +46,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -98,22 +99,14 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : this.isCrawling() ? new ClimberMoveController<>(
+        this.moveControl = this.isUnderWater() ? swimMoveControl : this.isCrawling() ? new ClimberMoveController<>(
                 this) : new MoveControl(this);
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : this.isCrawling() ? new ClimberLookController<>(
+        this.lookControl = this.isUnderWater() ? landLookControl : this.isCrawling() ? new ClimberLookController<>(
                 this) : landLookControl;
         this.navigation.setCanFloat(true);
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+        if (isEffectiveAi()) {
             moveRelative(getSpeed(), movementInput);
             move(MoverType.SELF, getDeltaMovement());
             setDeltaMovement(getDeltaMovement().scale(0.5));

@@ -200,7 +200,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public boolean canClimbInWater() {
-        return this.canClimbInWater;
+        return true;
     }
 
     @Override
@@ -841,9 +841,6 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                     fluidState)) {
                 this.isTravelingInFluid = true;
 
-                if (canTravel) {
-                    return false;
-                }
             } else if (canTravel) {
                 this.travelOnGround(relative);
             }
