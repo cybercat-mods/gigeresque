@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -53,4 +54,7 @@ public record GigTags() {
 
     /* GAMEEVENT TAGS */
     public static final TagKey<GameEvent> ALIEN_CAN_LISTEN = TagKey.create(Registries.GAME_EVENT, Constants.modResource("alien_can_listen"));
+
+    /* ITEMS */
+    public static final TagKey<Item> ACID_RESISTANT_ITEMS = TagKey.create(Registries.ITEM, Constants.modResource("acidresistant"));
 }
