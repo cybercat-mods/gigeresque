@@ -8,4 +8,4 @@ pluginManagement {
     	maven { url  = 'https://plugins.gradle.org/m2/' }
     }
 }
-rootProject.name = 'gigeresque-1.20.1'
+rootProject.name = 'gigeresque1204'
