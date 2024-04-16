@@ -14,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
@@ -69,7 +68,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
         for (var testPos : BlockPos.betweenClosed(entity.blockPosition().relative(entity.getDirection()),
                 entity.blockPosition().relative(entity.getDirection()).above(2))) {
             var state = entity.level().getBlockState(testPos);
-            if (!(state.is(Blocks.GRASS) || state.is(Blocks.TALL_GRASS))) {
+            if (!state.isSolid()) {
                 if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
                     if (!entity.level().isClientSide) {
                         entity.level().destroyBlock(testPos, true, null, 512);
