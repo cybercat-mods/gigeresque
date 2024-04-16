@@ -22,6 +22,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -158,7 +159,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                 new LeapAtTargetTask<>(0),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed),
                 // move to
-                new AlienMeleeAttack<>(13));// attack
+                new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR));// attack
     }
 
     @Override

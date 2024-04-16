@@ -23,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -240,9 +241,9 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
                 // Xeno Acid Spit
-                new AlienProjectileAttack<>(18),
+                new AlienProjectileAttack<>(18, GigMeleeAttackSelector.SPITTER_RANGE_SELECTOR),
                 // Xeno attacking
-                new AlienMeleeAttack<>(5));
+                new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR));
     }
 
     @Override

@@ -20,6 +20,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -142,7 +143,7 @@ public class HammerpedeEntity extends AlienEntity implements GeoEntity, SmartBra
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
-                new AlienMeleeAttack<>(7).attackInterval(entity -> 80));
+                new AlienMeleeAttack<>(7, GigMeleeAttackSelector.HAMMER_ANIM_SELECTOR).attackInterval(entity -> 80));
     }
 
     @Override

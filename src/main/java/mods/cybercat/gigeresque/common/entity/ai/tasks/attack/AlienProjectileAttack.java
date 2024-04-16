@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
 import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,8 +28,8 @@ public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedR
     @Nullable
     protected LivingEntity target = null;
 
-    public AlienProjectileAttack(int delayTicks) {
-        super(delayTicks);
+    public AlienProjectileAttack(int delayTicks, AnimationSelector<? super E> animationSelector) {
+        super(delayTicks, animationSelector);
     }
 
     /**

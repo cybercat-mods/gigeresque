@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -27,8 +28,8 @@ public class AlienMeleeAttack<E extends AlienEntity> extends CustomDelayedMeleeB
     @Nullable
     protected LivingEntity target = null;
 
-    public AlienMeleeAttack(int delayTicks) {
-        super(delayTicks);
+    public AlienMeleeAttack(int delayTicks, AnimationSelector<E> animationSelector) {
+        super(delayTicks, animationSelector);
     }
 
     /**

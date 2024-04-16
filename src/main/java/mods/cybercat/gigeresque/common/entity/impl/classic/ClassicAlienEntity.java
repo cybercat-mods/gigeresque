@@ -1,14 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.AzureLib;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.platform.Services;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
@@ -134,8 +132,6 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         super.tick();
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
-//        if (!this.level().isClientSide() && Services.PLATFORM.isDevelopmentEnvironment())
-//            AzureLib.LOGGER.info(this.getOrientation().pitch());
         this.setIsCrawling(this.getOrientation().pitch() > 10 || this.getOrientation().pitch() < -10);
     }
 
@@ -229,7 +225,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
-                new EggmorpthTargetTask<>().stopIf(entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling()),
+                new EggmorpthTargetTask<>().stopIf(
+                        entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling()),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),

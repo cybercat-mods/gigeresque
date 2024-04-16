@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -119,7 +120,8 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AlienMeleeAttack<>(20));
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F),
+                new AlienMeleeAttack<>(20, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR));
     }
 
     /*
