@@ -420,8 +420,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
-            if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
+            if (this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
             if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);

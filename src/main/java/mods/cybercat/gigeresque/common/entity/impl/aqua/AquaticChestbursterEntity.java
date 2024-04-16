@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -105,7 +106,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F) if (this.isUnderWater()) {
                 if (walkAnimation.speedOld >= 0.35F) {
@@ -127,9 +128,9 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
                 this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL,
                         SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }));
-        controllers.add(
-                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat",
-                        GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
+                event -> PlayState.STOP).triggerableAnim(Constants.EAT, GigAnimationsDefault.CHOMP).triggerableAnim(
+                "death", GigAnimationsDefault.DEATH));
     }
 
     @Override

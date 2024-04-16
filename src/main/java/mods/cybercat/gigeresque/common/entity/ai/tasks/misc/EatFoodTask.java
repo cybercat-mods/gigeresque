@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -71,7 +72,7 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
         if (itemLocation.stream().findFirst().get().blockPosition().closerToCenterThan(entity.position(), 1.2)) {
             entity.getNavigation().stop();
             entity.setEatingStatus(true);
-            entity.triggerAnim("attackController", "eat");
+            entity.triggerAnim(Constants.ATTACK_CONTROLLER, Constants.EAT);
             item.getItem().finishUsingItem(entity.level(), entity);
             item.getItem().shrink(1);
             entity.grow(entity, 2400.0f);

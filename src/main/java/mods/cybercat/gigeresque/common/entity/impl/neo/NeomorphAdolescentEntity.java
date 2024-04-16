@@ -158,8 +158,7 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
     @Override
     public List<ExtendedSensor<NeomorphAdolescentEntity>> getSensors() {
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
+                new NearbyLivingEntitySensor<NeomorphAdolescentEntity>().setPredicate(GigEntityUtils::entityTest),
                 new NearbyBlocksSensor<NeomorphAdolescentEntity>().setRadius(7),
                 new NearbyRepellentsSensor<NeomorphAdolescentEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -188,9 +187,10 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
 
     @Override
     public BrainActivityGroup<NeomorphAdolescentEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5f), new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR));
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 2.5f),
+                new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR));
     }
 
     /*
@@ -198,7 +198,7 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 0, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             if (velocityLength >= 0.000000001 && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
@@ -224,28 +224,27 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
                     if (event.getKeyframeData().getSound().matches("footstepSoundkey") && this.level().isClientSide)
                         this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
                                 SoundSource.HOSTILE, 0.5F, 1.5F, true);
-                })).add(
-                new AnimationController<>(this, "attackController", 1, event -> PlayState.STOP).triggerableAnim("alert",
-                                RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
-                        .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
-                        .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                        .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
-                        .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
-                        .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                        .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
-                        .setSoundKeyframeHandler(event -> {
-                            if (event.getKeyframeData().getSound().matches("clawSoundkey") && this.level().isClientSide)
-                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-                                        SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                            if (event.getKeyframeData().getSound().matches("tailSoundkey") && this.level().isClientSide)
-                                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-                                        SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                        })).add(new AnimationController<>(this, "hissController", 0, event -> {
+                })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
+                event -> PlayState.STOP).triggerableAnim("alert",
+                        RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
+                .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+                .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+                .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+                .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+                .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+                .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+                .setSoundKeyframeHandler(event -> {
+                    if (event.getKeyframeData().getSound().matches("clawSoundkey") && this.level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
+                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                    if (event.getKeyframeData().getSound().matches("tailSoundkey") && this.level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
+                                SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                })).add(new AnimationController<>(this, "hissController", 0, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead && !(this.level().getFluidState(
                     this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                    this.blockPosition()).getAmount() >= 8))
-                return event.setAndContinue(GigAnimationsDefault.HISS);
+                    this.blockPosition()).getAmount() >= 8)) return event.setAndContinue(GigAnimationsDefault.HISS);
             return PlayState.STOP;
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)

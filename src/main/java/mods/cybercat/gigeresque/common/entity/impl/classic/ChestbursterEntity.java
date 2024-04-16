@@ -10,8 +10,6 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.AcidBlock;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
@@ -25,23 +23,19 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -248,7 +242,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
@@ -261,9 +255,9 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
                 this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.BURSTER_CRAWL,
                         SoundSource.HOSTILE, 0.25F, 1.0F, true);
         }));
-        controllers.add(
-                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat",
-                        GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
+                event -> PlayState.STOP).triggerableAnim(Constants.EAT, GigAnimationsDefault.CHOMP).triggerableAnim(
+                "death", GigAnimationsDefault.DEATH));
     }
 
     @Override

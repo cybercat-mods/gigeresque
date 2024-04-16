@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
@@ -78,7 +79,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround())
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
@@ -114,8 +115,7 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
     @Override
     public List<ExtendedSensor<PopperEntity>> getSensors() {
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<PopperEntity>().setPredicate(
-                        GigEntityUtils::entityTest),
+                new NearbyLivingEntitySensor<PopperEntity>().setPredicate(GigEntityUtils::entityTest),
                 new NearbyBlocksSensor<PopperEntity>().setRadius(7),
                 new NearbyRepellentsSensor<PopperEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -139,8 +139,8 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
 
     @Override
     public BrainActivityGroup<PopperEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeTarget(target)),
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F), new AttackExplodeTask<>(17));
     }
 

@@ -5,6 +5,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
@@ -84,7 +85,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             if (velocityLength >= 0.000000001 && !isDead)
@@ -103,7 +104,8 @@ public class NeobursterEntity extends RunnerbursterEntity {
             }
         }));
         controllers.add(
-                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat",
+                new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
+                        event -> PlayState.STOP).triggerableAnim("eat",
                         GigAnimationsDefault.CHOMP).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 

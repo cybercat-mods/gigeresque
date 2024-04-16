@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -74,10 +75,10 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
                         entity.level().destroyBlock(testPos, true, null, 512);
                     }
                     if (!entity.isVehicle()) {
-                        entity.triggerAnim("attackController", "swipe");
+                        entity.triggerAnim(Constants.ATTACK_CONTROLLER, "swipe");
                     }
                     if (entity.isVehicle()) {
-                        entity.triggerAnim("attackController", "swipe_left_tail");
+                        entity.triggerAnim(Constants.ATTACK_CONTROLLER, "swipe_left_tail");
                     }
                     if (entity.level().isClientSide()) {
                         for (var i = 2; i < 10; i++) {

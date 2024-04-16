@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -85,18 +86,17 @@ public class AzureVibrationUser implements VibrationSystem.User {
     public void onReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
-        var cName = "attackController";
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;
-            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(cName, "wakeup");
+            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
             if (this.mob.wakeupCounter == 2) {
                 if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
                     this.mob.setPassedOutStatus(false);
-                this.mob.triggerAnim(cName, "alert");
+                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "alert");
                 this.mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             }
             if (this.mob.wakeupCounter >= 3) {
-                this.mob.triggerAnim(cName, "run");
+                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "run");
                 this.mob.setPassedOutStatus(false);
                 this.mob.setAggressive(true);
                 this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);

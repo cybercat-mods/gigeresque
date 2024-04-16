@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import net.minecraft.core.BlockPos;
@@ -53,7 +54,7 @@ public class KillLightsTask<E extends AlienEntity> extends ExtendedBehaviour<E> 
             var blockPos = lightSourceLocation.stream().findFirst().get().getFirst();
             if (!blockPos.closerToCenterThan(entity.position(), 3.4)) startMovingToTarget(entity, blockPos);
             if (blockPos.closerToCenterThan(entity.position(), 3.3)) {
-                entity.triggerAnim("attackController", "swipe");
+                entity.triggerAnim(Constants.ATTACK_CONTROLLER, "swipe");
                 entity.level().destroyBlock(blockPos, true, null, 512);
                 if (!entity.level().isClientSide()) {
                     for (var i = 0; i < 2; i++)

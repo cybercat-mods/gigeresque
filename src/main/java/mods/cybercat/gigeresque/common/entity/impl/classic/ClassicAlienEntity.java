@@ -10,6 +10,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
@@ -327,7 +328,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !this.isCrawling() && !isDead) {
                 if (this.onGround() && !this.wasEyeInWater && !this.isExecuting()) {
@@ -377,7 +378,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
                 .triggerableAnim("crawl", GigAnimationsDefault.CRAWL) // grab
                 .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)); // idle
-        controllers.add(new AnimationController<>(this, "attackController", 0, event -> {
+        controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0, event -> {
             if (event.getAnimatable().isPassedOut())
                 return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
             if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);

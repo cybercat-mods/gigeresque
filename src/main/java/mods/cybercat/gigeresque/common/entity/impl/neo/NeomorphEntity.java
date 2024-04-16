@@ -10,6 +10,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
@@ -112,7 +113,7 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
             if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
@@ -148,7 +149,8 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
                     this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
                             SoundSource.HOSTILE, 0.25F, 1.0F, true);
             }
-        })).add(new AnimationController<>(this, "attackController", 1, event -> PlayState.STOP).triggerableAnim("idle",
+        })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
+                event -> PlayState.STOP).triggerableAnim("idle",
                         RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
@@ -229,8 +231,9 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
-                new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR).whenStopping(e -> this.addEffect(
-                        new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
+                new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR).whenStopping(
+                        e -> this.addEffect(
+                                new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
     }
 
     @Override

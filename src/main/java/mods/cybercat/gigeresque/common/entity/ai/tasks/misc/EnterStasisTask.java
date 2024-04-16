@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,7 +31,7 @@ public class EnterStasisTask<E extends AlienEntity> extends DelayedBehaviour<E> 
     @Override
     protected void doDelayedAction(E entity) {
         entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
-        entity.triggerAnim("attackController", "passout");
+        entity.triggerAnim(Constants.ATTACK_CONTROLLER, "passout");
         entity.setPassedOutStatus(true);
     }
 }

@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -37,7 +38,7 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
             var yOffset = entity.getEyeY() - ((entity.getFirstPassenger().getEyeY() - entity.getFirstPassenger().blockPosition().getY()) / 2.0);
             var e = entity.getFirstPassenger().getX() + ((entity.getRandom().nextDouble() / 2.0) - 0.5) * (entity.getRandom().nextBoolean() ? -1 : 1);
             var f = entity.getFirstPassenger().getZ() + ((entity.getRandom().nextDouble() / 2.0) - 0.5) * (entity.getRandom().nextBoolean() ? -1 : 1);
-            if (!entity.isExecuting()) entity.triggerAnim("attackController", "kidnap");
+            if (!entity.isExecuting()) entity.triggerAnim(Constants.ATTACK_CONTROLLER, "kidnap");
             if (entity.getFirstPassenger() instanceof Mob mob && !mob.isPersistenceRequired())
                 mob.setPersistenceRequired();
             // Get the current time in milliseconds
@@ -54,7 +55,7 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
                                 -0.15, 0.0);
                     entity.setIsBiting(false);
                     entity.setIsExecuting(false);
-                    entity.triggerAnim("attackController", "reset");
+                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "reset");
                     lastUpdateTime = currentTime;
                 }
             } else if (entity.getFirstPassenger() != null) {
@@ -70,7 +71,7 @@ public class AlienHeadBiteTask<E extends AlienEntity> extends DelayedBehaviour<E
                     if (entity.level().isClientSide)
                         entity.getFirstPassenger().level().addAlwaysVisibleParticle(Particles.BLOOD, e, yOffset, f, 0.0,
                                 -0.15, 0.0);
-                    entity.triggerAnim("attackController", "reset");
+                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "reset");
                     lastUpdateTime = currentTime;
                 }
             }

@@ -121,8 +121,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     protected void tickDeath() {
         ++this.deathTime;
-        this.triggerAnim("livingController", "death");
-        this.triggerAnim("attackController", "death");
+        this.triggerAnim(Constants.LIVING_CONTROLLER, "death");
+        this.triggerAnim(Constants.ATTACK_CONTROLLER, "death");
         if (this.deathTime == 150) {
             this.remove(Entity.RemovalReason.KILLED);
             super.tickDeath();
@@ -375,7 +375,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (this.isPassedOut()) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
             if (this.isAggressive()) {
-                this.triggerAnim("attackController", "wakeup");
+                this.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
                 this.setPassedOutStatus(false);
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }

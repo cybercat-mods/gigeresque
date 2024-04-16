@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -252,7 +253,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     if (this.isUnderWater() && this.wasTouchingWater) {
                         if (this.isAggressive() && event.isMoving() && !isDead && !this.isPassedOut())
@@ -285,7 +286,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                         }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                         .triggerableAnim("idle",
                                 this.isUnderWater() && this.wasTouchingWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND2)) // idle
-                .add(new AnimationController<>(this, "attackController", 1,
+                .add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
                                 event -> PlayState.STOP).setSoundKeyframeHandler(event -> {
                                     if (this.level().isClientSide) {
                                         if (event.getKeyframeData().getSound().matches("clawSoundkey"))

@@ -10,6 +10,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -222,7 +223,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
             if (event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
@@ -250,7 +251,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                     if (event.getKeyframeData().getSound().matches("idleSoundkey") && this.level().isClientSide)
                         this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
                                 SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                })).add(new AnimationController<>(this, "attackController", 1, event -> {
+                })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1, event -> {
             if (event.getAnimatable().isPassedOut())
                 return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
             return PlayState.STOP;

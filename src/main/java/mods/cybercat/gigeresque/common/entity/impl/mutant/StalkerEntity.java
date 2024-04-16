@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
@@ -89,7 +90,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var velocityLength = this.getDeltaMovement().horizontalDistance();
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && event.getAnimatable().getAttckingState() == 0)

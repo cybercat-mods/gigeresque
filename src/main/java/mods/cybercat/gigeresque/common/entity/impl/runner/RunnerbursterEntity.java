@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
@@ -78,7 +79,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
     public void tick() {
         super.tick();
         if (this.tickCount < 5) {
-            this.triggerAnim("attackController", "birth");
+            this.triggerAnim(Constants.ATTACK_CONTROLLER, "birth");
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 10), this);
         }
     }
@@ -129,17 +130,16 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
      */
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 5, event -> {
+        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead)
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
                 else return event.setAndContinue(GigAnimationsDefault.WALK);
             return event.setAndContinue(GigAnimationsDefault.IDLE);
         }));
-        controllers.add(
-                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("eat",
-                        GigAnimationsDefault.CHOMP).triggerableAnim("birth",
-                        GigAnimationsDefault.BIRTH).triggerableAnim("death", GigAnimationsDefault.DEATH));
+        controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0,
+                event -> PlayState.STOP).triggerableAnim("eat", GigAnimationsDefault.CHOMP).triggerableAnim("birth",
+                GigAnimationsDefault.BIRTH).triggerableAnim("death", GigAnimationsDefault.DEATH));
     }
 
     @Override

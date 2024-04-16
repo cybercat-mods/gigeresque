@@ -6,10 +6,10 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -104,7 +104,7 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
             ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
                     new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100,
                             false, false));
-            ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim("livingController", "stun");
+            ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
             ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
         }
     }
