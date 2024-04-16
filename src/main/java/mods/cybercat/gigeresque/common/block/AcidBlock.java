@@ -190,6 +190,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     @Override
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
+            if (livingEntity.hasEffect(GigStatusEffects.ACID)) return;
             if (livingEntity.getType().is(GigTags.ACID_RESISTANT_ENTITY)) return;
             var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
             if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
