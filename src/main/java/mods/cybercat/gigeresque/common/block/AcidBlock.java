@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -193,6 +194,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
             var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
             if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, this.getThickness(blockState)));
+            }
+            if (!itemStack.equals(ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_RESISTANT_ITEMS)) {
+                itemStack.setDamageValue(
+                        itemStack.getDamageValue() + (level.getRandom().nextInt(2) * this.getThickness(blockState)));
+            }
         }
         if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2) {
             if (itemEntity.getItem().is(GigTags.ACID_RESISTANT_ITEMS)) return;
