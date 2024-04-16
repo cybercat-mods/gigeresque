@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -55,8 +55,7 @@ public class NestResinBlock extends Block {
 
     @Override
     public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity().getType().is(
-                GigTags.GIG_ALIENS) ? ALIEN_LAYERS_TO_SHAPE.get(
+        return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity ? ALIEN_LAYERS_TO_SHAPE.get(
                 state.getValue(LAYERS)) : LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }
 
