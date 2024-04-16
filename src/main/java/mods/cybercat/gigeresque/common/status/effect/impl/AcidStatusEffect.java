@@ -21,6 +21,6 @@ public class AcidStatusEffect extends MobEffect {
     @Override
     public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
-        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.ACID), Gigeresque.config.acidDamage);
+        entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.ACID), Gigeresque.config.acidDamage * amplifier);
     }
 }
