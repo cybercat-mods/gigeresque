@@ -9,6 +9,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -44,7 +45,8 @@ public class GigSculkDungeonStructure extends Structure {
         var random = new SplittableRandom().nextInt(-18, 0);
         BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), random, context.chunkPos().getMinBlockZ());
 
-        return JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName, this.size, blockpos, false, Optional.empty(), this.maxDistanceFromCenter);
+        return JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName, this.size, blockpos, false,
+                Optional.empty(), this.maxDistanceFromCenter, PoolAliasLookup.EMPTY);
     }
 
     @Override
