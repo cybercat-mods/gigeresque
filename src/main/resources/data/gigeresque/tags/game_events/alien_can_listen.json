@@ -18,8 +18,6 @@
     "minecraft:entity_interact",
     "minecraft:entity_mount",
     "minecraft:entity_place",
-    "minecraft:entity_roar",
-    "minecraft:entity_shake",
     "minecraft:equip",
     "minecraft:explode",
     "minecraft:fluid_pickup",
