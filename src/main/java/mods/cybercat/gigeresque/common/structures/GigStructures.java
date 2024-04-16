@@ -12,7 +12,7 @@ public record GigStructures() {
     public static StructureType<?> GIG_DUNGEON;
     public static StructureType<?> SCULK_GIG_DUNGEON;
 
-    public static void registerStructureFeatures() {
+    public static void initialize() {
         GIG_DUNGEON = register(Constants.modResource("gig_dungeon"), GigDungeonStructure.CODEC);
         SCULK_GIG_DUNGEON = register(Constants.modResource("sculk_gig_dungeon"), GigSculkDungeonStructure.CODEC);
     }
