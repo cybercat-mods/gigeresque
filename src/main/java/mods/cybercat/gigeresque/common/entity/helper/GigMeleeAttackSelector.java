@@ -55,20 +55,18 @@ public record GigMeleeAttackSelector() {
         runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> {
-        hammerpedeEntity.triggerAnim(Constants.ATTACK_CONTROLLER, Constants.ATTACK);
-    };
+    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.triggerAnim(
+            Constants.ATTACK_CONTROLLER, Constants.ATTACK);
 
-    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR = runnerbursterEntity -> {
-        runnerbursterEntity.triggerAnim(Constants.LIVING_CONTROLLER, Constants.EAT);
-    };
+    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR = runnerbursterEntity -> runnerbursterEntity.triggerAnim(
+            Constants.LIVING_CONTROLLER, Constants.EAT);
 
     public static final AnimationSelector<FacehuggerEntity> HUGGER_SELECTOR = facehuggerEntity -> {
         if (facehuggerEntity.getTarget() != null) {
             var vec3d2 = new Vec3(facehuggerEntity.getTarget().getX() - facehuggerEntity.getX(), 0.0,
                     facehuggerEntity.getTarget().getZ() - facehuggerEntity.getZ());
             vec3d2 = vec3d2.normalize().scale(0.2).add(facehuggerEntity.getDeltaMovement().scale(0.2));
-            facehuggerEntity.setDeltaMovement(vec3d2.x, facehuggerEntity.getTarget().getEyeHeight() > 0.8 ? 0.5F : 0.4,
+            facehuggerEntity.setDeltaMovement(vec3d2.x, facehuggerEntity.getTarget().getEyeHeight() > 0.8F ? 0.5F : 0.4,
                     vec3d2.z);
             facehuggerEntity.setJumping(true);
         }

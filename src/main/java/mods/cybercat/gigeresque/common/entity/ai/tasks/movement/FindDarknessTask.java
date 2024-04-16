@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -39,11 +40,11 @@ public class FindDarknessTask<E extends AlienEntity> extends ExtendedBehaviour<E
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull E entity) {
 
         this.hidePos = getHidePos(entity);
 
-        return !entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(32)).anyMatch(
+        return entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(32)).noneMatch(
                 NEST) && !entity.isVehicle() && !entity.isAggressive() && !entity.isPassedOut() && this.hidePos != null && entity.level().getBrightness(
                 LightLayer.SKY, entity.blockPosition()) > 5;
     }
@@ -78,11 +79,11 @@ public class FindDarknessTask<E extends AlienEntity> extends ExtendedBehaviour<E
         var entityPos = entity.blockPosition();
 
         for (var i = 0; i < 50; ++i) {
-            var hidePos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
+            var runPos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
                     randomsource.nextInt(20) - 50);
 
-            if (!entity.level().canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
-                return Vec3.atBottomCenterOf(hidePos);
+            if (!entity.level().canSeeSky(runPos) && entity.getWalkTargetValue(runPos) < 0.0F)
+                return Vec3.atBottomCenterOf(runPos);
         }
 
         return null;

@@ -172,7 +172,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     }
 
     public boolean isAttachedToHost() {
-        return this.getVehicle() != null && this.getVehicle() instanceof LivingEntity;
+        return this.getVehicle() instanceof LivingEntity;
     }
 
     @Override
@@ -240,6 +240,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 this.kill();
             }
             if (vehicle instanceof Player player && (player.isCreative() || player.isSpectator())) {
+                assert host != null;
                 host.setTicksUntilImpregnation(-1);
                 detachFromHost(true);
                 setIsInfertile(true);
@@ -349,11 +350,6 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public boolean isPathFinding() {
-        return false;
-    }
-
-    @Override
-    public boolean isPushedByFluid() {
         return false;
     }
 
