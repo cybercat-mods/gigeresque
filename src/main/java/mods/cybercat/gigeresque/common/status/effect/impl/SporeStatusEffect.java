@@ -9,8 +9,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +37,7 @@ public class SporeStatusEffect extends MobEffect {
         if (this == GigStatusEffects.SPORE) entity.heal(0);
     }
 
-    @Override
-    public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
+    public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         var neoBurster = Entities.NEOBURSTER.create(entity.level());
         if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
                 GigTags.NEOHOST) && (!(entity instanceof Player) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator())))) {
@@ -47,13 +46,10 @@ public class SporeStatusEffect extends MobEffect {
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(neoBurster);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-            return;
-
         }
-        super.removeAttributeModifiers(entity, attributes, amplifier);
     }
 
-    private void spawnEffects(Level world, LivingEntity entity) {
+    private static void spawnEffects(Level world, LivingEntity entity) {
         if (!world.isClientSide()) {
             for (var i = 0; i < 2; i++)
                 ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),

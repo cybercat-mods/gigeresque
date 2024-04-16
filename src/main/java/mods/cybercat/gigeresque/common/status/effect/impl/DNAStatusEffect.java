@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class DNAStatusEffect extends MobEffect {
-    private BlockPos lightBlockPos = null;
+    private static BlockPos lightBlockPos = null;
 
     public DNAStatusEffect() {
         super(MobEffectCategory.HARMFUL, Color.DARK_GRAY.getColor());
@@ -41,8 +41,7 @@ public class DNAStatusEffect extends MobEffect {
         if (!entity.getType().is(GigTags.DNAIMMUNE) && this == GigStatusEffects.DNA) entity.heal(0);
     }
 
-    @Override
-    public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
+    public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
         if (entity instanceof Creeper) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {
@@ -58,15 +57,14 @@ public class DNAStatusEffect extends MobEffect {
                 }
             }
         }
-        super.removeAttributeModifiers(entity, attributes, amplifier);
     }
 
-    private void placeGoo(LivingEntity entity) {
+    private static void placeGoo(LivingEntity entity) {
         entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
         spawnGoo(entity);
     }
 
-    private void spawnGoo(LivingEntity entity) {
+    private static void spawnGoo(LivingEntity entity) {
         if (lightBlockPos == null) {
             lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition());
             if (lightBlockPos == null) return;
@@ -80,7 +78,7 @@ public class DNAStatusEffect extends MobEffect {
         } else lightBlockPos = null;
     }
 
-    private BlockPos findFreeSpace(Level world, BlockPos blockPos) {
+    private static BlockPos findFreeSpace(Level world, BlockPos blockPos) {
         if (blockPos == null) return null;
 
         var offsets = new int[2 + 1];

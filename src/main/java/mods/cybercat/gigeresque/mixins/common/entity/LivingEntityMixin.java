@@ -14,6 +14,8 @@ import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
@@ -299,5 +301,13 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     @Override
     public void setBleeding(boolean isBleeding) {
         entityData.set(IS_BLEEDING, isBleeding);
+    }
+
+    @Inject(method = "onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V", at = @At(value = "TAIL"))
+    private void runAtEffectRemoval(MobEffectInstance mobEffectInstance, CallbackInfo ci) {
+        if (mobEffectInstance.getEffect() instanceof DNAStatusEffect)
+            DNAStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
+        if (mobEffectInstance.getEffect() instanceof SporeStatusEffect)
+            SporeStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
     }
 }
