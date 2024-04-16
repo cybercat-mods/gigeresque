@@ -697,7 +697,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
         this.yHeadRot = Mth.wrapDegrees(this.yHeadRot + yawDelta);
         this.yHeadRotO = this.wrapAngleInRange(this.yHeadRotO/* + yawDelta*/, this.yHeadRot);
-        this.lerpYHeadRot  = Mth.wrapDegrees(this.lerpYHeadRot  + yawDelta);
+        this.lerpYHeadRot = Mth.wrapDegrees(this.lerpYHeadRot + yawDelta);
 
         this.xRot = Mth.wrapDegrees(this.xRot + pitchDelta);
         this.xRotO = this.wrapAngleInRange(this.xRotO/* + pitchDelta*/, this.xRot);
@@ -768,7 +768,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public float getTargetHeadYaw(float yaw, int rotationIncrements) {
-        return (float) this.lerpYHeadRot ;
+        return (float) this.lerpYHeadRot;
     }
 
     @Override
@@ -793,7 +793,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
             Pair<Float, Float> rotations = this.getOrientation().getLocalRotation(look);
 
-            this.lerpYHeadRot  = rotations.getLeft();
+            this.lerpYHeadRot = rotations.getLeft();
             this.lerpHeadSteps = 3;
         }
     }
@@ -848,10 +848,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             if (!canTravel) {
                 this.calculateEntityAnimation(true);
             }
-            this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut())
+                this.updateOffsetsAndOrientation();
             return true;
         } else {
-            this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut())
+                this.updateOffsetsAndOrientation();
             return false;
         }
     }
