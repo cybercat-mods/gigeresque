@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.MathUtil;
@@ -14,7 +13,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -191,7 +189,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     @Override
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player))
+            if (!(livingEntity.getType().is(GigTags.ACID_RESISTANT_ENTITY) || livingEntity instanceof Player))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
             if (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
