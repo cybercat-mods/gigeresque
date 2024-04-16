@@ -1,10 +1,7 @@
 package mods.cybercat.gigeresque.common.util.nest;
 
 import com.mojang.datafixers.util.Pair;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.NestResinBlock;
-import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
-import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
+import mods.cybercat.gigeresque.common.block.*;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

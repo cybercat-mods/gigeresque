@@ -146,7 +146,7 @@ public class NestResinWebBlock extends Block {
     }
 
     @Override
-    public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    public boolean canBeReplaced(@NotNull BlockState state, BlockPlaceContext context) {
         var blockState = context.getLevel().getBlockState(context.getClickedPos());
         return blockState.is(this) ? getAdjacentBlockCount(blockState) < FACING_PROPERTIES.size() : super.canBeReplaced(state, context);
     }
@@ -175,7 +175,7 @@ public class NestResinWebBlock extends Block {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation) {
+    public @NotNull BlockState rotate(@NotNull BlockState state, Rotation rotation) {
         return switch (rotation) {
             case CLOCKWISE_180 ->
                     state.setValue(NORTH, state.getValue(SOUTH)).setValue(EAST, state.getValue(WEST)).setValue(SOUTH, state.getValue(NORTH)).setValue(WEST, state.getValue(EAST));
@@ -188,7 +188,7 @@ public class NestResinWebBlock extends Block {
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
+    public @NotNull BlockState mirror(@NotNull BlockState state, Mirror mirror) {
         return switch (mirror) {
             case LEFT_RIGHT -> state.setValue(NORTH, state.getValue(SOUTH)).setValue(SOUTH, state.getValue(NORTH));
             case FRONT_BACK -> state.setValue(EAST, state.getValue(WEST)).setValue(WEST, state.getValue(EAST));
