@@ -189,15 +189,18 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     @Override
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            if (!(livingEntity.getType().is(GigTags.ACID_RESISTANT_ENTITY) || livingEntity instanceof Player))
-                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, this.getThickness(blockState)));
-            if (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))
+            if (livingEntity.getType().is(GigTags.ACID_RESISTANT_ENTITY)) return;
+            var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
+            if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, this.getThickness(blockState)));
         }
         if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2)
-            if (itemEntity.getItem().getMaxDamage() < 2) itemEntity.getItem().shrink(1);
-            else itemEntity.getItem().setDamageValue(
-                    itemEntity.getItem().getDamageValue() + (level.getRandom().nextInt(2) * this.getThickness(
-                            blockState)));
+            if (itemEntity.getItem().getMaxDamage() < 2) {
+                itemEntity.getItem().shrink(1);
+            } else {
+                itemEntity.getItem().setDamageValue(
+                        itemEntity.getItem().getDamageValue() + (level.getRandom().nextInt(2) * this.getThickness(
+                                blockState)));
+            }
     }
 }
