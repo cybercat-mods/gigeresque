@@ -252,9 +252,6 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
         if (!this.isInWater())
             this.setIsCrawling(
                     this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
-
-        if (level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
-            this.level().removeBlock(this.blockPosition(), false);
     }
 
     @Override
