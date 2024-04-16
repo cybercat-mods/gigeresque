@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -45,6 +46,11 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
         super(settings);
         registerDefaultState(
                 (getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
+    }
+
+    @Override
+    protected MapCodec<? extends FallingBlock> codec() {
+        return null;
     }
 
     public static boolean canFallThrough(BlockState state) {

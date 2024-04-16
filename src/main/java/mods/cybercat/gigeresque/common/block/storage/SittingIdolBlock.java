@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -75,6 +76,11 @@ public class SittingIdolBlock extends BaseEntityBlock {
     @Override
     public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
@@ -40,6 +41,11 @@ public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return Entities.SPORE_ENTITY.create(pos, state);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override

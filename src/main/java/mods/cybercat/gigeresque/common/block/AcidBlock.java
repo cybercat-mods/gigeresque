@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -44,6 +45,11 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
         super(settings);
         registerDefaultState(
                 (getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
+    }
+
+    @Override
+    protected MapCodec<? extends FallingBlock> codec() {
+        return null;
     }
 
     private void scheduleTickIfNotScheduled(Level world, BlockPos pos) {

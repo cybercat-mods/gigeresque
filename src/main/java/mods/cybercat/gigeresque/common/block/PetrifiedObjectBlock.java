@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
@@ -36,6 +37,11 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
         super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15));
         this.registerDefaultState(
                 this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override
