@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,23 +36,23 @@ public class FleeFireTask<E extends PathfinderMob> extends ExtendedBehaviour<E> 
     }
 
     @Override
-    protected boolean checkExtraStartConditions(ServerLevel serverLevel, PathfinderMob pathfinderMob) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob) {
         return !pathfinderMob.isAggressive() || !pathfinderMob.level().dimensionType().respawnAnchorWorks();
     }
 
     @Override
-    protected void start(ServerLevel level, PathfinderMob entity, long gameTime) {
+    protected void start(@NotNull ServerLevel level, PathfinderMob entity, long gameTime) {
         entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
         entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
     }
 
     @Override
-    protected boolean canStillUse(ServerLevel level, PathfinderMob entity, long gameTime) {
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull PathfinderMob entity, long gameTime) {
         return true;
     }
 
     @Override
-    protected void tick(ServerLevel level, PathfinderMob owner, long gameTime) {
+    protected void tick(@NotNull ServerLevel level, PathfinderMob owner, long gameTime) {
         Vec3 vec3;
         if (owner.level().dimensionType().piglinSafe())
             return;

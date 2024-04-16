@@ -34,6 +34,7 @@ public class LeapAtTargetTask<E extends StalkerEntity> extends DelayedBehaviour<
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
+        assert target != null;
         var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
         return !entity.isVehicle() && this.target != null && entity.onGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3 && entity.getBlockY() <= target.getBlockY();
     }
