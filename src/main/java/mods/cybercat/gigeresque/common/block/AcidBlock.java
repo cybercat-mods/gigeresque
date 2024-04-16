@@ -198,8 +198,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
         }
         if (entity instanceof ItemEntity itemEntity && level.getRandom().nextInt(20) < 2)
             if (itemEntity.getItem().getMaxDamage() < 2) itemEntity.getItem().shrink(1);
-            else
-                itemEntity.getItem().setDamageValue(
-                        itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
+            else itemEntity.getItem().setDamageValue(
+                    itemEntity.getItem().getDamageValue() + level.getRandom().nextInt(2));
     }
 }

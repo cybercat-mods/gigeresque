@@ -4,7 +4,6 @@ import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.MathUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -45,11 +44,13 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
 
     BlackFluidBlock(Properties settings) {
         super(settings);
-        registerDefaultState((getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
+        registerDefaultState(
+                (getStateDefinition().any().setValue(WATERLOGGED, false)).setValue(THICKNESS, MAX_THICKNESS));
     }
 
     public static boolean canFallThrough(BlockState state) {
-        return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(GigTags.ACID_RESISTANT) && !state.is(GigBlocks.ACID_BLOCK);
+        return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(
+                GigTags.ACID_RESISTANT) && !state.is(GigBlocks.ACID_BLOCK);
     }
 
     private void scheduleTickIfNotScheduled(Level world, BlockPos pos) {
@@ -91,7 +92,8 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
 
     @Override
     public @NotNull FluidState getFluidState(BlockState state) {
-        return Boolean.TRUE.equals(state.getValue(StairBlock.WATERLOGGED)) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return Boolean.TRUE.equals(state.getValue(StairBlock.WATERLOGGED)) ? Fluids.WATER.getSource(
+                false) : super.getFluidState(state);
     }
 
     @Override
@@ -132,9 +134,12 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         for (var i = 0; i < (getThickness(state) * 2) + 1; i++)
-            world.addAlwaysVisibleParticle(Particles.GOO, pos.getX() + random.nextDouble(), pos.getY() + (Boolean.TRUE.equals(state.getValue(WATERLOGGED)) ? random.nextDouble() : 0.01), pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
+            world.addAlwaysVisibleParticle(Particles.GOO, pos.getX() + random.nextDouble(),
+                    pos.getY() + (Boolean.TRUE.equals(state.getValue(WATERLOGGED)) ? random.nextDouble() : 0.01),
+                    pos.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
         if (random.nextInt(5 * ((MAX_THICKNESS + 1) - getThickness(state))) == 0)
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS,
+                    0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
     }
 
     @Override
@@ -172,7 +177,8 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     public void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (entity.isAlive() && entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(GigStatusEffects.DNA)) return;
-            if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(GigTags.DNAIMMUNE))
+            if (!(livingEntity instanceof AlienEntity || livingEntity instanceof WitherBoss || livingEntity instanceof Player) && !livingEntity.getType().is(
+                    GigTags.DNAIMMUNE))
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
             if (livingEntity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator())
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
