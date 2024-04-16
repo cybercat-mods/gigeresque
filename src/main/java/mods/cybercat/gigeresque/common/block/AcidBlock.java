@@ -116,8 +116,8 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
-        // Stop Vanilla Stuff
+    public BlockState playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        return null;
     }
 
     private void setThickness(ServerLevel world, BlockPos pos, BlockState state, int consume) {

@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class SittingIdolBlock extends BaseEntityBlock {
 
@@ -94,12 +95,13 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public @NotNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockPos.betweenClosed(pos, pos.relative(state.getValue(FACING), 2).above(2)).forEach(testPos -> {
             if (!testPos.equals(pos))
                 world.destroyBlock(testPos, false);
         });
         super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override

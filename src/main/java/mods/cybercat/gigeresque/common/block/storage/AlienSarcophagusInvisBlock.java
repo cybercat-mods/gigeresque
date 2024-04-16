@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class AlienSarcophagusInvisBlock extends Block {
 
@@ -61,13 +62,13 @@ public class AlienSarcophagusInvisBlock extends Block {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (world.isClientSide) return;
+    public @NotNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        if (world.isClientSide) return state;
         var radius = new Vec3i(2, 2, 2);
         for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
             BlockState testState;
@@ -76,6 +77,7 @@ public class AlienSarcophagusInvisBlock extends Block {
                 Block.dropResources(testState, world, testPos);
             } else if (testState.is(this)) world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override

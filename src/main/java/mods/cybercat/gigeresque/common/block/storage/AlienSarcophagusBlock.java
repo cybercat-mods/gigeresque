@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class AlienSarcophagusBlock extends BaseEntityBlock {
 
@@ -94,11 +95,11 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public @NotNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
             if (!testPos.equals(pos)) world.destroyBlock(testPos, true);
         });
-        super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override

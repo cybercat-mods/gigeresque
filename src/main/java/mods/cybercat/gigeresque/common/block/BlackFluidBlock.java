@@ -113,7 +113,8 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+    public BlockState playerWillDestroy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        return null;
     }
 
     protected void setThickness(ServerLevel world, BlockPos pos, BlockState state) {
