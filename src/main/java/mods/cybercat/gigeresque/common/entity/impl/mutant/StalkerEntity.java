@@ -11,6 +11,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
+import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -240,15 +241,15 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     }
 
     @Override
-    public void generateAcidPool(int xOffset, int zOffset) {
-        var pos = this.blockPosition().offset(xOffset, 0, zOffset);
-        var posState = level().getBlockState(pos);
-        var newState = GigBlocks.BLACK_FLUID.defaultBlockState();
+    public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
+        var posState = level().getBlockState(pos.offset(xOffset, 0, zOffset));
+        var newState = GigBlocks.BLACK_FLUID.defaultBlockState().setValue(BlackFluidBlock.THICKNESS,
+                Math.min(4, level().getRandom().nextInt(3) + 1));
 
         if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
 
         if (!(posState.getBlock() instanceof LiquidBlock)) return;
-        level().setBlockAndUpdate(pos, newState);
+        level().setBlockAndUpdate(pos.offset(xOffset, 0, zOffset), newState);
     }
 
     @Override
