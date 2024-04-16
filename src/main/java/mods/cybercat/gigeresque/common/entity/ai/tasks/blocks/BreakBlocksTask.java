@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
@@ -93,7 +92,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
                 } else if (!entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isVehicle() && !state.is(
                         GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50))) {
                     if (!entity.level().isClientSide) {
-                        entity.level().setBlockAndUpdate(testPos.above(), GigBlocks.ACID_BLOCK.defaultBlockState());
+                        entity.generateAcidPool(testPos.above(), 0, 0);
                     }
                     entity.hurt(entity.damageSources().generic(), 5);
                 }
