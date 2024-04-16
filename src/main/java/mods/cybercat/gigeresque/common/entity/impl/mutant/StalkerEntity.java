@@ -205,7 +205,6 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
         level().setBlockAndUpdate(pos.offset(xOffset, 0, zOffset), newState);
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
     }

@@ -289,7 +289,6 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
         if (!isInfertile()) super.knockback(strength, x, z);
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(@NotNull LivingEntity target) {
         return 4.5;
     }

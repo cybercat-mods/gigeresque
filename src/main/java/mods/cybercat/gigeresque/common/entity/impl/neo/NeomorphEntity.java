@@ -236,7 +236,6 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                                 new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * 1.9f * (this.getBbWidth() * 1.9f) + livingEntity.getBbWidth();
     }

@@ -261,7 +261,6 @@ public class SpitterEntity extends CrawlerAlien implements SmartBrainOwner<Spitt
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
     }
