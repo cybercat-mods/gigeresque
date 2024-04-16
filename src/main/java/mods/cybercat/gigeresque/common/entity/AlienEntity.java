@@ -310,7 +310,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         } else {
             pathNavigation = this.landNavigation;
         }
-        this.navigation.setCanFloat(true);
         return pathNavigation;
     }
 
