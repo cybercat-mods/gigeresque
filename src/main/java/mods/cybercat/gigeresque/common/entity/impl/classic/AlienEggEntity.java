@@ -1,10 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -35,7 +37,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class AlienEggEntity extends AlienEntity implements GeoEntity {
+public class AlienEggEntity extends AlienEntity {
 
     private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(AlienEggEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -327,7 +329,7 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             if (isHatched() && !this.isDeadOrDying()) {
                 if (!hasFacehugger()) return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);

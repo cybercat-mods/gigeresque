@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mod.azure.azurelib.util.ClientUtils;
+import mod.azure.azurelib.common.api.client.helper.ClientUtils;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;

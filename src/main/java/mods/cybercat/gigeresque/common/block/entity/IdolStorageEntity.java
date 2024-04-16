@@ -1,11 +1,11 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mod.azure.azurelib.animatable.GeoBlockEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.storage.SittingIdolBlock;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
@@ -82,7 +82,8 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
                                         Block.UPDATE_ALL);
                         });
             if (!blockEntity.isRemoved())
-                blockEntity.stateManager.recheckOpeners(Objects.requireNonNull(blockEntity.getLevel()), blockEntity.getBlockPos(),
+                blockEntity.stateManager.recheckOpeners(Objects.requireNonNull(blockEntity.getLevel()),
+                        blockEntity.getBlockPos(),
                         blockEntity.getBlockState());
         }
     }
@@ -128,18 +129,21 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     @Override
     public void startOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.incrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
+            this.stateManager.incrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
+                    this.getBlockState());
     }
 
     @Override
     public void stopOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.decrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
+            this.stateManager.decrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
+                    this.getBlockState());
     }
 
     public void tick() {
         if (!this.isRemoved())
-            this.stateManager.recheckOpeners(Objects.requireNonNull(this.getLevel()), this.getBlockPos(), this.getBlockState());
+            this.stateManager.recheckOpeners(Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
+                    this.getBlockState());
     }
 
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
@@ -155,7 +159,7 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
     }
 }

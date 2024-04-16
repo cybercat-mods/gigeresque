@@ -1,13 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -56,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growable, SmartBrainOwner<ChestbursterEntity> {
+public class ChestbursterEntity extends AlienEntity implements Growable, SmartBrainOwner<ChestbursterEntity> {
 
     public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(ChestbursterEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -241,7 +240,7 @@ public class ChestbursterEntity extends AlienEntity implements GeoEntity, Growab
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)

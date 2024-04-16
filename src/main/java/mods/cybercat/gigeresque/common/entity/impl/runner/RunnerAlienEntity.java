@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
@@ -222,7 +222,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
@@ -261,7 +261,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                 .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
                 .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
                 .triggerableAnim("wakeup",
-                        GigAnimationsDefault.STATIS_LEAVE.then("idle_land", LoopType.PLAY_ONCE)) // wake up
+                        GigAnimationsDefault.STATIS_LEAVE.then("idle_land", Animation.LoopType.PLAY_ONCE)) // wake up
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
                 .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack

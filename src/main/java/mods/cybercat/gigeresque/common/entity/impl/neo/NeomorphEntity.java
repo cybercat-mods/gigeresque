@@ -1,15 +1,15 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -65,7 +65,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrainOwner<NeomorphEntity> {
+public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private final AzureNavigation landNavigation = new AzureNavigation(this, level());
@@ -112,7 +112,7 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
@@ -151,7 +151,7 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
             }
         })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
                 event -> PlayState.STOP).triggerableAnim("idle",
-                        RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+                        RawAnimation.begin().then("idle_land", Animation.LoopType.PLAY_ONCE)) // reset hands
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack

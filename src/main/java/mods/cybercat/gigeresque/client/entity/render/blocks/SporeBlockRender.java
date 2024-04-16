@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
-import mod.azure.azurelib.renderer.GeoBlockRenderer;
+import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
 import mods.cybercat.gigeresque.client.entity.model.blocks.SporeBlockModel;
 import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 

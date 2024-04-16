@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
 import com.google.common.collect.ImmutableList;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.bettercrawling.CollisionSmoothingUtil;
 import mod.azure.bettercrawling.Matrix4f;
 import mod.azure.bettercrawling.entity.mob.*;

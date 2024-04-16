@@ -1,12 +1,11 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
@@ -29,7 +28,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class AquaticChestbursterEntity extends ChestbursterEntity implements GeoEntity, Growable {
+public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable {
 
     private final AzureNavigation landNavigation = new AzureNavigation(this, level());
     private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
@@ -105,7 +104,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Geo
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F) if (this.isUnderWater()) {

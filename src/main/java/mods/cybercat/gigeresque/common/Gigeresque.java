@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common;
 
-import mod.azure.azurelib.AzureLibMod;
-import mod.azure.azurelib.config.format.ConfigFormats;
+import mod.azure.azurelib.common.internal.common.AzureLibMod;
+import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.compat.GigCompats;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;

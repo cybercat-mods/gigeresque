@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
@@ -46,7 +46,6 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -165,7 +164,6 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         return super.doHurtTarget(target);
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
@@ -320,7 +318,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             if (event.isMoving() && !this.isCrawling() && !isDead) {
@@ -379,15 +377,16 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
             return PlayState.STOP;
         }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
-                .triggerableAnim("run", RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
-                .triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
+                .triggerableAnim("run",
+                        RawAnimation.begin().then("run", Animation.LoopType.PLAY_ONCE)) // trigger kidnap hands
+                .triggerableAnim("reset", RawAnimation.begin().then("idle_land", Animation.LoopType.PLAY_ONCE)) // reset
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
                 .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
                 .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
                 .triggerableAnim("wakeup",
                         GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land",
-                                LoopType.LOOP)) // wake up
+                                Animation.LoopType.LOOP)) // wake up
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack

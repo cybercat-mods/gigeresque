@@ -2,9 +2,9 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.renderer.GeoBlockRenderer;
-import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
+import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
+import mod.azure.azurelib.common.api.client.renderer.layer.BlockAndItemGeoLayer;
+import mod.azure.azurelib.common.internal.common.cache.object.GeoBone;
 import mods.cybercat.gigeresque.client.entity.model.blocks.SarcophagusHuggerModel;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;

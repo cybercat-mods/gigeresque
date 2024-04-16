@@ -1,10 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.util.AzureLibUtil;
+
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class DraconicTempleBeastEntity extends CrawlerAlien implements GeoEntity {
+public class DraconicTempleBeastEntity extends CrawlerAlien {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public DraconicTempleBeastEntity(EntityType<? extends CrawlerAlien> entityType, Level level) {

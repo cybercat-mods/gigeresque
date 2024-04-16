@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -233,7 +233,6 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         return super.doHurtTarget(target);
     }
 
-    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
@@ -252,7 +251,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     if (this.isUnderWater() && this.wasTouchingWater) {
@@ -300,12 +299,12 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                                 .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
                                 .triggerableAnim("idle",
-                                        RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset hands
+                                        RawAnimation.begin().then("idle_land", Animation.LoopType.PLAY_ONCE)) // reset hands
                                 .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
                                 .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
                                 .triggerableAnim("wakeup",
                                         GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land",
-                                                LoopType.PLAY_ONCE)) // wake up
+                                                Animation.LoopType.PLAY_ONCE)) // wake up
                                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
                                 .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack

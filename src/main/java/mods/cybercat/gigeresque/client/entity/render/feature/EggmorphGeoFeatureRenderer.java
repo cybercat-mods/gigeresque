@@ -2,10 +2,10 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
+import mod.azure.azurelib.common.api.client.renderer.layer.GeoRenderLayer;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.client.renderer.GeoRenderer;
+import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

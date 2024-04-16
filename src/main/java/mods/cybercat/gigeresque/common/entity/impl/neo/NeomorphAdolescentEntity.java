@@ -1,14 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
@@ -63,7 +62,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<NeomorphAdolescentEntity> {
+public class NeomorphAdolescentEntity extends CrawlerAlien implements SmartBrainOwner<NeomorphAdolescentEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -197,7 +196,7 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 0, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
@@ -226,7 +225,7 @@ public class NeomorphAdolescentEntity extends CrawlerAlien implements GeoEntity,
                                 SoundSource.HOSTILE, 0.5F, 1.5F, true);
                 })).add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 1,
                 event -> PlayState.STOP).triggerableAnim("alert",
-                        RawAnimation.begin().then("hiss", LoopType.PLAY_ONCE)) // reset hands
+                        RawAnimation.begin().then("hiss", Animation.LoopType.PLAY_ONCE)) // reset hands
                 .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
                 .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
                 .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack

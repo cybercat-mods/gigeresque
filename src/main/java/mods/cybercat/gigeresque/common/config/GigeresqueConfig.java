@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.config;
 
-import mod.azure.azurelib.config.Config;
-import mod.azure.azurelib.config.Configurable;
+import mod.azure.azurelib.common.api.common.config.Config;
+import mod.azure.azurelib.common.internal.common.config.Configurable;
 import mods.cybercat.gigeresque.common.Gigeresque;
 
 @Config(id = Gigeresque.MOD_ID)

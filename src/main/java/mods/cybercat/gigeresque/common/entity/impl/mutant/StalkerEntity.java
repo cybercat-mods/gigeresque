@@ -1,13 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
+
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
@@ -69,7 +70,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<StalkerEntity> {
+public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<StalkerEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int breakingCounter = 0;
@@ -89,7 +90,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var velocityLength = this.getDeltaMovement().horizontalDistance();
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
@@ -98,7 +99,7 @@ public class StalkerEntity extends CrawlerAlien implements GeoEntity, SmartBrain
                             return event.setAndContinue(GigAnimationsDefault.RUNNING);
                         else return event.setAndContinue(GigAnimationsDefault.MOVING);
                     if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
-                        return event.setAndContinue(RawAnimation.begin().then("hurt", LoopType.PLAY_ONCE));
+                        return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
                     return event.setAndContinue(GigAnimationsDefault.IDLE);
                 }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
                         .triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack

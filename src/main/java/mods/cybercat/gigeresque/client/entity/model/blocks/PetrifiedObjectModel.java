@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.model.blocks;
 
-import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;

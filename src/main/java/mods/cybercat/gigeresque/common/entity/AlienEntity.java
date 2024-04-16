@@ -2,8 +2,8 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-import mod.azure.azurelib.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;

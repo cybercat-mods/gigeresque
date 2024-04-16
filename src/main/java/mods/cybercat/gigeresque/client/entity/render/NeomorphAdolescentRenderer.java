@@ -2,9 +2,8 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.bettercrawling.client.ClientEventHandlers;
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.client.entity.model.NeomorphAdolescentModel;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import net.fabricmc.api.EnvType;

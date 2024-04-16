@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;

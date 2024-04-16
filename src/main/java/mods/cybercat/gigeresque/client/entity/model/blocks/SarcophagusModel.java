@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.model.blocks;
 
-import mod.azure.azurelib.model.DefaultedBlockGeoModel;
+import mod.azure.azurelib.common.api.client.model.DefaultedBlockGeoModel;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
 import net.minecraft.client.renderer.RenderType;

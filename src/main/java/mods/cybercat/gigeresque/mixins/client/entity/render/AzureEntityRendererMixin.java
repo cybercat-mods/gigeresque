@@ -3,12 +3,12 @@ package mods.cybercat.gigeresque.mixins.client.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
+import mod.azure.azurelib.common.api.client.model.GeoModel;
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.api.client.renderer.layer.GeoRenderLayer;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.client.renderer.GeoRenderer;
+import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mod.azure.bettercrawling.entity.mob.IClimberEntity;
 import mod.azure.bettercrawling.entity.mob.Orientation;
 import mod.azure.bettercrawling.entity.mob.PathingTarget;
@@ -57,13 +57,13 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
             this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("HEAD"))
+    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/common/internal/common/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("HEAD"))
     private void doPreRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity)
             onPreRenderLiving(livingEntity, partialTick, poseStack);
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("TAIL"))
+    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/common/internal/common/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("TAIL"))
     private void doPostRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity) {
             onPostRenderLiving(livingEntity, partialTick, poseStack, bufferSource);

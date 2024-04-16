@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.item;
 
-import mod.azure.azurelib.items.AzureSpawnEgg;
+import mod.azure.azurelib.common.api.common.items.AzureSpawnEgg;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;

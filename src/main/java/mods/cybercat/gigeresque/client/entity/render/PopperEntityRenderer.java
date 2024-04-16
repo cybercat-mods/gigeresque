@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.PopperEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import net.fabricmc.api.EnvType;

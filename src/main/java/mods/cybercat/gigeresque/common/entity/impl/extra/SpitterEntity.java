@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
@@ -71,7 +71,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<SpitterEntity> {
+public class SpitterEntity extends CrawlerAlien implements SmartBrainOwner<SpitterEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int breakingCounter = 0;
@@ -90,7 +90,7 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
                     if (event.isMoving() && !this.isCrawling() && !isDead) {

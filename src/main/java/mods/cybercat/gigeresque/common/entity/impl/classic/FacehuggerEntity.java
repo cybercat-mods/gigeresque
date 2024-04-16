@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.Animation;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.BetterSpiderPathNavigator;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
@@ -79,7 +79,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
+public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<FacehuggerEntity> {
 
     public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -419,7 +419,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
      * ANIMATIONS
      */
     @Override
-    public void registerControllers(ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             if (this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
@@ -450,7 +450,7 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             if (event.getKeyframeData().getSound().matches("huggingSoundkey") && this.level().isClientSide)
                 this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT,
                         SoundSource.HOSTILE, 0.25F, 1.0F, true);
-        }).triggerableAnim("stun", RawAnimation.begin().then("stunned", LoopType.PLAY_ONCE)));
+        }).triggerableAnim("stun", RawAnimation.begin().then("stunned", Animation.LoopType.PLAY_ONCE)));
     }
 
     @Override
