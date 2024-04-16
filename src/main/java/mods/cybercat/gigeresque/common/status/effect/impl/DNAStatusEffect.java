@@ -2,9 +2,9 @@ package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffect;
@@ -38,25 +38,24 @@ public class DNAStatusEffect extends MobEffect {
     @Override
     public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
-        if (!(entity instanceof AlienEntity) && this == GigStatusEffects.DNA) entity.heal(0);
+        if (!entity.getType().is(GigTags.DNAIMMUNE) && this == GigStatusEffects.DNA) entity.heal(0);
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
-        if (!(entity instanceof AlienEntity)) if (randomPhase > 25) {
-            if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                GigEntityUtils.spawnMutant(entity);
-            } else if (entity instanceof Creeper) return;
-            else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-                GigEntityUtils.spawnMutant(entity);
-            }
-        } else {
-            if (entity instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                placeGoo(entity);
-            } else if (entity instanceof Creeper) return;
-            else if (!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(entity))) {
-                placeGoo(entity);
+        if (entity instanceof Creeper) return;
+        if (!entity.getType().is(GigTags.DNAIMMUNE)) {
+            if (randomPhase > 25) {
+                if ((!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(
+                        entity))) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
+                    GigEntityUtils.spawnMutant(entity);
+                }
+            } else {
+                if ((!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(
+                        entity))) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
+                    placeGoo(entity);
+                }
             }
         }
         super.removeAttributeModifiers(entity, attributes, amplifier);

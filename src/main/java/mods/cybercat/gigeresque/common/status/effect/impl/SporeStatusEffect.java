@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -41,23 +40,15 @@ public class SporeStatusEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
         var neoBurster = Entities.NEOBURSTER.create(entity.level());
-        if (!(entity instanceof AlienEntity) && entity.getType().is(GigTags.NEOHOST)) {
-            if (!(entity instanceof Player)) {
-                assert neoBurster != null;
-                neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-                spawnEffects(entity.level(), entity);
-                entity.level().addFreshEntity(neoBurster);
-                entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-                return;
-            }
-            if (entity instanceof Player playerEntity && !playerEntity.isSpectator() && !playerEntity.isCreative()) {
-                assert neoBurster != null;
-                neoBurster.moveTo(playerEntity.blockPosition(), playerEntity.getYRot(), playerEntity.getXRot());
-                spawnEffects(playerEntity.level(), playerEntity);
-                playerEntity.level().addFreshEntity(neoBurster);
-                entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-                return;
-            }
+        if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
+                GigTags.NEOHOST) && (!(entity instanceof Player) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator())))) {
+            assert neoBurster != null;
+            neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+            spawnEffects(entity.level(), entity);
+            entity.level().addFreshEntity(neoBurster);
+            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+            return;
+
         }
         super.removeAttributeModifiers(entity, attributes, amplifier);
     }

@@ -33,23 +33,23 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     public static void tick(Level world, BlockPos pos, BlockState state, SporeBlockEntity blockEntity) {
         if (blockEntity.level != null && (blockEntity.level.getGameTime() % 20L == 0L)) {
-                if (world.isClientSide()) {
-                    for (var k = 0; k < 4; ++k)
-                        world.addParticle(ParticleTypes.ASH, pos.getX() + (world.getRandom().nextDouble()),
-                                pos.getY() + 0.5D * (world.getRandom().nextDouble()),
-                                pos.getZ() + (world.getRandom().nextDouble()),
-                                (world.getRandom().nextDouble() - 0.5D) * 2.0D, -world.getRandom().nextDouble(),
-                                (world.getRandom().nextDouble() - 0.5D) * 2.0D);
-                }
-                if (!blockEntity.level.isClientSide)
-                    Objects.requireNonNull(blockEntity.getLevel()).getEntitiesOfClass(LivingEntity.class,
-                            new AABB(pos).inflate(3D, 3D, 3D)).forEach(e -> {
-                        if (e.getType().is(GigTags.NEOHOST) && !e.hasEffect(GigStatusEffects.SPORE)) {
-                            if (!(e instanceof Player)) blockEntity.particleCloud(e);
-                            if (e instanceof Player playerEntity && !playerEntity.isSpectator() && !playerEntity.isCreative())
-                                blockEntity.particleCloud(playerEntity);
+            if (world.isClientSide()) {
+                for (var k = 0; k < 4; ++k)
+                    world.addParticle(ParticleTypes.ASH, pos.getX() + (world.getRandom().nextDouble()),
+                            pos.getY() + 0.5D * (world.getRandom().nextDouble()),
+                            pos.getZ() + (world.getRandom().nextDouble()),
+                            (world.getRandom().nextDouble() - 0.5D) * 2.0D, -world.getRandom().nextDouble(),
+                            (world.getRandom().nextDouble() - 0.5D) * 2.0D);
+            }
+            if (!blockEntity.level.isClientSide)
+                Objects.requireNonNull(blockEntity.getLevel()).getEntitiesOfClass(LivingEntity.class,
+                        new AABB(pos).inflate(3D, 3D, 3D)).forEach(e -> {
+                    if (e.getType().is(GigTags.NEOHOST) && !e.hasEffect(GigStatusEffects.SPORE)) {
+                        if (!(e instanceof Player) || (e instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
+                            blockEntity.particleCloud(e);
                         }
-                    });
+                    }
+                });
 
         }
     }

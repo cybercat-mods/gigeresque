@@ -25,7 +25,8 @@ public record GigEntityUtils() {
     }
 
     public static boolean isTargetHostable(Entity target) {
-        return target.getType().is(GigTags.CLASSIC_HOSTS) || target.getType().is(GigTags.AQUATIC_HOSTS) || target.getType().is(GigTags.RUNNER_HOSTS);
+        return target.getType().is(GigTags.CLASSIC_HOSTS) || target.getType().is(
+                GigTags.AQUATIC_HOSTS) || target.getType().is(GigTags.RUNNER_HOSTS);
     }
 
     public static boolean isTargetSmallMutantHost(Entity target) {
@@ -41,38 +42,48 @@ public record GigEntityUtils() {
     }
 
     public static boolean convertToSpitter(LivingEntity target) {
-        return target.hasEffect(GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
+        return target.hasEffect(
+                GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
     }
 
     public static boolean faceHuggerTest(LivingEntity target) {
-        return !(target instanceof AlienEntity || target instanceof AmbientCreature) && !target.getType().is(GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
+        return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType().is(
+                GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
+                target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
     public static boolean entityTest(LivingEntity target, AlienEntity self) {
-        return !((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(target) || self.isVehicle() && target.isAlive());
+        return !((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
+                GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(
+                target) || self.isVehicle() && target.isAlive());
     }
 
     public static boolean removeTarget(LivingEntity target) {
-        return ((target instanceof AlienEntity || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) && !target.isAlive());
+        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
+                GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) && !target.isAlive());
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
-        return ((target instanceof AlienEntity || target.getType().is(GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
+        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
+                GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(
+                target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
     }
 
     public static boolean mainCheck(LivingEntity target) {
-        return GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggcheck(target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetcheck(target);
+        return GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
+                target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(target);
     }
 
     public static boolean passengerCheck(LivingEntity target) {
-        return target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(AlienEntity.class::isInstance);
+        return target.getVehicle() != null && target.getVehicle().getSelfAndPassengers().anyMatch(
+                AlienEntity.class::isInstance);
     }
 
-    public static boolean feetcheck(LivingEntity target) {
+    public static boolean feetCheck(LivingEntity target) {
         return target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS;
     }
 
-    public static boolean hostEggcheck(LivingEntity target) {
+    public static boolean hostEggCheck(LivingEntity target) {
         return ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing();
     }
 
@@ -80,10 +91,8 @@ public record GigEntityUtils() {
         var randomPhase2 = entity.getRandom().nextInt(0, 2);
         Entity summon;
         if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
-            if (randomPhase2 == 1)
-                summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
-            else
-                summon = Entities.MUTANT_POPPER.create(entity.level());
+            if (randomPhase2 == 1) summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
+            else summon = Entities.MUTANT_POPPER.create(entity.level());
             assert summon != null;
             summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
@@ -99,8 +108,10 @@ public record GigEntityUtils() {
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {
-        if (!world.isClientSide())
-            for (var i = 0; i < 2; i++)
-                ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(), entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02, 0.15000000596046448);
+        if (!world.isClientSide()) for (var i = 0; i < 2; i++)
+            ((ServerLevel) world).sendParticles(ParticleTypes.POOF, entity.getX() + 0.5, entity.getY(),
+                    entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
+                    entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
+                    0.15000000596046448);
     }
 }
