@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -109,6 +110,14 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
         headDistances.put(EntityType.CAMEL, (facehugger, host) -> new TransformData(0.0,
                 (host.getEyeHeight(host.getPose())) - host.getPassengersRidingOffset() - facehugger.getBbWidth() + 0.85,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.35, 0.36, calcStandardOffsetY(facehugger) + 0.85));
+    }
+
+    @Override
+    public void render(@NotNull FacehuggerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+        if (entity.isVehicle() || entity.isPassenger()) {
+            poseStack.translate(0, -0.2, 0);
+        }
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override
