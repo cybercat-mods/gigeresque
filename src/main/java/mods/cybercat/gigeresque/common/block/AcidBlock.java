@@ -32,6 +32,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
     private static final int MAX_THICKNESS = 4;
     public static final IntegerProperty THICKNESS = IntegerProperty.create("thickness", 0, MAX_THICKNESS);
@@ -196,7 +198,7 @@ public class AcidBlock extends FallingBlock implements SimpleWaterloggedBlock {
             if (!(livingEntity instanceof Player) || (livingEntity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
                 livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, this.getThickness(blockState)));
             }
-            if (!itemStack.equals(ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_RESISTANT_ITEMS)) {
+            if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_RESISTANT_ITEMS)) {
                 itemStack.setDamageValue(
                         itemStack.getDamageValue() + (level.getRandom().nextInt(2) * this.getThickness(blockState)));
             }
