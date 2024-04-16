@@ -81,12 +81,11 @@ public abstract class BlackFluid extends FlowingFluid {
     protected void randomTick(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull FluidState fluidState, RandomSource randomSource) {
         int i = randomSource.nextInt(50);
         if (i > 40) for (var j = 0; j < 10; ++j) {
-            if (!level.isLoaded(blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1)))
-                return;
+            blockPos = blockPos.offset(randomSource.nextInt(3) - 1, 1, randomSource.nextInt(3) - 1);
+            if (!level.isLoaded(blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1))) return;
             if (this.isSporeReplaceable(level, blockPos)) {
                 if (!this.hasSporeReplacements(level, blockPos)) continue;
-                if (!level.getBlockState(blockPos).is(GigBlocks.BLACK_FLUID))
-                    level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.defaultBlockState());
+                level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.defaultBlockState());
                 return;
             }
             if (!level.getBlockState(blockPos).blocksMotion()) return;
@@ -102,8 +101,8 @@ public abstract class BlackFluid extends FlowingFluid {
     }
 
     private boolean isSporeReplaceable(LevelReader levelReader, BlockPos blockPos) {
-        if (blockPos.getY() >= levelReader.getMinBuildHeight() && blockPos.getY() < levelReader.getMaxBuildHeight() && !levelReader.hasChunkAt(blockPos))
-            return false;
+        if (blockPos.getY() >= levelReader.getMinBuildHeight() && blockPos.getY() < levelReader.getMaxBuildHeight() && !levelReader.hasChunkAt(
+                blockPos)) return false;
         return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE);
     }
 
