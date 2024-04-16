@@ -73,9 +73,10 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
         areaEffectCloudEntity.setRadiusPerTick(
                 -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
-        if (!entity.hasEffect(GigStatusEffects.SPORE))
+        if (!entity.hasEffect(GigStatusEffects.SPORE)) {
             areaEffectCloudEntity.addEffect(
                     new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0));
+        }
         this.level.addFreshEntity(areaEffectCloudEntity);
     }
 }
