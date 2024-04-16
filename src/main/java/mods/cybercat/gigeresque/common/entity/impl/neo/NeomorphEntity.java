@@ -214,7 +214,7 @@ public class NeomorphEntity extends AlienEntity implements GeoEntity, SmartBrain
     public BrainActivityGroup<NeomorphEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new BreakBlocksTask<>(90), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(),
+                new BreakBlocksTask<>(90, true), new FirstApplicableBehaviour<NeomorphEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),

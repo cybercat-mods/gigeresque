@@ -256,7 +256,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Break blocks
-                new BreakBlocksTask<>(90),
+                new BreakBlocksTask<>(90, true),
                 // Do first
                 new FirstApplicableBehaviour<ClassicAlienEntity>(
                         // Targeting

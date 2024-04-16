@@ -209,7 +209,7 @@ public class SpitterEntity extends CrawlerAlien implements GeoEntity, SmartBrain
         return BrainActivityGroup.idleTasks(
                 // Kill Lights
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())),
-                new BreakBlocksTask<>(90),
+                new BreakBlocksTask<>(90, true),
                 // Do first
                 new FirstApplicableBehaviour<SpitterEntity>(
                         // Targeting

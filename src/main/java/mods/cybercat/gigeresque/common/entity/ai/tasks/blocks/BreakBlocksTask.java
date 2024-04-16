@@ -31,8 +31,11 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
     @Nullable
     protected LivingEntity target = null;
 
-    public BreakBlocksTask(int delayTicks) {
+    protected boolean useAcidBlood;
+
+    public BreakBlocksTask(int delayTicks, boolean useAcidBlood) {
         super(delayTicks);
+        this.useAcidBlood = useAcidBlood;
     }
 
     /**
@@ -90,7 +93,7 @@ public class BreakBlocksTask<E extends AlienEntity> extends DelayedBehaviour<E> 
                                 0.9f + entity.getRandom().nextFloat() * 0.15f, false);
                     }
                 } else if (!entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isVehicle() && !state.is(
-                        GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50))) {
+                        GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50)) && useAcidBlood) {
                     if (!entity.level().isClientSide) {
                         entity.generateAcidPool(testPos.above(), 0, 0);
                     }
