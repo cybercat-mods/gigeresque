@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.fluid;
 
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -103,7 +104,7 @@ public abstract class BlackFluid extends FlowingFluid {
     private boolean isSporeReplaceable(LevelReader levelReader, BlockPos blockPos) {
         if (blockPos.getY() >= levelReader.getMinBuildHeight() && blockPos.getY() < levelReader.getMaxBuildHeight() && !levelReader.hasChunkAt(
                 blockPos)) return false;
-        return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE);
+        return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE) && Gigeresque.config.enableDevEntites;
     }
 
     @Override
