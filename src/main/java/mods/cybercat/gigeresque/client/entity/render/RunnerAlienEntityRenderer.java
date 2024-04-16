@@ -5,13 +5,10 @@ import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.RunnerAlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.RunnerAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
-@Environment(EnvType.CLIENT)
 public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEntity> {
     public RunnerAlienEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new RunnerAlienEntityModel());

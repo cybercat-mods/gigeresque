@@ -3,11 +3,8 @@ package mods.cybercat.gigeresque.client.entity.render;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.MoonlightHorrorTempleBeastEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.extra.MoonlightHorrorTempleBeastEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-@Environment(EnvType.CLIENT)
 public class MoonlightHorrorTempleBeastEntityRenderer extends GeoEntityRenderer<MoonlightHorrorTempleBeastEntity> {
     public MoonlightHorrorTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new MoonlightHorrorTempleBeastEntityModel());

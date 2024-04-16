@@ -7,8 +7,6 @@ import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-@Environment(EnvType.CLIENT)
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
     private final HashMap<EntityType<?>, TransformDataGenerator> headDistances = new HashMap<>();
 
@@ -27,16 +24,20 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
         super(context, new FacehuggerEntityModel());
         this.shadowRadius = 0.2f;
         headDistances.put(EntityType.SHEEP, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.1, 0.385, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.COW, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.PIG, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.WOLF, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.2, 0.6, calcStandardOffsetY(facehugger) + 0.95));
         headDistances.put(EntityType.VILLAGER,
                 (facehugger, host) -> new TransformData(0.0, 0.5, 0.0, 0.36, calcStandardOffsetY(facehugger)));
@@ -55,58 +56,76 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
         headDistances.put(EntityType.PLAYER,
                 (facehugger, host) -> new TransformData(0.0, 0.25, 0.0, 0.2, calcStandardOffsetY(facehugger) + 0.4));
         headDistances.put(EntityType.DONKEY, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.25, 0.36, calcStandardOffsetY(facehugger) + 0.98));
         headDistances.put(EntityType.FOX, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.45,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.45,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.0, 0.36, calcStandardOffsetY(facehugger) + 0.88));
         headDistances.put(EntityType.GOAT, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.3,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.3,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.0, 0.36, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.HOGLIN, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() - 0.1,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() - 0.1,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.25, 0.36, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.HORSE, (facehugger, host) -> new TransformData(-0.05,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.7,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.7,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.15, 0.36, calcStandardOffsetY(facehugger) + 0.98));
         headDistances.put(EntityType.MOOSHROOM, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.LLAMA, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.6,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.6,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.3, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.TRADER_LLAMA, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.6,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.6,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.3, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.MULE, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.49,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.49,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.2, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.OCELOT, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.5,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.5,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.PANDA, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.2,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.2,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.1, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.TURTLE, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.45, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.PIGLIN, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.45, 0.41, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.PIGLIN_BRUTE, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.4,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.4,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.45, 0.3, calcStandardOffsetY(facehugger) + 0.85));
         headDistances.put(EntityType.RAVAGER, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.3,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.3,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.5, -0.3, calcStandardOffsetY(facehugger) + 0.25));
         headDistances.put(EntityType.SNIFFER, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.3,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.3,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.5, 0.5, calcStandardOffsetY(facehugger) + 0.75));
         headDistances.put(EntityType.POLAR_BEAR, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.3,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.3,
                 host.getBbWidth() - (facehugger.getBbHeight()) + 0.15, 0.41, calcStandardOffsetY(facehugger) + 0.8));
         headDistances.put(EntityType.CAMEL, (facehugger, host) -> new TransformData(0.0,
-                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + 0.85,
+                (host.getEyeHeight(host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + 0.85,
                 host.getBbWidth() - (facehugger.getBbHeight()) - 0.35, 0.36, calcStandardOffsetY(facehugger) + 0.85));
     }
 
@@ -161,7 +180,8 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
     private TransformData getTransformData(FacehuggerEntity facehugger, Entity host) {
         return headDistances.computeIfAbsent(host.getType(),
                 entityType -> (facehugger1, host1) -> new TransformData(0.0, 0.0, 0.0, (host.getEyeHeight(
-                        host.getPose())) - this.getPassengersRidingOffset(host) - facehugger.getBbWidth() + host.getBbWidth(),
+                        host.getPose())) - this.getPassengersRidingOffset(
+                        host) - facehugger.getBbWidth() + host.getBbWidth(),
                         calcStandardOffsetY(facehugger))).invoke(facehugger, host);
     }
 

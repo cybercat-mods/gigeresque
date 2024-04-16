@@ -1,11 +1,8 @@
 package mods.cybercat.gigeresque.client.entity.texture;
 
 import mods.cybercat.gigeresque.Constants;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
-@Environment(EnvType.CLIENT)
 public record EntityTextures() {
     public static final ResourceLocation EGGMORPH_OVERLAY = Constants.modResource("textures/misc/eggmorph_overlay.png");
     public static final ResourceLocation BLACK_FLUID_TEXTURE = Constants.modResource("textures/misc/black_fluid_overlay.png");

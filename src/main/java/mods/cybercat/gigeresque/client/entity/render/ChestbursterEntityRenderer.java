@@ -5,13 +5,10 @@ import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.ChestbursterEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.BusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
-@Environment(EnvType.CLIENT)
 public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEntity> {
     public ChestbursterEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new ChestbursterEntityModel());
