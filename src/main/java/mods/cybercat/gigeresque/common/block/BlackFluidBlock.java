@@ -138,13 +138,15 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, RandomSource random) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, RandomSource random) {
         var currentThickness = getThickness(state);
-        if (random.nextInt(8 - currentThickness) == 0 && currentThickness >= 1)
-            setThickness(world, pos, state, MathUtil.clamp(random.nextInt(2) + 1, 0, currentThickness));
-        if (this.age > 600) world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-        super.tick(state, world, pos, random);
-        scheduleTickIfNotScheduled(world, pos);
+        if (level.getBlockState(pos.above()).is(GigBlocks.BLACK_FLUID_BLOCK) && currentThickness < 4)
+            this.setThickness(level, pos, state, currentThickness + 1);
+        if (random.nextInt(8 - currentThickness) == 0 && currentThickness < 4)
+            setThickness(level, pos, state, Math.min(4, level.getRandom().nextInt(3) + 1));
+        if (this.age > 600) level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+        super.tick(state, level, pos, random);
+        scheduleTickIfNotScheduled(level, pos);
     }
 
     @Override
