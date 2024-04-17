@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -41,14 +42,12 @@ public class SporeStatusEffect extends MobEffect {
     public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
         var neoBurster = Entities.NEOBURSTER.create(entity.level());
         if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
-                GigTags.NEOHOST) && (!(entity instanceof Player) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator())))) {
+                GigTags.NEOHOST) && (Constants.isNotCreativeSpecPlayer.test(entity))) {
             assert neoBurster != null;
             neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(neoBurster);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
-            return;
-
         }
         super.removeAttributeModifiers(entity, attributes, amplifier);
     }

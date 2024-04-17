@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -13,8 +14,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,16 +43,16 @@ public class DNAStatusEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
-        if (entity instanceof Creeper) return;
+        if (Constants.isCreeper.test(entity)) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {
             if (randomPhase > 25) {
-                if ((!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(
-                        entity))) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
+                if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(
+                        entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     GigEntityUtils.spawnMutant(entity);
                 }
             } else {
-                if ((!(entity instanceof Player) && !(GigEntityUtils.isTargetDNAImmune(
-                        entity))) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
+                if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(
+                        entity))) || Constants.isNotCreativeSpecPlayer.test(entity)) {
                     placeGoo(entity);
                 }
             }
