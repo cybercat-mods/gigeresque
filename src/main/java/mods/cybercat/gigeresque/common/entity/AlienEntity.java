@@ -5,7 +5,6 @@ import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.AcidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
@@ -43,12 +42,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.material.Fluids;
@@ -357,8 +351,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         super.tick();
         if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
         if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
-        if (this.level().getBlockState(this.blockPosition()).is(GigBlocks.ACID_BLOCK))
-            this.level().removeBlock(this.blockPosition(), false);
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
         }
@@ -431,15 +423,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var posState = level().getBlockState(pos.offset(xOffset, 0, zOffset));
-        var newState = GigBlocks.ACID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS,
-                Math.min(4, level().getRandom().nextInt(3) + 1));
-
-        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-
-        if (!(posState.getBlock() instanceof AirBlock) && !(posState.getBlock() instanceof LiquidBlock && !(posState.is(
-                GigTags.ACID_RESISTANT))) && !(posState.getBlock() instanceof TorchBlock)) return;
-        level().setBlockAndUpdate(pos.offset(xOffset, 0, zOffset), newState);
+        var acidEntity = Entities.ACID.create(this.level());
+        assert acidEntity != null;
+        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
+        this.level().addFreshEntity(acidEntity);
     }
 
     @Override
@@ -455,10 +442,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             if (getAcidDiameter() == 1) generateAcidPool(this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
-                for (var x = -radius; x <= radius; x++) {
-                    for (var z = -radius; z <= radius; z++)
-                        if (source != damageSources().genericKill() || source != damageSources().generic())
-                            generateAcidPool(this.blockPosition(), x, z);
+                for (int i = 0; i < getAcidDiameter(); i++) {
+                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                        generateAcidPool(this.blockPosition(), x, z);
+                    }
                 }
             }
         }
@@ -510,10 +499,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
-                for (var x = -radius; x <= radius; x++) {
-                    for (var z = -radius; z <= radius; z++)
-                        if (source != damageSources().genericKill() || source != damageSources().generic())
-                            this.generateAcidPool(this.blockPosition(), x, z);
+                for (int i = 0; i < getAcidDiameter(); i++) {
+                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                        generateAcidPool(this.blockPosition(), x, z);
+                    }
                 }
             }
         }

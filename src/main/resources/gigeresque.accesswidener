@@ -10,3 +10,4 @@ accessible field net/minecraft/world/entity/Entity xRot F
 accessible field net/minecraft/world/entity/Entity yRot F
 accessible field net/minecraft/world/entity/WalkAnimationState speedOld F
 accessible method net/minecraft/world/entity/ai/village/poi/PoiTypes getBlockStates (Lnet/minecraft/world/level/block/Block;)Ljava/util/Set;
+accessible method net/minecraft/client/renderer/entity/EntityRenderers register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V

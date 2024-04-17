@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.helper;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
@@ -69,8 +68,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             if (entity.dampensVibrations()) return false;
         }
         if (context.affectedState() != null)
-            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(
-                    GigBlocks.ACID_BLOCK);
+            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
         return true;
     }
 
@@ -88,7 +86,8 @@ public class AzureVibrationUser implements VibrationSystem.User {
         if (this.mob.isVehicle()) return;
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;
-            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
+            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1)
+                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
             if (this.mob.wakeupCounter == 2) {
                 if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
                     this.mob.setPassedOutStatus(false);
