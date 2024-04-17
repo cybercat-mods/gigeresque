@@ -22,8 +22,6 @@ public record GigBlocks() implements GigeresqueInitializer {
 
     public static final SporeBlock SPORE_BLOCK = new SporeBlock();
     public static final PetrifiedObjectBlock PETRIFIED_OBJECT_BLOCK = new PetrifiedObjectBlock();
-    public static final BlackFluidBlock BLACK_FLUID_BLOCK = new BlackFluidBlock(
-            FabricBlockSettings.create().nonOpaque().noLootTable());
     public static final AlienSarcophagusInvisBlock ALIEN_STORAGE_BLOCK_INVIS = new AlienSarcophagusInvisBlock();
 
     /*
@@ -172,7 +170,6 @@ public record GigBlocks() implements GigeresqueInitializer {
         Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"),
                 new GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
 
-        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("black_fuild_block"), BLACK_FLUID_BLOCK);
         registerItemBlock("petrified_object", PETRIFIED_OBJECT_BLOCK);
         registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
         registerItemBlock("alien_storage_block1_hugger", ALIEN_STORAGE_BLOCK_1_HUGGER);

@@ -1,21 +1,18 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.AcidBlock;
-import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
@@ -163,39 +160,33 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 
-        if (!this.level().isClientSide && source != damageSources().genericKill()) {
-            var acidThickness = this.getHealth() < (this.getMaxHealth() / 2) ? 1 : 0;
-
-            if (this.getHealth() < (this.getMaxHealth() / 4)) acidThickness += 1;
-            if (amount >= 5) acidThickness += 1;
-            if (amount > (this.getMaxHealth() / 10)) acidThickness += 1;
-            if (acidThickness == 0) return super.hurt(source, amount);
-
-            var newState = GigBlocks.BLACK_FLUID_BLOCK.defaultBlockState().setValue(AcidBlock.THICKNESS, acidThickness);
-
-            if (this.getFeetBlockState().getBlock() == Blocks.WATER)
-                newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-            if (!this.getFeetBlockState().is(GigTags.ACID_RESISTANT))
-                level().setBlockAndUpdate(this.blockPosition(), newState);
+        if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
+            if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
+            else {
+                var radius = (getAcidDiameter() - 1) / 2;
+                for (int i = 0; i < getAcidDiameter(); i++) {
+                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                        generateAcidPool(this.blockPosition(), x, z);
+                    }
+                }
+            }
         }
         return super.hurt(source, amount);
     }
 
     @Override
     public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var posState = level().getBlockState(pos.offset(xOffset, 0, zOffset));
-        var newState = GigBlocks.BLACK_FLUID.defaultBlockState().setValue(BlackFluidBlock.THICKNESS,
-                Math.min(4, level().getRandom().nextInt(3) + 1));
-
-        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-
-        if (!(posState.getBlock() instanceof LiquidBlock)) return;
-        level().setBlockAndUpdate(pos.offset(xOffset, 0, zOffset), newState);
+        var acidEntity = Entities.GOO.create(this.level());
+        assert acidEntity != null;
+        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
+        this.level().addFreshEntity(acidEntity);
     }
 
     @Override
     protected int getAcidDiameter() {
-        return 2;
+        return 1;
     }
 
 }

@@ -13,6 +13,7 @@ public record GigEntityRenderers() implements GigeresqueInitializer {
     @Override
     public void initialize() {
         EntityRenderers.register(Entities.ACID, AcidEntityRender::new);
+        EntityRenderers.register(Entities.GOO, AcidEntityRender::new);
         EntityRenderers.register(Entities.ALIEN, AlienEntityRenderer::new);
         EntityRenderers.register(Entities.AQUATIC_ALIEN, AquaticAlienEntityRenderer::new);
         EntityRenderers.register(Entities.AQUATIC_CHESTBURSTER, AquaticChestbursterEntityRenderer::new);

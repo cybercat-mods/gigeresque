@@ -27,5 +27,6 @@ public record EntityIdentifiers() {
     public static final ResourceLocation NEOMORPH = Constants.modResource("neomorph");
 
     public static final ResourceLocation ACID = Constants.modResource("acid");
+    public static final ResourceLocation GOO = Constants.modResource("goo");
 
 }
