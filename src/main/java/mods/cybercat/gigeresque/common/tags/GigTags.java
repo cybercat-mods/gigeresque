@@ -56,5 +56,5 @@ public record GigTags() {
     public static final TagKey<GameEvent> ALIEN_CAN_LISTEN = TagKey.create(Registries.GAME_EVENT, Constants.modResource("alien_can_listen"));
 
     /* ITEMS */
-    public static final TagKey<Item> ACID_RESISTANT_ITEMS = TagKey.create(Registries.ITEM, Constants.modResource("acidresistant"));
+    public static final TagKey<Item> ACID_IMMUNE_ITEMS = TagKey.create(Registries.ITEM, Constants.modResource("acidimmuneitems"));
 }
