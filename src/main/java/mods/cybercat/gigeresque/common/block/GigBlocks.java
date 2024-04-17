@@ -20,7 +20,6 @@ public record GigBlocks() implements GigeresqueInitializer {
 
     public static final SporeBlock SPORE_BLOCK = new SporeBlock();
     public static final PetrifiedObjectBlock PETRIFIED_OBJECT_BLOCK = new PetrifiedObjectBlock();
-    public static final BlackFluidBlock BLACK_FLUID_BLOCK = new BlackFluidBlock(FabricBlockSettings.of().nonOpaque().noLootTable());
     public static final AlienSarcophagusInvisBlock ALIEN_STORAGE_BLOCK_INVIS = new AlienSarcophagusInvisBlock();
 
     /*
@@ -33,15 +32,30 @@ public record GigBlocks() implements GigeresqueInitializer {
     public static final AlienSarcophagusSporeBlock ALIEN_STORAGE_BLOCK_1_SPORE = new AlienSarcophagusSporeBlock();
     public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
     public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock();
-    public static final NestResinBlock NEST_RESIN = new NestResinBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
-    public static final Block NEST_RESIN_BLOCK = new GigBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
-    public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
-    public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
-    public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
-    public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-    public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-    public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
-    public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness, Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+    public static final NestResinBlock NEST_RESIN = new NestResinBlock(
+            FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
+    public static final Block NEST_RESIN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
+    public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(
+            FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
+    public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(
+            FabricBlockSettings.of().sounds(SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(
+                    5.0f, 8.0f));
+    public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
+    public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+    public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+    public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+    public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(
+            FabricBlockSettings.of().requiresTool().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block MURAL_ALIEN_BLOCK_1 = new MuralBlock();
     public static final Block MURAL_ALIEN_BLOCK_2 = new MuralBlock();
     public static final Block MURAL_ALIEN_BLOCK_3 = new MuralBlock();
@@ -69,16 +83,21 @@ public record GigBlocks() implements GigeresqueInitializer {
     /*
      * PILLARS
      */
-    public static final RotatedPillarBlock RESINOUS_ALIEN_PILLAR = new RotatedPillarBlock(BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
-    public static final RotatedPillarBlock RIBBED_ALIEN_PILLAR = new RotatedPillarBlock(BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
+    public static final RotatedPillarBlock RESINOUS_ALIEN_PILLAR = new RotatedPillarBlock(
+            BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
+    public static final RotatedPillarBlock RIBBED_ALIEN_PILLAR = new RotatedPillarBlock(
+            BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
     public static final CustomStairsBlock RIBBED_ALIEN_STAIRS = new CustomStairsBlock(RIBBED_ALIEN_PILLAR);
-    public static final RotatedPillarBlock SMOOTH_ALIEN_PILLAR = new RotatedPillarBlock(BlockBehaviour.Properties.copy(SINOUS_ALIEN_BLOCK));
+    public static final RotatedPillarBlock SMOOTH_ALIEN_PILLAR = new RotatedPillarBlock(
+            BlockBehaviour.Properties.copy(SINOUS_ALIEN_BLOCK));
     public static final CustomStairsBlock SMOOTH_ALIEN_STAIRS = new CustomStairsBlock(SMOOTH_ALIEN_PILLAR);
     /*
      * SLABS
      */
-    public static final SlabBlock ORGANIC_ALIEN_SLAB = new SlabBlock(BlockBehaviour.Properties.copy(ORGANIC_ALIEN_BLOCK));
-    public static final SlabBlock RESINOUS_ALIEN_SLAB = new SlabBlock(BlockBehaviour.Properties.copy(RESINOUS_ALIEN_BLOCK));
+    public static final SlabBlock ORGANIC_ALIEN_SLAB = new SlabBlock(
+            BlockBehaviour.Properties.copy(ORGANIC_ALIEN_BLOCK));
+    public static final SlabBlock RESINOUS_ALIEN_SLAB = new SlabBlock(
+            BlockBehaviour.Properties.copy(RESINOUS_ALIEN_BLOCK));
     public static final SlabBlock RIBBED_ALIEN_SLAB = new SlabBlock(BlockBehaviour.Properties.copy(RIBBED_ALIEN_BLOCK));
     public static final SlabBlock ROUGH_ALIEN_SLAB = new SlabBlock(BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
     public static final SlabBlock SINOUS_ALIEN_SLAB = new SlabBlock(BlockBehaviour.Properties.copy(SINOUS_ALIEN_BLOCK));
@@ -92,15 +111,21 @@ public record GigBlocks() implements GigeresqueInitializer {
     /*
      * WALLS
      */
-    public static final WallBlock ORGANIC_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(ORGANIC_ALIEN_BLOCK));
-    public static final WallBlock RESINOUS_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(RESINOUS_ALIEN_BLOCK));
+    public static final WallBlock ORGANIC_ALIEN_WALL = new WallBlock(
+            BlockBehaviour.Properties.copy(ORGANIC_ALIEN_BLOCK));
+    public static final WallBlock RESINOUS_ALIEN_WALL = new WallBlock(
+            BlockBehaviour.Properties.copy(RESINOUS_ALIEN_BLOCK));
     public static final WallBlock RIBBED_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(RIBBED_ALIEN_BLOCK));
     public static final WallBlock ROUGH_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(ROUGH_ALIEN_BLOCK));
     public static final WallBlock SINOUS_ALIEN_WALL = new WallBlock(BlockBehaviour.Properties.copy(SINOUS_ALIEN_BLOCK));
     /*
      * FLUID BLOCKS
      */
-    private static Properties replaceCheck = Gigeresque.config.blackfuildNonrepacle ? BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY) : BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY);
+    private static Properties replaceCheck = Gigeresque.config.blackfuildNonrepacle ? BlockBehaviour.Properties.of().mapColor(
+            MapColor.WATER).noCollission().strength(100.0F).noLootTable().liquid().pushReaction(
+            PushReaction.DESTROY) : BlockBehaviour.Properties.of().mapColor(
+            MapColor.WATER).replaceable().noCollission().strength(100.0F).noLootTable().liquid().pushReaction(
+            PushReaction.DESTROY);
     public static final LiquidBlock BLACK_FLUID = new LiquidBlock(GigFluids.BLACK_FLUID_STILL, replaceCheck) {
     };
     private static GigBlocks instance;
@@ -122,8 +147,10 @@ public record GigBlocks() implements GigeresqueInitializer {
     @Override
     public void initialize() {
         Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("black_fluid"), BLACK_FLUID);
-        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis"), ALIEN_STORAGE_BLOCK_INVIS);
-        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis2"), ALIEN_STORAGE_BLOCK_INVIS2);
+        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis"),
+                ALIEN_STORAGE_BLOCK_INVIS);
+        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("alien_storage_invis2"),
+                ALIEN_STORAGE_BLOCK_INVIS2);
 
         registerItemBlock("nest_resin", NEST_RESIN);
         registerItemBlock("nest_resin_block", NEST_RESIN_BLOCK);
@@ -132,9 +159,9 @@ public record GigBlocks() implements GigeresqueInitializer {
         registerItemBlock("nest_resin_web_cross", NEST_RESIN_WEB_CROSS);
 
         Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("neomorph_spore_pods"), SPORE_BLOCK);
-        Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"), new GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
+        Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"),
+                new GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
 
-        Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("black_fuild_block"), BLACK_FLUID_BLOCK);
         registerItemBlock("petrified_object", PETRIFIED_OBJECT_BLOCK);
         registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);
         registerItemBlock("alien_storage_block1_hugger", ALIEN_STORAGE_BLOCK_1_HUGGER);

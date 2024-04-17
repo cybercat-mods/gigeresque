@@ -69,6 +69,8 @@ public record Entities() implements GigeresqueInitializer {
             EntityIdentifiers.MOONLIGHTHORRORTEMPLEBEAST.getPath(), MoonlightHorrorTempleBeastEntity::new, MobCategory.MONSTER, 2.1f, 4.95f);
     public static final EntityType<? extends AcidEntity> ACID = registerAlienType(EntityIdentifiers.ACID.getPath(),
             AcidEntity::new, MobCategory.MISC, 0.8f, 0.05f);
+    public static final EntityType<? extends GooEntity> GOO = registerAlienType(EntityIdentifiers.GOO.getPath(),
+            GooEntity::new, MobCategory.MISC, 0.8f, 0.05f);
     private static Entities instance;
 
     public static synchronized Entities getInstance() {

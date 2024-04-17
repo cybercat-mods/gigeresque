@@ -12,6 +12,7 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.BlackFluidBlock;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AttackExplodeTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
@@ -20,8 +21,10 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +33,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -166,20 +170,43 @@ public class PopperEntity extends AlienEntity implements GeoEntity, SmartBrainOw
     }
 
     @Override
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (!this.level().isClientSide) {
+            var attacker = source.getEntity();
+            if (source.getEntity() != null && attacker instanceof LivingEntity living)
+                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
+        }
+
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
+            return super.hurt(source, amount);
+
+        if (!this.level().isClientSide && source != damageSources().genericKill()) {
+            if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
+            else {
+                var radius = (getAcidDiameter() - 1) / 2;
+                for (int i = 0; i < getAcidDiameter(); i++) {
+                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                        generateAcidPool(this.blockPosition(), x, z);
+                    }
+                }
+            }
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
     public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var posState = level().getBlockState(pos.offset(xOffset, 0, zOffset));
-        var newState = GigBlocks.BLACK_FLUID.defaultBlockState().setValue(BlackFluidBlock.THICKNESS,
-                Math.min(4, level().getRandom().nextInt(3) + 1));
-
-        if (posState.getBlock() == Blocks.WATER) newState = newState.setValue(BlockStateProperties.WATERLOGGED, true);
-
-        if (!(posState.getBlock() instanceof LiquidBlock)) return;
-        level().setBlockAndUpdate(pos.offset(xOffset, 0, zOffset), newState);
+        var acidEntity = Entities.GOO.create(this.level());
+        assert acidEntity != null;
+        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
+        this.level().addFreshEntity(acidEntity);
     }
 
     @Override
     protected int getAcidDiameter() {
-        return 2;
+        return 1;
     }
 
 }
