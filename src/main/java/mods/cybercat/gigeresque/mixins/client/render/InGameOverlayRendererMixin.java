@@ -2,9 +2,11 @@ package mods.cybercat.gigeresque.mixins.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +36,13 @@ public class InGameOverlayRendererMixin {
             var fluidState = client.player.level().getFluidState(blockPos);
 
             if (fluidState.createLegacyBlock().getBlock() == GigBlocks.BLACK_FLUID)
-                renderBlackFluidOverlay(client, matrices);
+                renderBlackFluidOverlay(client, matrices, 1);
+
+            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(GigStatusEffects.DNA)) {
+                float dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
+                        GigStatusEffects.DNA).getDuration()) / Gigeresque.config.getgooEffectTickTimer();
+                renderBlackFluidOverlay(client, matrices, 0 + dnaDuration);
+            }
 
             if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
                 float eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
@@ -43,7 +51,7 @@ public class InGameOverlayRendererMixin {
         }
     }
 
-    private static void renderBlackFluidOverlay(Minecraft client, PoseStack matrices) {
+    private static void renderBlackFluidOverlay(Minecraft client, PoseStack matrices, float progress) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
@@ -51,7 +59,7 @@ public class InGameOverlayRendererMixin {
         var f = client.player.getLightLevelDependentMagicValue();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(f, f, f, 1.0F);
+        RenderSystem.setShaderColor(f, f, f, progress);
         var m = -client.player.getYRot() / 64.0F;
         var n = client.player.getXRot() / 64.0F;
         Matrix4f matrix4f = matrices.last().pose();
