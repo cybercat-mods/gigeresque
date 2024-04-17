@@ -6,6 +6,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -15,7 +16,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,10 +44,10 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
             if (!blockEntity.level.isClientSide)
                 Objects.requireNonNull(blockEntity.getLevel()).getEntitiesOfClass(LivingEntity.class,
                         new AABB(pos).inflate(3D, 3D, 3D)).forEach(e -> {
-                    if (e.getType().is(GigTags.NEOHOST) && !e.hasEffect(GigStatusEffects.SPORE)) {
-                        if (!(e instanceof Player) || (e instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()))) {
-                            blockEntity.particleCloud(e);
-                        }
+                    if (e.getType().is(GigTags.NEOHOST) && !e.hasEffect(
+                            GigStatusEffects.SPORE) && (Constants.notPlayer.test(
+                            e) || Constants.isNotCreativeSpecPlayer.test(e))) {
+                        blockEntity.particleCloud(e);
                     }
                 });
 

@@ -561,7 +561,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (list2.anyMatch(NEST)) return false;
         if (livingEntity.getVehicle() != null && livingEntity.getVehicle().getSelfAndPassengers().anyMatch(
                 AlienEntity.class::isInstance)) return false;
-        if (livingEntity instanceof AlienEntity) return false;
+        if (livingEntity.getType().is(GigTags.GIG_ALIENS)) return false;
         if (this.isAggressive()) return false;
         return this.level().getBlockState(this.blockPosition().below()).isSolid();
     }

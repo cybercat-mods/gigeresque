@@ -20,8 +20,8 @@ public record GigFluids() implements GigeresqueInitializer {
         return instance;
     }
 
-    private <T extends Fluid> T registerFluid(String path, T fluid) {
-        return Registry.register(BuiltInRegistries.FLUID, new ResourceLocation(Gigeresque.MOD_ID, path), fluid);
+    private <T extends Fluid> void registerFluid(String path, T fluid) {
+        Registry.register(BuiltInRegistries.FLUID, new ResourceLocation(Gigeresque.MOD_ID, path), fluid);
     }
 
     @Override

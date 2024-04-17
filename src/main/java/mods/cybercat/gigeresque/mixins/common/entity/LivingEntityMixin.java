@@ -4,10 +4,8 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
@@ -33,7 +31,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,6 +39,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Objects;
 
 /**
  * @author Boston Vanseghi
@@ -95,9 +94,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if ((this.getVehicle() instanceof AlienEntity) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
-            callbackInfo.setReturnValue(false);
-        if ((this.getVehicle() instanceof ClassicAlienEntity) && source == damageSources().inWall())
+        if ((Objects.requireNonNull(this.getVehicle()).getType().is(
+                GigTags.GIG_ALIENS)) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
             callbackInfo.setReturnValue(false);
         if (amount >= 2 && this.getFirstPassenger() != null && this.getPassengers().stream().anyMatch(
                 FacehuggerEntity.class::isInstance)) {
@@ -161,9 +159,9 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
     private void handleBlackGooLogic(Entity entity) {
         if (!(entity instanceof LivingEntity livingEntity)) return;
         if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity)) return;
-        if (Constants.notPlayer.test(livingEntity) && !(livingEntity instanceof Creeper))
+        if (Constants.notPlayer.test(livingEntity) && !Constants.isCreeper.test(this))
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
-        if (livingEntity instanceof Creeper && Constants.notPlayer.test(livingEntity))
+        if (Constants.isCreeper.test(this) && Constants.notPlayer.test(livingEntity))
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 60000, 0));
         if (Constants.isNotCreativeSpecPlayer.test(livingEntity))
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));

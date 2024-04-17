@@ -61,8 +61,8 @@ public class SurgeryKitItem extends Item {
                 playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
                 stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
             }
-            if (entity.level().isClientSide)
-                entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f, 1.0f, true);
+            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING,
+                    SoundSource.NEUTRAL, 2.0f, 1.0f);
             entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
         }
     }

@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -11,7 +12,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public class SporeStatusEffect extends MobEffect {
     public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         var neoBurster = Entities.NEOBURSTER.create(entity.level());
         if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
-                GigTags.NEOHOST) && (!(entity instanceof Player) || (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator())))) {
+                GigTags.NEOHOST) && (Constants.isNotCreativeSpecPlayer.test(entity))) {
             assert neoBurster != null;
             neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
             spawnEffects(entity.level(), entity);
