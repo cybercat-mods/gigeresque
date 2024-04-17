@@ -40,8 +40,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Objects;
-
 /**
  * @author Boston Vanseghi
  */
@@ -94,8 +92,8 @@ public abstract class LivingEntityMixin extends Entity implements Host, Eggmorph
 
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if ((Objects.requireNonNull(this.getVehicle()).getType().is(
-                GigTags.GIG_ALIENS)) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
+        if (this.getVehicle() != null && this.getVehicle().getType().is(
+                GigTags.GIG_ALIENS) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
             callbackInfo.setReturnValue(false);
         if (amount >= 2 && this.getFirstPassenger() != null && this.getPassengers().stream().anyMatch(
                 FacehuggerEntity.class::isInstance)) {
