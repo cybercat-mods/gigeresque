@@ -42,7 +42,7 @@ import java.util.List;
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
-@Mixin(value = GeoEntityRenderer.class, remap = false)
+@Mixin(value = GeoEntityRenderer.class)
 public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
 
     @Shadow
@@ -51,19 +51,19 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
     @Shadow
     public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
         if (this.getAnimatable() instanceof Mob)
             this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("HEAD"))
+    @Inject(method = "actuallyRender*", at = @At("HEAD"))
     private void doPreRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity)
             onPreRenderLiving(livingEntity, partialTick, poseStack);
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("TAIL"))
+    @Inject(method = "actuallyRender*", at = @At("TAIL"))
     private void doPostRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity) {
             onPostRenderLiving(livingEntity, partialTick, poseStack, bufferSource);
@@ -123,8 +123,8 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
                         LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
                                 (new AABB(movementTarget.x() - 0.25, movementTarget.y() - 0.25,
                                         movementTarget.z() - 0.25, movementTarget.x() + 0.25, movementTarget.y() + 0.25,
-                                        movementTarget.z() + 0.25)).move(-rx - x, -ry - y,
-                                        -rz - z), 0.0F, 1.0F, 1.0F, 1.0F);
+                                        movementTarget.z() + 0.25)).move(-rx - x, -ry - y, -rz - z), 0.0F, 1.0F, 1.0F,
+                                1.0F);
                     }
 
                     List<PathingTarget> pathingTargets = climber.getTrackedPathingTargets();
@@ -138,8 +138,7 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
                                     (new AABB(pos)).move(-rx - x, -ry - y, -rz - z), 1.0F,
                                     (float) i / (float) (pathingTargets.size() - 1), 0.0F, 0.15F);
                             matrixStack.pushPose();
-                            matrixStack.translate(pos.getX() + 0.5 - rx - x,
-                                    pos.getY() + 0.5 - ry - y,
+                            matrixStack.translate(pos.getX() + 0.5 - rx - x, pos.getY() + 0.5 - ry - y,
                                     pos.getZ() + 0.5 - rz - z);
                             matrixStack.mulPose(pathingTarget.side().getOpposite().getRotation());
                             LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
