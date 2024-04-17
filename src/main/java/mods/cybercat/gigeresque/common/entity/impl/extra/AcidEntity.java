@@ -106,7 +106,7 @@ public class AcidEntity extends Entity {
     private void damageLivingEntities(LivingEntity livingEntity, RandomSource randomSource) {
         if (livingEntity.hasEffect(GigStatusEffects.ACID) || livingEntity.getType().is(GigTags.ACID_RESISTANT_ENTITY))
             return;
-        if (Constants.notPlayer.test(livingEntity) || Constants.isPlayer.test(livingEntity)) {
+        if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
                     new MobEffectInstance(GigStatusEffects.ACID, 60, randomSource.nextIntBetweenInclusive(0, 4)));
         }

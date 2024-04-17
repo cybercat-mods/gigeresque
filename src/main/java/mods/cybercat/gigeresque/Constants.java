@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Predicate;
@@ -13,8 +13,9 @@ public record Constants() {
     public static final int TPM = TPS * 60; // Ticks per minute
     public static final int TPD = TPM * 20; // Ticks per day
 
-    public static Predicate<LivingEntity> notPlayer = entity -> !(entity instanceof Player);
-    public static Predicate<LivingEntity> isPlayer = entity -> (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()));
+    public static Predicate<Entity> notPlayer = entity -> !(entity instanceof Player);
+    public static Predicate<Entity> isNotCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()));
+    public static Predicate<Entity> isCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator()));
 
     public static final String ATTACK_CONTROLLER = "attackController";
     public static final String LIVING_CONTROLLER = "livingController";
