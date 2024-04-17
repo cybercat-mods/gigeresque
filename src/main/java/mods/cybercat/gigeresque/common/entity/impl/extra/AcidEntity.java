@@ -21,6 +21,8 @@ import java.util.Objects;
 
 public class AcidEntity extends Entity {
 
+    private long lastUpdateTime = 0L;
+
     public AcidEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(false);
@@ -58,8 +60,15 @@ public class AcidEntity extends Entity {
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
             // Do things
             if (this.tickCount % (this.random.nextInt(200 - 100 + 1) + 100) == 0) {
-                if (canGrief && !this.level().getBlockState(this.blockPosition().below()).is(GigTags.ACID_RESISTANT)) {
-                    this.doBlockBreaking(this.random);
+                var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
+                if (canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
+                    var hardness = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
+                    var currentTime = System.currentTimeMillis();
+                    // Check if enough time has elapsed since the last update
+                    if (currentTime - lastUpdateTime >= (1000L * Math.max(1, (int) (hardness * 20)))) {
+                        lastUpdateTime = currentTime;
+                        this.doBlockBreaking(this.random);
+                    }
                 }
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox()).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
