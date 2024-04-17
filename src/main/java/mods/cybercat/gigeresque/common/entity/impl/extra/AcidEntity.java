@@ -88,7 +88,7 @@ public class AcidEntity extends Entity {
     }
 
     private void damageItems(ItemEntity itemEntity, RandomSource randomSource) {
-        if (itemEntity.getItem().is(GigTags.ACID_RESISTANT_ITEMS)) return;
+        if (itemEntity.getItem().is(GigTags.ACID_IMMUNE_ITEMS)) return;
         var itemStack = itemEntity.getItem();
         if (itemStack.getMaxDamage() < 2) {
             itemStack.shrink(1);
@@ -98,7 +98,7 @@ public class AcidEntity extends Entity {
     }
 
     private void damageBoots(ItemStack itemStack, RandomSource randomSource) {
-        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_RESISTANT_ITEMS)) {
+        if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
             itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
     }
