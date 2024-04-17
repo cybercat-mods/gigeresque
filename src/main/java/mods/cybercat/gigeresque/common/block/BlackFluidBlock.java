@@ -54,8 +54,7 @@ public class BlackFluidBlock extends FallingBlock implements SimpleWaterloggedBl
     }
 
     public static boolean canFallThrough(BlockState state) {
-        return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(
-                GigTags.ACID_RESISTANT) && !state.is(GigBlocks.ACID_BLOCK);
+        return (state.isAir() || state.is(BlockTags.FIRE)) && !state.liquid() && !state.is(GigTags.ACID_RESISTANT);
     }
 
     private void scheduleTickIfNotScheduled(Level world, BlockPos pos) {

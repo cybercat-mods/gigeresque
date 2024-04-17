@@ -1,5 +1,4 @@
 {
-  "block.gigeresque.acid_block": "Acid",
   "block.gigeresque.petrified_object": "Petrified Object",
   "block.gigeresque.black_fuild_block": "Black Fluid",
   "block.gigeresque.nest_resin": "Nest Resin",
@@ -98,6 +97,7 @@
   "entity.gigeresque.ravenoustemplebeast": "Ravenous Templebeast",
   "entity.gigeresque.draconictemplebeast": "Draconic Templebeast",
   "entity.gigeresque.moonlighthorrortemplebeast": "Moonlight Horror Templebeast",
+  "entity.gigeresque.acid": "Acid",
   "item.gigeresque.petrified_object": "Petrified Object",
   "item.gigeresque.black_fluid_bucket": "Black Fluid Bucket",
   "item.gigeresque.alien_spawn_egg": "Alien Spawn Egg",

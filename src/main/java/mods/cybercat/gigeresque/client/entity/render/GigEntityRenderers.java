@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
+import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -11,6 +12,7 @@ public record GigEntityRenderers() implements GigeresqueInitializer {
 
     @Override
     public void initialize() {
+        EntityRenderers.register(Entities.ACID, AcidEntityRender::new);
         EntityRenderers.register(Entities.ALIEN, AlienEntityRenderer::new);
         EntityRenderers.register(Entities.AQUATIC_ALIEN, AquaticAlienEntityRenderer::new);
         EntityRenderers.register(Entities.AQUATIC_CHESTBURSTER, AquaticChestbursterEntityRenderer::new);

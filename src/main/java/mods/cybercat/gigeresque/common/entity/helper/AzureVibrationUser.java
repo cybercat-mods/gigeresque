@@ -69,8 +69,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             if (entity.dampensVibrations()) return false;
         }
         if (context.affectedState() != null)
-            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS) && !context.affectedState().is(
-                    GigBlocks.ACID_BLOCK);
+            return !context.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
         return true;
     }
 
