@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,47 +37,26 @@ public class InGameOverlayRendererMixin {
             var fluidState = client.player.level().getFluidState(blockPos);
 
             if (fluidState.createLegacyBlock().getBlock() == GigBlocks.BLACK_FLUID)
-                renderBlackFluidOverlay(client, matrices, 1);
+                renderOverlay(client, matrices, 1, EntityTextures.BLACK_FLUID_TEXTURE);
 
             if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
                     GigStatusEffects.DNA)) {
-                float dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
+                var dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
                         GigStatusEffects.DNA).getDuration()) / Gigeresque.config.getgooEffectTickTimer();
-                renderBlackFluidOverlay(client, matrices, 0 + dnaDuration);
+                renderOverlay(client, matrices, 0 + dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
             if (Constants.isNotCreativeSpecPlayer.test(
                     client.player) && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-                float eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
-                renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
+                var eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
+                renderOverlay(client, matrices, 1 - eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
     }
 
-    private static void renderBlackFluidOverlay(Minecraft client, PoseStack matrices, float progress) {
+    private static void renderOverlay(Minecraft client, PoseStack matrices, float progress, ResourceLocation resourceLocation) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, EntityTextures.BLACK_FLUID_TEXTURE);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        assert client.player != null;
-        var f = client.player.getLightLevelDependentMagicValue();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(f, f, f, progress);
-        var m = -client.player.getYRot() / 64.0F;
-        var n = client.player.getXRot() / 64.0F;
-        Matrix4f matrix4f = matrices.last().pose();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, -1.0F, -1.0F, -0.5F).uv(4.0F + m, 4.0F + n).endVertex();
-        bufferBuilder.vertex(matrix4f, 1.0F, -1.0F, -0.5F).uv(0.0F + m, 4.0F + n).endVertex();
-        bufferBuilder.vertex(matrix4f, 1.0F, 1.0F, -0.5F).uv(0.0F + m, 0.0F + n).endVertex();
-        bufferBuilder.vertex(matrix4f, -1.0F, 1.0F, -0.5F).uv(4.0F + m, 0.0F + n).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
-        RenderSystem.disableBlend();
-    }
-
-    private static void renderEggmorphOverlay(Minecraft client, PoseStack matrices, float progress) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
+        RenderSystem.setShaderTexture(0, resourceLocation);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         assert client.player != null;
         var f = client.player.getLightLevelDependentMagicValue();
