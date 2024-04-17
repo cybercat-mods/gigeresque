@@ -71,7 +71,7 @@ public class GooEntity extends Entity {
 
     private void damageLivingEntities(LivingEntity livingEntity, RandomSource randomSource) {
         if (livingEntity.hasEffect(GigStatusEffects.DNA) || livingEntity.getType().is(GigTags.DNAIMMUNE)) return;
-        if (Constants.notPlayer.test(livingEntity) || Constants.isPlayer.test(livingEntity)) {
+        if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
                     new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.gooEffectTickTimer / 2, 0));
         }
