@@ -42,7 +42,7 @@ import java.util.List;
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
-@Mixin(value = GeoEntityRenderer.class, remap = false)
+@Mixin(value = GeoEntityRenderer.class)
 public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
 
     @Shadow
@@ -51,19 +51,19 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
     @Shadow
     public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
         if (this.getAnimatable() instanceof Mob)
             this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/common/internal/common/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("HEAD"))
+    @Inject(method = "actuallyRender*", at = @At("HEAD"))
     private void doPreRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity)
             onPreRenderLiving(livingEntity, partialTick, poseStack);
     }
 
-    @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/common/internal/common/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIIFFFF)V", at = @At("TAIL"))
+    @Inject(method = "actuallyRender*", at = @At("TAIL"))
     private void doPostRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity) {
             onPostRenderLiving(livingEntity, partialTick, poseStack, bufferSource);
