@@ -38,13 +38,15 @@ public class InGameOverlayRendererMixin {
             if (fluidState.createLegacyBlock().getBlock() == GigBlocks.BLACK_FLUID)
                 renderBlackFluidOverlay(client, matrices, 1);
 
-            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(GigStatusEffects.DNA)) {
+            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
+                    GigStatusEffects.DNA)) {
                 float dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
                         GigStatusEffects.DNA).getDuration()) / Gigeresque.config.getgooEffectTickTimer();
                 renderBlackFluidOverlay(client, matrices, 0 + dnaDuration);
             }
 
-            if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
+            if (Constants.isNotCreativeSpecPlayer.test(
+                    client.player) && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
                 float eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
                 renderEggmorphOverlay(client, matrices, 1 - eggmorphingProgress);
             }
