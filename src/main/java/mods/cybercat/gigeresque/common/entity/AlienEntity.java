@@ -126,7 +126,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     protected int getAcidDiameter() {
-        return 3;
+        return 0;
     }
 
     public boolean isFleeing() {
