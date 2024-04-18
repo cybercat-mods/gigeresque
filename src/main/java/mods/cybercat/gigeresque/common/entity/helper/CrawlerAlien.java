@@ -820,6 +820,11 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     @Override
+    protected void jumpFromGround() {
+
+    }
+
+    @Override
     public void travel(@NotNull Vec3 movementInput) {
         if (this.onTravel(movementInput, true)) {
             return;

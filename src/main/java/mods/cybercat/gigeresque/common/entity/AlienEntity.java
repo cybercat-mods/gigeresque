@@ -288,12 +288,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
         this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
 
-        if (isEffectiveAi()) {
-            this.moveRelative(getSpeed(), movementInput);
-            this.move(MoverType.SELF, getDeltaMovement());
-            this.setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else super.travel(movementInput);
+        super.travel(movementInput);
     }
 
     @Override
@@ -349,6 +344,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
+        this.setNoGravity(false);
         if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
         if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
         if (this.isAggressive()) {
@@ -376,7 +372,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
         }
-        if (this.isNoGravity()) this.setNoGravity(false);
         if (level() instanceof ServerLevel) {
             var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
             var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
