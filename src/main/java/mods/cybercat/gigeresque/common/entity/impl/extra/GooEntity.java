@@ -60,6 +60,9 @@ public class GooEntity extends Entity {
                     }
                 });
             }
+            level().getEntities(this, this.getBoundingBox()).forEach(e -> {
+                if (e instanceof GooEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
+            });
         }
     }
 
