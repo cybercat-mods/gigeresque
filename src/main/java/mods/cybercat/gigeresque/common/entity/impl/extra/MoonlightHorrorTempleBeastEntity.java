@@ -22,6 +22,11 @@ public class MoonlightHorrorTempleBeastEntity extends CrawlerAlien implements Ge
         super(entityType, level);
     }
 
+    @Override
+    protected int getAcidDiameter() {
+        return 3;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 Gigeresque.config.moonlightHorrorTempleBeastXenoHealth).add(Attributes.ARMOR,
