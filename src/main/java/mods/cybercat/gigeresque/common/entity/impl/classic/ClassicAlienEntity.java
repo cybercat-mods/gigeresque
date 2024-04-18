@@ -97,6 +97,11 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     }
 
     @Override
+    protected int getAcidDiameter() {
+        return 3;
+    }
+
+    @Override
     public void travel(@NotNull Vec3 movementInput) {
         this.moveControl = this.isUnderWater() ? swimMoveControl : this.isCrawling() ? new ClimberMoveController<>(
                 this) : new MoveControl(this);

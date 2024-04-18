@@ -75,6 +75,11 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
     }
 
+    @Override
+    protected int getAcidDiameter() {
+        return 3;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 Gigeresque.config.stalkerXenoHealth).add(Attributes.ARMOR, Gigeresque.config.stalkerXenoArmor).add(

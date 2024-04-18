@@ -94,6 +94,11 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
     }
 
+    @Override
+    protected int getAcidDiameter() {
+        return 3;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 Gigeresque.config.aquaticXenoHealth).add(Attributes.ARMOR, Gigeresque.config.aquaticXenoArmor).add(

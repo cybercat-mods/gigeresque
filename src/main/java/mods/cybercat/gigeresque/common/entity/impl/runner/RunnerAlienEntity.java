@@ -85,6 +85,11 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
     }
 
     @Override
+    protected int getAcidDiameter() {
+        return 3;
+    }
+
+    @Override
     public void travel(@NotNull Vec3 movementInput) {
         this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
