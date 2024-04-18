@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -57,7 +58,9 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
                             test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
                             new AABB(test)).stream().noneMatch(Objects::isNull)) {
                         BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-                        ((Eggmorphable) passenger).setTicksUntilEggmorphed(Gigeresque.config.getEggmorphTickTimer());
+                        if (passenger instanceof Eggmorphable)
+                            ((Eggmorphable) passenger).setTicksUntilEggmorphed(
+                                    Gigeresque.config.getEggmorphTickTimer());
                         passenger.setPos(Vec3.atBottomCenterOf(testPos));
                         passenger.removeVehicle();
                         entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
