@@ -144,15 +144,19 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        GroundPathNavigation navigate;
-        if (this.isTunnelCrawling()) {
+        PathNavigation navigate;
+        if (!this.isTunnelCrawling() && this.isUnderWater()) {
+            navigate = this.swimNavigation;
+        } else if (this.isTunnelCrawling()) {
             navigate = new AzureNavigation(this, level);
+            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
+            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
         } else {
             navigate = new BetterSpiderPathNavigator<>(this, level, false);
+            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
+            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
         }
         navigate.setCanFloat(true);
-        navigate.setCanWalkOverFences(true);
-        navigate.setCanOpenDoors(true);
         return navigate;
     }
 
@@ -820,9 +824,14 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     @Override
+    protected void jumpFromGround() {
+
+    }
+
+    @Override
     public void travel(@NotNull Vec3 movementInput) {
         if (this.onTravel(movementInput, true)) {
-            return;
+            super.travel(movementInput);
         }
         super.travel(movementInput);
         this.onTravel(movementInput, false);
@@ -848,10 +857,10 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             if (!canTravel) {
                 this.calculateEntityAnimation(true);
             }
-            this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut()) this.updateOffsetsAndOrientation();
             return true;
         } else {
-            this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut()) this.updateOffsetsAndOrientation();
             return false;
         }
     }
