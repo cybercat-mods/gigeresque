@@ -144,15 +144,19 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        GroundPathNavigation navigate;
-        if (this.isTunnelCrawling()) {
+        PathNavigation navigate;
+        if (!this.isTunnelCrawling() && this.isUnderWater()) {
+            navigate = this.swimNavigation;
+        } else if (this.isTunnelCrawling()) {
             navigate = new AzureNavigation(this, level);
+            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
+            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
         } else {
             navigate = new BetterSpiderPathNavigator<>(this, level, false);
+            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
+            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
         }
         navigate.setCanFloat(true);
-        navigate.setCanWalkOverFences(true);
-        navigate.setCanOpenDoors(true);
         return navigate;
     }
 
@@ -344,12 +348,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
             for (AABB collisionBox : collisionBoxes) {
                 closestDst = switch (facing) {
-                    case EAST, WEST -> Math.min(closestDst, Math.abs(
-                            calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
-                    case UP, DOWN -> Math.min(closestDst, Math.abs(
-                            calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
-                    case NORTH, SOUTH -> Math.min(closestDst, Math.abs(
-                            calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
+                    case EAST, WEST -> Math.min(closestDst,
+                            Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
+                    case UP, DOWN -> Math.min(closestDst,
+                            Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
+                    case NORTH, SOUTH -> Math.min(closestDst,
+                            Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
                 };
             }
 
@@ -673,7 +677,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                         attachmentBlend)).normalize();
 
         if (!isAttached) {
-            this.attachedTicks = Math.max(1, this.attachedTicks - 1);
+            this.attachedTicks = Math.max(0, this.attachedTicks - 1);
         } else {
             this.attachedTicks = Math.min(5, this.attachedTicks + 1);
         }
@@ -827,7 +831,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     @Override
     public void travel(@NotNull Vec3 movementInput) {
         if (this.onTravel(movementInput, true)) {
-            return;
+            super.travel(movementInput);
         }
         super.travel(movementInput);
         this.onTravel(movementInput, false);
@@ -853,12 +857,10 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             if (!canTravel) {
                 this.calculateEntityAnimation(true);
             }
-            if (!this.isPassedOut())
-                this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut()) this.updateOffsetsAndOrientation();
             return true;
         } else {
-            if (!this.isPassedOut())
-                this.updateOffsetsAndOrientation();
+            if (!this.isPassedOut()) this.updateOffsetsAndOrientation();
             return false;
         }
     }
