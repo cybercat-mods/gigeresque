@@ -48,6 +48,7 @@ public record GigTags() {
     public static final TagKey<EntityType<?>> GIG_NEOS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresqueneos"));
     public static final TagKey<EntityType<?>> GIG_TEMPLEBEASTS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquetemplebeasts"));
     public static final TagKey<EntityType<?>> GIG_MISC = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquemisc"));
+    public static final TagKey<EntityType<?>> NO_ACID_BLOOD = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("noacidblood"));
 
     /* SPAWN BIOMES */
     public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));

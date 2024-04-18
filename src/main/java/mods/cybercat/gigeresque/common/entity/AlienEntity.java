@@ -428,7 +428,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         }
 
         var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
-        if (damageCheck) {
+        if (damageCheck && !this.getType().is(GigTags.NO_ACID_BLOOD)) {
             if (getAcidDiameter() == 1) generateAcidPool(this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
@@ -485,7 +485,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 
-        if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
+        if (!this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType().is(
+                GigTags.NO_ACID_BLOOD)) {
             if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
