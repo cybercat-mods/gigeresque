@@ -172,6 +172,9 @@ if (file('key.properties').exists()) {
             optional {
                 slug = "betterend"
             }
+//            optional {
+//                slug = "avp-regenesis"
+//            }
         }
         modrinth("modrinthFabric") {
             from mroptions
@@ -238,6 +241,9 @@ if (file('key.properties').exists()) {
             optional {
                 slug = "friends-and-foes"
             }
+//          optional {
+//              slug = "avp-regenesis"
+//          }
         }
     }
 }
