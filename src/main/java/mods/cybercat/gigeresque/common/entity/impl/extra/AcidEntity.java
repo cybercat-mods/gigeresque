@@ -79,7 +79,10 @@ public class AcidEntity extends Entity {
                         this.damageItems(itemEntity, this.random);
                     }
                 });
-            }
+            };
+            level().getEntities(this, this.getBoundingBox()).forEach(e -> {
+                if (e instanceof AcidEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
+            });
         }
     }
 
