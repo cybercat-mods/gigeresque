@@ -470,6 +470,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         return GigSounds.ALIEN_DEATH;
     }
 
+    @Override
+    public boolean canBeCollidedWith() {
+        return this.isAlive();
+    }
+
     public void grabTarget(Entity entity) {
         if (entity == this.getTarget() && !entity.hasPassenger(
                 this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
