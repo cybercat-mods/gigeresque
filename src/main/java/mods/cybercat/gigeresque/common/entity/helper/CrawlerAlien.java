@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
 import com.google.common.collect.ImmutableList;
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.bettercrawling.CollisionSmoothingUtil;
 import mod.azure.bettercrawling.Matrix4f;
 import mod.azure.bettercrawling.entity.mob.*;
@@ -140,19 +139,10 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     @Override
-    public void setMaxUpStep(float maxUpStep) {
-        super.setMaxUpStep(this.isTunnelCrawling() ? 2.1f : maxUpStep);
-    }
-
-    @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
         PathNavigation navigate;
-        if (!this.isTunnelCrawling() && this.isUnderWater()) {
+        if (this.isUnderWater()) {
             navigate = this.swimNavigation;
-        } else if (this.isTunnelCrawling()) {
-            navigate = new AzureNavigation(this, level);
-            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
-            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
         } else {
             navigate = new BetterSpiderPathNavigator<>(this, level, false);
             ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
@@ -652,7 +642,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 double dy = Math.max(entityBox.minY - attachmentPos.y, attachmentPos.y - entityBox.maxY);
                 double dz = Math.max(entityBox.minZ - attachmentPos.z, attachmentPos.z - entityBox.maxZ);
 
-                if (Math.max(dx, Math.max(dy, dz)) < 0.5f) {
+                if (Math.max(dx, Math.max(dy, dz)) < 3.5f) {
                     isAttached = true;
                     this.lastAttachmentOffsetX = Mth.clamp(attachmentPos.x - p.x, -this.getBbWidth() / 2,
                             this.getBbWidth() / 2);
@@ -831,12 +821,6 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 3, false, false));
-    }
-
-    @Override
     public void travel(@NotNull Vec3 movementInput) {
         if (this.onTravel(movementInput, true)) {
             super.travel(movementInput);
@@ -955,7 +939,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                         surfaceMovementDir.scale(surfaceMovementDir.normalize().dot(stickingForce)));
 
                 float moveSpeed = Mth.sqrt(forward * forward + strafe * strafe);
-                this.setDeltaMovement(this.getDeltaMovement().add(movementDir.scale(moveSpeed)));
+//                this.setDeltaMovement(this.getDeltaMovement().add(movementDir.scale(moveSpeed)));
             }
         }
 
