@@ -201,4 +201,9 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
     private record TransformData(double originX, double originY, double originZ, double faceOffset, double headOffset) {
 
     }
+
+    @Override
+    public float getMotionAnimThreshold(FacehuggerEntity animatable) {
+        return 0.005f;
+    }
 }

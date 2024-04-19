@@ -28,6 +28,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -186,6 +188,7 @@ public class AlienEggEntity extends AlienEntity {
             facehugger.setDeltaMovement(Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f), 0.7,
                     Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f));
             facehugger.setEggSpawnState(true);
+            facehugger.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 400, 30, false, false));
             level().addFreshEntity(facehugger);
             setHasFacehugger(false);
         }

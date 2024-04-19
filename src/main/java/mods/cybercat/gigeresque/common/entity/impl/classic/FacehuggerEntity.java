@@ -248,7 +248,10 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
             this.removeFreeWill();
             return;
         }
-        if (this.isEggSpawn() && this.tickCount > 30) this.setEggSpawnState(false);
+        if (this.isEggSpawn() && this.tickCount > 30) {
+            if (this.hasEffect(MobEffects.SLOW_FALLING)) this.removeEffect(MobEffects.SLOW_FALLING);
+            this.setEggSpawnState(false);
+        }
     }
 
     @Override
@@ -298,11 +301,6 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
     @Override
     protected void playStepSound(@NotNull BlockPos pos, @NotNull BlockState state) {
         playSound(SoundEvents.STRIDER_STEP, 0.05f, 10.0f);
-    }
-
-    @Override
-    protected float nextStep() {
-        return this.moveDist + 0.25f;
     }
 
     @Override
@@ -392,7 +390,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
                                 target) || target.getMobType() == MobType.UNDEAD),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new FacehuggerPounceTask<>(6));
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F), new FacehuggerPounceTask<>(6));
     }
 
     /*
@@ -413,15 +411,11 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
             if (this.isJumping()) return event.setAndContinue(GigAnimationsDefault.CHARGE);
             if (this.isEggSpawn() && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-            if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying()) {
+            if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying() && event.isMoving()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
             }
-            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && !this.isEggSpawn() && (walkAnimation.speedOld > 0.05F) && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying()) {
-                event.getController().setAnimationSpeed(3f);
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            }
-            if (!this.isUpsideDown() && !this.isJumping() && (this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying()) {
+            if (!this.isJumping() && !this.isEggSpawn() && event.isMoving() && !this.isDeadOrDying() && !this.isAttacking()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL);
             }
