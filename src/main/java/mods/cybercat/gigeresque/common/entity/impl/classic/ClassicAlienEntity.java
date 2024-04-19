@@ -284,7 +284,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed + 0.5f).startCondition(
+                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed - 1.5f).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
                 // Classic Xeno attacking
