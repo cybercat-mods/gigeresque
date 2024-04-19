@@ -59,10 +59,11 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
                         if (passenger != null) {
                             passenger.setPos(Vec3.atBottomCenterOf(testPos));
                             passenger.removeVehicle();
+                            entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+                            level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+                            level.setBlockAndUpdate(testPos.above(),
+                                    GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
                         }
-                        entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-                        level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-                        level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
                     }
             } else {
                 this.startMovingToTarget(entity, blockPos);
