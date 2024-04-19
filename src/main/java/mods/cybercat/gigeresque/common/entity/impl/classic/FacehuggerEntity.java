@@ -236,7 +236,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
                 setIsInfertile(true);
                 this.kill();
             }
-            if (host instanceof Player player && (player.isCreative() || player.isSpectator())) {
+            if (Constants.isCreativeSpecPlayer.test(host)) {
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();
