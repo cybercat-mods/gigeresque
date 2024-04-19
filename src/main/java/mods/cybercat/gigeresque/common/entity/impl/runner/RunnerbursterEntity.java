@@ -108,7 +108,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements GeoEntity
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new EatFoodTask<>(0), new KillCropsTask<>(),
+        return BrainActivityGroup.idleTasks(new EatFoodTask<>(40), new KillCropsTask<>(),
                 new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
