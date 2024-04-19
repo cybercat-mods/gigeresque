@@ -348,12 +348,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
             for (AABB collisionBox : collisionBoxes) {
                 closestDst = switch (facing) {
-                    case EAST, WEST -> Math.min(closestDst, Math.abs(
-                            calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
-                    case UP, DOWN -> Math.min(closestDst, Math.abs(
-                            calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
-                    case NORTH, SOUTH -> Math.min(closestDst, Math.abs(
-                            calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
+                    case EAST, WEST -> Math.min(closestDst,
+                            Math.abs(calculateXOffset(entityBox, collisionBox, -facing.getStepX() * stickingDistance)));
+                    case UP, DOWN -> Math.min(closestDst,
+                            Math.abs(calculateYOffset(entityBox, collisionBox, -facing.getStepY() * stickingDistance)));
+                    case NORTH, SOUTH -> Math.min(closestDst,
+                            Math.abs(calculateZOffset(entityBox, collisionBox, -facing.getStepZ() * stickingDistance)));
                 };
             }
 
@@ -677,7 +677,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                         attachmentBlend)).normalize();
 
         if (!isAttached) {
-            this.attachedTicks = Math.max(1, this.attachedTicks - 1);
+            this.attachedTicks = Math.max(0, this.attachedTicks - 1);
         } else {
             this.attachedTicks = Math.min(5, this.attachedTicks + 1);
         }
@@ -701,7 +701,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
         this.yHeadRot = Mth.wrapDegrees(this.yHeadRot + yawDelta);
         this.yHeadRotO = this.wrapAngleInRange(this.yHeadRotO/* + yawDelta*/, this.yHeadRot);
-        this.lyHeadRot = Mth.wrapDegrees(this.lyHeadRot + yawDelta);
+        this.lyHeadRot  = Mth.wrapDegrees(this.lyHeadRot  + yawDelta);
 
         this.xRot = Mth.wrapDegrees(this.xRot + pitchDelta);
         this.xRotO = this.wrapAngleInRange(this.xRotO/* + pitchDelta*/, this.xRot);
@@ -772,7 +772,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
     @Override
     public float getTargetHeadYaw(float yaw, int rotationIncrements) {
-        return (float) this.lyHeadRot;
+        return (float) this.lyHeadRot ;
     }
 
     @Override
@@ -797,7 +797,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
             Pair<Float, Float> rotations = this.getOrientation().getLocalRotation(look);
 
-            this.lyHeadRot = rotations.getLeft();
+            this.lyHeadRot  = rotations.getLeft();
             this.lerpHeadSteps = 3;
         }
     }
