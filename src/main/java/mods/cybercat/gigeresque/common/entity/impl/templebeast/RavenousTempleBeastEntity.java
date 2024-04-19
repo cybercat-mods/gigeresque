@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.impl.extra;
+package mods.cybercat.gigeresque.common.entity.impl.templebeast;
 
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
