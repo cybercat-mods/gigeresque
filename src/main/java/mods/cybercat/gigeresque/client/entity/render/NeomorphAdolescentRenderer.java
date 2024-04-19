@@ -4,15 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.bettercrawling.client.ClientEventHandlers;
 import mods.cybercat.gigeresque.client.entity.model.NeomorphAdolescentModel;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import org.jetbrains.annotations.NotNull;
 
-@Environment(EnvType.CLIENT)
 public class NeomorphAdolescentRenderer extends GeoEntityRenderer<NeomorphAdolescentEntity> {
     public NeomorphAdolescentRenderer(EntityRendererProvider.Context context) {
         super(context, new NeomorphAdolescentModel());

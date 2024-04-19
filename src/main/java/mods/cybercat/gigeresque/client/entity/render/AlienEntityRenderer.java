@@ -5,13 +5,10 @@ import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
-@Environment(EnvType.CLIENT)
 public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 
     public AlienEntityRenderer(EntityRendererProvider.Context context) {
@@ -24,8 +21,8 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     public void render(ClassicAlienEntity entity, float entityYaw, float partialTick, PoseStack stack, @NotNull MultiBufferSource bufferSource, int packedLightIn) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
-        if (entity.onGround() && !entity.isVehicle()) {
-            stack.translate(0, -0.2, 0);
+        if (!entity.isVehicle()) {
+            stack.translate(0, -0.35, 0);
         }
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
