@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.RavenousTempleBeastEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.extra.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 public class RavenousTempleBeastEntityRenderer extends GeoEntityRenderer<RavenousTempleBeastEntity> {
