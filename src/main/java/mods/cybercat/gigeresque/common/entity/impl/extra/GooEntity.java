@@ -53,14 +53,12 @@ public class GooEntity extends Entity {
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
             // Do things
-            if (this.tickCount % (this.random.nextInt(200 - 100 + 1) + 100) == 0) {
-                this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox()).forEach(entity -> {
-                    if (entity instanceof LivingEntity livingEntity) {
-                        this.damageLivingEntities(livingEntity, this.random);
-                    }
-                });
-            }
-            level().getEntities(this, this.getBoundingBox()).forEach(e -> {
+            this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
+                if (entity instanceof LivingEntity livingEntity) {
+                    this.damageLivingEntities(livingEntity, this.random);
+                }
+            });
+            level().getEntities(this, this.getBoundingBox().inflate(1)).forEach(e -> {
                 if (e instanceof GooEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
             });
         }
