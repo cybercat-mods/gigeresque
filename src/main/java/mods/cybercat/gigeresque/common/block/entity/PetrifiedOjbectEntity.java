@@ -60,7 +60,8 @@ public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity
                 level.setBlockAndUpdate(pos,
                         state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
                 var facehugger = Entities.FACEHUGGER.create(level);
-                facehugger.moveTo((double) pos.getX() + 0.3 + 0, pos.getY() + 1, (double) pos.getZ() + 0.3, 0.0f, 0.0f);
+                assert facehugger != null;
+                facehugger.moveTo(pos.getX() + 0.3 + 0, pos.getY() + 1, pos.getZ() + 0.3, 0.0f, 0.0f);
                 level.addFreshEntity(facehugger);
             }
         }

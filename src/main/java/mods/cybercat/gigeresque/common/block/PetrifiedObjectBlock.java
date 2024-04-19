@@ -5,7 +5,17 @@ import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -34,7 +44,7 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
 
     protected PetrifiedObjectBlock() {
-        super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15));
+        super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable());
         this.registerDefaultState(
                 this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
     }
@@ -45,13 +55,46 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
     }
 
     @Override
+    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity, @NotNull ItemStack itemStack) {
+        if (state.getValue(HATCH) == 25) {
+            player.awardStat(Stats.BLOCK_MINED.get(this));
+            player.causeFoodExhaustion(0.005F);
+            if (level instanceof ServerLevel serverLevel) {
+                var areaEffectCloudEntity = new AreaEffectCloud(level, pos.getX(), pos.getY(), pos.getZ());
+                areaEffectCloudEntity.setRadius(2.0F);
+                areaEffectCloudEntity.setDuration(60);
+                areaEffectCloudEntity.setRadiusPerTick(
+                        -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+                areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 60, 0));
+                serverLevel.addFreshEntity(areaEffectCloudEntity);
+            }
+        } else {
+            dropResources(state, level, pos);
+        }
+        super.playerDestroy(level, player, pos, state, blockEntity, itemStack);
+    }
+
+    public static void dropResources(@NotNull BlockState state, Level level, @NotNull BlockPos pos) {
+        if (level instanceof ServerLevel serverLevel) {
+            var d = EntityType.ITEM.getHeight() / 2.0;
+            var x = pos.getX() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
+            var y = pos.getY() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25) - d;
+            var z = pos.getZ() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
+            var itemEntity = new ItemEntity(level, x, y, z, GigBlocks.PETRIFIED_OBJECT_BLOCK.asItem().getDefaultInstance());
+            itemEntity.setDefaultPickUpDelay();
+            level.addFreshEntity(itemEntity);
+            state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
+        }
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HATCH, STORAGE_STATE);
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return Entities.PETRIFIED_OBJECT.create(pos, state);
     }
 
