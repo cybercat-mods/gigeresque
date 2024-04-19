@@ -333,9 +333,9 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         return event.setAndContinue(GigAnimationsDefault.WALK);
                     if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
-                    if (this.isCrawling() && !isDead && !this.isInWater())
+                    if (!this.isVehicle() && this.isCrawling() && !isDead && !this.isInWater())
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
-                    if (this.isTunnelCrawling() && !isDead && !this.isInWater())
+                    if (!this.isVehicle() && this.isTunnelCrawling() && !isDead && !this.isInWater())
                         return event.setAndContinue(GigAnimationsDefault.CRAWL);
                     if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
                     if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
