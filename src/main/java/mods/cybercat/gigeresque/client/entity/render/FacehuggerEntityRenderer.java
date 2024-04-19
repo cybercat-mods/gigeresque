@@ -7,6 +7,7 @@ import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.bettercrawling.client.ClientEventHandlers;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -178,5 +179,10 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
     private record TransformData(double originX, double originY, double originZ, double faceOffset, double headOffset) {
 
+    }
+
+    @Override
+    public float getMotionAnimThreshold(FacehuggerEntity animatable) {
+        return 0.005f;
     }
 }
