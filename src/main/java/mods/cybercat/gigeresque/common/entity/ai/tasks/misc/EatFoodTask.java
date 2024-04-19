@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +55,7 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
             var blockPos = foodItem.stream().findFirst().get().blockPosition();
             var item = foodItem.stream().findFirst().get();
             // Check if the block is within the entity's view direction and reachable via pathfinding
-            if (isBlockInViewAndReachable(entity, blockPos)) {
+            if (entity.distanceToSqr(foodItem.stream().findFirst().get()) < 1) {
                 entity.getNavigation().stop();
                 entity.setEatingStatus(true);
                 entity.triggerAnim(Constants.ATTACK_CONTROLLER, Constants.EAT);
@@ -67,23 +66,6 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
                 this.startMovingToTarget(entity, blockPos);
             }
         }
-    }
-
-    private boolean isBlockInViewAndReachable(E entity, BlockPos blockPos) {
-        var blockCenter = Vec3.atCenterOf(blockPos);
-        var entityPos = entity.position();
-        // Calculate the squared distance between the entity and the block
-        var distanceSquared = blockCenter.distanceToSqr(entityPos);
-
-        // Check if the distance is less than or equal to one block
-        if (distanceSquared <= 1.0) {
-            // Don't start moving towards the target if already within one block distance
-            return false;
-        }
-
-        // Check if the block is reachable via pathfinding
-        var path = entity.getNavigation().createPath(blockPos, 0);
-        return path != null && !path.isDone();
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
