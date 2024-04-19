@@ -13,7 +13,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +39,7 @@ public class DNAStatusEffect extends MobEffect {
         if (!entity.getType().is(GigTags.DNAIMMUNE) && this == GigStatusEffects.DNA) entity.heal(0);
     }
 
-    public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
+    public static void effectRemoval(LivingEntity entity) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
         if (Constants.isCreeper.test(entity)) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {

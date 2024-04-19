@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -9,7 +8,6 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public record GigEntityUtils() {
 
@@ -42,13 +41,13 @@ public record GigEntityUtils() {
     }
 
     public static boolean convertToSpitter(LivingEntity target) {
-        return target.hasEffect(
-                GigStatusEffects.DNA) && (((Host) target).hasParasite() && ((Host) target).getTicksUntilImpregnation() > Gigeresque.config.getImpregnationTickTimer() / 2);
+        return target.hasEffect(GigStatusEffects.DNA) && target.hasEffect(GigStatusEffects.IMPREGNATION);
     }
 
     public static boolean faceHuggerTest(LivingEntity target) {
         return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType().is(
-                GigTags.FACEHUGGER_BLACKLIST) && ((Host) target).doesNotHaveParasite() && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
+                GigTags.FACEHUGGER_BLACKLIST) && !target.hasEffect(
+                GigStatusEffects.IMPREGNATION) && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
                 target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
@@ -84,27 +83,32 @@ public record GigEntityUtils() {
     }
 
     public static boolean hostEggCheck(LivingEntity target) {
-        return ((Host) target).isBleeding() || ((Host) target).hasParasite() || ((Eggmorphable) target).isEggmorphing();
+        return target.hasEffect(GigStatusEffects.IMPREGNATION) || ((Eggmorphable) target).isEggmorphing();
     }
 
     public static void spawnMutant(LivingEntity entity) {
         var randomPhase2 = entity.getRandom().nextInt(0, 2);
-        Entity summon;
         if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
-            if (randomPhase2 == 1) summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
-            else summon = Entities.MUTANT_POPPER.create(entity.level());
+            Entity summon;
+            if (randomPhase2 == 1) {
+                summon = Entities.MUTANT_HAMMERPEDE.create(entity.level());
+            } else {
+                summon = Entities.MUTANT_POPPER.create(entity.level());
+            }
             assert summon != null;
-            summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-            spawnEffects(entity.level(), entity);
-            entity.level().addFreshEntity(summon);
+            GigEntityUtils.moveToAndSpawn(entity, summon);
         } else if (GigEntityUtils.isTargetLargeMutantHost(entity)) {
-            summon = Entities.MUTANT_STALKER.create(entity.level());
+            Entity summon = Entities.MUTANT_STALKER.create(entity.level());
             assert summon != null;
-            summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-            spawnEffects(entity.level(), entity);
-            entity.level().addFreshEntity(summon);
+            GigEntityUtils.moveToAndSpawn(entity, summon);
         }
         entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.DNA), Integer.MAX_VALUE);
+    }
+
+    private static void moveToAndSpawn(@NotNull LivingEntity entity, Entity summon) {
+        summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+        spawnEffects(entity.level(), entity);
+        entity.level().addFreshEntity(summon);
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {

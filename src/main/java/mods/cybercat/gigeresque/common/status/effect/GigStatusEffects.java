@@ -1,10 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.status.effect.impl.AcidStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.TraumaStatusEffect;
+import mods.cybercat.gigeresque.common.status.effect.impl.*;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +15,7 @@ public record GigStatusEffects() implements GigeresqueInitializer {
     public static final MobEffect ACID = new AcidStatusEffect();
     public static final MobEffect DNA = new DNAStatusEffect();
     public static final MobEffect SPORE = new SporeStatusEffect();
+    public static final MobEffect IMPREGNATION = new ImpregnationStatusEffect();
     private static GigStatusEffects instance;
 
     public static synchronized GigStatusEffects getInstance() {
@@ -31,5 +29,6 @@ public record GigStatusEffects() implements GigeresqueInitializer {
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("acid"), ACID);
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("dna_disintegration"), DNA);
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("neo_spore"), SPORE);
+        Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("impregnation"), IMPREGNATION);
     }
 }

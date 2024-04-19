@@ -1,8 +1,11 @@
 package mods.cybercat.gigeresque;
 
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 
@@ -18,6 +21,10 @@ public record Constants() {
     public static Predicate<Entity> isCreeper = Creeper.class::isInstance;
     public static Predicate<Entity> isNotCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()));
     public static Predicate<Entity> isCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator()));
+
+    public static Predicate<Entity> shouldApplyImpEffects = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
+            livingEntity) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION) && (livingEntity.getEffect(
+            GigStatusEffects.IMPREGNATION).getDuration() < (0.2 * Gigeresque.config.getImpregnationTickTimer()) && (livingEntity.tickCount % Constants.TPS == 0L));
 
     public static final String ATTACK_CONTROLLER = "attackController";
     public static final String LIVING_CONTROLLER = "livingController";

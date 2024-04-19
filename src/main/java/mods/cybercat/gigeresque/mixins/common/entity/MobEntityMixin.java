@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.mixins.common.entity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.interfacing.Eggmorphable;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -36,13 +35,13 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(method = {"requiresCustomPersistence"}, at = {@At("RETURN")}, cancellable = true)
     public void cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this instanceof Host host && host.hasParasite()) callbackInfo.setReturnValue(true);
+        if (this.hasEffect(GigStatusEffects.IMPREGNATION)) callbackInfo.setReturnValue(true);
         if (((Eggmorphable) this).isEggmorphing()) callbackInfo.setReturnValue(true);
     }
 
     @Inject(method = {"tick"}, at = {@At("HEAD")})
     void tick(CallbackInfo callbackInfo) {
-        if ((this instanceof Host host && host.hasParasite()) || this.hasEffect(GigStatusEffects.DNA))
+        if (this.hasEffect(GigStatusEffects.IMPREGNATION) || this.hasEffect(GigStatusEffects.DNA))
             this.persistenceRequired = true;
     }
 }

@@ -59,17 +59,17 @@ public class AcidEntity extends Entity {
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
             // Do things
-            if (this.tickCount % (this.random.nextInt(200 - 100 + 1) + 100) == 0) {
-                var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
-                if (canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
-                    var hardness = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
-                    var currentTime = System.currentTimeMillis();
-                    // Check if enough time has elapsed since the last update
-                    if (currentTime - lastUpdateTime >= (1000L * Math.max(1, (int) (hardness * 20)))) {
-                        lastUpdateTime = currentTime;
-                        this.doBlockBreaking(this.random);
-                    }
+            var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
+            if (canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
+                var hardness = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
+                var currentTime = System.currentTimeMillis();
+                // Check if enough time has elapsed since the last update
+                if (currentTime - lastUpdateTime >= (1000L * Math.max(1, (int) (hardness * 20)))) {
+                    lastUpdateTime = currentTime;
+                    this.doBlockBreaking(this.random);
                 }
+            }
+            if (this.tickCount % (this.random.nextInt(200 - 100 + 1) + 100) == 0) {
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox()).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);

@@ -5,10 +5,10 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -47,50 +47,52 @@ public class SurgeryKitItem extends Item {
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
-        var host = (Host) entity;
-        if (host.hasParasite() || entity.hasEffect(GigStatusEffects.SPORE) && !entity.level().isClientSide) {
+        if (entity.hasEffect(GigStatusEffects.IMPREGNATION) || entity.hasEffect(
+                GigStatusEffects.SPORE) && !entity.level().isClientSide) {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-            host.setBleeding(false);
-            spawnParasite(entity);
-            host.setTicksUntilImpregnation(-1);
-
-            host.removeParasite();
+            entity.removeEffect(GigStatusEffects.IMPREGNATION);
+            LivingEntity burster = createBurster(entity);
+            if (burster != null) {
+                setBursterProperties(entity, burster);
+                entity.level().addFreshEntity(burster);
+                entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL,
+                        2.0f, 1.0f);
+            }
             if (entity instanceof Player playerentity) {
                 playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
                 stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
             }
-            entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), GigSounds.CHESTBURSTING,
-                    SoundSource.NEUTRAL, 2.0f, 1.0f);
             entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
         }
     }
 
-    private void spawnParasite(LivingEntity entity) {
-        LivingEntity burster = Entities.CHESTBURSTER.create(entity.level());
-
+    private static LivingEntity createBurster(LivingEntity entity) {
+        LivingEntity defaultBurster = Entities.CHESTBURSTER.create(entity.level());
         if (!entity.hasEffect(GigStatusEffects.SPORE) && !entity.hasEffect(GigStatusEffects.DNA)) {
             if (entity.getType().is(GigTags.RUNNER_HOSTS)) {
-                burster = Entities.RUNNERBURSTER.create(entity.level());
-                assert burster != null;
-                ((ChestbursterEntity) burster).setHostId("runner");
-            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
-                burster = Entities.AQUATIC_CHESTBURSTER.create(entity.level());
-            else burster = Entities.CHESTBURSTER.create(entity.level());
-        } else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE))
-            burster = Entities.NEOBURSTER.create(entity.level());
-        else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA))
-            burster = Entities.SPITTER.create(entity.level());
+                RunnerbursterEntity runnerBurster = Entities.RUNNERBURSTER.create(entity.level());
+                if (runnerBurster != null) {
+                    runnerBurster.setHostId("runner");
+                    return runnerBurster;
+                }
+            } else if (entity.getType().is(GigTags.AQUATIC_HOSTS)) {
+                return Entities.AQUATIC_CHESTBURSTER.create(entity.level());
+            }
+        } else if (entity.getType().is(GigTags.NEOHOST) && entity.hasEffect(GigStatusEffects.SPORE)) {
+            return Entities.NEOBURSTER.create(entity.level());
+        } else if (entity.getType().is(GigTags.CLASSIC_HOSTS) && entity.hasEffect(GigStatusEffects.DNA)) {
+            return Entities.SPITTER.create(entity.level());
+        }
+        return defaultBurster;
+    }
 
+    private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
         if (entity.hasCustomName()) {
-            assert burster != null;
             burster.setCustomName(entity.getCustomName());
         }
-        if (burster instanceof ChestbursterEntity chest)
-            chest.setHostId(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
-        assert burster != null;
+        burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(burster);
     }
 }
