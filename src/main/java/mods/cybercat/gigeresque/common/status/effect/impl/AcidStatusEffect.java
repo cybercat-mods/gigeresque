@@ -22,7 +22,7 @@ public class AcidStatusEffect extends MobEffect {
     @Override
     public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
-        if (!entity.getType().is(GigTags.ACID_RESISTANT_ENTITY))
+        if (!entity.getType().is(GigTags.ACID_RESISTANT_ENTITY) && entity.tickCount % 40 == 0)
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.ACID),
                     Gigeresque.config.acidDamage * amplifier);
     }
