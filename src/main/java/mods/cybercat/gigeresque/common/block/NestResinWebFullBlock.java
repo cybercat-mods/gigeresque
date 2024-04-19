@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.block;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
@@ -22,8 +24,8 @@ public class NestResinWebFullBlock extends Block {
 
     @Override
     public void entityInside(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity) {
-        if (entity instanceof AlienEntity) return;
-        if (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator())) return;
+        if (entity.getType().is(GigTags.GIG_ALIENS)) return;
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
         if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(entity) && !((Host) entity).hasParasite()) {
             livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
             livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
