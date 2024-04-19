@@ -225,7 +225,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
                 // Hisses
-                new HissingTask<>(80),
+                new HissingTask<>(800),
                 // Searches
                 new SearchTask<>(6000),
                 // Headbite
@@ -322,106 +322,108 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !this.isCrawling() && !isDead) {
-                if (this.onGround() && !this.wasEyeInWater && !this.isExecuting()) {
-                    if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
+                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+                    if (event.isMoving() && !this.isCrawling() && !isDead && (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())) {
+                        if (this.isAggressive() && !this.isVehicle())
+                            return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
+                        else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+                    }
+                    if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUN);
-                    else if (!this.isCrawling())
-                        if (this.isVehicle()) return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
-                        else return event.setAndContinue(GigAnimationsDefault.WALK);
-                } else if (this.wasEyeInWater && !this.isExecuting() && !this.isVehicle())
-                    if (this.isAggressive() && !this.isVehicle())
-                        return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            }
-            if (this.isCrawling() && !isDead && !this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            if (this.isTunnelCrawling() && !isDead && !this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-            if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
-            if (this.isVehicle() && this.isExecuting())
-                return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
-            return event.setAndContinue(
-                    this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
-        }).setSoundKeyframeHandler(event -> {
-                    if (this.level().isClientSide) {
-                        if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
-                                    SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
-                                    SoundSource.HOSTILE, 0.5F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
-                                    SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD,
-                                    SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("biteSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HEADBITE,
-                                    SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH,
-                                    SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                    }
-                }).triggerableAnim("carry", GigAnimationsDefault.EXECUTION_CARRY) // carry
-                .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
-                .triggerableAnim("crawl", GigAnimationsDefault.CRAWL) // grab
-                .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)); // idle
-        controllers.add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0, event -> {
-            if (event.getAnimatable().isPassedOut())
-                return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
-            if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
-            if (this.isVehicle() && !this.isExecuting())
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
-            return PlayState.STOP;
-        }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
-                .triggerableAnim("run", RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
-                .triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
-                .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
-                .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
-                .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
-                .triggerableAnim("wakeup",
-                        GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land",
-                                LoopType.LOOP)) // wake up
-                .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
-                .triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
-                .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
-                .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
-                .triggerableAnim("left_claw_basic", GigAnimationsDefault.LEFT_CLAW_BASIC) // attack
-                .triggerableAnim("right_claw_basic", GigAnimationsDefault.RIGHT_CLAW_BASIC) // attack
-                .triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
-                .triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
-                .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
-                .setSoundKeyframeHandler(event -> {
-                    if (this.level().isClientSide) {
-                        if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW,
-                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL,
-                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                        if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH,
-                                    SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                    }
-                }));
-        controllers.add(new AnimationController<>(this, "hissController", 0, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
-                return event.setAndContinue(GigAnimationsDefault.HISS);
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
-                        SoundSource.HOSTILE, 1.0F, 1.0F, true);
-        }));
+                    if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && !this.isAggressive() && !this.isVehicle())
+                        return event.setAndContinue(GigAnimationsDefault.WALK);
+                    if (event.isMoving() && !this.isCrawling() && !isDead && !this.isInWater() && !this.isTunnelCrawling() && this.isVehicle())
+                        return event.setAndContinue(GigAnimationsDefault.WALK_CARRYING);
+                    if (this.isCrawling() && !isDead && !this.isInWater())
+                        return event.setAndContinue(GigAnimationsDefault.CRAWL);
+                    if (this.isTunnelCrawling() && !isDead && !this.isInWater())
+                        return event.setAndContinue(GigAnimationsDefault.CRAWL);
+                    if (this.isNoAi() && !isDead) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+                    if (this.isSearching() && !isDead) return event.setAndContinue(GigAnimationsDefault.AMBIENT);
+                    if (this.isVehicle() && this.isExecuting())
+                        return event.setAndContinue(GigAnimationsDefault.EXECUTION_GRAB);
+                    if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
+                        return event.setAndContinue(GigAnimationsDefault.HISS);
+                    return event.setAndContinue(
+                            this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);
+                }).setSoundKeyframeHandler(event -> {
+                            if (this.level().isClientSide) {
+                                if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_FOOTSTEP,
+                                            SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HANDSTEP,
+                                            SoundSource.HOSTILE, 0.5F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_AMBIENT,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("thudSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_DEATH_THUD,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("biteSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HEADBITE,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CRUNCH,
+                                            SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            }
+                        }).triggerableAnim("carry", GigAnimationsDefault.EXECUTION_CARRY) // carry
+                        .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+                        .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
+                        .triggerableAnim("crawl", GigAnimationsDefault.CRAWL) // grab
+                        .triggerableAnim("idle", GigAnimationsDefault.IDLE_LAND)) // idle
+                .add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0, event -> {
+                    if (event.getAnimatable().isPassedOut())
+                        return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
+                    if (this.isPassedOut()) return event.setAndContinue(GigAnimationsDefault.STATIS_ENTER);
+                    if (this.isVehicle() && !this.isExecuting())
+                        return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("kidnap"));
+                    return PlayState.STOP;
+                }).triggerableAnim("kidnap", RawAnimation.begin().thenPlayXTimes("kidnap", 1)) // trigger kidnap hands
+                        .triggerableAnim("run",
+                                RawAnimation.begin().then("run", LoopType.PLAY_ONCE)) // trigger kidnap hands
+                        .triggerableAnim("reset", RawAnimation.begin().then("idle_land", LoopType.PLAY_ONCE)) // reset
+                        .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
+                        .triggerableAnim("alert", GigAnimationsDefault.AMBIENT) // reset hands
+                        .triggerableAnim("passout", GigAnimationsDefault.STATIS_ENTER) // pass out
+                        .triggerableAnim("passoutloop", GigAnimationsDefault.STATIS_LOOP) // pass out
+                        .triggerableAnim("wakeup",
+                                GigAnimationsDefault.STATIS_LEAVE.then(this.isInWater() ? "idle_water" : "idle_land",
+                                        LoopType.LOOP)) // wake up
+                        .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
+                        .triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+                        .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
+                        .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
+                        .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
+                        .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
+                        .triggerableAnim("left_claw_basic", GigAnimationsDefault.LEFT_CLAW_BASIC) // attack
+                        .triggerableAnim("right_claw_basic", GigAnimationsDefault.RIGHT_CLAW_BASIC) // attack
+                        .triggerableAnim("left_tail_basic", GigAnimationsDefault.LEFT_TAIL_BASIC) // attack
+                        .triggerableAnim("right_tail_basic", GigAnimationsDefault.RIGHT_TAIL_BASIC) // attack
+                        .triggerableAnim("grab", GigAnimationsDefault.EXECUTION_GRAB) // grab
+                        .setSoundKeyframeHandler(event -> {
+                            if (this.level().isClientSide) {
+                                if (event.getKeyframeData().getSound().matches("clawSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_CLAW, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("tailSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_TAIL, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                                if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
+                                    this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                            GigSounds.ALIEN_CRUNCH, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                            }
+                        }))//newline
+                .add(new AnimationController<>(this, "hissController", 0, event -> {
+                    var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
+                    if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
+                        return event.setAndContinue(GigAnimationsDefault.HISS);
+                    return PlayState.STOP;
+                }).setSoundKeyframeHandler(event -> {
+                    if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
+                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
+                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
     }
 
     @Override
