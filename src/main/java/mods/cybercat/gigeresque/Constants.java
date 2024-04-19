@@ -23,6 +23,8 @@ public record Constants() {
     public static Predicate<Entity> isCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator()));
     public static Predicate<Entity> hasEggEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
             livingEntity) && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING);
+    public static Predicate<Entity> hasDNAEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetGooable(
+            livingEntity) && livingEntity.hasEffect(GigStatusEffects.DNA);
     public static Predicate<Entity> hasImpEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
             livingEntity) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION);
     public static Predicate<Entity> shouldApplyImpEffects = entity -> entity instanceof LivingEntity livingEntity && hasImpEffect.test(

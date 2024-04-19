@@ -113,6 +113,9 @@ public abstract class LivingEntityMixin extends Entity {
             if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasEggEffect.test(this)) {
                 this.removeEffect(GigStatusEffects.IMPREGNATION);
             }
+            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasDNAEffect.test(this)) {
+                this.removeEffect(GigStatusEffects.IMPREGNATION);
+            }
             if (Constants.shouldApplyImpEffects.test(this)) {
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }

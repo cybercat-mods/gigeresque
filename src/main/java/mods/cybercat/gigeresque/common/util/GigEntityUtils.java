@@ -27,6 +27,10 @@ public record GigEntityUtils() {
                 GigTags.AQUATIC_HOSTS) || target.getType().is(GigTags.RUNNER_HOSTS);
     }
 
+    public static boolean isTargetGooable(Entity target) {
+        return isTargetSmallMutantHost(target) || isTargetLargeMutantHost(target);
+    }
+
     public static boolean isTargetSmallMutantHost(Entity target) {
         return target.getType().is(GigTags.MUTANT_SMALL_HOSTS);
     }
