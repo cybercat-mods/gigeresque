@@ -211,7 +211,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> Gigeresque.config.runnerXenoAttackSpeed).stopIf(
+                        (owner, target) -> Gigeresque.config.runnerXenoAttackSpeed - 1.2F).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
@@ -228,9 +228,9 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
             if (event.isMoving() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !this.isPassedOut() && !this.swinging && !(this.level().getFluidState(
                     this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                     this.blockPosition()).getAmount() >= 8))
-                if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
+                if (walkAnimation.speedOld >= 0.45F && this.getFirstPassenger() == null)
                     return event.setAndContinue(GigAnimationsDefault.RUN);
-                else if (!this.isExecuting() && walkAnimation.speedOld < 0.35F || (!(this.isCrawling() || this.isTunnelCrawling()) && !this.onGround()))
+                else if (!this.isExecuting() && walkAnimation.speedOld < 0.45F)
                     return event.setAndContinue(GigAnimationsDefault.WALK);
                 else if ((this.level().getFluidState(this.blockPosition()).is(
                         Fluids.WATER) && this.level().getFluidState(
