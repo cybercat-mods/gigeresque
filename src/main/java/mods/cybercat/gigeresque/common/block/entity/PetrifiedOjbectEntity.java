@@ -47,7 +47,7 @@ public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity
 
     public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedOjbectEntity blockEntity) {
         if (blockEntity.level != null && (level.getRandom().nextInt(0, 200) == 0)) {
-            var i = state.getValue(PetrifiedObjectBlock.HATCH);
+            int i = state.getValue(PetrifiedObjectBlock.HATCH);
             if (i < level.getRandom().nextInt(2, 25) && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
                 level.playSound(null, pos, SoundEvents.HONEY_BLOCK_SLIDE, SoundSource.BLOCKS, 0.3f,
                         0.9f + level.getRandom().nextFloat() * 0.2f);
@@ -60,7 +60,8 @@ public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity
                 level.setBlockAndUpdate(pos,
                         state.setValue(CHEST_STATE, StorageStates.OPENED).setValue(PetrifiedObjectBlock.HATCH, 24));
                 var facehugger = Entities.FACEHUGGER.create(level);
-                facehugger.moveTo((double) pos.getX() + 0.3 + 0, pos.getY() + 1, (double) pos.getZ() + 0.3, 0.0f, 0.0f);
+                assert facehugger != null;
+                facehugger.moveTo(pos.getX() + 0.3 + 0, pos.getY() + 1, pos.getZ() + 0.3, 0.0f, 0.0f);
                 level.addFreshEntity(facehugger);
             }
         }
