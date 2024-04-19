@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public record GigEntityUtils() {
 
     public static boolean isFacehuggerAttached(Entity entity) {
-        return entity != null && entity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance);
+        return (entity != null && entity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance));
     }
 
     public static boolean isTargetHostable(Entity target) {
@@ -61,19 +61,24 @@ public record GigEntityUtils() {
     }
 
     public static boolean removeTarget(LivingEntity target) {
-        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
-                GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) && !target.isAlive());
+        return (((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
+                GigTags.XENO_ATTACK_BLACKLIST)) || GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
+                target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(
+                target) && !target.isAlive()) || target.hasEffect(GigStatusEffects.IMPREGNATION));
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
         return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
-                GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(
+                GigTags.SMALL_XENO_ATTACK_BLACKLIST)) || GigEntityUtils.mainCheck(target) || GigEntityUtils.mainCheck2(
                 target) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
     }
 
     public static boolean mainCheck(LivingEntity target) {
-        return GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
-                target) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(target);
+        return GigEntityUtils.passengerCheck(target) || GigEntityUtils.feetCheck(target);
+    }
+
+    public static boolean mainCheck2(LivingEntity target) {
+        return GigEntityUtils.hostEggCheck(target) || GigEntityUtils.isFacehuggerAttached(target);
     }
 
     public static boolean passengerCheck(LivingEntity target) {
