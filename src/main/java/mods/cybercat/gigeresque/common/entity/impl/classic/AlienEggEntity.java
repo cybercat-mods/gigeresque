@@ -20,6 +20,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -142,6 +144,16 @@ public class AlienEggEntity extends AlienEntity implements GeoEntity {
         if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
         return super.getDimensions(pose);
+    }
+
+    @Override
+    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+        return GigSounds.EGG_NOTICE;
+    }
+
+    @Override
+    public SoundEvent getDeathSound() {
+        return SoundEvents.EMPTY;
     }
 
     @Override
