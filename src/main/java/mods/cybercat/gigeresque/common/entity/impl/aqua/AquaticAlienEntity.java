@@ -127,17 +127,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
 
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(
-                    !(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                            this.blockPosition()).getAmount() >= 8) ? 0.25 : 0.65));
-            if (getTarget() == null) {
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-            }
-        } else super.travel(movementInput);
+        super.travel(movementInput);
     }
 
     @Override

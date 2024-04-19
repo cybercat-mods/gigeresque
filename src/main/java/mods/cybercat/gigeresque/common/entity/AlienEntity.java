@@ -288,11 +288,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
         this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
 
-        if (isEffectiveAi()) {
-            this.moveRelative(getSpeed(), movementInput);
-            this.move(MoverType.SELF, getDeltaMovement());
-            this.setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null) this.setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+            moveRelative(getSpeed(), movementInput);
+            move(MoverType.SELF, getDeltaMovement());
+            setDeltaMovement(getDeltaMovement().scale(0.25));
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
         } else super.travel(movementInput);
     }
 
@@ -349,6 +350,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
+        this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 3, false, false));
         this.setNoGravity(false);
         if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
         if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
