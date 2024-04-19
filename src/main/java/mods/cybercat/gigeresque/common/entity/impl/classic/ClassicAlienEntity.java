@@ -218,7 +218,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
                 new EggmorpthTargetTask<>().stopIf(
-                        entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling()),
+                        entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling() || !this.isVehicle() || this.getFirstPassenger() == null),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
@@ -265,7 +265,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         new FindDarknessTask<>().startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()),
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
+                        new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
                                 entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive()),
                         // Searches
@@ -283,7 +283,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed).startCondition(
+                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed + 0.5f).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
                 // Classic Xeno attacking
