@@ -350,7 +350,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
-        this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 3, false, false));
         this.setNoGravity(false);
         if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
         if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
