@@ -21,6 +21,8 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -826,6 +828,12 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
     @Override
     protected void jumpFromGround() {
 
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 3, false, false));
     }
 
     @Override
