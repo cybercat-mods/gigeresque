@@ -288,7 +288,13 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
         this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
 
-        super.travel(movementInput);
+        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
+                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
+            moveRelative(getSpeed(), movementInput);
+            move(MoverType.SELF, getDeltaMovement());
+            setDeltaMovement(getDeltaMovement().scale(0.25));
+            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
+        } else super.travel(movementInput);
     }
 
     @Override

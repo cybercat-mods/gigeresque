@@ -101,13 +101,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.5));
-            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else super.travel(movementInput);
+        super.travel(movementInput);
     }
 
     @Override

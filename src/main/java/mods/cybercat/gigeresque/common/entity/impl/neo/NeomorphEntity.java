@@ -98,17 +98,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.6));
-            if (getTarget() == null) {
-                setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-            }
-        } else {
-            super.travel(movementInput);
-        }
+        super.travel(movementInput);
     }
 
     @Override

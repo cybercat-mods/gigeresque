@@ -241,16 +241,6 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
     }
 
     @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        if (isEffectiveAi() && this.isInWater()) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.9));
-            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else super.travel(movementInput);
-    }
-
-    @Override
     public boolean isPathFinding() {
         return false;
     }

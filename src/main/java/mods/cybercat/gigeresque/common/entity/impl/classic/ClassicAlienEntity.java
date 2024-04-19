@@ -110,12 +110,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         this.navigation.setCanFloat(true);
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
-        if (isEffectiveAi()) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.5));
-            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else super.travel(movementInput);
+        super.travel(movementInput);
     }
 
     @Override
