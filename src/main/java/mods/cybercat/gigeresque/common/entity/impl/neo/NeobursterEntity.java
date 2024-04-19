@@ -68,7 +68,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     @Override
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new EatFoodTask<>(5), new KillCropsTask<>(),
+        return BrainActivityGroup.idleTasks(new EatFoodTask<>(40), new KillCropsTask<>(),
                 new FirstApplicableBehaviour<ChestbursterEntity>(new TargetOrRetaliate<>(),
                         new SetPlayerLookTarget<>().predicate(
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
