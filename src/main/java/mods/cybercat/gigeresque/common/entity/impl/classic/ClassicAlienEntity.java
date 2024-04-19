@@ -220,7 +220,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
                 new EggmorpthTargetTask<>().stopIf(
-                        entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling()),
+                        entity -> this.isFleeing() || this.isCrawling() || !this.isTunnelCrawling() || !this.isVehicle() || this.getFirstPassenger() == null),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
