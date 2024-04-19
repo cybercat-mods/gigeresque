@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
-@Environment(EnvType.CLIENT)
 public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEntity> {
     public ChestbursterEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new ChestbursterEntityModel());

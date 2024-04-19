@@ -5,14 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.bettercrawling.client.ClientEventHandlers;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-@Environment(EnvType.CLIENT)
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
     private final HashMap<EntityType<?>, TransformDataGenerator> headDistances = new HashMap<>();
 

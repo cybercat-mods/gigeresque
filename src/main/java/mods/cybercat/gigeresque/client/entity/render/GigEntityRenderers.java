@@ -4,14 +4,10 @@ import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 
-@Environment(EnvType.CLIENT)
 public record GigEntityRenderers() implements GigeresqueInitializer {
 
     @Override
@@ -36,13 +32,21 @@ public record GigEntityRenderers() implements GigeresqueInitializer {
         EntityRenderers.register(Entities.RAVENOUSTEMPLEBEAST, RavenousTempleBeastEntityRenderer::new);
         EntityRenderers.register(Entities.DRACONICTEMPLEBEAST, DraconicTempleBeastEntityRenderer::new);
         EntityRenderers.register(Entities.MOONLIGHTHORRORTEMPLEBEAST, MoonlightHorrorTempleBeastEntityRenderer::new);
-        BlockEntityRenderers.register(Entities.PETRIFIED_OBJECT, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
-        BlockEntityRenderers.register(Entities.SPORE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
-        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
+        BlockEntityRenderers.register(Entities.PETRIFIED_OBJECT,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender());
+        BlockEntityRenderers.register(Entities.SPORE_ENTITY,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_2,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender());
+        BlockEntityRenderers.register(Entities.ALIEN_STORAGE_BLOCK_ENTITY_3,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender());
     }
 }

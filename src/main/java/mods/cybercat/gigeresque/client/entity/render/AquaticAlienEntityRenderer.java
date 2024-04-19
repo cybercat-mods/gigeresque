@@ -7,7 +7,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-@Environment(EnvType.CLIENT)
 public class AquaticAlienEntityRenderer extends GeoEntityRenderer<AquaticAlienEntity> {
     public AquaticAlienEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new AquaticAlienEntityModel());

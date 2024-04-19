@@ -7,12 +7,9 @@ import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.RunnerbursterEntityModel;
 import mods.cybercat.gigeresque.client.entity.render.feature.RunnerBusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-@Environment(EnvType.CLIENT)
 public class RunnerbursterEntityRenderer extends GeoEntityRenderer<RunnerbursterEntity> {
     public RunnerbursterEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new RunnerbursterEntityModel());
@@ -26,7 +23,8 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
         poseStack.pushPose();
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         poseStack.popPose();
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
     }
 
     @Override
