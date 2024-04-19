@@ -22,6 +22,9 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
         if (!entity.isVehicle()) {
             stack.translate(0, -0.35, 0);
         }
+        if (entity.isPassedOut()) {
+            stack.translate(0, 0.35, 0);
+        }
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 

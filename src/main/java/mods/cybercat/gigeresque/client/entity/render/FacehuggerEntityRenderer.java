@@ -131,8 +131,11 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
 
     @Override
     public void render(@NotNull FacehuggerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (entity.isVehicle() || entity.isPassenger()) {
-            poseStack.translate(0, -0.2, 0);
+        if (entity.isVehicle()) {
+            poseStack.translate(0, -0.18, 0);
+        }
+        if (entity.isPassenger()) {
+            poseStack.translate(0, -0.18, 0);
         }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
