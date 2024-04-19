@@ -2,7 +2,8 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -26,20 +28,23 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         matrices.pushPose();
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
-        var progress = 0.0F + (((Eggmorphable) entity).getTicksUntilEggmorphed() / 6000);
+        var progress = 0.0F + (Gigeresque.config.getEggmorphTickTimer() / (Gigeresque.config.getEggmorphTickTimer() / 2));
         renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
         renderedModel.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, progress);
         matrices.popPose();
     }
 
     public static EggmorphLayerTexture getEggmorphLayerTexture(ResourceLocation texture) {
-        return textureCache.computeIfAbsent(texture, identifier -> new EggmorphLayerTexture(Minecraft.getInstance().getTextureManager(), Minecraft.getInstance().getResourceManager(), texture));
+        return textureCache.computeIfAbsent(texture,
+                identifier -> new EggmorphLayerTexture(Minecraft.getInstance().getTextureManager(),
+                        Minecraft.getInstance().getResourceManager(), texture));
     }
 
     @Override
     public void render(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers, int light, @NotNull T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        if (entity instanceof Eggmorphable && ((Eggmorphable) entity).isEggmorphing()) {
-            renderEggmorphedModel(getParentModel(), getTextureLocation(entity), matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            renderEggmorphedModel(getParentModel(), getTextureLocation(entity), matrices, vertexConsumers, light,
+                    entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
         }
     }
 }

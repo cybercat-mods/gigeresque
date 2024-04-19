@@ -16,6 +16,7 @@ public record GigStatusEffects() implements GigeresqueInitializer {
     public static final MobEffect DNA = new DNAStatusEffect();
     public static final MobEffect SPORE = new SporeStatusEffect();
     public static final MobEffect IMPREGNATION = new ImpregnationStatusEffect();
+    public static final MobEffect EGGMORPHING = new EggMorphingStatusEffect();
     private static GigStatusEffects instance;
 
     public static synchronized GigStatusEffects getInstance() {
@@ -30,5 +31,6 @@ public record GigStatusEffects() implements GigeresqueInitializer {
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("dna_disintegration"), DNA);
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("neo_spore"), SPORE);
         Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("impregnation"), IMPREGNATION);
+        Registry.register(BuiltInRegistries.MOB_EFFECT, Constants.modResource("eggmorphing"), EGGMORPHING);
     }
 }

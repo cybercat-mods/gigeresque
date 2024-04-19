@@ -7,7 +7,6 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -46,8 +45,8 @@ public record GigEntityUtils() {
 
     public static boolean faceHuggerTest(LivingEntity target) {
         return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType().is(
-                GigTags.FACEHUGGER_BLACKLIST) && !target.hasEffect(
-                GigStatusEffects.IMPREGNATION) && ((Eggmorphable) target).isNotEggmorphing() && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
+                GigTags.FACEHUGGER_BLACKLIST) && !target.hasEffect(GigStatusEffects.IMPREGNATION) && !target.hasEffect(
+                GigStatusEffects.EGGMORPHING) && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
                 target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
@@ -83,7 +82,7 @@ public record GigEntityUtils() {
     }
 
     public static boolean hostEggCheck(LivingEntity target) {
-        return target.hasEffect(GigStatusEffects.IMPREGNATION) || ((Eggmorphable) target).isEggmorphing();
+        return target.hasEffect(GigStatusEffects.IMPREGNATION) || target.hasEffect(GigStatusEffects.EGGMORPHING);
     }
 
     public static void spawnMutant(LivingEntity entity) {

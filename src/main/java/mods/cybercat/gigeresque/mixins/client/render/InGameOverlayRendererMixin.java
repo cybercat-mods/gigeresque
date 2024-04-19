@@ -7,7 +7,6 @@ import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -47,8 +46,9 @@ public class InGameOverlayRendererMixin {
             }
 
             if (Constants.isNotCreativeSpecPlayer.test(
-                    client.player) && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-                var eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
+                    client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
+                var eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - client.player.getEffect(
+                        GigStatusEffects.IMPREGNATION).getDuration()) / Gigeresque.config.getEggmorphTickTimer();
                 renderOverlay(client, matrices, 1 - eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }

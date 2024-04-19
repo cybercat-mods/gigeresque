@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -27,6 +28,9 @@ public class NestResinWebFullBlock extends Block {
         if (entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
                 entity) && !livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
             livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0, 0.25));
+            if (!livingEntity.hasEffect(GigStatusEffects.EGGMORPHING))
+                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.EGGMORPHING,
+                        (int) Gigeresque.config.getEggmorphTickTimer(), 10), entity);
             livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), entity);
             if (!world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
                 livingEntity.setPos(pos.getCenter().x, pos.getY(), pos.getCenter().z);

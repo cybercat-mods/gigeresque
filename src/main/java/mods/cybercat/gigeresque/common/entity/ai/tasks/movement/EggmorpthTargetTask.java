@@ -2,11 +2,9 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,9 +56,6 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
                             test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
                             new AABB(test)).stream().noneMatch(Objects::isNull)) {
                         BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-                        if (passenger instanceof Eggmorphable)
-                            ((Eggmorphable) passenger).setTicksUntilEggmorphed(
-                                    Gigeresque.config.getEggmorphTickTimer());
                         passenger.setPos(Vec3.atBottomCenterOf(testPos));
                         passenger.removeVehicle();
                         entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
