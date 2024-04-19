@@ -56,8 +56,10 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
                             test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
                             new AABB(test)).stream().noneMatch(Objects::isNull)) {
                         BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-                        passenger.setPos(Vec3.atBottomCenterOf(testPos));
-                        passenger.removeVehicle();
+                        if (passenger != null) {
+                            passenger.setPos(Vec3.atBottomCenterOf(testPos));
+                            passenger.removeVehicle();
+                        }
                         entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                         level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
                         level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
