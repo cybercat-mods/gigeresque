@@ -158,7 +158,7 @@ public class SpitterEntity extends CrawlerAlien implements SmartBrainOwner<Spitt
                     if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
                         this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_HISS,
                                 SoundSource.HOSTILE, 1.0F, 1.0F, true);
-                }));
+                }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
     }
 
     @Override
