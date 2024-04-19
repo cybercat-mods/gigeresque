@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ScreenEffectRenderer.class)
 public class InGameOverlayRendererMixin {
 
+    private static int fovEggticker = 0;
+    private static int fovGooticker = 0;
+
     @Inject(method = {"renderScreenEffect"}, at = {@At("RETURN")})
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
         assert client.player != null;
@@ -40,15 +43,15 @@ public class InGameOverlayRendererMixin {
 
             if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
                     GigStatusEffects.DNA)) {
-                var dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
-                        GigStatusEffects.DNA).getDuration()) / Gigeresque.config.getgooEffectTickTimer();
-                renderOverlay(client, matrices, 0 + dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
+                fovGooticker++;
+                var dnaDuration = Math.max(0, Math.min(Gigeresque.config.getgooEffectTickTimer() / fovGooticker, 1));
+                renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
             if (Constants.isNotCreativeSpecPlayer.test(
                     client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
-                var eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - client.player.getEffect(
-                        GigStatusEffects.IMPREGNATION).getDuration()) / Gigeresque.config.getEggmorphTickTimer();
+                fovEggticker++;
+                var eggmorphingProgress = Math.max(0, Math.min(Gigeresque.config.getEggmorphTickTimer() / fovEggticker, 1));
                 renderOverlay(client, matrices, 1 - eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }

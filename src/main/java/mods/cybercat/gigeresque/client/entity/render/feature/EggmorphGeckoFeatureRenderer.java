@@ -16,18 +16,22 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class EggmorphGeckoFeatureRenderer<T extends Entity & GeoEntity> extends GeoRenderLayer<T> {
 
+    private int fovEggticker = 0;
+
     public EggmorphGeckoFeatureRenderer(GeoRenderer<T> entityRenderer) {
         super(entityRenderer);
     }
 
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        var progress = 0.0F + (Gigeresque.config.getEggmorphTickTimer() / (Gigeresque.config.getEggmorphTickTimer() / 2));
         var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(
                 getGeoModel().getTextureResource(animatable)).renderLayer;
-        if (animatable instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING))
+        if (animatable instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            fovEggticker++;
+            var progress = Math.max(0, Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
             renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, renderLayer,
                     bufferSource.getBuffer(renderLayer), partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0f,
                     1.0f, 1.0f, progress);
+        }
     }
 }

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
+    private static int fovEggticker = 0;
     private static final HashMap<ResourceLocation, EggmorphLayerTexture> textureCache = new HashMap<>();
 
     public EggmorphFeatureRenderer(RenderLayerParent<T, M> context) {
@@ -28,7 +29,8 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         matrices.pushPose();
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
-        var progress = 0.0F + (Gigeresque.config.getEggmorphTickTimer() / (Gigeresque.config.getEggmorphTickTimer() / 2));
+        fovEggticker++;
+        var progress = Math.max(0, Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
         renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
         renderedModel.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, progress);
         matrices.popPose();
