@@ -44,15 +44,15 @@ public class InGameOverlayRendererMixin {
             if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
                     GigStatusEffects.DNA)) {
                 fovGooticker++;
-                var dnaDuration = Math.max(0, Math.min(Gigeresque.config.getgooEffectTickTimer() / fovGooticker, 1));
+                var dnaDuration = Math.max(0, Math.min(fovGooticker / Gigeresque.config.getgooEffectTickTimer(), 1));
                 renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
             if (Constants.isNotCreativeSpecPlayer.test(
                     client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
                 fovEggticker++;
-                var eggmorphingProgress = Math.max(0, Math.min(Gigeresque.config.getEggmorphTickTimer() / fovEggticker, 1));
-                renderOverlay(client, matrices, 1 - eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
+                var eggmorphingProgress = Math.max(0, Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
+                renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
     }
