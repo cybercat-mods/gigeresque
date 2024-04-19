@@ -28,10 +28,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -39,7 +39,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -161,6 +160,12 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> Gigeresque.config.stalkerAttackSpeed),
                 // move to
                 new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR));// attack
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
     }
 
     @Override
