@@ -7,7 +7,6 @@ import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -28,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ScreenEffectRenderer.class)
 public class InGameOverlayRendererMixin {
 
+    private static int fovEggticker = 0;
+    private static int fovGooticker = 0;
+
     @Inject(method = {"renderScreenEffect"}, at = {@At("RETURN")})
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
         assert client.player != null;
@@ -39,15 +41,19 @@ public class InGameOverlayRendererMixin {
             if (fluidState.createLegacyBlock().getBlock() == GigBlocks.BLACK_FLUID)
                 renderOverlay(client, matrices, 1, EntityTextures.BLACK_FLUID_TEXTURE);
 
-            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(GigStatusEffects.DNA)) {
-                var dnaDuration = (float) (Gigeresque.config.getgooEffectTickTimer() - client.player.getEffect(
-                        GigStatusEffects.DNA).getDuration()) / Gigeresque.config.getgooEffectTickTimer();
-                renderOverlay(client, matrices, 0 + dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
+            if (Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
+                    GigStatusEffects.DNA)) {
+                fovGooticker++;
+                var dnaDuration = Math.max(0, Math.min(fovGooticker / Gigeresque.config.getgooEffectTickTimer(), 1));
+                renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
-            if (!client.player.isCreative() && client.player instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
-                var eggmorphingProgress = (Gigeresque.config.getEggmorphTickTimer() - eggmorphable.getTicksUntilEggmorphed()) / Gigeresque.config.getEggmorphTickTimer();
-                renderOverlay(client, matrices, 1 - eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
+            if (Constants.isNotCreativeSpecPlayer.test(
+                    client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
+                fovEggticker++;
+                var eggmorphingProgress = Math.max(0,
+                        Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
+                renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
     }

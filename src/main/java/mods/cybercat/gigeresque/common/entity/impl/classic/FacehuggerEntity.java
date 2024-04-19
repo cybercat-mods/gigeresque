@@ -21,9 +21,9 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.Host;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -161,8 +161,6 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     public void detachFromHost(boolean removesParasite) {
         this.ticksAttachedToHost = -1.0f;
-        var vehicle = this.getVehicle();
-        if (vehicle instanceof LivingEntity && removesParasite) ((Host) vehicle).removeParasite();
         this.unRide();
     }
 
@@ -208,40 +206,38 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         if (isAttachedToHost()) {
             ticksAttachedToHost += 1;
 
-            var host = (Host) this.getVehicle();
+            var host = this.getVehicle();
+            if (!(host instanceof LivingEntity livingEntity)) return;
 
-            if (host != null) {
-                ((LivingEntity) getVehicle()).addEffect(
-                        new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-                if (((LivingEntity) getVehicle()).getHealth() > ((LivingEntity) getVehicle()).getMaxHealth())
-                    ((LivingEntity) getVehicle()).heal(6);
+            if (livingEntity != null) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
+                if (livingEntity.getHealth() > livingEntity.getMaxHealth()) livingEntity.heal(6);
                 if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
                     player.getFoodData().setFoodLevel(20);
-                if (host.doesNotHaveParasite()) host.setTicksUntilImpregnation(
-                        Gigeresque.config.getImpregnationTickTimer() + Gigeresque.config.getFacehuggerAttachTickTimer());
                 if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer()) {
-                    if (((LivingEntity) host).hasEffect(MobEffects.BLINDNESS))
-                        ((LivingEntity) host).removeEffect(MobEffects.BLINDNESS);
+                    if (livingEntity.hasEffect(MobEffects.BLINDNESS)) {
+                        livingEntity.removeEffect(MobEffects.BLINDNESS);
+                    }
+                    if (!livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+                        livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.IMPREGNATION,
+                                (int) Gigeresque.config.getImpregnationTickTimer(), 0, false, true));
+                    }
                     if (!level().isClientSide)
-                        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT,
-                                SoundSource.HOSTILE, 1.0F, 1.0F, true);
+                        this.level().playSound(this, this.blockPosition(), GigSounds.HUGGER_IMPLANT,
+                                SoundSource.HOSTILE, 1.0F, 1.0F);
                     setIsInfertile(true);
                     this.unRide();
                     this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
                 }
             }
 
-            var vehicle = this.getVehicle();
-            if (vehicle != null && ((Host) vehicle).isBleeding()) {
-                if (((LivingEntity) vehicle).hasEffect(MobEffects.BLINDNESS))
-                    ((LivingEntity) vehicle).removeEffect(MobEffects.BLINDNESS);
+            if (livingEntity != null && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+                if (livingEntity.hasEffect(MobEffects.BLINDNESS)) livingEntity.removeEffect(MobEffects.BLINDNESS);
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();
             }
-            if (vehicle instanceof Player player && (player.isCreative() || player.isSpectator())) {
-                assert host != null;
-                host.setTicksUntilImpregnation(-1);
+            if (Constants.isCreativeSpecPlayer.test(host)) {
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();

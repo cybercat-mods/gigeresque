@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.SheepFurModel;
@@ -39,9 +39,10 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
 
     @Inject(method = "render", at = @At("TAIL"))
     private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, Sheep sheepEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
-        if (!sheepEntity.isSheared() && sheepEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
+        if (!sheepEntity.isSheared() && sheepEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
             this.getParentModel().copyPropertiesTo(this.model);
-            EggmorphFeatureRenderer.renderEggmorphedModel(this.model, SHEEP_FUR_LOCATION, matrixStack, vertexConsumerProvider, light, sheepEntity, f, g, h, j, k, l);
+            EggmorphFeatureRenderer.renderEggmorphedModel(this.model, SHEEP_FUR_LOCATION, matrixStack,
+                    vertexConsumerProvider, light, sheepEntity, f, g, h, j, k, l);
         }
     }
 }

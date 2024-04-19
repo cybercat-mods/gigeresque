@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.interfacing.Eggmorphable;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
@@ -37,9 +37,11 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;" + "Lnet/minecraft/client/renderer" + "/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("TAIL"))
     private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T livingEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
-        if (livingEntity instanceof Eggmorphable eggmorphable && eggmorphable.isEggmorphing()) {
+        if (livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
             var entityModel = this.getParentModel();
-            EggmorphFeatureRenderer.renderEggmorphedModel(entityModel, getResourceLocation("type", BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())), matrixStack, vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
+            EggmorphFeatureRenderer.renderEggmorphedModel(entityModel, getResourceLocation("type",
+                            BuiltInRegistries.VILLAGER_TYPE.getKey(livingEntity.getVillagerData().getType())), matrixStack,
+                    vertexConsumerProvider, light, livingEntity, f, g, h, j, k, l);
         }
     }
 }
