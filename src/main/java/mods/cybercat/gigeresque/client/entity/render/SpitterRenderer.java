@@ -8,11 +8,20 @@ import mods.cybercat.gigeresque.client.entity.model.SpitterModel;
 import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
     public SpitterRenderer(EntityRendererProvider.Context context) {
         super(context, new SpitterModel());
         this.shadowRadius = 0.5f;
+    }
+
+    @Override
+    public void render(SpitterEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+        if (entity.onGround() && !entity.isVehicle()) {
+            poseStack.translate(0, -0.15, 0);
+        }
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

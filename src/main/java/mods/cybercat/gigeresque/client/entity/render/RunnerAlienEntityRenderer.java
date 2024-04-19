@@ -20,6 +20,9 @@ public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEnti
     public void render(RunnerAlienEntity entity, float entityYaw, float partialTicks, PoseStack stack, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         float scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        if (!entity.isVehicle()) {
+            stack.translate(0, -0.16, 0);
+        }
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 
