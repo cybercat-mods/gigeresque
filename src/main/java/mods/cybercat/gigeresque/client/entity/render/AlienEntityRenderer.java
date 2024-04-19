@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
-import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAlienFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,7 +13,6 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     public AlienEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new AlienEntityModel());
         this.shadowRadius = 0.5f;
-        this.addRenderLayer(new ClassicAlienFeatureRenderer(this));
     }
 
     @Override
