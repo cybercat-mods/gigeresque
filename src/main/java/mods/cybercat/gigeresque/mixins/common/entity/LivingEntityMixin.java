@@ -74,7 +74,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract Collection<MobEffectInstance> getActiveEffects();
 
-    @Shadow public abstract boolean removeEffect(MobEffect effect);
+    @Shadow
+    public abstract boolean removeEffect(MobEffect effect);
 
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
@@ -104,17 +105,20 @@ public abstract class LivingEntityMixin extends Entity {
             this.applyParticle();
         }
         if (!this.level().isClientSide) {
-            if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS)){
+            if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(
+                    GigBlocks.NEST_RESIN_WEB_CROSS)) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
             }
-            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasEggEffect.test(this)) {
-                this.removeEffect(GigStatusEffects.EGGMORPHING);
-            }
-            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasEggEffect.test(this)) {
-                this.removeEffect(GigStatusEffects.IMPREGNATION);
-            }
-            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasDNAEffect.test(this)) {
-                this.removeEffect(GigStatusEffects.IMPREGNATION);
+            if (Constants.isCreativeSpecPlayer.test(this)) {
+                if (Constants.hasEggEffect.test(this)) {
+                    this.removeEffect(GigStatusEffects.EGGMORPHING);
+                }
+                if (Constants.hasEggEffect.test(this)) {
+                    this.removeEffect(GigStatusEffects.IMPREGNATION);
+                }
+                if (Constants.hasDNAEffect.test(this)) {
+                    this.removeEffect(GigStatusEffects.IMPREGNATION);
+                }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
@@ -129,8 +133,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = {"isUsingItem"}, at = {@At("RETURN")}, cancellable = true)
     public void isUsingItem(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING))
-            callbackInfo.setReturnValue(false);
+                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(false);
     }
 
     @Inject(method = {"isPushable"}, at = {@At("RETURN")}, cancellable = true)
@@ -162,8 +165,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = {"isImmobile"}, at = {@At("RETURN")}, cancellable = true)
     protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING))
-            callbackInfo.setReturnValue(true);
+                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(true);
     }
 
     @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
