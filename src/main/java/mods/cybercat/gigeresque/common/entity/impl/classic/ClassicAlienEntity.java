@@ -117,7 +117,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling()) return EntityDimensions.scalable(0.5f, 0.5f);
+        if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.3f);
         return EntityDimensions.scalable(0.9f, 2.9f);
     }
 
