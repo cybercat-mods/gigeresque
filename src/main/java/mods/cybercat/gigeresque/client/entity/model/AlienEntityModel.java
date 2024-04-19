@@ -18,7 +18,8 @@ public class AlienEntityModel extends DefaultedEntityGeoModel<ClassicAlienEntity
 
     @Override
     public ResourceLocation getTextureResource(ClassicAlienEntity object) {
-        return object.isPassedOut() ? EntityTextures.ALIEN_STATIS : EntityTextures.ALIEN;
+        var progress = Math.max(0, Math.min(1- (object.getGrowth() / object.getMaxGrowth()), 1));
+        return object.isPassedOut() ? EntityTextures.ALIEN_STATIS : progress > 0 ? EntityTextures.ALIEN_YOUNG :EntityTextures.ALIEN;
     }
 
     @Override
