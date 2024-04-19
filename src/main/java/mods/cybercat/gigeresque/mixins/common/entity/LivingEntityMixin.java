@@ -68,13 +68,6 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract float getHealth();
 
     @Shadow
-    @Nullable
-    public abstract MobEffectInstance getEffect(MobEffect effect);
-
-    @Shadow
-    public abstract Collection<MobEffectInstance> getActiveEffects();
-
-    @Shadow
     public abstract boolean removeEffect(MobEffect effect);
 
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
