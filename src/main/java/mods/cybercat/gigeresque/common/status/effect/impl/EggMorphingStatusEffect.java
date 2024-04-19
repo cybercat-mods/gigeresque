@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -30,6 +31,7 @@ public class EggMorphingStatusEffect extends MobEffect {
     }
 
     public static void effectRemoval(@NotNull LivingEntity entity) {
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
         if (!GigEntityUtils.isTargetHostable(entity)) return;
         if (!entity.level().getBlockState(entity.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS)) return;
         var egg = new AlienEggEntity(Entities.EGG, entity.level());

@@ -65,6 +65,8 @@ public class ImpregnationStatusEffect extends MobEffect {
     }
 
     public static void effectRemoval(LivingEntity entity) {
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
+        if (!GigEntityUtils.isTargetHostable(entity)) return;
         LivingEntity burster = createBurster(entity);
         if (burster != null) {
             setBursterProperties(entity, burster);

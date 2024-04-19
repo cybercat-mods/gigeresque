@@ -21,9 +21,12 @@ public record Constants() {
     public static Predicate<Entity> isCreeper = Creeper.class::isInstance;
     public static Predicate<Entity> isNotCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && !(playerEntity.isCreative() || playerEntity.isSpectator()));
     public static Predicate<Entity> isCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator()));
-
-    public static Predicate<Entity> shouldApplyImpEffects = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
-            livingEntity) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION) && (livingEntity.getEffect(
+    public static Predicate<Entity> hasEggEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
+            livingEntity) && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING);
+    public static Predicate<Entity> hasImpEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
+            livingEntity) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION);
+    public static Predicate<Entity> shouldApplyImpEffects = entity -> entity instanceof LivingEntity livingEntity && hasImpEffect.test(
+            livingEntity) && (livingEntity.getEffect(
             GigStatusEffects.IMPREGNATION).getDuration() < (0.2 * Gigeresque.config.getImpregnationTickTimer()) && (livingEntity.tickCount % Constants.TPS == 0L));
 
     public static final String ATTACK_CONTROLLER = "attackController";

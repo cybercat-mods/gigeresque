@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.mixins.common.entity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -73,6 +74,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract Collection<MobEffectInstance> getActiveEffects();
 
+    @Shadow public abstract boolean removeEffect(MobEffect effect);
+
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getVehicle() != null && this.getVehicle().getType().is(
@@ -101,6 +104,15 @@ public abstract class LivingEntityMixin extends Entity {
             this.applyParticle();
         }
         if (!this.level().isClientSide) {
+            if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS)){
+                this.removeEffect(GigStatusEffects.EGGMORPHING);
+            }
+            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasEggEffect.test(this)) {
+                this.removeEffect(GigStatusEffects.EGGMORPHING);
+            }
+            if (Constants.isCreativeSpecPlayer.test(this) && Constants.hasEggEffect.test(this)) {
+                this.removeEffect(GigStatusEffects.IMPREGNATION);
+            }
             if (Constants.shouldApplyImpEffects.test(this)) {
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
