@@ -59,7 +59,7 @@ public class AcidEntity extends Entity {
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
             // Do things
-            if (this.tickCount % (this.random.nextInt(200 - 100 + 1) + 100) == 0) {
+            if (this.tickCount % 40 == 0) {
                 var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
                 if (canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
                     var hardness = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
@@ -70,7 +70,7 @@ public class AcidEntity extends Entity {
                         this.doBlockBreaking(this.random);
                     }
                 }
-                this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox()).forEach(entity -> {
+                this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
                         this.damageBoots(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
@@ -120,7 +120,7 @@ public class AcidEntity extends Entity {
             return;
         if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
-                    new MobEffectInstance(GigStatusEffects.ACID, 60, randomSource.nextIntBetweenInclusive(0, 4)));
+                    new MobEffectInstance(GigStatusEffects.ACID, 600, randomSource.nextIntBetweenInclusive(0, 4)));
         }
     }
 
