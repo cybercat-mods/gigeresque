@@ -43,6 +43,7 @@ public class HissingTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     @Override
     protected void doDelayedAction(E entity) {
+        entity.triggerAnim("hissController", "hiss");
         entity.setIsHissing(true);
     }
 }
