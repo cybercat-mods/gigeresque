@@ -10,6 +10,7 @@ import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
@@ -461,12 +462,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
      */
     @Override
     public SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return SoundEvents.EMPTY;
+        return GigSounds.ALIEN_HURT;
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return SoundEvents.EMPTY;
+        return GigSounds.ALIEN_DEATH;
     }
 
     public void grabTarget(Entity entity) {
