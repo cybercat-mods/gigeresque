@@ -1,17 +1,19 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 
 import java.util.List;
 
-public class SearchTask<E extends AlienEntity> extends DelayedBehaviour<E> {
+public class SearchTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
 
     public SearchTask(int delayTicks) {
         super(delayTicks);

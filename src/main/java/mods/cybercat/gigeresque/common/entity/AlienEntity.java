@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -57,7 +58,7 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity, Growable {
+public abstract class AlienEntity extends Monster implements VibrationSystem, GeoEntity, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -130,96 +131,109 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         return 0;
     }
 
+    @Override
     public boolean isFleeing() {
         return this.entityData.get(FLEEING_FIRE);
     }
 
+    @Override
     public void setFleeingStatus(boolean fleeing) {
         this.entityData.set(FLEEING_FIRE, fleeing);
     }
 
+    @Override
     public boolean isUpsideDown() {
         return this.entityData.get(UPSIDE_DOWN);
     }
 
-    public int getAttckingState() {
-        return this.entityData.get(STATE);
-    }
-
-    public void setAttackingState(int time) {
-        this.entityData.set(STATE, time);
-    }
-
+    @Override
     public boolean isCrawling() {
         return this.entityData.get(IS_CLIMBING);
     }
 
+    @Override
     public void setIsCrawling(boolean shouldCrawl) {
         this.getEntityData().set(IS_CLIMBING, shouldCrawl);
         this.refreshDimensions();
     }
 
+    @Override
     public boolean isTunnelCrawling() {
         return this.entityData.get(IS_TUNNEL_CRAWLING);
     }
 
+    @Override
     public void setIsTunnelCrawling(boolean shouldTunnelCrawl) {
         this.getEntityData().set(IS_TUNNEL_CRAWLING, shouldTunnelCrawl);
         this.refreshDimensions();
     }
 
+    @Override
     public void setWakingUpStatus(boolean passout) {
         this.entityData.set(WAKING_UP, passout);
     }
 
+    @Override
     public boolean isWakingUp() {
         return this.entityData.get(WAKING_UP);
     }
 
+    @Override
     public boolean isExecuting() {
         return entityData.get(IS_EXECUTION);
     }
 
+    @Override
     public void setIsExecuting(boolean isExecuting) {
         entityData.set(IS_EXECUTION, isExecuting);
     }
 
+    @Override
     public boolean isBiting() {
         return entityData.get(IS_HEADBITE);
     }
 
+    @Override
     public void setIsBiting(boolean isBiting) {
         entityData.set(IS_HEADBITE, isBiting);
     }
 
+    @Override
     public boolean isSearching() {
         return entityData.get(IS_SEARCHING);
     }
 
+    @Override
     public void setIsSearching(boolean isHissing) {
         entityData.set(IS_SEARCHING, isHissing);
     }
 
+    @Override
     public boolean isHissing() {
         return entityData.get(IS_HISSING);
     }
 
+    @Override
     public void setIsHissing(boolean isHissing) {
         entityData.set(IS_HISSING, isHissing);
     }
 
+    @Override
     public float getGrowth() {
         return entityData.get(GROWTH);
     }
 
+    @Override
     public void setGrowth(float growth) {
         entityData.set(GROWTH, growth);
     }
 
+    @Override
     public boolean isPassedOut() {
         return this.entityData.get(PASSED_OUT);
     }
 
+    @Override
     public void setPassedOutStatus(boolean passout) {
         this.entityData.set(PASSED_OUT, passout);
     }
@@ -277,6 +291,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.setGrowth(compound.getFloat("growth"));
         this.setIsTunnelCrawling(compound.getBoolean("isTunnelCrawling"));
         this.setIsHissing(compound.getBoolean("isHissing"));
+        this.setIsBiting(compound.getBoolean(("isHeadBite")));
         this.setIsSearching(compound.getBoolean("isSearching"));
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
@@ -419,6 +434,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public void checkDespawn() {
     }
 
+    @Override
     public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
         var acidEntity = Entities.ACID.create(this.level());
         assert acidEntity != null;

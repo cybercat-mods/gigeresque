@@ -106,7 +106,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
             var velocityLength = this.getDeltaMovement().horizontalDistance();
-            if (event.getAnimatable().getAttckingState() != 1 && velocityLength >= 0.000000001 && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
+            if (!this.isAggressive() && velocityLength >= 0.000000001 && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isExecuting() && !isDead && !this.isPassedOut() && !this.swinging)
                 if (!(this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                         this.blockPosition()).getAmount() >= 8) && !this.isExecuting()) {
                     if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
@@ -117,7 +117,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                     if (this.isAggressive() && !this.isVehicle())
                         return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
                     else return event.setAndContinue(GigAnimationsDefault.SWIM);
-            if (event.getAnimatable().getAttckingState() == 1) return PlayState.CONTINUE;
+            if (this.isAggressive()) return PlayState.CONTINUE;
             else return event.setAndContinue(
                     (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                             this.blockPosition()).getAmount() >= 8) ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE_LAND);

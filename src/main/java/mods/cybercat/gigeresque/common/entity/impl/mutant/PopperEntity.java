@@ -84,7 +84,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
                 if (walkAnimation.speedOld >= 0.35F) return event.setAndContinue(GigAnimationsDefault.RUN);
                 else return event.setAndContinue(GigAnimationsDefault.WALK);
             else if (isDead) return event.setAndContinue(GigAnimationsDefault.DEATH);
-            else if (event.getAnimatable().getAttckingState() == 1 && !this.onGround())
+            else if (this.isAggressive() && !this.onGround())
                 return event.setAndContinue(GigAnimationsDefault.CHARGE);
             else return event.setAndContinue(GigAnimationsDefault.IDLE);
         }).triggerableAnim("death", GigAnimationsDefault.DEATH));

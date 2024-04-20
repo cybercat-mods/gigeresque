@@ -92,11 +92,11 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
                     var velocityLength = this.getDeltaMovement().horizontalDistance();
                     var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                    if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && event.getAnimatable().getAttckingState() == 0)
+                    if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null)
                         if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
                             return event.setAndContinue(GigAnimationsDefault.RUNNING);
                         else return event.setAndContinue(GigAnimationsDefault.MOVING);
-                    if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && event.getAnimatable().getAttckingState() == 0)
+                    if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging)
                         return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
                     return event.setAndContinue(GigAnimationsDefault.IDLE);
                 }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack

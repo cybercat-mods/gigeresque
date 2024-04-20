@@ -401,9 +401,9 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
         controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
             if (this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
-            if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
+            if (!this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying())
+            if (!this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying())
                 if (!this.isAttacking() && event.isMoving()) return event.setAndContinue(GigAnimationsDefault.SWIM);
                 else if (this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
@@ -411,7 +411,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
             if (this.isJumping()) return event.setAndContinue(GigAnimationsDefault.CHARGE);
             if (this.isEggSpawn() && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-            if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying() && event.isMoving()) {
+            if (!this.isJumping() && this.isAttacking() && !this.isDeadOrDying() && event.isMoving()) {
                 event.getController().setAnimationSpeed(3f);
                 return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
             }

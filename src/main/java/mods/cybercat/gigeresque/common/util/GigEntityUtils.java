@@ -54,7 +54,7 @@ public record GigEntityUtils() {
                 target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
-    public static boolean entityTest(LivingEntity target, AlienEntity self) {
+    public static boolean entityTest(LivingEntity target, LivingEntity self) {
         return !((target.getType().is(GigTags.GIG_ALIENS) || target.getType().is(
                 GigTags.XENO_ATTACK_BLACKLIST)) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(
                 target) || self.isVehicle() && target.isAlive());
