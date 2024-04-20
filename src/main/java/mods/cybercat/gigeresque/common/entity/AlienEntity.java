@@ -105,6 +105,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.setMaxUpStep(2.5f);
+        this.noCulling = true;
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
