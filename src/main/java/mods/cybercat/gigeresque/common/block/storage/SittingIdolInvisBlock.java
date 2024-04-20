@@ -29,12 +29,12 @@ public class SittingIdolInvisBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (!world.isClientSide) {
             var radius = new Vec3i(2, 2, 2);
             for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
                 if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
-                    if (!world.isClientSide && world.getBlockEntity(testPos) instanceof IdolStorageEntity idolStorageEntity)
+                    if (world.getBlockEntity(testPos) instanceof IdolStorageEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
@@ -43,12 +43,12 @@ public class SittingIdolInvisBlock extends Block {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public @NotNull BlockState playerWillDestroy(Level world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
         if (world.isClientSide)
             return state;
 
@@ -67,7 +67,7 @@ public class SittingIdolInvisBlock extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return OUTLINE_SHAPE;
     }
 }

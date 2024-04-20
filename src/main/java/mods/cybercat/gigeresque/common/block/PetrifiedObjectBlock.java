@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,16 +39,17 @@ import java.util.stream.Stream;
 public class PetrifiedObjectBlock extends BaseEntityBlock {
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+    public static final MapCodec<PetrifiedObjectBlock> CODEC = simpleCodec(PetrifiedObjectBlock::new);
 
-    protected PetrifiedObjectBlock() {
-        super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable());
+    protected PetrifiedObjectBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(
                 this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

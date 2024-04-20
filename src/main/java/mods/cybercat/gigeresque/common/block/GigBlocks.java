@@ -20,20 +20,20 @@ import static net.minecraft.world.level.block.state.BlockBehaviour.Properties.of
 
 public record GigBlocks() implements GigeresqueInitializer {
 
-    public static final SporeBlock SPORE_BLOCK = new SporeBlock();
-    public static final PetrifiedObjectBlock PETRIFIED_OBJECT_BLOCK = new PetrifiedObjectBlock();
+    public static final SporeBlock SPORE_BLOCK = new SporeBlock(BlockBehaviour.Properties.of().sound(SoundType.NYLIUM).noOcclusion().strength(15, 15));
+    public static final PetrifiedObjectBlock PETRIFIED_OBJECT_BLOCK = new PetrifiedObjectBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable());
     public static final AlienSarcophagusInvisBlock ALIEN_STORAGE_BLOCK_INVIS = new AlienSarcophagusInvisBlock();
 
     /*
      * NORMAL BLOCKS
      */
     public static final SittingIdolInvisBlock ALIEN_STORAGE_BLOCK_INVIS2 = new SittingIdolInvisBlock();
-    public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock();
+    public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
     public static final AlienSarcophagusHuggerBlock ALIEN_STORAGE_BLOCK_1_HUGGER = new AlienSarcophagusHuggerBlock();
     public static final AlienSarcophagusGooBlock ALIEN_STORAGE_BLOCK_1_GOO = new AlienSarcophagusGooBlock();
     public static final AlienSarcophagusSporeBlock ALIEN_STORAGE_BLOCK_1_SPORE = new AlienSarcophagusSporeBlock();
-    public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock();
-    public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock();
+    public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+    public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
     public static final NestResinBlock NEST_RESIN = new NestResinBlock(
             FabricBlockSettings.create().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
     public static final Block NEST_RESIN_BLOCK = new GigBlock(

@@ -23,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final MapCodec<SporeBlock> CODEC = simpleCodec(SporeBlock::new);
 
-    protected SporeBlock() {
-        super(BlockBehaviour.Properties.of().sound(SoundType.NYLIUM).noOcclusion().strength(15, 15));
+    protected SporeBlock(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -44,8 +45,8 @@ public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

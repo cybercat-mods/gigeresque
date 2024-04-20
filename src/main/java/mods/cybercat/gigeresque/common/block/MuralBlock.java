@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.block;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.player.Player;
@@ -21,15 +22,18 @@ public class MuralBlock extends GigBlock {
     }
 
     @Override
-    public void playerDestroy(Level world, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
-        world.setBlock(pos, GigBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
-        var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
-        areaEffectCloudEntity.setRadius(1.0F);
-        areaEffectCloudEntity.setDuration(60);
-        areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
-        areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-        world.addFreshEntity(areaEffectCloudEntity);
-        super.playerDestroy(world, player, pos, state, blockEntity, stack);
+    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.setBlock(pos, GigBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+            var areaEffectCloudEntity = new AreaEffectCloud(serverLevel, pos.getX(), pos.getY(), pos.getZ());
+            areaEffectCloudEntity.setRadius(1.0F);
+            areaEffectCloudEntity.setDuration(60);
+            areaEffectCloudEntity.setRadiusPerTick(
+                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+            areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
+            serverLevel.addFreshEntity(areaEffectCloudEntity);
+        }
+        super.playerDestroy(level, player, pos, state, blockEntity, stack);
     }
 
 }

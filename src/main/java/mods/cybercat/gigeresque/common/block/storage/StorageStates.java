@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum StorageStates implements StringRepresentable {
     OPEN("open"), OPENED("opened"), CLOSE("close"), CLOSED("closed"), CLOSING("closing");
@@ -12,7 +13,7 @@ public enum StorageStates implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
         return this.name;
     }
 }
