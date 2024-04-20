@@ -36,11 +36,13 @@ public abstract class MobEntityMixin extends LivingEntity {
     public void cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.hasEffect(GigStatusEffects.IMPREGNATION)) callbackInfo.setReturnValue(true);
         if (this.hasEffect(GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(true);
+        if (this.hasEffect(GigStatusEffects.DNA)) callbackInfo.setReturnValue(true);
     }
 
     @Inject(method = {"tick"}, at = {@At("HEAD")})
     void tick(CallbackInfo callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.IMPREGNATION) || this.hasEffect(GigStatusEffects.DNA))
-            this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.IMPREGNATION)) this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.EGGMORPHING)) this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.DNA)) this.persistenceRequired = true;
     }
 }
