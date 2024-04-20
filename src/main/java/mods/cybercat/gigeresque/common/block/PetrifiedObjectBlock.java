@@ -56,7 +56,7 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
 
     @Override
     public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity, @NotNull ItemStack itemStack) {
-        if (state.getValue(HATCH) == 25) {
+        if (state.getValue(HATCH) >= 24) {
             player.awardStat(Stats.BLOCK_MINED.get(this));
             player.causeFoodExhaustion(0.005F);
             if (level instanceof ServerLevel serverLevel) {
