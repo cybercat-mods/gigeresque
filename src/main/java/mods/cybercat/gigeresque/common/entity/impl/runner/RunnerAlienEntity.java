@@ -211,7 +211,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> Gigeresque.config.runnerXenoAttackSpeed - 1.2F).stopIf(
+                        (owner, target) -> Gigeresque.config.runnerXenoAttackSpeed - 0.9F).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
