@@ -1,10 +1,9 @@
 package mods.cybercat.gigeresque.interfacing;
 
-import net.minecraft.world.entity.Mob;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import software.bernie.geckolib.animatable.GeoEntity;
 
 @FunctionalInterface
-public interface AnimationSelector<T extends PathfinderMob & AbstractAlien> {
+public interface AnimationSelector<T extends PathfinderMob & AbstractAlien & GeoEntity> {
     void select(T entity);
 }

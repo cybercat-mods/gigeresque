@@ -10,7 +10,9 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
+import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
 public record GigMeleeAttackSelector() {
@@ -27,7 +29,7 @@ public record GigMeleeAttackSelector() {
         classicAlienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<AlienEntity> NORMAL_ANIM_SELECTOR = entity -> {
+    public static final AnimationSelector<?> NORMAL_ANIM_SELECTOR = entity -> {
         var animKey = switch (entity.getRandom().nextInt(4)) {
             case 1 -> Constants.RIGHT_CLAW;
             case 2 -> Constants.LEFT_TAIL;
