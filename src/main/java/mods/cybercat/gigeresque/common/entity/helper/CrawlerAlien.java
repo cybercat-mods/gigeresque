@@ -20,8 +20,6 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -325,7 +323,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
 
         Vec3 weighting = new Vec3(0, 0, 0);
 
-        float stickingDistance = this.zza != 0 ? 1.5f : 0.1f;
+        float stickingDistance = this.zza != 0 ? 1.0f : 0.1f;
 
         for (Direction facing : Direction.values()) {
             if (avoidPathingFacing == facing) {
@@ -623,7 +621,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         double baseStickingOffsetZ = 0.0f;
         Vec3 baseOrientationNormal = new Vec3(0, 1, 0);
 
-        if (!this.isTravelingInFluid && this.onGround() && this.getVehicle() == null) {
+        if (!this.isTravelingInFluid && this.onGround() && this.getVehicle() == null && !this.isStuckInHole()) {
             Vec3 p = this.position();
 
             Vec3 s = p.add(0, this.getBbHeight() * 0.5f, 0);
@@ -671,7 +669,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         if (!isAttached) {
             this.attachedTicks = Math.max(0, this.attachedTicks - 1);
         } else {
-            this.attachedTicks = Math.min(5, this.attachedTicks + 1);
+            this.attachedTicks = 5;
         }
 
         this.orientation = this.calculateOrientation(1);
@@ -873,12 +871,6 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
         float strafe = (float) relative.x;
 
         if (forward != 0 || strafe != 0) {
-//            float slipperiness = 0.91f;
-//
-//            if (this.onGround()) {
-//                BlockPos offsetPos = new BlockPos(this.blockPosition()).relative(this.getGroundDirection().getLeft());
-//                slipperiness = this.getBlockSlipperiness(offsetPos);
-//            }
 
             float f = forward * forward + strafe * strafe;
             if (f >= 1.0E-4F) {
@@ -906,17 +898,22 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 this.setLocationFromBoundingbox();
                 this.setDeltaMovement(motion);
 
-                //Probe collision normal
-                Vec3 probeVector = new Vec3(Math.abs(movementDir.x) < 0.001D ? -Math.signum(upVector.x) : 0,
-                        Math.abs(movementDir.y) < 0.001D ? -Math.signum(upVector.y) : 0,
-                        Math.abs(movementDir.z) < 0.001D ? -Math.signum(upVector.z) : 0).normalize().scale(0.0001D);
+                // Calculate probe distance based on the maximum absolute value of movement in each axis
+                double maxMovementOffset = Math.max(Math.abs(movementOffset.x), Math.abs(movementOffset.y));
+                double probeDistance = Math.max(maxMovementOffset, Math.abs(movementOffset.z)) * 0.5;
+
+                // Probe collision
+                Vec3 probeVector = movementOffset.normalize().scale(probeDistance);
+
+                // Probe collision
                 this.move(MoverType.SELF, probeVector);
 
+                // Calculate collision normal
                 Vec3 collisionNormal = new Vec3(
                         Math.abs(this.getX() - px - probeVector.x) > 0.000001D ? Math.signum(-probeVector.x) : 0,
                         Math.abs(this.getY() - py - probeVector.y) > 0.000001D ? Math.signum(-probeVector.y) : 0,
-                        Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(
-                                -probeVector.z) : 0).normalize();
+                        Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(-probeVector.z) : 0
+                ).normalize();
 
                 this.setBoundingBox(aabb);
                 this.setLocationFromBoundingbox();
@@ -929,9 +926,13 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 boolean isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(
                         collisionNormal.z) > 1.0001f;
 
-                //Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
+                // Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
                 if (!isInnerCorner) {
                     movementDir = surfaceMovementDir;
+                } else {
+                    // If it's an inner corner, adjust the movement direction away from the corner
+                    movementDir = movementDir.add(collisionNormal.scale(0.1)); // Adjust this factor as needed
+                    movementDir = movementDir.normalize();
                 }
 
                 //Nullify sticking force along movement vector projected to surface
@@ -974,6 +975,7 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
                 tangentialMotion.y * slipperiness + orthogonalMotion.y * 0.98f,
                 tangentialMotion.z * slipperiness + orthogonalMotion.z * 0.98f);
 
+        // Refine Attachment Handling
         boolean detachedX = this.attachedSides.x != this.prevAttachedSides.x && Math.abs(this.attachedSides.x) < 0.001D;
         boolean detachedY = this.attachedSides.y != this.prevAttachedSides.y && Math.abs(this.attachedSides.y) < 0.001D;
         boolean detachedZ = this.attachedSides.z != this.prevAttachedSides.z && Math.abs(this.attachedSides.z) < 0.001D;
@@ -986,50 +988,64 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             boolean prevCollidedHorizontally = this.horizontalCollision;
             boolean prevCollidedVertically = this.verticalCollision;
 
-            //Offset so that AABB is moved above the new surface
-            this.move(MoverType.SELF, new Vec3(detachedX ? -this.prevAttachedSides.x * 0.25f : 0,
-                    detachedY ? -this.prevAttachedSides.y * 0.25f : 0,
-                    detachedZ ? -this.prevAttachedSides.z * 0.25f : 0));
+            Vec3 movementDir = new Vec3(this.getX() - px, this.getY() - py, this.getZ() - pz).normalize(); // Calculate movement direction
 
-            Vec3 axis = this.prevAttachedSides.normalize();
-            Vec3 attachVector = upVector.scale(-1);
-            attachVector = attachVector.subtract(axis.scale(axis.dot(attachVector)));
+            // Calculate attachment vector
+            Vec3 attachVector = new Vec3(-this.prevAttachedSides.x, -this.prevAttachedSides.y, -this.prevAttachedSides.z).normalize();
 
-            if (Math.abs(attachVector.x) > Math.abs(attachVector.y) && Math.abs(attachVector.x) > Math.abs(
-                    attachVector.z)) {
-                attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
-            } else if (Math.abs(attachVector.y) > Math.abs(attachVector.z)) {
-                attachVector = new Vec3(0, Math.signum(attachVector.y), 0);
-            } else {
-                attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
-            }
+            // Adjust entity position to attach to nearby surfaces
+            double attachDistance = 0.25; // Adjust this value as needed
+            Vec3 attachmentOffset = attachVector.scale(attachDistance);
 
-            double attachDst = motion.length() + 0.1f;
-
-            AABB aabb = this.getBoundingBox();
-            motion = this.getDeltaMovement();
-
-            //Offset AABB towards new surface until it touches
+            // Attempt to attach to nearby surfaces
             for (int i = 0; i < 2 && !this.onGround(); i++) {
-                this.move(MoverType.SELF, attachVector.scale(attachDst));
+                this.move(MoverType.SELF, attachmentOffset);
             }
 
-            this.setMaxUpStep(stepHeight);
-
-            //Attaching failed, fall back to previous position
+            // If attachment failed, revert to previous position
             if (!this.onGround()) {
-                this.setBoundingBox(aabb);
+                this.setBoundingBox(this.getBoundingBox());
                 this.setLocationFromBoundingbox();
                 this.setDeltaMovement(motion);
                 this.setOnGround(prevOnGround);
                 this.horizontalCollision = prevCollidedHorizontally;
                 this.verticalCollision = prevCollidedVertically;
             } else {
+                // If attachment succeeded, stop movement
                 this.setDeltaMovement(Vec3.ZERO);
             }
+
+            this.setMaxUpStep(stepHeight);
+        }
+
+        // Calculate the next position after movement
+        double nextY = this.getY() + this.getDeltaMovement().y;
+
+        // Check if the entity is trying to ascend a 1-block height
+        if (nextY - this.getY() >= 1.0) {
+            // Adjust the entity's position upwards by a small amount
+            this.move(MoverType.SELF, new Vec3(0, 1.1, 0)); // Adjust the Y value as needed
         }
 
         this.calculateEntityAnimation(true);
+    }
+
+    private boolean isStuckInHole() {
+        // Check if the entity is surrounded by solid blocks on all sides except one
+        int solidBlocks = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                for (int k = -1; k <= 1; k++) {
+                    if (i != 0 || j != 0 || k != 0) {
+                        if (this.level().getBlockState(new BlockPos((int)this.getX() + i, (int)this.getY() + j, (int)this.getZ() + k)).isSolid()) {
+                            solidBlocks++;
+                        }
+                    }
+                }
+            }
+        }
+        // Check if there are 6 solid blocks (excluding the center) indicating it's a 1x1 hole
+        return solidBlocks == 6;
     }
 
     @Override
