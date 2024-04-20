@@ -54,7 +54,7 @@ public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity
                 level.setBlock(pos,
                         state.setValue(PetrifiedObjectBlock.HATCH, i + 1).setValue(CHEST_STATE, StorageStates.CLOSED),
                         2);
-            } else if (i == 24 && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
+            } else if (i >= 24 && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {
                 level.playSound(null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.3f,
                         0.9f + level.getRandom().nextFloat() * 0.2f);
                 level.setBlockAndUpdate(pos,
