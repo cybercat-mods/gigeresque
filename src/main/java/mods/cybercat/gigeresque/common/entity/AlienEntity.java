@@ -27,6 +27,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -439,14 +440,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     @Override
-    public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = Entities.ACID.create(this.level());
-        assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
-        this.level().addFreshEntity(acidEntity);
-    }
-
-    @Override
     public void die(@NotNull DamageSource source) {
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source,
                 this.damageSources()) || source == damageSources().genericKill()) {
@@ -456,14 +449,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
         var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
         if (damageCheck && !this.getType().is(GigTags.NO_ACID_BLOOD)) {
-            if (getAcidDiameter() == 1) generateAcidPool(this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1) GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
                     int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        generateAcidPool(this.blockPosition(), x, z);
+                        GigCommonMethods.generateAcidPool(this, this.blockPosition(), x, z);
                     }
                 }
             }
@@ -519,14 +512,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType().is(
                 GigTags.NO_ACID_BLOOD)) {
-            if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1) GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
                     int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        generateAcidPool(this.blockPosition(), x, z);
+                        GigCommonMethods.generateAcidPool(this, this.blockPosition(), x, z);
                     }
                 }
             }

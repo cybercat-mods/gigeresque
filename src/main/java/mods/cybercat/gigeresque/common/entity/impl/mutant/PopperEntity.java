@@ -9,18 +9,17 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AttackExplodeTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -176,27 +175,19 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
             return super.hurt(source, amount);
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
-            if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1) GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
                     int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        generateAcidPool(this.blockPosition(), x, z);
+                        GigCommonMethods.generateGooBlood(this, this.blockPosition(), x, z);
                     }
                 }
             }
         }
         return super.hurt(source, amount);
-    }
-
-    @Override
-    public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = Entities.GOO.create(this.level());
-        assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
-        this.level().addFreshEntity(acidEntity);
     }
 
     @Override

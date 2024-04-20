@@ -9,7 +9,6 @@ import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -17,14 +16,10 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -180,27 +175,19 @@ public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<Stalk
             return super.hurt(source, amount);
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
-            if (getAcidDiameter() == 1) this.generateAcidPool(this.blockPosition(), 0, 0);
+            if (getAcidDiameter() == 1) GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
                 for (int i = 0; i < getAcidDiameter(); i++) {
                     int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
                     if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        generateAcidPool(this.blockPosition(), x, z);
+                        GigCommonMethods.generateGooBlood(this, this.blockPosition(), x, z);
                     }
                 }
             }
         }
         return super.hurt(source, amount);
-    }
-
-    @Override
-    public void generateAcidPool(BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = Entities.GOO.create(this.level());
-        assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), this.getYRot(), this.getXRot());
-        this.level().addFreshEntity(acidEntity);
     }
 
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {

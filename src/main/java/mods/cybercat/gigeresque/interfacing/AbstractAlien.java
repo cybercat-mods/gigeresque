@@ -47,6 +47,4 @@ public interface AbstractAlien {
     boolean isPassedOut();
 
     void setPassedOutStatus(boolean passout);
-
-    void generateAcidPool(BlockPos pos, int xOffset, int zOffset);
 }
