@@ -26,7 +26,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -105,6 +104,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.setMaxUpStep(2.5f);
+        this.noCulling = true;
         setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
