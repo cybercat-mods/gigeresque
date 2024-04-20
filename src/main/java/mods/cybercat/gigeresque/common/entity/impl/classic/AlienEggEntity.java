@@ -159,6 +159,16 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
+    protected SoundEvent getSwimSplashSound() {
+        return SoundEvents.EMPTY;
+    }
+
+    @Override
+    protected SoundEvent getSwimSound() {
+        return SoundEvents.EMPTY;
+    }
+
+    @Override
     public void travel(@NotNull Vec3 vec3) {
         if (this.tickCount % 10 == 0) this.refreshDimensions();
         super.travel(vec3);

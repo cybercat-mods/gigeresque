@@ -484,6 +484,16 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     @Override
+    protected SoundEvent getSwimSplashSound() {
+        return SoundEvents.DOLPHIN_SPLASH;
+    }
+
+    @Override
+    protected SoundEvent getSwimSound() {
+        return SoundEvents.DOLPHIN_SWIM;
+    }
+
+    @Override
     public boolean canBeCollidedWith() {
         return this.isAlive();
     }
