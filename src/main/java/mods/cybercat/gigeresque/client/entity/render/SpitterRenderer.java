@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.common.api.client.renderer.layer.AutoGlowingGeoLayer;
 import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
 import mods.cybercat.gigeresque.client.entity.model.SpitterModel;
 import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
     public SpitterRenderer(EntityRendererProvider.Context context) {
         super(context, new SpitterModel());
+        this.addRenderLayer(new AutoGlowingGeoLayer<>(this));
         this.shadowRadius = 0.5f;
     }
 
@@ -22,13 +24,6 @@ public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
             poseStack.translate(0, -0.15, 0);
         }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-    }
-
-    @Override
-    public void preRender(PoseStack poseStack, SpitterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
-                packedOverlay, red, green, blue, alpha);
-        poseStack.scale(0.6F, 0.6F, 0.6F);
     }
 
     @Override
