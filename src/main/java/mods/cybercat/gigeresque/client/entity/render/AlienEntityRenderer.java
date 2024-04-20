@@ -35,6 +35,6 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 
     @Override
     public float getMotionAnimThreshold(ClassicAlienEntity animatable) {
-        return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f : 0.005f;
+        return !animatable.isExecuting() && animatable.isVehicle() ? 0.000f : animatable.isPassedOut() ? 0.5f : 0.005f;
     }
 }
