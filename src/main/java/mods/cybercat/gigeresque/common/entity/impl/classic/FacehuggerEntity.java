@@ -129,7 +129,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return this.isPassenger() ? 0 : 1;
     }
 

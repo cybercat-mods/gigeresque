@@ -94,7 +94,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 1;
     }
 

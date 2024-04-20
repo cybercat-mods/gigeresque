@@ -4,18 +4,20 @@ import net.minecraft.core.BlockPos;
 
 public interface AbstractAlien {
 
+    int getAcidDiameter();
+
     boolean isFleeing();
 
     void setFleeingStatus(boolean fleeing);
-    
+
     boolean isUpsideDown();
-    
+
     boolean isCrawling();
-    
+
     void setIsCrawling(boolean shouldCrawl);
-    
+
     boolean isTunnelCrawling();
-    
+
     void setIsTunnelCrawling(boolean shouldTunnelCrawl);
 
     void setWakingUpStatus(boolean passout);

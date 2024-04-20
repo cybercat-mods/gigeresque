@@ -74,7 +74,7 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 1;
     }
 

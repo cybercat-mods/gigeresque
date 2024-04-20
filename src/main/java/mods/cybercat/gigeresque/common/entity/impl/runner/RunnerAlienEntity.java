@@ -85,7 +85,7 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 3;
     }
 

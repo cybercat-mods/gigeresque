@@ -182,7 +182,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 1;
     }
 

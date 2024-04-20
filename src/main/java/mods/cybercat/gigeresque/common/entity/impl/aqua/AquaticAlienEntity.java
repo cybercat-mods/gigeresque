@@ -10,12 +10,12 @@ import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.WaterAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -26,18 +26,11 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,10 +38,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -73,33 +63,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
+public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final GroundPathNavigation landNavigation = new GroundPathNavigation(this, level());
-    private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
-    private final MoveControl landMoveControl = new MoveControl(this);
-    private final LookControl landLookControl = new LookControl(this);
-    private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
-            false);
-    private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
 
-    public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
+    public AquaticAlienEntity(EntityType<? extends WaterAlienEntity> type, Level world) {
         super(type, world);
-        setMaxUpStep(1.0f);
-
-        navigation = swimNavigation;
-        moveControl = swimMoveControl;
-        lookControl = swimLookControl;
-        setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 3;
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
+    public static AttributeSupplier.@NotNull Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 Gigeresque.config.aquaticXenoHealth).add(Attributes.ARMOR, Gigeresque.config.aquaticXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
@@ -109,44 +86,23 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     @Override
+    public float getMaxGrowth() {
+        return Constants.TPM;
+    }
+
+    @Override
+    public LivingEntity growInto() {
+        return null;
+    }
+
+    @Override
     public float getGrowthMultiplier() {
         return Gigeresque.config.aquaticAlienGrowthMultiplier;
     }
 
     @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
-
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
-
-        super.travel(movementInput);
-    }
-
-    @Override
-    public @NotNull PathNavigation createNavigation(@NotNull Level world) {
-        return swimNavigation;
-    }
-
-    @Override
-    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
-    }
-
-    @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
-    }
-
-    @Override
-    public void refreshDimensions() {
-        super.refreshDimensions();
     }
 
     @Override
@@ -180,7 +136,8 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
 
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(0.5F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(0.5F), new HissingTask<>(800),
+                new MoveToWalkTarget<>());
     }
 
     @Override
@@ -191,7 +148,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                                 target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()), new OneRandomBehaviour<>(
                         new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(
-                                !this.wasTouchingWater ? 0.75F : 1.5f).stopIf(entity -> this.isPassedOut()),
+                                5f).stopIf(entity -> this.isPassedOut()),
                         new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
                                 entity -> entity.getRandom().nextInt(30, 60))));
     }
@@ -200,7 +157,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> !this.wasTouchingWater ? 0.95F : 1.5F),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 5.5F),
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR));
     }
 

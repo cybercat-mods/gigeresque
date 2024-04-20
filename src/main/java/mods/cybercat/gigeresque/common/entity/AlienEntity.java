@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -16,7 +17,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -28,6 +28,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -41,6 +43,7 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -127,7 +130,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         }
     }
 
-    protected int getAcidDiameter() {
+    @Override
+    public int getAcidDiameter() {
         return 0;
     }
 
@@ -259,25 +263,25 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putBoolean("isCrawling", isCrawling());
-        compound.putBoolean("isTunnelCrawling", isTunnelCrawling());
+        compound.putBoolean("isCrawling", this.isCrawling());
+        compound.putBoolean("isTunnelCrawling", this.isTunnelCrawling());
         VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData).resultOrPartial(
                 LOGGER::error).ifPresent(tag -> compound.put("listener", tag));
         AngerManagement.codec(this::canTargetEntity).encodeStart(NbtOps.INSTANCE, this.angerManagement).resultOrPartial(
                 LOGGER::error).ifPresent(tag -> compound.put("anger", tag));
-        compound.putFloat("growth", getGrowth());
+        compound.putFloat("growth", this.getGrowth());
         compound.putBoolean("isStasis", this.isPassedOut());
         compound.putBoolean("wakingup", this.isWakingUp());
-        compound.putBoolean("isHissing", isHissing());
-        compound.putBoolean("isSearching", isSearching());
-        compound.putBoolean("isExecuting", isExecuting());
-        compound.putBoolean("isHeadBite", isBiting());
+        compound.putBoolean("isHissing", this.isHissing());
+        compound.putBoolean("isSearching", this.isSearching());
+        compound.putBoolean("isExecuting", this.isExecuting());
+        compound.putBoolean("isHeadBite", this.isBiting());
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("isCrawling")) setIsCrawling(compound.getBoolean("isCrawling"));
+        if (compound.contains("isCrawling")) this.setIsCrawling(compound.getBoolean("isCrawling"));
         if (compound.contains("anger")) {
             AngerManagement.codec(this::canTargetEntity).parse(
                     new Dynamic<>(NbtOps.INSTANCE, compound.get("anger"))).resultOrPartial(LOGGER::error).ifPresent(
@@ -609,6 +613,16 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     protected Vec3i getDirectionVector() {
         return new Vec3i(getDirection().getStepX(), getDirection().getStepY(), getDirection().getStepZ());
+    }
+
+    @Override
+    public boolean canBeLeashed(@NotNull Player player) {
+        return false;
+    }
+
+    @Override
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
 }

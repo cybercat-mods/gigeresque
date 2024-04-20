@@ -200,7 +200,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 1;
     }
 

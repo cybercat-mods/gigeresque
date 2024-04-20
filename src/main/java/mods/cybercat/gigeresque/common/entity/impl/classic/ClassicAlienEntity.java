@@ -97,7 +97,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 3;
     }
 

@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.core.BlockPos;
@@ -97,7 +98,7 @@ public class BreakBlocksTask<E extends PathfinderMob & AbstractAlien & GeoEntity
                 } else if (!entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isVehicle() && !state.is(
                         GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50)) && useAcidBlood) {
                     if (!entity.level().isClientSide) {
-                        entity.generateAcidPool(testPos.above(), 0, 0);
+                        GigCommonMethods.generateGooBlood(entity, testPos.above(), 0, 0);
                     }
                     entity.hurt(entity.damageSources().generic(), 5);
                 }

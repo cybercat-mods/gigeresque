@@ -22,7 +22,7 @@ public class RavenousTempleBeastEntity extends CrawlerAlien {
     }
 
     @Override
-    protected int getAcidDiameter() {
+    public int getAcidDiameter() {
         return 3;
     }
 
