@@ -95,8 +95,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
     protected final MoveControl landMoveControl = new MoveControl(this);
     protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
-    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5f, 1.0f,
-            false);
+    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F,
+            true);
     protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
     private static final Logger LOGGER = LogUtils.getLogger();
     private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
@@ -309,13 +309,16 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
         this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
 
-        if (isEffectiveAi() && (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(this.blockPosition()).getAmount() >= 8)) {
-            moveRelative(getSpeed(), movementInput);
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.25));
-            if (getTarget() == null) setDeltaMovement(getDeltaMovement().add(0.0, -0.005, 0.0));
-        } else super.travel(movementInput);
+        if (this.isEffectiveAi() && this.isInWater()) {
+            this.moveRelative(this.getSpeed(), movementInput);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
+            if (this.getTarget() == null) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
+            }
+        } else {
+            super.travel(movementInput);
+        }
     }
 
     @Override

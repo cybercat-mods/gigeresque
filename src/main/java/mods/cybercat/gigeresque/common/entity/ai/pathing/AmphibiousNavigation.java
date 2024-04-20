@@ -1,11 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.ai.pathing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
 import org.jetbrains.annotations.NotNull;
 
 public class AmphibiousNavigation extends WaterBoundPathNavigation {
@@ -19,11 +21,11 @@ public class AmphibiousNavigation extends WaterBoundPathNavigation {
     }
 
     @Override
-    protected @NotNull PathFinder createPathFinder(int range) {
-        nodeEvaluator = new AmphibiousNodeEvaluator(true);
-        nodeEvaluator.setCanOpenDoors(false);
-        nodeEvaluator.setCanPassDoors(false);
-        return new PathFinder(nodeEvaluator, range);
+    protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new SwimNodeEvaluator(true);
+        this.nodeEvaluator.setCanOpenDoors(true);
+        this.nodeEvaluator.setCanPassDoors(true);
+        return new PathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
 
     @Override
