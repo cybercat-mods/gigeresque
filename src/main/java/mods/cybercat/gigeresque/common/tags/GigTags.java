@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.tags;
 import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
@@ -59,4 +60,7 @@ public record GigTags() {
 
     /* ITEMS */
     public static final TagKey<Item> ACID_IMMUNE_ITEMS = TagKey.create(Registries.ITEM, Constants.modResource("acidimmuneitems"));
+
+    /* STATUS EFFECTS */
+    public static final TagKey<MobEffect> GIG_STATUS_EFFECTS = TagKey.create(Registries.MOB_EFFECT, Constants.modResource("gigstatuseffects"));
 }
