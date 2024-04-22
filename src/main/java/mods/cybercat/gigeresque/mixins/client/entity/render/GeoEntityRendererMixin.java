@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.mixins.client.entity.render;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeckoFeatureRenderer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -20,7 +18,6 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 /**
  * @author Aelpecyem
  */
-@Environment(EnvType.CLIENT)
 @Mixin(value = GeoEntityRenderer.class, remap = false)
 public abstract class GeoEntityRendererMixin<T extends Entity & GeoEntity> {
 

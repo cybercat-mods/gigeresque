@@ -7,8 +7,6 @@ import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
@@ -23,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * @author Boston Vanseghi
  */
-@Environment(EnvType.CLIENT)
 @Mixin(ScreenEffectRenderer.class)
 public class InGameOverlayRendererMixin {
 
@@ -51,7 +48,8 @@ public class InGameOverlayRendererMixin {
             if (Constants.isNotCreativeSpecPlayer.test(
                     client.player) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)) {
                 fovEggticker++;
-                var eggmorphingProgress = Math.max(0, Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
+                var eggmorphingProgress = Math.max(0,
+                        Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
                 renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }

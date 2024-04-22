@@ -3,9 +3,7 @@ package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;

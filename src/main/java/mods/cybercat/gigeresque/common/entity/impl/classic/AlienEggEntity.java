@@ -159,12 +159,12 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    protected SoundEvent getSwimSplashSound() {
+    protected @NotNull SoundEvent getSwimSplashSound() {
         return SoundEvents.EMPTY;
     }
 
     @Override
-    protected SoundEvent getSwimSound() {
+    protected @NotNull SoundEvent getSwimSound() {
         return SoundEvents.EMPTY;
     }
 
