@@ -47,6 +47,10 @@ public record Constants() {
     public static final String ATTACK = "attack";
     public static final String ATTACK_NORMAL = "attack_normal";
 
+    public static <T> T self(Object object) {
+        return (T) object;
+    }
+
     public static ResourceLocation modResource(String name) {
         return new ResourceLocation(Gigeresque.MOD_ID, name);
     }
