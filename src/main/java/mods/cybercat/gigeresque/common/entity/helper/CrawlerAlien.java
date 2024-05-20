@@ -1018,13 +1018,16 @@ public abstract class CrawlerAlien extends AlienEntity implements IClimberEntity
             this.setMaxUpStep(stepHeight);
         }
 
-        // Calculate the next position after movement
-        double nextY = this.getY() + this.getDeltaMovement().y;
+        var nextY = 0;
+        if (this.navigation.getPath() != null && !this.navigation.getPath().isDone()) {
+            var nextNode = this.navigation.getPath().getNextNode();
+            nextY = nextNode.asBlockPos().getY();
+        }
 
-        // Check if the entity is trying to ascend a 1-block height
-        if (nextY - this.getY() >= 1.0) {
-            // Adjust the entity's position upwards by a small amount
-            this.move(MoverType.SELF, new Vec3(0, 1.1, 0)); // Adjust the Y value as needed
+        if (nextY > this.getY() && !this.isInWater() && this.navigation.getPath() != null && !this.navigation.getPath().isDone()) {
+            this.resetFallDistance();
+            this.moveTo(this.navigation.getPath().getNextNode().asBlockPos(), 0,0);
+            this.move(MoverType.SELF, new Vec3(0, 1.1, 0));
         }
 
         this.calculateEntityAnimation(true);
