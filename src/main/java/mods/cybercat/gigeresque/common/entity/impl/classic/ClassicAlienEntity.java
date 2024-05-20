@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.core.animation.Animation;
@@ -8,11 +9,10 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimationControl
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.bettercrawling.entity.movement.ClimberLookController;
-import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -28,7 +28,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetT
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -45,7 +44,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -79,19 +79,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.SplittableRandom;
 
-public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<ClassicAlienEntity> {
+public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<ClassicAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public ClassicAlienEntity(@NotNull EntityType<? extends CrawlerAlien> type, @NotNull Level world) {
+    public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
         super(type, world);
+        this.setMaxUpStep(3.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 Gigeresque.config.classicXenoHealth).add(Attributes.ARMOR, Gigeresque.config.classicXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE,
-                32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE,
+                32.0).add(Attributes.MOVEMENT_SPEED, 0.93000000417232513).add(Attributes.ATTACK_DAMAGE,
                 Gigeresque.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(
                 AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 1.0);
     }
@@ -103,10 +104,8 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.moveControl = this.isUnderWater() ? swimMoveControl : this.isCrawling() ? new ClimberMoveController<>(
-                this) : new MoveControl(this);
-        this.lookControl = this.isUnderWater() ? landLookControl : this.isCrawling() ? new ClimberLookController<>(
-                this) : landLookControl;
+        this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
+        this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
         this.navigation.setCanFloat(true);
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 
@@ -114,9 +113,23 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
     }
 
     @Override
+    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
+        PathNavigation navigate;
+        if (this.isUnderWater()) {
+            navigate = this.swimNavigation;
+        } else {
+            navigate = new AzureNavigation(this, level);
+            ((GroundPathNavigation) navigate).setCanWalkOverFences(true);
+            ((GroundPathNavigation) navigate).setCanOpenDoors(true);
+        }
+        navigate.setCanFloat(true);
+        return navigate;
+    }
+
+    @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.3f);
+        if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.95f);
         return EntityDimensions.scalable(0.9f, 2.9f);
     }
 
@@ -125,7 +138,6 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
         super.tick();
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
-        this.setIsCrawling(this.getOrientation().pitch() > 10 || this.getOrientation().pitch() < -10);
     }
 
     @Override
@@ -283,7 +295,7 @@ public class ClassicAlienEntity extends CrawlerAlien implements SmartBrainOwner<
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed - 1.5f).startCondition(
+                        (owner, target) -> Gigeresque.config.classicXenoAttackSpeed + 4.0F).startCondition(
                         entity -> !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()).stopIf(
                         entity -> this.isPassedOut() || (this.isFleeing() || !this.hasLineOfSight(entity))),
                 // Classic Xeno attacking

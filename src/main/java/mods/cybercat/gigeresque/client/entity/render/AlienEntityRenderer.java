@@ -19,12 +19,6 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     public void render(ClassicAlienEntity entity, float entityYaw, float partialTick, PoseStack stack, @NotNull MultiBufferSource bufferSource, int packedLightIn) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
-        if (!entity.isVehicle()) {
-            stack.translate(0, -0.35, 0);
-        }
-        if (entity.isPassedOut()) {
-            stack.translate(0, 0.35, 0);
-        }
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 
