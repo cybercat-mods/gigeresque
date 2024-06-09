@@ -77,9 +77,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
     protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
             AlienEntity.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
+    public static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
+    public static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
             AlienEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -112,9 +112,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        ItemStack enchantedBoots = new ItemStack(Items.CHAINMAIL_BOOTS);
-        enchantedBoots.enchant(Enchantments.DEPTH_STRIDER, 3);
-        this.setItemSlot(EquipmentSlot.FEET, enchantedBoots);
     }
 
     @Override
@@ -307,20 +304,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
     }
 
-//    @Override
-//    public void travel(@NotNull Vec3 movementInput) {
-//        if (this.isEffectiveAi() && this.isInWater()) {
-//            this.moveRelative(this.getSpeed(), movementInput);
-//            this.move(MoverType.SELF, this.getDeltaMovement());
-//            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
-//            if (this.getTarget() == null) {
-//                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
-//            }
-//        } else {
-//            super.travel(movementInput);
-//        }
-//    }
-
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
         PathNavigation pathNavigation;
@@ -431,6 +414,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             this.setIsTunnelCrawling(shouldTunnelCrawl);
         }
         this.refreshDimensions();
+        ItemStack enchantedBoots = new ItemStack(Items.CHAINMAIL_BOOTS);
+        enchantedBoots.enchant(Enchantments.DEPTH_STRIDER, 3);
+        if (!this.isInWater())
+            this.setItemSlot(EquipmentSlot.FEET, enchantedBoots);
+        else
+            this.setItemSlot(EquipmentSlot.FEET, Items.AIR.getDefaultInstance());
     }
 
     @Override
