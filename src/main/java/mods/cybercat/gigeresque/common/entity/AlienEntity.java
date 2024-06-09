@@ -102,6 +102,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     protected int slowticks = 0;
     private VibrationSystem.Data vibrationData;
     public int wakeupCounter = 0;
+    public boolean inTwoBlockSpace = false;
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
