@@ -125,54 +125,6 @@ if (file('key.properties').exists()) {
             optional {
                 slug = "modmenu"
             }
-            optional {
-                slug = "dripsounds-fabric"
-            }
-            optional {
-                slug = "sound-physics-remastered"
-            }
-            optional {
-                slug = "ad-astra"
-            }
-            optional {
-                slug = "aftershock"
-            }
-            optional {
-                slug = "arachnids"
-            }
-            optional {
-                slug = "happiness-is-a-warm-gun"
-            }
-            optional {
-                slug = "jar-jar-binks"
-            }
-            optional {
-                slug = "living-things"
-            }
-            optional {
-                slug = "caracal-mod"
-            }
-            optional {
-                slug = "illager-invasion"
-            }
-            optional {
-                slug = "minecraft-comes-alive-mca"
-            }
-            optional {
-                slug = "promenade"
-            }
-            optional {
-                slug = "friends-and-foes"
-            }
-            optional {
-                slug = "the-graveyard-fabric"
-            }
-            optional {
-                slug = "betterend"
-            }
-//            optional {
-//                slug = "avp-regenesis"
-//            }
         }
         modrinth("modrinthFabric") {
             from mroptions
@@ -191,57 +143,6 @@ if (file('key.properties').exists()) {
             optional {
                 slug = "modmenu"
             }
-            optional {
-                slug = "dripsounds-fabric"
-            }
-            optional {
-                slug = "sound-physics-remastered"
-            }
-            optional {
-                slug = "ad-astra"
-            }
-            optional {
-                slug = "aftershock"
-            }
-            optional {
-                slug = "arachnids"
-            }
-            optional {
-                slug = "happiness-is-a-warm-gun"
-            }
-            optional {
-                slug = "jar-jar-binks"
-            }
-            optional {
-                slug = "living-things"
-            }
-            optional {
-                slug = "betterend"
-            }
-            optional {
-                slug = "caracal_mob"
-            }
-            optional {
-                slug = "illager-invasion"
-            }
-            optional {
-                slug = "minecraft-comes-alive-reborn"
-            }
-            optional {
-                slug = "promenade"
-            }
-            optional {
-                slug = "the-graveyard-fabric"
-            }
-            optional {
-                slug = "cave-dweller-fabric"
-            }
-            optional {
-                slug = "friends-and-foes"
-            }
-//          optional {
-//              slug = "avp-regenesis"
-//          }
         }
     }
 }
