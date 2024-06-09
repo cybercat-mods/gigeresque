@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 

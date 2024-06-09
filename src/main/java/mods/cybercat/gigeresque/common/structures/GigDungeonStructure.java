@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.structures;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -17,7 +18,7 @@ import java.util.SplittableRandom;
 
 public class GigDungeonStructure extends Structure {
 
-    public static final Codec<GigDungeonStructure> CODEC = RecordCodecBuilder.<GigDungeonStructure>mapCodec(
+    public static final MapCodec<GigDungeonStructure> CODEC = RecordCodecBuilder.<GigDungeonStructure>mapCodec(
             instance -> instance.group(Structure.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(
@@ -25,7 +26,7 @@ public class GigDungeonStructure extends Structure {
                     Codec.intRange(0, 16).fieldOf("size").forGetter(structure -> structure.size),
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(
                             structure -> structure.maxDistanceFromCenter)).apply(instance,
-                    GigDungeonStructure::new)).codec();
+                    GigDungeonStructure::new));
 
     private final Holder<StructureTemplatePool> startPool;
     private final Optional<ResourceLocation> startJigsawName;

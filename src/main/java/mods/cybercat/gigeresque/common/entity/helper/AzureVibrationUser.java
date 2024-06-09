@@ -10,6 +10,7 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.GameEventTags;
@@ -59,7 +60,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public boolean isValidVibration(GameEvent gameEvent, @NotNull Context context) {
+    public boolean isValidVibration(Holder<GameEvent> gameEvent, @NotNull Context context) {
         if (!gameEvent.is(this.getListenableEvents())) return false;
 
         var entity = context.sourceEntity();
@@ -74,7 +75,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public boolean canReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, GameEvent.@NotNull Context context) {
+    public boolean canReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull Holder<GameEvent> gameEvent, GameEvent.@NotNull Context context) {
         if (mob.isNoAi() || mob.isDeadOrDying() || !mob.level().getWorldBorder().isWithinBounds(
                 blockPos) || mob.isRemoved()) return false;
         var entity = context.sourceEntity();
@@ -82,7 +83,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
     }
 
     @Override
-    public void onReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull GameEvent gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
+    public void onReceiveVibration(@NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull Holder<GameEvent> gameEvent, @Nullable Entity entity, @Nullable Entity entity2, float f) {
         if (this.mob.isDeadOrDying()) return;
         if (this.mob.isVehicle()) return;
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
@@ -92,7 +93,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
                     this.mob.setPassedOutStatus(false);
                 this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "alert");
-                this.mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
             }
             if (this.mob.wakeupCounter >= 3) {
                 this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "run");
@@ -106,7 +106,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             this.mob.setPassedOutStatus(false);
             this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
-        if (this.mob instanceof ChestbursterEntity || this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
+        if (this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity && !(entity2 instanceof IronGolem))
             mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
     }
 }

@@ -69,10 +69,10 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!world.isClientSide && world.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
             player.openMenu(alienStorageEntity);
-        return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

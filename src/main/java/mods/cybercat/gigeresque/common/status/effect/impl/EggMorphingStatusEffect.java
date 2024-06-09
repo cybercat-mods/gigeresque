@@ -1,15 +1,17 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +32,10 @@ public class EggMorphingStatusEffect extends MobEffect {
         return false;
     }
 
-    public static void effectRemoval(@NotNull LivingEntity entity) {
+    public static void effectRemoval(@NotNull LivingEntity entity, MobEffectInstance mobEffectInstance) {
         if (Constants.isCreativeSpecPlayer.test(entity)) return;
         if (!GigEntityUtils.isTargetHostable(entity)) return;
+        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof EggMorphingStatusEffect)) return;
         if (!entity.level().getBlockState(entity.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS)) return;
         var egg = new AlienEggEntity(Entities.EGG, entity.level());
         egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());

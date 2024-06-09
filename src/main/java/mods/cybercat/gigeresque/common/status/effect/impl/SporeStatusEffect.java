@@ -1,17 +1,19 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,12 +34,15 @@ public class SporeStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
-        super.applyEffectTick(entity, amplifier);
-        if (this == GigStatusEffects.SPORE) entity.heal(0);
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+        if (entity.hasEffect(GigStatusEffects.SPORE)) entity.heal(0);
+        return super.applyEffectTick(entity, amplifier);
     }
 
     public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
+        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof SporeStatusEffect)) return;
+        if (entity instanceof Mob mob && mob.isNoAi()) return;
         var neoBurster = Entities.NEOBURSTER.create(entity.level());
         if (!entity.getType().is(GigTags.GIG_ALIENS) && entity.getType().is(
                 GigTags.NEOHOST) && (Constants.isNotCreativeSpecPlayer.test(entity))) {

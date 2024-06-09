@@ -29,17 +29,17 @@ public class SittingIdolInvisBlock extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!world.isClientSide) {
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
             var radius = new Vec3i(2, 2, 2);
             for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius)))
-                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
-                    if (world.getBlockEntity(testPos) instanceof IdolStorageEntity idolStorageEntity)
+                if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_3)) {
+                    if (level.getBlockEntity(testPos) instanceof IdolStorageEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
         }
-        return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

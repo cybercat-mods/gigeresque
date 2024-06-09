@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -93,7 +94,7 @@ public class GooEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
 
     }
 

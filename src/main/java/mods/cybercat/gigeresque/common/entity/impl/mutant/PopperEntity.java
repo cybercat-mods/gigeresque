@@ -1,14 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothGroundNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AttackExplodeTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
@@ -62,9 +62,13 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
 
     public PopperEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        setMaxUpStep(1.5f);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
-        navigation = new AzureNavigation(this, level());
+        navigation = new SmoothGroundNavigation(this, level());
+    }
+
+    @Override
+    public float maxUpStep() {
+        return 1.5F;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
 
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.RawAnimation;
 
 public record GigAnimationsDefault() {
 

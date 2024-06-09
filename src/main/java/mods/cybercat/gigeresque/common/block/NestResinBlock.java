@@ -44,11 +44,6 @@ public class NestResinBlock extends Block {
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
-        return type == PathComputationType.LAND;
-    }
-
-    @Override
     public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return ALIEN_LAYERS_TO_SHAPE.get(state.getValue(LAYERS));
     }

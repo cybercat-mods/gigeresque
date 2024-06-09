@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -20,10 +20,11 @@ public class AcidStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
         if (!entity.getType().is(GigTags.ACID_RESISTANT_ENTITY) && entity.tickCount % 40 == 0)
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.ACID),
                     Gigeresque.config.acidDamage * amplifier);
+        return super.applyEffectTick(entity, amplifier);
     }
 }

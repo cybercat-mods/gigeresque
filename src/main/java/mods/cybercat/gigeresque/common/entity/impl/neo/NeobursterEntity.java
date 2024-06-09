@@ -1,17 +1,16 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
-import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
@@ -47,8 +46,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
                 Gigeresque.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS,
                 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(
                 Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
-                Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(
-                AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
+                Gigeresque.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     /*

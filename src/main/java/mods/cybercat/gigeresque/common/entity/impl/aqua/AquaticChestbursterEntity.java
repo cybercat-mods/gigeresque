@@ -1,14 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothGroundNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
@@ -24,14 +24,13 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable {
 
-    private final AzureNavigation landNavigation = new AzureNavigation(this, level());
-    private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
+    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
+    private final SmoothWaterBoundPathNavigation swimNavigation = new SmoothWaterBoundPathNavigation(this, level());
     private final MoveControl landMoveControl = new MoveControl(this);
     private final LookControl landLookControl = new LookControl(this);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -41,12 +40,9 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
 
     public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
         super(type, world);
-        setMaxUpStep(1.0f);
-
         navigation = swimNavigation;
         moveControl = swimMoveControl;
         lookControl = swimLookControl;
-        setPathfindingMalus(BlockPathTypes.WATER, 0.0f);
     }
 
     @Override
@@ -90,8 +86,8 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
-        return this.wasEyeInWater ? super.getDimensions(pose).scale(1.0f, 0.5f) : super.getDimensions(pose);
+    public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return this.wasEyeInWater ? super.getDefaultDimensions(pose).scale(1.0f, 0.5f) : super.getDefaultDimensions(pose);
     }
 
     /*

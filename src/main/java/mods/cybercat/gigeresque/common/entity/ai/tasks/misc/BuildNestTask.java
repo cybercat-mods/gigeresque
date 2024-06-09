@@ -41,7 +41,7 @@ public class BuildNestTask<E extends PathfinderMob & AbstractAlien & GeoEntity &
 
     @Override
     protected void doDelayedAction(E alien) {
-        if (!alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getFeetBlockState().is(
+        if (!alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getInBlockState().is(
                 GigTags.NEST_BLOCKS) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level().getBrightness(
                 LightLayer.SKY, alien.blockPosition()) <= 5)
             NestBuildingHelper.tryBuildNestAround(alien.level(), alien.blockPosition());

@@ -1,11 +1,11 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
@@ -65,6 +65,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -252,10 +253,11 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
                     this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid());
     }
 
+    @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-        if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
@@ -274,27 +276,10 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
+    protected @NotNull EntityDimensions getDefaultDimensions(Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
         if (this.isTunnelCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
         return EntityDimensions.scalable(0.9f, 1.9f);
-    }
-
-    @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
-
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
-
-        super.travel(movementInput);
     }
 
     @Override
@@ -341,7 +326,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             if (!target.getUseItem().is(Items.SHIELD))
                 target.hurt(GigDamageSources.of(this.level(), GigDamageSources.ACID), 2.0f);
             if (target.getUseItem().is(Items.SHIELD) && target instanceof Player player)
-                target.getUseItem().hurtAndBreak(10, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
+                target.getUseItem().hurtAndBreak(10, player, LivingEntity.getEquipmentSlotForItem(target.getUseItem()));
         }
     }
 

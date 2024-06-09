@@ -1,16 +1,16 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
@@ -31,11 +31,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -85,7 +88,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
             EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);
-    private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
+    private final SmoothWaterBoundPathNavigation swimNavigation = new SmoothWaterBoundPathNavigation(this, level());
     private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
             false);
     private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
@@ -96,7 +99,6 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.2F);
         this.navigation = landNavigation;
-        this.setMaxUpStep(0.1f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -146,12 +148,12 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     @Override
-    public void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(IS_INFERTILE, false);
-        entityData.define(EGGSPAWN, false);
-        entityData.define(ATTACKING, false);
-        entityData.define(JUMPING, false);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_INFERTILE, false);
+        builder.define(EGGSPAWN, false);
+        builder.define(ATTACKING, false);
+        builder.define(JUMPING, false);
     }
 
     public void detachFromHost(boolean removesParasite) {
@@ -311,29 +313,8 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
-
-        this.navigation.setCanFloat(true);
-        super.travel(movementInput);
-    }
-
-    @Override
     public boolean isPathFinding() {
         return false;
-    }
-
-    @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
-        return super.getDimensions(pose);
     }
 
     @Override
@@ -360,7 +341,8 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         return ObjectArrayList.of(new NearbyPlayersSensor<>(),
                 new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate(
                         (target, self) -> GigEntityUtils.entityTest(target,
-                                self) || !(target instanceof Creeper || target instanceof IronGolem) && target.getMobType() != MobType.UNDEAD),
+                                self) || !(target instanceof Creeper || target instanceof IronGolem) && !target.getType().is(
+                                EntityTypeTags.UNDEAD)),
                 new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
                 new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate(
                         (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
@@ -385,7 +367,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
-                                target) || target.getMobType() == MobType.UNDEAD),
+                                target) || target.getType().is(EntityTypeTags.UNDEAD)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F), new FacehuggerPounceTask<>(6));
     }
 

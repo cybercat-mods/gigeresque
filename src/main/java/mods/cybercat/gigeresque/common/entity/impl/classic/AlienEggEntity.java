@@ -1,12 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -111,12 +108,12 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    public void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(IS_HATCHING, false);
-        entityData.define(IS_HATCHED, false);
-        entityData.define(HAS_FACEHUGGER, true);
-        entityData.define(NEST_TICKS, -1.0f);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_HATCHING, false);
+        builder.define(IS_HATCHED, false);
+        builder.define(HAS_FACEHUGGER, true);
+        builder.define(NEST_TICKS, -1.0f);
     }
 
     @Override
@@ -142,10 +139,10 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
+    protected @NotNull EntityDimensions getDefaultDimensions(Pose pose) {
         if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
-        return super.getDimensions(pose);
+        return super.getDefaultDimensions(pose);
     }
 
     @Override

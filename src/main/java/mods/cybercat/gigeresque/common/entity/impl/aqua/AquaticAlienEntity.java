@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -17,13 +17,11 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
@@ -60,6 +58,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -81,8 +80,7 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
                 Gigeresque.config.aquaticXenoHealth).add(Attributes.ARMOR, Gigeresque.config.aquaticXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.2500000417232513).add(Attributes.ATTACK_DAMAGE,
-                Gigeresque.config.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(
-                AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.85);
+                Gigeresque.config.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -101,14 +99,15 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
-        return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDimensions(pose);
+    protected @NotNull EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDefaultDimensions(pose);
     }
 
+    @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-        if (spawnReason != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override

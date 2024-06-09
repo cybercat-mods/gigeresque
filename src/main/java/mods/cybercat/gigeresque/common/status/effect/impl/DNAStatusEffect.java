@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,14 +35,19 @@ public class DNAStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
         if (!entity.getType().is(GigTags.DNAIMMUNE) && this == GigStatusEffects.DNA) entity.heal(0);
+        return super.applyEffectTick(entity, amplifier);
     }
 
-    public static void effectRemoval(LivingEntity entity) {
+    public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         var randomPhase = entity.getRandom().nextInt(0, 50);
         if (Constants.isCreeper.test(entity)) return;
+        if (Constants.isCreativeSpecPlayer.test(entity)) return;
+        if (!GigEntityUtils.isTargetDNAImmune(entity)) return;
+        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof DNAStatusEffect)) return;
+        if (entity instanceof Mob mob && mob.isNoAi()) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {
             if (randomPhase > 25) {
                 if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(

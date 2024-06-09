@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -17,14 +17,12 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -57,6 +55,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -66,7 +65,6 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
-        this.setMaxUpStep(0.1f);
         this.vibrationUser = new AzureVibrationUser(this,
                 (this.level().getFluidState(this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
                         this.blockPosition()).getAmount() >= 8) ? 1.3F : 2.65F);
@@ -77,23 +75,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
                 Gigeresque.config.neomorph_adolescentXenoHealth).add(Attributes.ARMOR, 0.0f).add(
                 Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE,
-                Gigeresque.config.neomorph_adolescentAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0).add(
-                AlienEntityAttributes.INTELLIGENCE_ATTRIBUTE, 0.5);
-    }
-
-    @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
-
-        super.travel(movementInput);
+                Gigeresque.config.neomorph_adolescentAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -128,9 +110,9 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityNbt) {
-        if (spawnReason != MobSpawnType.NATURAL) setGrowth(0);
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override

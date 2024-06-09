@@ -2,17 +2,17 @@ package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.Animation;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothGroundNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -68,12 +68,11 @@ import java.util.List;
 public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
     public int breakingCounter = 0;
 
     public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
-        setMaxUpStep(1.5f);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
         navigation = landNavigation;
     }
@@ -84,21 +83,6 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 Attributes.ARMOR_TOUGHNESS, Gigeresque.config.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
                 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(
                 Attributes.ATTACK_DAMAGE, Gigeresque.config.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
-    }
-
-    @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
-
-        super.travel(movementInput);
     }
 
     @Override

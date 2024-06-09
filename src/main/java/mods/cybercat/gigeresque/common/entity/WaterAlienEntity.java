@@ -3,7 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -40,7 +40,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,16 +69,19 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
 
     public WaterAlienEntity(EntityType<? extends Dolphin> entityType, Level level) {
         super(entityType, level);
-        this.setMaxUpStep(2.5f);
         this.noCulling = true;
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
-        setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
+    }
+
+    @Override
+    public float maxUpStep() {
+        return 2.5f;
     }
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return new AmphibiousNavigation(this, level);
+        return new SmoothWaterBoundPathNavigation(this, level);
     }
 
     @Override
@@ -290,16 +292,16 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
     }
 
     @Override
-    public void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLEEING_FIRE, false);
-        this.entityData.define(GROWTH, 0.0f);
-        this.entityData.define(PASSED_OUT, false);
-        this.entityData.define(WAKING_UP, false);
-        this.entityData.define(IS_HISSING, false);
-        this.entityData.define(IS_EXECUTION, false);
-        this.entityData.define(IS_HEADBITE, false);
-        this.entityData.define(IS_SEARCHING, false);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLEEING_FIRE, false);
+        builder.define(GROWTH, 0.0f);
+        builder.define(PASSED_OUT, false);
+        builder.define(WAKING_UP, false);
+        builder.define(IS_HISSING, false);
+        builder.define(IS_EXECUTION, false);
+        builder.define(IS_HEADBITE, false);
+        builder.define(IS_SEARCHING, false);
     }
 
     @Override
@@ -409,7 +411,7 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
 
     public void grabTarget(Entity entity) {
         if (entity == this.getTarget() && !entity.hasPassenger(
-                this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
+                this) && entity.getInBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
             entity.startRiding(this, true);
             this.setAggressive(false);
             if (entity instanceof ServerPlayer player)

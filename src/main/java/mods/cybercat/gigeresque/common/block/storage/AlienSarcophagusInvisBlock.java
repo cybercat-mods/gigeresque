@@ -32,33 +32,33 @@ public class AlienSarcophagusInvisBlock extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!world.isClientSide) {
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
             var radius = new Vec3i(2, 2, 2);
             for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
-                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1)) {
-                    if (world.getBlockEntity(testPos) instanceof AlienStorageEntity idolStorageEntity)
+                if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1)) {
+                    if (level.getBlockEntity(testPos) instanceof AlienStorageEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
-                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
-                    if (world.getBlockEntity(testPos) instanceof AlienStorageGooEntity idolStorageEntity)
+                if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO)) {
+                    if (level.getBlockEntity(testPos) instanceof AlienStorageGooEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
-                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
-                    if (world.getBlockEntity(testPos) instanceof AlienStorageHuggerEntity idolStorageEntity)
+                if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
+                    if (level.getBlockEntity(testPos) instanceof AlienStorageHuggerEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
-                if (world.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
-                    if (world.getBlockEntity(testPos) instanceof AlienStorageSporeEntity idolStorageEntity)
+                if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE)) {
+                    if (level.getBlockEntity(testPos) instanceof AlienStorageSporeEntity idolStorageEntity)
                         player.openMenu(idolStorageEntity);
                     return InteractionResult.SUCCESS;
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

@@ -12,13 +12,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class MuralBlock extends GigBlock {
 
     public MuralBlock() {
-        super(FabricBlockSettings.of().strength(3.0F, 6.0F).sounds(SoundType.NETHERRACK).explosionResistance(10));
+        super(BlockBehaviour.Properties.of().strength(3.0F, 6.0F).sound(SoundType.NETHERRACK).explosionResistance(10));
     }
 
     @Override

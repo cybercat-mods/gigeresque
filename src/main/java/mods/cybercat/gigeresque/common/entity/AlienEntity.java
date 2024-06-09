@@ -2,11 +2,11 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothWallClimberNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,10 +36,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -50,8 +51,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -91,13 +91,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> IS_HEADBITE = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
-    protected final AzureNavigation landNavigation = new AzureNavigation(this, level());
-    protected final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
-    protected final MoveControl landMoveControl = new MoveControl(this);
-    protected final SmoothSwimmingLookControl landLookControl = new SmoothSwimmingLookControl(this, 5);
-    protected final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F,
-            true);
-    protected final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
+    protected final SmoothWallClimberNavigation landNavigation = new SmoothWallClimberNavigation(this, level());
+    protected final SmoothWaterBoundPathNavigation swimNavigation = new SmoothWaterBoundPathNavigation(this, level());
     private static final Logger LOGGER = LogUtils.getLogger();
     private final DynamicGameEventListener<VibrationSystem.Listener> dynamicGameEventListener;
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
@@ -108,15 +103,18 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        this.setMaxUpStep(2.5f);
-        this.noCulling = true;
-        setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 16.0f);
-        setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0f);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new VibrationSystem.Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));
         this.navigation = landNavigation;
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0.0f);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
+        this.lookControl = new SmoothSwimmingLookControl(this, 10);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+    }
+
+    @Override
+    public float maxUpStep() {
+        return 2.5f;
     }
 
     @Override
@@ -244,21 +242,21 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     }
 
     @Override
-    public void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(UPSIDE_DOWN, false);
-        this.entityData.define(FLEEING_FIRE, false);
-        this.entityData.define(IS_CLIMBING, false);
-        this.entityData.define(IS_TUNNEL_CRAWLING, false);
-        this.entityData.define(STATE, 0);
-        this.entityData.define(CLIENT_ANGER_LEVEL, 0);
-        this.entityData.define(GROWTH, 0.0f);
-        this.entityData.define(PASSED_OUT, false);
-        this.entityData.define(WAKING_UP, false);
-        this.entityData.define(IS_HISSING, false);
-        this.entityData.define(IS_EXECUTION, false);
-        this.entityData.define(IS_HEADBITE, false);
-        this.entityData.define(IS_SEARCHING, false);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(UPSIDE_DOWN, false);
+        builder.define(FLEEING_FIRE, false);
+        builder.define(IS_CLIMBING, false);
+        builder.define(IS_TUNNEL_CRAWLING, false);
+        builder.define(STATE, 0);
+        builder.define(CLIENT_ANGER_LEVEL, 0);
+        builder.define(GROWTH, 0.0f);
+        builder.define(PASSED_OUT, false);
+        builder.define(WAKING_UP, false);
+        builder.define(IS_HISSING, false);
+        builder.define(IS_EXECUTION, false);
+        builder.define(IS_HEADBITE, false);
+        builder.define(IS_SEARCHING, false);
     }
 
     @Override
@@ -304,22 +302,19 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
     }
 
-    @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        this.moveControl = this.isUnderWater() ? swimMoveControl : landMoveControl;
-        this.lookControl = this.isUnderWater() ? swimLookControl : landLookControl;
-
-        if (this.isEffectiveAi() && this.isInWater()) {
-            this.moveRelative(this.getSpeed(), movementInput);
-            this.move(MoverType.SELF, this.getDeltaMovement());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
-            if (this.getTarget() == null) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
-            }
-        } else {
-            super.travel(movementInput);
-        }
-    }
+//    @Override
+//    public void travel(@NotNull Vec3 movementInput) {
+//        if (this.isEffectiveAi() && this.isInWater()) {
+//            this.moveRelative(this.getSpeed(), movementInput);
+//            this.move(MoverType.SELF, this.getDeltaMovement());
+//            this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
+//            if (this.getTarget() == null) {
+//                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
+//            }
+//        } else {
+//            super.travel(movementInput);
+//        }
+//    }
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
@@ -381,12 +376,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             this.setPassedOutStatus(false);
         }
         if (!this.level().isClientSide) slowticks++;
-        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(
-                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) {
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
-            slowticks = -60;
-        }
+//        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(
+//                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
+//                this.blockPosition()).getAmount() >= 8)) {
+//            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
+//            slowticks = -60;
+//        }
         if (this.level() instanceof ServerLevel serverLevel)
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
@@ -503,7 +498,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
 
     public void grabTarget(Entity entity) {
         if (entity == this.getTarget() && !entity.hasPassenger(
-                this) && entity.getFeetBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
+                this) && entity.getInBlockState().getBlock() != GigBlocks.NEST_RESIN_WEB_CROSS) {
             entity.startRiding(this, true);
             this.setAggressive(false);
             if (entity instanceof ServerPlayer player)
@@ -582,8 +577,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) return false;
         if (this.isVehicle()) return false;
         if (this.isAlliedTo(entity)) return false;
-        if (livingEntity.getMobType() == MobType.UNDEAD) return false;
-        if (livingEntity.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) return false;
+        if (livingEntity.getType().is(EntityTypeTags.UNDEAD)) return false;
+        if (livingEntity.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS) return false;
         if (livingEntity.getType() == EntityType.ARMOR_STAND) return false;
         if (livingEntity.getType() == EntityType.WARDEN) return false;
         if (livingEntity instanceof Bat) return false;

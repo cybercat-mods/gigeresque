@@ -9,9 +9,9 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public record GigEntityUtils() {
     public static boolean faceHuggerTest(LivingEntity target) {
         return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType().is(
                 GigTags.FACEHUGGER_BLACKLIST) && !target.hasEffect(GigStatusEffects.IMPREGNATION) && !target.hasEffect(
-                GigStatusEffects.EGGMORPHING) && target.getMobType() != MobType.UNDEAD && !GigEntityUtils.passengerCheck(
+                GigStatusEffects.EGGMORPHING) && !GigEntityUtils.passengerCheck(
                 target) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
     }
 
@@ -87,7 +87,7 @@ public record GigEntityUtils() {
     }
 
     public static boolean feetCheck(LivingEntity target) {
-        return target.getFeetBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS;
+        return target.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS;
     }
 
     public static boolean hostEggCheck(LivingEntity target) {

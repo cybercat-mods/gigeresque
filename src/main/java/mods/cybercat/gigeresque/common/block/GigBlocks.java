@@ -5,11 +5,10 @@ import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.block.storage.*;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
@@ -28,36 +27,36 @@ public record GigBlocks() implements GigeresqueInitializer {
      * NORMAL BLOCKS
      */
     public static final SittingIdolInvisBlock ALIEN_STORAGE_BLOCK_INVIS2 = new SittingIdolInvisBlock();
-    public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+    public static final AlienSarcophagusBlock ALIEN_STORAGE_BLOCK_1 = new AlienSarcophagusBlock(BlockBehaviour.Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).noOcclusion());
     public static final AlienSarcophagusHuggerBlock ALIEN_STORAGE_BLOCK_1_HUGGER = new AlienSarcophagusHuggerBlock();
     public static final AlienSarcophagusGooBlock ALIEN_STORAGE_BLOCK_1_GOO = new AlienSarcophagusGooBlock();
     public static final AlienSarcophagusSporeBlock ALIEN_STORAGE_BLOCK_1_SPORE = new AlienSarcophagusSporeBlock();
-    public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
-    public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
+    public static final AlienJarBlock ALIEN_STORAGE_BLOCK_2 = new AlienJarBlock(BlockBehaviour.Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).noOcclusion());
+    public static final SittingIdolBlock ALIEN_STORAGE_BLOCK_3 = new SittingIdolBlock(BlockBehaviour.Properties.of().sound(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).noOcclusion());
     public static final NestResinBlock NEST_RESIN = new NestResinBlock(
-            FabricBlockSettings.create().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
+            BlockBehaviour.Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
     public static final Block NEST_RESIN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().sounds(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
+            BlockBehaviour.Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f));
     public static final NestResinWebBlock NEST_RESIN_WEB = new NestResinWebBlock(
-            FabricBlockSettings.create().sounds(SoundType.HONEY_BLOCK).noCollision().strength(5.0f, 8.0f));
+            BlockBehaviour.Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f).noCollission());
     public static final NestResinWebFullBlock NEST_RESIN_WEB_CROSS = new NestResinWebFullBlock(
-            FabricBlockSettings.create().sounds(
-                    SoundType.HONEY_BLOCK).noCollision().nonOpaque().requiresTool().strength(5.0f, 8.0f));
+            BlockBehaviour.Properties.of().sound(
+                    SoundType.HONEY_BLOCK).noOcclusion().requiresCorrectToolForDrops().strength(5.0f, 8.0f).noCollission());
     public static final Block ORGANIC_ALIEN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().strength(Gigeresque.config.alienblockHardness,
-                    Gigeresque.config.alienblockResistance).sounds(SoundType.NETHERRACK).explosionResistance(10));
+            BlockBehaviour.Properties.of().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sound(SoundType.NETHERRACK).explosionResistance(10));
     public static final Block RESINOUS_ALIEN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().requiresTool().strength(Gigeresque.config.alienblockHardness,
-                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+            BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block RIBBED_ALIEN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().requiresTool().strength(Gigeresque.config.alienblockHardness,
-                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+            BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block ROUGH_ALIEN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().requiresTool().strength(Gigeresque.config.alienblockHardness,
-                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+            BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block SINOUS_ALIEN_BLOCK = new GigBlock(
-            FabricBlockSettings.create().requiresTool().strength(Gigeresque.config.alienblockHardness,
-                    Gigeresque.config.alienblockResistance).sounds(SoundType.DEEPSLATE).explosionResistance(10));
+            BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(Gigeresque.config.alienblockHardness,
+                    Gigeresque.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10));
     public static final Block MURAL_ALIEN_BLOCK_1 = new MuralBlock();
     public static final Block MURAL_ALIEN_BLOCK_2 = new MuralBlock();
     public static final Block MURAL_ALIEN_BLOCK_3 = new MuralBlock();
@@ -143,13 +142,13 @@ public record GigBlocks() implements GigeresqueInitializer {
         return instance;
     }
 
-    private void registerItemBlock(String path, Block block, FabricItemSettings settings) {
+    private void registerItemBlock(String path, Block block, Item.Properties settings) {
         Registry.register(BuiltInRegistries.BLOCK, Constants.modResource(path), block);
         Registry.register(BuiltInRegistries.ITEM, Constants.modResource(path), new BlockItem(block, settings));
     }
 
     private void registerItemBlock(String path, Block block) {
-        registerItemBlock(path, block, new FabricItemSettings());
+        registerItemBlock(path, block, new Item.Properties());
     }
 
     @Override
@@ -168,7 +167,7 @@ public record GigBlocks() implements GigeresqueInitializer {
 
         Registry.register(BuiltInRegistries.BLOCK, Constants.modResource("neomorph_spore_pods"), SPORE_BLOCK);
         Registry.register(BuiltInRegistries.ITEM, Constants.modResource("neomorph_spore_pods"),
-                new GigBlockItem(SPORE_BLOCK, new FabricItemSettings()));
+                new GigBlockItem(SPORE_BLOCK, new Item.Properties()));
 
         registerItemBlock("petrified_object", PETRIFIED_OBJECT_BLOCK);
         registerItemBlock("alien_storage_block1", ALIEN_STORAGE_BLOCK_1);

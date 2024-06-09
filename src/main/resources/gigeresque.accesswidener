@@ -11,3 +11,7 @@ accessible field net/minecraft/world/entity/Entity yRot F
 accessible field net/minecraft/world/entity/WalkAnimationState speedOld F
 accessible method net/minecraft/world/entity/ai/village/poi/PoiTypes getBlockStates (Lnet/minecraft/world/level/block/Block;)Ljava/util/Set;
 accessible method net/minecraft/client/renderer/entity/EntityRenderers register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V
+accessible method net/minecraft/world/effect/MobEffects register (Ljava/lang/String;Lnet/minecraft/world/effect/MobEffect;)Lnet/minecraft/core/Holder;
+accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
+extendable method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
+accessible field net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation allowBreaching Z

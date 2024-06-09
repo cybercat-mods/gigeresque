@@ -1,15 +1,16 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -75,16 +76,16 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(tag)) ContainerHelper.loadAllItems(tag, this.items, registries);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (!this.trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, this.items, registries);
     }
 
     @Override

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
@@ -25,7 +26,7 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
         setScanRate(entity -> 15);
         setPredicate((item, entity) -> {
             ItemStack itemStack = item.getItem();
-            return (itemStack.getItem().isEdible() || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(Items.BEETROOT_SEEDS) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
+            return (itemStack.is(ItemTags.MEAT) || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(Items.BEETROOT_SEEDS) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
         });
     }
 

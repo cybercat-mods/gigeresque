@@ -1,22 +1,23 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.core.object.Color;
+import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
 public class ImpregnationStatusEffect extends MobEffect {
@@ -36,16 +37,17 @@ public class ImpregnationStatusEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
         super.applyEffectTick(livingEntity, amplifier);
         if (GigEntityUtils.isTargetHostable(livingEntity) && this == GigStatusEffects.IMPREGNATION) {
             this.handleStatusEffects(livingEntity, (int) Gigeresque.config.impregnationTickTimer, MobEffects.HUNGER,
                     MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN);
         }
+        return super.applyEffectTick(livingEntity, amplifier);
     }
 
-    private void handleStatusEffects(@NotNull LivingEntity livingEntity, int ticks, MobEffect... statusEffects) {
-        for (MobEffect effect : statusEffects) {
+    private void handleStatusEffects(@NotNull LivingEntity livingEntity, int ticks, Holder<MobEffect>... statusEffects) {
+        for (Holder<MobEffect> effect : statusEffects) {
             if (!livingEntity.hasEffect(effect)) {
                 livingEntity.addEffect(new MobEffectInstance(effect, ticks, 3, true, true));
             }
@@ -64,9 +66,11 @@ public class ImpregnationStatusEffect extends MobEffect {
         }
     }
 
-    public static void effectRemoval(LivingEntity entity) {
+    public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         if (Constants.isCreativeSpecPlayer.test(entity)) return;
         if (!GigEntityUtils.isTargetHostable(entity)) return;
+        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof ImpregnationStatusEffect)) return;
+        if (entity instanceof Mob mob && mob.isNoAi()) return;
         LivingEntity burster = createBurster(entity);
         if (burster != null) {
             setBursterProperties(entity, burster);

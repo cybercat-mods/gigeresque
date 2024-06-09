@@ -1,16 +1,16 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
-import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.SmoothGroundNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
@@ -65,7 +65,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(ChestbursterEntity.class,
             EntityDataSerializers.FLOAT);
-    private final AzureNavigation landNavigation = new AzureNavigation(this, level());
+    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int bloodRendering = 0;
     public int eatingCounter = 0;
@@ -131,12 +131,12 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
-    public void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(GROWTH, 0.0f);
-        entityData.define(BLOOD, 0.0f);
-        entityData.define(BIRTHED, false);
-        entityData.define(EAT, false);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(GROWTH, 0.0f);
+        builder.define(BLOOD, 0.0f);
+        builder.define(BIRTHED, false);
+        builder.define(EAT, false);
     }
 
     @Override

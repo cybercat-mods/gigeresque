@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.interfacing;
 
-import net.minecraft.core.BlockPos;
-
 public interface AbstractAlien {
 
     int getAcidDiameter();

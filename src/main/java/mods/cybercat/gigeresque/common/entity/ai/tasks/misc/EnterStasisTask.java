@@ -32,7 +32,6 @@ public class EnterStasisTask<E extends PathfinderMob & AbstractAlien & GeoEntity
 
     @Override
     protected void doDelayedAction(E entity) {
-        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
         entity.triggerAnim(Constants.ATTACK_CONTROLLER, "passout");
         entity.setPassedOutStatus(true);
     }

@@ -37,7 +37,6 @@ public class SearchTask<E extends PathfinderMob & AbstractAlien & GeoEntity> ext
 
     @Override
     protected void doDelayedAction(E entity) {
-        entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
         entity.setIsSearching(true);
     }
 }

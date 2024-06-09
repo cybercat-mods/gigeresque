@@ -3,13 +3,11 @@ package mods.cybercat.gigeresque.common.item;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
 import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,7 +32,7 @@ public class SurgeryKitItem extends Item {
         if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance)) {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
-            itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(interactionHand));
+            itemStack.hurtAndBreak(1, player, LivingEntity.getEquipmentSlotForItem(itemStack));
         }
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
@@ -62,7 +60,7 @@ public class SurgeryKitItem extends Item {
             }
             if (entity instanceof Player playerentity) {
                 playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
-                stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+                stack.hurtAndBreak(1, playerentity, LivingEntity.getEquipmentSlotForItem(stack));
             }
             entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
         }

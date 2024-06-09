@@ -14,6 +14,7 @@ import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffe
 import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -44,7 +45,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Shadow
-    abstract boolean hasEffect(MobEffect effect);
+    abstract boolean hasEffect(Holder<MobEffect> effect);
 
     @Shadow
     abstract boolean addEffect(MobEffectInstance effect);
@@ -68,7 +69,7 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract float getHealth();
 
     @Shadow
-    public abstract boolean removeEffect(MobEffect effect);
+    public abstract boolean removeEffect(Holder<MobEffect> effect);
 
     @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
@@ -169,13 +170,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V", at = @At(value = "TAIL"))
     private void runAtEffectRemoval(MobEffectInstance mobEffectInstance, CallbackInfo ci) {
-        if (mobEffectInstance.getEffect() instanceof DNAStatusEffect)
-            DNAStatusEffect.effectRemoval((LivingEntity) (Object) this);
-        if (mobEffectInstance.getEffect() instanceof SporeStatusEffect)
+            DNAStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
             SporeStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
-        if (mobEffectInstance.getEffect() instanceof ImpregnationStatusEffect)
-            ImpregnationStatusEffect.effectRemoval((LivingEntity) (Object) this);
-        if (mobEffectInstance.getEffect() instanceof EggMorphingStatusEffect)
-            EggMorphingStatusEffect.effectRemoval((LivingEntity) (Object) this);
+            ImpregnationStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
+            EggMorphingStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
     }
 }

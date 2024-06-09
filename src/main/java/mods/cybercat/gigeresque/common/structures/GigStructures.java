@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.structures;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,7 +18,7 @@ public record GigStructures() {
         SCULK_GIG_DUNGEON = register(Constants.modResource("sculk_gig_dungeon"), GigSculkDungeonStructure.CODEC);
     }
 
-    private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {
+    private static <S extends Structure> StructureType<S> register(ResourceLocation id, MapCodec<S> codec) {
         return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, id, () -> codec);
     }
 }
