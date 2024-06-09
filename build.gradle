@@ -4,7 +4,6 @@ plugins {
     id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
-
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
