@@ -110,8 +110,6 @@ if (file('key.properties').exists()) {
         curseforge("curseforgeFabric") {
             from cfoptions
             modLoaders.add("fabric")
-            modLoaders.add("quilt")
-
             requires {
                 slug = "fabric-api"
             }
@@ -128,8 +126,6 @@ if (file('key.properties').exists()) {
         modrinth("modrinthFabric") {
             from mroptions
             modLoaders.add("fabric")
-            modLoaders.add("quilt")
-
             requires {
                 slug = "fabric-api"
             }
