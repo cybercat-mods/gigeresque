@@ -47,6 +47,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
@@ -110,6 +112,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
+        ItemStack enchantedBoots = new ItemStack(Items.CHAINMAIL_BOOTS);
+        enchantedBoots.enchant(Enchantments.DEPTH_STRIDER, 3);
+        this.setItemSlot(EquipmentSlot.FEET, enchantedBoots);
     }
 
     @Override
