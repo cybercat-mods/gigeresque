@@ -3,16 +3,14 @@ package mods.cybercat.gigeresque.common.entity.impl.extra;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
-import mod.azure.azurelib.common.internal.common.core.animation.Animation;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.bettercrawling.entity.movement.ClimberLookController;
-import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -21,7 +19,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.BreakBlocksTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -71,12 +68,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SpitterEntity extends CrawlerAlien implements SmartBrainOwner<SpitterEntity> {
+public class SpitterEntity extends AlienEntity implements SmartBrainOwner<SpitterEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int breakingCounter = 0;
 
-    public SpitterEntity(EntityType<? extends CrawlerAlien> entityType, Level world) {
+    public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.3F);
     }
@@ -290,10 +287,10 @@ public class SpitterEntity extends CrawlerAlien implements SmartBrainOwner<Spitt
                 this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
         if (this.tickCount % 10 == 0) this.refreshDimensions();
 

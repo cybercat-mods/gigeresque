@@ -9,6 +9,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -58,12 +59,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class StalkerEntity extends CrawlerAlien implements SmartBrainOwner<StalkerEntity> {
+public class StalkerEntity extends AlienEntity implements SmartBrainOwner<StalkerEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int breakingCounter = 0;
 
-    public StalkerEntity(EntityType<? extends CrawlerAlien> entityType, Level world) {
+    public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.setMaxUpStep(0.1f);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);

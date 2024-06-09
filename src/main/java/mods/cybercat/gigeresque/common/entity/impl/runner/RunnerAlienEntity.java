@@ -8,10 +8,9 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimationControl
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.bettercrawling.entity.movement.ClimberLookController;
-import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -20,7 +19,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.attribute.AlienEntityAttributes;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -67,11 +65,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<RunnerAlienEntity> {
+public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<RunnerAlienEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public RunnerAlienEntity(EntityType<? extends CrawlerAlien> type, Level world) {
+    public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.75F);
     }
@@ -96,10 +94,10 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
                 this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
         super.travel(movementInput);
     }
@@ -290,10 +288,5 @@ public class RunnerAlienEntity extends CrawlerAlien implements SmartBrainOwner<R
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
-    }
-
-    @Override
-    public void onRegisterGoals() {
-
     }
 }

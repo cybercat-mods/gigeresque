@@ -7,17 +7,14 @@ import mod.azure.azurelib.common.internal.common.core.animation.Animation;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.bettercrawling.entity.movement.BetterSpiderPathNavigator;
-import mod.azure.bettercrawling.entity.movement.ClimberLookController;
-import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -78,7 +75,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<FacehuggerEntity> {
+public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
 
     public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -88,7 +85,6 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
             EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);
-    private final BetterSpiderPathNavigator<?> landNavigation = new BetterSpiderPathNavigator<>(this, level(), false);
     private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
     private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
             false);
@@ -96,7 +92,7 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public float ticksAttachedToHost = -1.0f;
 
-    public FacehuggerEntity(EntityType<? extends CrawlerAlien> type, Level world) {
+    public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.2F);
         this.navigation = landNavigation;
@@ -321,10 +317,10 @@ public class FacehuggerEntity extends CrawlerAlien implements SmartBrainOwner<Fa
                 this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
         this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : landMoveControl;
         this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
                 Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
         this.navigation.setCanFloat(true);
         super.travel(movementInput);
