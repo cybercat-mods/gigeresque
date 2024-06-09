@@ -33,13 +33,13 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.20.4:2024.04.14@zip")
+        parchment("org.parchmentmc.data:parchment-1.20.6:2024.06.02@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loaderVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
     modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraftVersion}:${project.azurelibVersion}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenuVersion}"
-    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraftVersion}:${project.sblVersion}"
+    modImplementation "maven.modrinth:smartbrainlib:mY9xu8va"
     modImplementation "software.bernie.geckolib:geckolib-fabric-${project.minecraftVersion}:${project.geckolibVersion}"
 }
 
@@ -72,12 +72,12 @@ loom {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
+    it.options.release = 21
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
