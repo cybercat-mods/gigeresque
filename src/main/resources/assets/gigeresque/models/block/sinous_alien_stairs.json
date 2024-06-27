@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "gigeresque:block/sinous_alien_block",
-    "top": "gigeresque:block/sinous_alien_block",
-    "side": "gigeresque:block/sinous_alien_block"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/wall_inventory",
-  "textures": {
-    "wall": "gigeresque:block/sinous_alien_block"
-  }
-}

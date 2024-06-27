@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "gigeresque:block/smooth_alien_pillar",
-    "top": "gigeresque:block/smooth_alien_pillar",
-    "side": "gigeresque:block/smooth_alien_pillar"
-  }
-}

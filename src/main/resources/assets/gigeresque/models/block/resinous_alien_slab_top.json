@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "gigeresque:block/resinous_alien_pillar",
-    "top": "gigeresque:block/resinous_alien_pillar",
-    "side": "gigeresque:block/resinous_alien_pillar"
-  }
-}
