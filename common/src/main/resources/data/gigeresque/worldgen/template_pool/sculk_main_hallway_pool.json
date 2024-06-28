@@ -7,6 +7,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_short_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
