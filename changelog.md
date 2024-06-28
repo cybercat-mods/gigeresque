@@ -1,7 +1,4 @@
-v0.6.0
+v0.6.1
 
-- Updated to 1.21! 
-- Now is a Multiloader project, meaning Fabric and NeoForge dedicated version!
-- Fixed sound triggering on bursters.
-- Fixed speed on Classic Xeno.
-- Fixes hurt/dead on bursters. 
+- Fixes Structure generation, will require a new world likely for this. 
+- Moved Structures to a pure vanilla datapack now as the size limit was increased, so structures now use the new encapsulate terrain adaptation to ensure they are buried.
