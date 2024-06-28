@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom' version "${fabric_loom_version}"
-    id 'me.modmuss50.mod-publish-plugin' version "${modmuss50_mod_publish_version}"
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 dependencies {

@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.moddev' version "${neo_moddev}"
-    id 'me.modmuss50.mod-publish-plugin' version "${modmuss50_mod_publish_version}"
+    id 'net.neoforged.moddev'
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 neoForge {
