@@ -13,7 +13,6 @@ import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.structures.GigStructures;
 
 public record CommonMod() {
     public static final String MOD_ID = "gigeresque";
@@ -28,7 +27,6 @@ public record CommonMod() {
         GigItems.initialize();
         GigSounds.initialize();
         GigStatusEffects.initialize();
-        GigStructures.initialize();
         GigMemoryTypes.initialize();
         GigSensors.initialize();
         GigParticles.initialize();

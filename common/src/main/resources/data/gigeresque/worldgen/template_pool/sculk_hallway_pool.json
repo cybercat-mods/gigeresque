@@ -7,6 +7,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_long_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -16,6 +17,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_elbowl_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -25,6 +27,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_elbowr_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -34,6 +37,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_3way_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -43,6 +47,7 @@
       "element": {
         "location": "gigeresque:sculk_aliendungeon_4way_hall",
         "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

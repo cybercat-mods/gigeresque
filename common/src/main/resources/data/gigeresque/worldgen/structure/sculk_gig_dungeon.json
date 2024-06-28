@@ -1,9 +1,14 @@
 {
-  "type": "gigeresque:sculk_gig_dungeon",
+  "type": "minecraft:jigsaw",
+  "biomes": "#gigeresque:has_structure/sculk_gig_dungeon_biomes",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "encapsulate",
   "start_pool": "gigeresque:sculk_gig_dungeon",
   "size": 15,
-  "max_distance_from_center": 64,
-  "biomes": "#gigeresque:has_structure/sculk_gig_dungeon_biomes",
-  "step": "underground_decoration",
-  "spawn_overrides": {}
+  "start_height": {
+    "absolute": -18
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
 }
