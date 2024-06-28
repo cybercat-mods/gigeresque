@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "aether:aechor_plant",
+    "aether:aerwhale",
+    "aether:blue_swet",
+    "aether:evil_whirlwind",
+    "aether:fire_minion",
+    "aether:golden_swet",
+    "aether:mimic",
+    "aether:sentry",
+    "aether:whirlwind",
+    "aether:zephyr",
+    "aether:slider",
+    "aether:sun_spirit",
+    "aether:valkyrie_queen"
+  ]
+}

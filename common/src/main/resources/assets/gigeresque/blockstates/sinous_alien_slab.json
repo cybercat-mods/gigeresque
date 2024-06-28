@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "gigeresque:block/sinous_alien_slab"
+    },
+    "type=double": {
+      "model": "gigeresque:block/sinous_alien_block"
+    },
+    "type=top": {
+      "model": "gigeresque:block/sinous_alien_slab_top"
+    }
+  }
+}

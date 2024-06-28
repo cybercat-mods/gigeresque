@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "arachnids:arkellian",
+    "arachnids:brainbug",
+    "arachnids:hopper",
+    "arachnids:plasma",
+    "arachnids:scorpion",
+    "arachnids:tanker",
+    "arachnids:warrior",
+    "arachnids:worker"
+  ]
+}

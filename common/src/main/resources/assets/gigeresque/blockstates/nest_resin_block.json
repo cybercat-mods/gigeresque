@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gigeresque:block/nest_resin_block"
+    }
+  }
+}

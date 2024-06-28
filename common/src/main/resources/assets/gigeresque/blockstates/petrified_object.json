@@ -1,0 +1,82 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=1": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=2": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=3": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=4": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=5": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=6": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=7": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=8": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=9": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=10": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=11": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=12": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=13": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=14": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=15": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=16": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=17": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=18": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=19": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=20": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=21": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=22": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=23": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=24": {
+      "model": "gigeresque:block/petrified_object"
+    },
+    "age=25": {
+      "model": "gigeresque:block/petrified_object"
+    }
+  }
+}

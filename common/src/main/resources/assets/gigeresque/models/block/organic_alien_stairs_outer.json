@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "gigeresque:block/organic_alien_block",
+    "top": "gigeresque:block/organic_alien_block",
+    "side": "gigeresque:block/organic_alien_block"
+  }
+}

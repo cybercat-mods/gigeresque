@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#gigeresque:dungeon_blocks",
+    "#gigeresque:nest_blocks",
+    "gigeresque:neomorph_spore_pods"
+  ]
+}

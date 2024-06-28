@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:allay",
+    "minecraft:blaze",
+    "minecraft:ender_dragon",
+    "minecraft:enderman",
+    "minecraft:endermite",
+    "minecraft:ghast",
+    "minecraft:shulker",
+    "minecraft:iron_golem",
+    "minecraft:magma_cube",
+    "minecraft:slime",
+    "minecraft:silverfish",
+    "minecraft:snow_golem",
+    "minecraft:vex",
+    "minecraft:wither",
+    "#gigeresque:gigeresquealiens"
+  ]
+}

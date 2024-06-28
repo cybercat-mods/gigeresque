@@ -1,0 +1,10 @@
+{
+  "type": "gigeresque:mobspawns",
+  "biomes": "#gigeresque:eggbiomes",
+  "spawn": {
+    "type": "gigeresque:egg",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 4
+  }
+}

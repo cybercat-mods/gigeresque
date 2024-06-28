@@ -1,0 +1,32 @@
+{
+  "values": [
+    "minecraft:candle",
+    "minecraft:white_candle",
+    "minecraft:orange_candle",
+    "minecraft:magenta_candle",
+    "minecraft:light_blue_candle",
+    "minecraft:yellow_candle",
+    "minecraft:lime_candle",
+    "minecraft:pink_candle",
+    "minecraft:gray_candle",
+    "minecraft:light_gray_candle",
+    "minecraft:cyan_candle",
+    "minecraft:purple_candle",
+    "minecraft:blue_candle",
+    "minecraft:brown_candle",
+    "minecraft:green_candle",
+    "minecraft:red_candle",
+    "minecraft:black_candle",
+    "minecraft:end_rod",
+    "minecraft:glow_lichen",
+    "minecraft:lantern",
+    "minecraft:redstone_torch",
+    "minecraft:redstone_wall_torch",
+    "minecraft:sea_pickle",
+    "minecraft:soul_lantern",
+    "minecraft:soul_torch",
+    "minecraft:soul_wall_torch",
+    "minecraft:torch",
+    "minecraft:wall_torch"
+  ]
+}

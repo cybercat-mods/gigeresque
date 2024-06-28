@@ -1,0 +1,32 @@
+{
+  "replace": false,
+  "values": [
+    "alexsmobs:gorilla",
+    "alexsmobs:murmur",
+    "alexsmobs:crocodile",
+    "alexsmobs:orca",
+    "alexsmobs:hammerhead_shark",
+    "alexsmobs:seal",
+    "alexsmobs:mantis_shrimp",
+    "alexsmobs:frilled_shark",
+    "alexsmobs:mimic_octopus",
+    "alexsmobs:giant_squid",
+    "alexsmobs:caiman",
+    "alexsmobs:grizzly_bear",
+    "alexsmobs:gazelle",
+    "alexsmobs:komodo_dragon",
+    "alexsmobs:warped_toad",
+    "alexsmobs:moose",
+    "alexsmobs:elephant",
+    "alexsmobs:snow_leopard",
+    "alexsmobs:dropbear",
+    "alexsmobs:kangaroo",
+    "alexsmobs:tiger",
+    "alexsmobs:froststalker",
+    "alexsmobs:tusklin",
+    "alexsmobs:maned_wolf",
+    "alexsmobs:anteater",
+    "alexsmobs:bison",
+    "alexsmobs:rhinoceros"
+  ]
+}

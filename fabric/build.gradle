@@ -1,0 +1,90 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom' version "${fabric_loom_version}"
+    id 'me.modmuss50.mod-publish-plugin' version "${modmuss50_mod_publish_version}"
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation "mod.azure.azurelib:azurelib-fabric-${minecraft_version}:${azurelib_version}"
+    modApi "com.terraformersmc:modmenu:${modmenu_version}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.minecraft_version}:${project.sbl_version}"
+}
+
+loom {
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("runs/client")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("runs/server")
+        }
+    }
+}
+
+if (file('key.properties').exists()) {
+    publishMods {
+        def releaseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        releaseProp.load(secretPropsFile.newInputStream())
+        file = remapJar.archiveFile
+        changelog = rootProject.file("changelog.md").text
+        type = STABLE
+        modLoaders.add("fabric")
+
+        curseforge {
+            projectId = project.curseforgeID
+            projectSlug = project.projectSlug
+            accessToken = releaseProp.getProperty("curseKey")
+            minecraftVersions.add("${minecraft_version}")
+            requires {
+                slug = "fabric-api"
+            }
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "modmenu"
+            }
+        }
+        modrinth {
+            projectId = project.modrinthID
+            accessToken = releaseProp.getProperty('modrinthKey')
+            minecraftVersions.add("${minecraft_version}")
+            requires {
+                slug = "fabric-api"
+            }
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            optional {
+                slug = "modmenu"
+            }
+        }
+    }
+}

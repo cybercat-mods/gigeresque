@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "bygone_nether:wex",
+    "bygone_nether:warped_enderman",
+    "bygone_nether:wraither",
+    "bygone_nether:corpor",
+    "bygone_nether:wither_skeleton_knight",
+    "bygone_nether:wither_skeleton_horse"
+  ]
+}

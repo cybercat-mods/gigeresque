@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "gigeresque",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "homepage": "${mod_url}",
+    "issues": "${mod_issues}",
+    "sources": "${mod_sources}"
+  },
+  "license": "${mod_license}",
+  "icon": "${mod_logo}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mods.cybercat.gigeresque.FabricMod"
+    ],
+    "client": [
+      "mods.cybercat.gigeresque.FabricModClient"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "accessWidener": "${mod_id}.accesswidener",
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "java": ">=${java_version}",
+    "azurelib": "~${azurelib_version}",
+    "smartbrainlib": "~${sbl_version}",
+    "minecraft": "~${minecraft_version}"
+  }
+}

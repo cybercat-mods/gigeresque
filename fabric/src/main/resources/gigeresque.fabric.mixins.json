@@ -1,0 +1,32 @@
+{
+  "required": true,
+  "package": "mods.cybercat.gigeresque.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "common.PointOfInterestTypesInvoker",
+    "common.entity.BrushableBlockEntityMixin",
+    "common.entity.CreeperMixin",
+    "common.entity.EntityMixin",
+    "common.entity.HorseMixin",
+    "common.entity.HostileEntityMixin",
+    "common.entity.LivingEntityMixin",
+    "common.entity.MobEntityMixin",
+    "common.entity.PlayerEntityMixin",
+    "common.entity.VillagerEntityMixin",
+    "common.entity.VillagerHostilesSensorMixin",
+    "common.entity.WanderingTraderEntityMixin",
+    "common.entity.WardenEntityMixin"
+  ],
+  "client": [
+    "client.entity.render.AzureEntityRendererMixin",
+    "client.entity.render.LivingEntityRendererMixin",
+    "client.entity.render.feature.SheepWoolFeatureRendererMixin",
+    "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
+    "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
+    "client.render.InGameOverlayRendererMixin"
+  ],
+  "server": []
+}

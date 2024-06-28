@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_1"
+      },
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_2"
+      },
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_3"
+      },
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_4"
+      },
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_5"
+      },
+      {
+        "model": "gigeresque:block/nest_resin_web_cross_6"
+      }
+    ]
+  }
+}

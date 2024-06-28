@@ -1,0 +1,46 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev' version "${neo_moddev}"
+}
+
+neoForge {
+    neoFormVersion = "1.21-20240613.152323"
+
+    accessTransformers = ["../neoforge/src/main/resources/META-INF/accesstransformer.cfg"]
+
+    parchment {
+        minecraftVersion = "${parchment_minecraft}"
+        mappingsVersion = "${parchment_version}"
+    }
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    compileOnly "mod.azure.azurelib:azurelib-common-${minecraft_version}:${azurelib_version}"
+	compileOnly "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraft_version}:${project.sbl_version}"
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}

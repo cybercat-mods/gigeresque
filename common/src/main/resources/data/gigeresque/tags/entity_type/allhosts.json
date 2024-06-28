@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#gigeresque:aquaticalienhost",
+    "#gigeresque:classicalienhost",
+    "#gigeresque:runnerhost",
+    "#gigeresque:smallmutanthost",
+    "#gigeresque:largemutanthost",
+    "#gigeresque:neohost"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "gigeresque:block/nest_resin_web_3"
+  }
+}

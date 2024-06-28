@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "mca:female_villager",
+    "mca:male_villager"
+  ]
+}

@@ -1,0 +1,122 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'idea'
+}
+
+base {
+    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    withSourcesJar()
+    withJavadocJar()
+}
+
+repositories {
+    mavenCentral()
+    // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter { includeGroupAndSubgroups("org.spongepowered") }
+    }
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
+    }
+    maven { url "https://api.modrinth.com/maven" }
+    maven { url "https://maven.terraformersmc.com/" }
+    maven { url "https://maven.terraformersmc.com/releases" } // modmenu
+    maven { url 'https://libs.azuredoom.com:4443/mods' }
+    maven {
+        name = 'Parchment'
+        url = 'https://maven.parchmentmc.org'
+    }
+	maven {
+		name = "SmartBrainLib (SBL) Maven Repo"
+		url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+	}
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:24.1.0'
+}
+
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations."$variant".outgoing {
+        capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+        capability("$group:$mod_id:$version")
+    }
+    publishing.publications.configureEach {
+        suppressPomMetadataWarningsFor(variant)
+    }
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+}
+
+jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+
+    manifest {
+        attributes([
+                'Specification-Title'   : mod_name,
+                'Specification-Vendor'  : mod_author,
+                'Specification-Version' : project.jar.archiveVersion,
+                'Implementation-Title'  : project.name,
+                'Implementation-Version': project.jar.archiveVersion,
+                'Implementation-Vendor' : mod_author,
+                'Built-On-Minecraft'    : minecraft_version
+        ])
+    }
+}
+
+processResources {
+    def expandProps = [
+            "version": version,
+            "group": project.group,
+            "minecraft_version": minecraft_version,
+            "minecraft_version_range": minecraft_version_range,
+            "fabric_version": fabric_version,
+            "fabric_loader_version": fabric_loader_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "mod_logo": mod_logo,
+            "mod_license": mod_license,
+            "mod_description": mod_description,
+            "mod_issues": mod_issues,
+            "mod_sources": mod_sources,
+            "mod_url": mod_url,
+            "loader_version_range": loader_version_range,
+            "neo_version": neo_version,
+            "neo_version_range": neo_version_range,
+            "mod_credits": mod_credits,
+            "java_version": java_version,
+            "azurelib_version": azurelib_version,
+            "sbl_version": sbl_version
+    ]
+
+    filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
+        expand expandProps
+    }
+    inputs.properties(expandProps)
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
