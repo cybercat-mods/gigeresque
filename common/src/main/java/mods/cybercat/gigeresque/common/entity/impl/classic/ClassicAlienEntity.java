@@ -52,6 +52,7 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
@@ -116,14 +117,14 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     @Override
     public void tick() {
-//        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
-//        if (this.level().getBlockState(blockPos).blocksMotion()) {
-//            this.inTwoBlockSpace = true;
-//        }
-//        if (!this.level().getBlockState(blockPos).blocksMotion()) {
-//            this.inTwoBlockSpace = false;
-//        }
-//        this.setIsCrawling(this.inTwoBlockSpace);
+        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
+        if (this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = true;
+        }
+        if (!this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = false;
+        }
+        this.setIsCrawling(this.inTwoBlockSpace);
         super.tick();
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
