@@ -17,7 +17,9 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -47,6 +49,9 @@ import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
@@ -409,8 +414,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             this.setIsTunnelCrawling(shouldTunnelCrawl);
         }
         this.refreshDimensions();
-        ItemStack enchantedBoots = new ItemStack(Items.CHAINMAIL_BOOTS);
-//        enchantedBoots.enchant(Enchantments.DEPTH_STRIDER, 3);
+        var enchantedBoots = new ItemStack(Items.CHAINMAIL_BOOTS);
+        var levelEnchants = this.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        var depthEnchantment = levelEnchants.getHolderOrThrow(Enchantments.DEPTH_STRIDER);
+        enchantedBoots.enchant(depthEnchantment, 3);
+        this.getArmorSlots().forEach(test -> setItemSlot(EquipmentSlot.FEET, enchantedBoots));
         if (!this.isInWater())
             this.setItemSlot(EquipmentSlot.FEET, enchantedBoots);
         else
