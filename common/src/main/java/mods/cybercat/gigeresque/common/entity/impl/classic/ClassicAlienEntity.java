@@ -108,13 +108,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     @Override
-    public void travel(@NotNull Vec3 movementInput) {
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
-
-        super.travel(movementInput);
-    }
-
-    @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
         if (this.isTunnelCrawling() || this.isCrawling()) return EntityDimensions.scalable(0.95f, 0.95f);
