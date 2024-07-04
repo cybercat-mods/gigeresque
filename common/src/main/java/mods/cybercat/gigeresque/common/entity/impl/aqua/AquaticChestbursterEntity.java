@@ -60,8 +60,6 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
                 Fluids.WATER) && this.level().getFluidState(
                 this.blockPosition()).getAmount() >= 8)) ? swimLookControl : landLookControl;
 
-        if (this.tickCount % 10 == 0) this.refreshDimensions();
-
         super.travel(movementInput);
     }
 

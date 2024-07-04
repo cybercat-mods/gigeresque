@@ -410,6 +410,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
             this.setIsTunnelCrawling(shouldTunnelCrawl);
         }
+        if (this.tickCount % 10 == 0) this.refreshDimensions();
     }
 
     @Override
