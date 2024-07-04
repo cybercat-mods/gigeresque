@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
 import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

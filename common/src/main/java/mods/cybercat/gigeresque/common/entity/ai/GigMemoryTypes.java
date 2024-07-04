@@ -2,11 +2,11 @@ package mods.cybercat.gigeresque.common.entity.ai;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import mod.azure.azurelib.sblforked.SBLConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.tslat.smartbrainlib.SBLConstants;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

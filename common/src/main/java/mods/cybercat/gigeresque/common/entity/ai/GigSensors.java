@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.ai;
 
+import mod.azure.azurelib.sblforked.SBLConstants;
+import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.SBLConstants;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
 import java.util.function.Supplier;
 

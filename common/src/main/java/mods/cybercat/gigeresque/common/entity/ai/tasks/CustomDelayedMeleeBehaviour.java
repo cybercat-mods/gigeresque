@@ -1,11 +1,11 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;

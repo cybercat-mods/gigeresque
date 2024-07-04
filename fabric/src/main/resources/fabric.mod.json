@@ -32,7 +32,6 @@
     "fabric-api": "*",
     "java": ">=${java_version}",
     "azurelib": "~${azurelib_version}",
-    "smartbrainlib": "~${sbl_version}",
     "minecraft": "~${minecraft_version}"
   }
 }

@@ -3,6 +3,8 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
+import mod.azure.azurelib.sblforked.registry.SBLMemoryTypes;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -18,8 +20,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.material.Fluids;
-import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
-import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

@@ -1,6 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.ai.sensors;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
+import mod.azure.azurelib.sblforked.api.core.sensor.PredicateSensor;
+import mod.azure.azurelib.sblforked.util.BrainUtils;
+import mod.azure.azurelib.sblforked.util.EntityRetrievalUtil;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import net.minecraft.server.level.ServerLevel;
@@ -11,10 +15,6 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
-import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.Comparator;
 import java.util.List;

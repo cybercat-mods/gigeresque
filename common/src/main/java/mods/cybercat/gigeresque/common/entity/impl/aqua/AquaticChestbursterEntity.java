@@ -5,6 +5,8 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.sblforked.api.core.navigation.SmoothGroundNavigation;
+import mod.azure.azurelib.sblforked.api.core.navigation.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
@@ -26,8 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothWaterBoundPathNavigation;
 import org.jetbrains.annotations.NotNull;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable {

@@ -26,7 +26,6 @@ neoForge {
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     compileOnly "mod.azure.azurelib:azurelib-common-${minecraft_version}:${azurelib_version}"
-	compileOnly "net.tslat.smartbrainlib:SmartBrainLib-common-${project.minecraft_version}:${project.sbl_version}"
 }
 
 configurations {
