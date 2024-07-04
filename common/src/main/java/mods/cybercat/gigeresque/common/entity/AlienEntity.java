@@ -74,14 +74,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
-    protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
-            AlienEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
             AlienEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
+            AlienEntity.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AlienEntity.class,
             EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(AlienEntity.class,
@@ -94,12 +94,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             EntityDataSerializers.BOOLEAN);
     private static final Logger LOGGER = LogUtils.getLogger();
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
+    public int wakeupCounter = 0;
+    public boolean inTwoBlockSpace = false;
     protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
     protected User vibrationUser;
     protected int slowticks = 0;
     private Data vibrationData;
-    public int wakeupCounter = 0;
-    public boolean inTwoBlockSpace = false;
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
