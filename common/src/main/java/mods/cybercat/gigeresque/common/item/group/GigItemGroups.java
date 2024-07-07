@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.item.group;
 
-import mod.azure.azurelib.common.platform.Services;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
@@ -13,10 +12,10 @@ import java.util.function.Supplier;
 
 public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
 
-    public static final Supplier<CreativeModeTab> GENERAL = Services.COMMON_REGISTRY.registerCreativeModeTab(
+    public static final Supplier<CreativeModeTab> GENERAL = GigServices.COMMON_REGISTRY.registerCreativeModeTab(
             CommonMod.MOD_ID,
             "items",
-            () -> Services.COMMON_REGISTRY.newCreativeTabBuilder()
+            () -> GigServices.COMMON_REGISTRY.newCreativeTabBuilder()
                     .title(Component.translatable("itemGroup." + CommonMod.MOD_ID + ".items"))
                     .icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG.get()))
                     .displayItems((enabledFeatures, entries) -> {
@@ -48,7 +47,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
     public static final Supplier<CreativeModeTab> BLOCKS = GigServices.COMMON_REGISTRY.registerCreativeModeTab(
             CommonMod.MOD_ID,
             "blocks",
-            () -> Services.COMMON_REGISTRY.newCreativeTabBuilder()
+            () -> GigServices.COMMON_REGISTRY.newCreativeTabBuilder()
                     .title(Component.translatable("itemGroup." + CommonMod.MOD_ID + ".blocks"))
                     .icon(() -> new ItemStack(GigBlocks.NEST_RESIN_WEB.get()))
                     .displayItems((enabledFeatures, entries) -> {
