@@ -207,7 +207,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 // Player Sensor
                 new NearbyPlayersSensor<>(),
                 // Living Sensor
-                new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate(GigEntityUtils::entityTest),
+                new NearbyLivingEntitySensor<ClassicAlienEntity>().setPredicate((target, self) ->  GigEntityUtils.entityTest(target, self) && !target.getType().is(GigTags.GIG_ALIENS)),
                 // Block Sensor
                 new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
                 // Fire Sensor
@@ -257,6 +257,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                         target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Break blocks
                 new BreakBlocksTask<>(90, true),
+                // Find Darkness
+                new FindDarknessTask<>(),
                 // Do first
                 new FirstApplicableBehaviour<ClassicAlienEntity>(
                         // Targeting
@@ -272,9 +274,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                         entity -> this.isPassedOut() || this.isExecuting()),
                 // Random
                 new OneRandomBehaviour<>(
-                        // Find Darkness
-                        new FindDarknessTask<>().startCondition(
-                                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling() || !this.isTunnelCrawling()),
                         // Randomly walk around
                         new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
                                 entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(

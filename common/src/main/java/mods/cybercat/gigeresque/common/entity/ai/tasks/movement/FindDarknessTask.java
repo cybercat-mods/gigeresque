@@ -13,28 +13,18 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 public class FindDarknessTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
-    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
             Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
             Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
-    protected float speedModifier = 1;
-    protected Vec3 hidePos = null;
-
-    public FindDarknessTask<E> speedModifier(float speedMod) {
-        this.speedModifier = speedMod;
-
-        return this;
-    }
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -42,52 +32,33 @@ public class FindDarknessTask<E extends PathfinderMob & AbstractAlien & GeoEntit
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull E entity) {
-
-        this.hidePos = getHidePos(entity);
-
-        return entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(32)).noneMatch(
-                NEST) && !entity.isVehicle() && !entity.isAggressive() && !entity.isPassedOut() && this.hidePos != null && entity.level().getBrightness(
-                LightLayer.SKY, entity.blockPosition()) > 5;
+    protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
+        return level.isDay() && !entity.isAggressive() && !isInDarkness(level, entity);
     }
 
     @Override
-    protected void start(E entity) {
-        BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, 2.5F, 0));
-    }
-
-    @Override
-    protected boolean shouldKeepRunning(E entity) {
-        if (this.hidePos == null)
-            return false;
-
-        var walkTarget = BrainUtils.getMemory(entity, MemoryModuleType.WALK_TARGET);
-
-        if (walkTarget == null)
-            return false;
-
-        return walkTarget.getTarget().currentBlockPosition().equals(
-                BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
-    }
-
-    @Override
-    protected void stop(E entity) {
-        this.hidePos = null;
-    }
-
-    @Nullable
-    protected Vec3 getHidePos(E entity) {
-        var randomsource = entity.getRandom();
-        var entityPos = entity.blockPosition();
-
-        for (var i = 0; i < 50; ++i) {
-            var runPos = entityPos.offset(randomsource.nextInt(20) - 50, randomsource.nextInt(6) - 3,
-                    randomsource.nextInt(20) - 50);
-
-            if (!entity.level().canSeeSky(runPos) && entity.getWalkTargetValue(runPos) < 0.0F)
-                return Vec3.atBottomCenterOf(runPos);
+    protected void tick(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
+        BlockPos targetPos = findDarkArea(level, entity);
+        if (targetPos != null) {
+            BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 2.5F, 0));
         }
+    }
 
+    private boolean isInDarkness(ServerLevel level, E entity) {
+        return level.getMaxLocalRawBrightness(new BlockPos((int) entity.getX(), (int) entity.getEyeY(),
+                (int) entity.getZ())) < 8;
+    }
+
+    private BlockPos findDarkArea(ServerLevel level, E entity) {
+        for (var i = 0; i < 10; i++) {
+            var x = (int) (entity.getX() + entity.getRandom().nextInt(20) - 10);
+            var z = (int) (entity.getZ() + entity.getRandom().nextInt(20) - 10);
+            var y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+            var pos = new BlockPos(x, y, z);
+            if (level.getBlockState(pos).getBlock() == Blocks.AIR && level.getMaxLocalRawBrightness(pos) < 8) {
+                return pos;
+            }
+        }
         return null;
     }
 }
