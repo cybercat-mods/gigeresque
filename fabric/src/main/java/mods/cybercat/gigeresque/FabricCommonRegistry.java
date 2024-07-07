@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque;
 
-import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.platform.CommonRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Holder;
@@ -13,16 +12,12 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Supplier;
@@ -57,11 +52,6 @@ public class FabricCommonRegistry implements CommonRegistry {
     }
 
     @Override
-    public <T extends ArmorMaterial> Holder<T> registerArmorMaterial(String modID, String matName, Supplier<T> armorMaterial) {
-        return registerHolder(BuiltInRegistries.ARMOR_MATERIAL, modID, matName, armorMaterial);
-    }
-
-    @Override
     public <T extends Item> Supplier<T> registerItem(String modID, String itemName, Supplier<T> item) {
         return registerSupplier(BuiltInRegistries.ITEM, modID, itemName, item);
     }
@@ -69,20 +59,6 @@ public class FabricCommonRegistry implements CommonRegistry {
     @Override
     public <T extends SoundEvent> Supplier<T> registerSound(String modID, String soundName, Supplier<T> sound) {
         return registerSupplier(BuiltInRegistries.SOUND_EVENT, modID, soundName, sound);
-    }
-
-    @Override
-    public <T extends MenuType<?>> Supplier<T> registerScreen(String modID, String screenName, Supplier<T> menuType) {
-        return registerSupplier(BuiltInRegistries.MENU, modID, screenName, menuType);
-    }
-
-    @Override
-    public <T extends Structure> Supplier<StructureType<T>> registerStructure(String modID, String structureName, MapCodec<T> structure) {
-        return registerSupplier(BuiltInRegistries.STRUCTURE_TYPE, modID, structureName, () -> typeConvert(structure));
-    }
-
-    private static <S extends Structure> StructureType<S> typeConvert(MapCodec<S> codec) {
-        return () -> codec;
     }
 
     @Override

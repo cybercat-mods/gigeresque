@@ -108,7 +108,7 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_HATCHING, false);
         builder.define(IS_HATCHED, false);

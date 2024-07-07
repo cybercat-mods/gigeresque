@@ -20,6 +20,10 @@ public record MobSpawn() {
                 CommonMod.config.alienegg_spawn_weight,
                 CommonMod.config.alienegg_min_group,
                 CommonMod.config.alienegg_max_group);
-        SpawnPlacements.register(GigEntities.EGG.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AlienEggEntity::checkMonsterSpawnRules);
+        SpawnPlacements.register(
+                GigEntities.EGG.get(),
+                SpawnPlacementTypes.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                AlienEggEntity::checkMonsterSpawnRules);
     }
 }

@@ -135,7 +135,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(GROWTH, 0.0f);
         builder.define(BLOOD, 0.0f);
