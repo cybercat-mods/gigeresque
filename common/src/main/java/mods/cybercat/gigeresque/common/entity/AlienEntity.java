@@ -351,22 +351,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
-        this.setNoGravity(false);
         if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
         if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
         }
-        if (!this.level().isClientSide) slowticks++;
-//        if (this.slowticks > 10 && !this.isCrawling() && this.getNavigation().isDone() && !this.isAggressive() && !(this.level().getFluidState(
-//                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-//                this.blockPosition()).getAmount() >= 8)) {
-//            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 100, false, false));
-//            slowticks = -60;
-//        }
-        if (this.level() instanceof ServerLevel serverLevel)
-            AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
-        if (!level().isClientSide && this.tickCount % Constants.TPS == 0)
+        if (!level().isClientSide && this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
             this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
                 if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
             });
@@ -379,33 +369,37 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
         }
-        if (level() instanceof ServerLevel) {
-            var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
-            var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
-            var offset = getDirectionVector();
-            var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isSolid();
+        if (level() instanceof ServerLevel serverLevel) {
+            if (this.isAggressive() || this.getSpeed() > 0.1) {
+                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
+                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
+                var offset = getDirectionVector();
+                var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isSolid();
 
-            /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
-             *  -----o                  -----o
-             *       o                       o <- offset
-             *  -----o <- current       -----o
-             **/
-            if (isFacingSolid) {
-                offset = offset.offset(0, 1, 0);
+                /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
+                 *  -----o                  -----o
+                 *       o                       o <- offset
+                 *  -----o <- current       -----o
+                 **/
+                if (isFacingSolid) {
+                    offset = offset.offset(0, 1, 0);
+                }
+
+                var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isSolid();
+                var isOffsetFacingAboveSolid = this.level().getBlockState(
+                        blockPosition().offset(offset).above()).isSolid();
+
+                /** [- : blocks | o : alien | + : alien in solid block]
+                 *   To handle these variants among other things:
+                 *       o           o
+                 *   ----+       ----o       ----+
+                 *       o           o           o
+                 *   -----       -----       ----o
+                 **/
+                var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
+                this.setIsTunnelCrawling(shouldTunnelCrawl);
             }
-
-            var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isSolid();
-            var isOffsetFacingAboveSolid = this.level().getBlockState(blockPosition().offset(offset).above()).isSolid();
-
-            /** [- : blocks | o : alien | + : alien in solid block]
-             *   To handle these variants among other things:
-             *       o           o
-             *   ----+       ----o       ----+
-             *       o           o           o
-             *   -----       -----       ----o
-             **/
-            var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid && isTwoAboveSolid;
-            this.setIsTunnelCrawling(shouldTunnelCrawl);
+            AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
         if (this.tickCount % 10 == 0) this.refreshDimensions();
     }
