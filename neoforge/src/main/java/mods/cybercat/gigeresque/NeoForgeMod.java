@@ -48,7 +48,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -93,10 +93,10 @@ public final class NeoForgeMod {
         ModEntitySpawn.SERIALIZER.register(modEventBus);
     }
 
-    public void onRegisterEvent(SpawnPlacementRegisterEvent event) {
+    public void onRegisterEvent(RegisterSpawnPlacementsEvent event) {
         event.register(GigEntities.EGG.get(), SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AlienEggEntity::checkMonsterSpawnRules,
-                SpawnPlacementRegisterEvent.Operation.AND);
+                RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     public void createEntityAttributes(final EntityAttributeCreationEvent event) {
