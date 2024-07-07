@@ -34,6 +34,8 @@ repositories {
     maven { url "https://maven.terraformersmc.com/" }
     maven { url "https://maven.terraformersmc.com/releases" } // modmenu
     maven { url 'https://libs.azuredoom.com:4443/mods' }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url 'https://api.modrinth.com/maven' }
     maven {
         name = 'Parchment'
         url = 'https://maven.parchmentmc.org'
