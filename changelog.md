@@ -1,5 +1,4 @@
-v0.6.3
+v0.6.4
 
-- Updates to changes in NeoForge event name changes.
-- Fixes Creative Tabs not registering correctly. 
-- Fixes the FindDarknessTask just bricking TPS. 
+- Adds Item model for Spore Pods Block. (Dev Enabled Configuration only)
+- Increases Speed/Melee Range of Classic Xenos.
