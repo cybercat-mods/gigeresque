@@ -66,7 +66,7 @@ public class AlienJarBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
             player.openMenu(jarStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);

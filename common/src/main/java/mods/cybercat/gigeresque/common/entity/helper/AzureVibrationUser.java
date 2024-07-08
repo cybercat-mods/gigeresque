@@ -84,7 +84,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         if (this.mob.isVehicle()) return;
         if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
             this.mob.wakeupCounter++;
-            if (this.mob.isPassedOut() & this.mob.wakeupCounter == 1) this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
+            if (this.mob.isPassedOut() && this.mob.wakeupCounter == 1) this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
             if (this.mob.wakeupCounter == 2) {
                 if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
                     this.mob.setPassedOutStatus(false);

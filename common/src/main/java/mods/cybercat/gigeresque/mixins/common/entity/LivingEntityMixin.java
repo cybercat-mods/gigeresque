@@ -164,9 +164,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V", at = @At(value = "TAIL"))
     private void runAtEffectRemoval(MobEffectInstance mobEffectInstance, CallbackInfo ci) {
-            DNAStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
-            SporeStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
-            ImpregnationStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
-            EggMorphingStatusEffect.effectRemoval((LivingEntity) (Object) this, mobEffectInstance);
+            DNAStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+            SporeStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+            ImpregnationStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+            EggMorphingStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
     }
 }

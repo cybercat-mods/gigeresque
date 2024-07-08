@@ -42,6 +42,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
     BlockPos[] blockPoss;
+    public static final MapCodec<AlienSarcophagusBlock> CODEC = simpleCodec(AlienSarcophagusBlock::new);
 
     public AlienSarcophagusBlock(Properties properties) {
         super(properties);
@@ -50,7 +51,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
 
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
+        return CODEC;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
             player.openMenu(alienStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);

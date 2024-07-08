@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class GooEntity extends Entity {
 
@@ -90,21 +91,14 @@ public class GooEntity extends Entity {
     }
 
     @Override
-    public void checkDespawn() {
-    }
+    public void checkDespawn() {}
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
-
-    }
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-
-    }
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-
-    }
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
 }

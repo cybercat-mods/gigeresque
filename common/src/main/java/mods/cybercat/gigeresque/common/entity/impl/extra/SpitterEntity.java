@@ -252,7 +252,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
@@ -268,12 +268,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     }
 
     @Override
-    public void refreshDimensions() {
-        super.refreshDimensions();
-    }
-
-    @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(Pose pose) {
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
         if (this.isTunnelCrawling()) return EntityDimensions.scalable(0.9f, 0.9f);
         return EntityDimensions.scalable(0.9f, 1.9f);

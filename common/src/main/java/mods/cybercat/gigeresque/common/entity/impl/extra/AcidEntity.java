@@ -136,21 +136,14 @@ public class AcidEntity extends Entity {
     }
 
     @Override
-    public void checkDespawn() {
-    }
+    public void checkDespawn() {}
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
-
-    }
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
-
-    }
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
-
-    }
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
 }

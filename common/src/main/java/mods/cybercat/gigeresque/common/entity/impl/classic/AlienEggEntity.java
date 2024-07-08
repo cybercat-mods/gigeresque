@@ -223,11 +223,6 @@ public class AlienEggEntity extends AlienEntity {
         }
     }
 
-    @Override
-    public boolean canBeCollidedWith() {
-        return this.isAlive();
-    }
-
     /**
      * Prevents the egg from being pushed.
      */

@@ -67,7 +67,7 @@ public class SittingIdolBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof IdolStorageEntity idolStorageEntity)
             player.openMenu(idolStorageEntity);
         return super.useWithoutItem(state, level, pos, player, hitResult);

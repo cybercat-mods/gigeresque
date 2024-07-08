@@ -1,13 +1,11 @@
 package mods.cybercat.gigeresque.common.entity.ai;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import mod.azure.azurelib.sblforked.SBLConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +19,7 @@ public record GigMemoryTypes() {
     public static final Supplier<MemoryModuleType<List<ItemEntity>>> FOOD_ITEMS = register("food_items");
 
     private static <T> Supplier<MemoryModuleType<T>> register(String id) {
-        return register(id, null);
-    }
-
-    private static <T> Supplier<MemoryModuleType<T>> register(String id, @Nullable Codec<T> codec) {
-        return SBLConstants.SBL_LOADER.registerMemoryType(id, Optional.ofNullable(codec));
+        return SBLConstants.SBL_LOADER.registerMemoryType(id, Optional.empty());
     }
 
     public static void initialize() {

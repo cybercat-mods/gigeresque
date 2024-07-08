@@ -288,7 +288,7 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(FLEEING_FIRE, false);
         builder.define(GROWTH, 0.0f);
