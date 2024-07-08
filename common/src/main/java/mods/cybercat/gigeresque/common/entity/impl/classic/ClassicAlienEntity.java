@@ -43,7 +43,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -55,7 +54,6 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -65,7 +63,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,8 +70,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,19 +82,14 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
         super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
-    }
-
-    @Override
-    public float maxUpStep() {
-        return 3.0F;
+        this.vibrationUser = new AzureVibrationUser(this, 1.5f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 CommonMod.config.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.classicXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE,
-                32.0).add(Attributes.MOVEMENT_SPEED, 0.93000000417232513).add(Attributes.ATTACK_DAMAGE,
+                32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
@@ -117,6 +107,13 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     @Override
     public void tick() {
+        super.tick();
+        if (!this.isVehicle()) this.setIsExecuting(false);
+        if (this.isExecuting()) this.setPassedOutStatus(false);
+    }
+
+    @Override
+    public boolean onClimbable() {
         var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
         if (this.level().getBlockState(blockPos).blocksMotion()) {
             this.inTwoBlockSpace = true;
@@ -124,10 +121,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         if (!this.level().getBlockState(blockPos).blocksMotion()) {
             this.inTwoBlockSpace = false;
         }
-        this.setIsCrawling(this.inTwoBlockSpace);
-        super.tick();
-        if (!this.isVehicle()) this.setIsExecuting(false);
-        if (this.isExecuting()) this.setPassedOutStatus(false);
+        return this.inTwoBlockSpace;
     }
 
     @Override
@@ -168,11 +162,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * ((this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f) * (this.getBbWidth() * ((this.level().getFluidState(
-                this.blockPosition()).is(Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8) ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
+        return 4.0D;
     }
 
     @Override
@@ -286,7 +276,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.classicXenoAttackSpeed).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
                 new ClassicXenoMeleeAttackTask<>(5));
     }
 
@@ -301,9 +291,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             var y3 = random.nextFloat(0.44F, 0.45F);
             var y = random.nextFloat(0.74F, 0.75f);
             var y2 = random.nextFloat(1.14F, 1.15f);
-            mob.setPos(this.getX() + (double) ((this.isExecuting() ? -2.4f : -1.85f) * f),
-                    this.getY() + (double) (this.isExecuting() ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)),
-                    this.getZ() - (double) ((this.isExecuting() ? -2.4f : -1.85f) * g));
+            mob.setPos(this.getX() + ((this.isExecuting() ? -2.4f : -1.85f) * f),
+                    this.getY() + (this.isExecuting() ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)),
+                    this.getZ() - ((this.isExecuting() ? -2.4f : -1.85f) * g));
             mob.yBodyRot = this.yBodyRot;
             mob.xxa = this.xxa;
             mob.zza = this.zza;
