@@ -168,8 +168,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     @Override
     public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        return this.distanceToSqr(livingEntity.getX(), livingEntity.getY(),
-                livingEntity.getZ()) <= this.getMeleeAttackRangeSqr(livingEntity);
+        return this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ()) <= this.getMeleeAttackRangeSqr(livingEntity)
+                || this.getBoundingBox().intersects(livingEntity.getBoundingBox());
     }
 
     @Override
