@@ -21,6 +21,10 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enableAcidLavaRemoval = false;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean blackfuildNonrepacle = false;
 
     @Configurable

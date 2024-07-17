@@ -84,6 +84,8 @@ public class AcidEntity extends Entity {
                     }
                 });
             }
+            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
+                this.remove(RemovalReason.KILLED);
             level().getEntities(this, this.getBoundingBox()).forEach(e -> {
                 if (e instanceof AcidEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
             });

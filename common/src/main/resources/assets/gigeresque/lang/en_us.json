@@ -228,5 +228,6 @@
   "config.gigeresque.option.enableFacehuggerAttachmentTimer": "Enable Facehugger On Screen Timer",
   "config.gigeresque.option.enableFacehuggerTimerTicks": "Make Facehugger Timer Screen Use Ticks",
   "config.gigeresque.option.enabledCreativeBootAcidProtection": "Make Acid Not Damage Boots of Creative Players",
+  "config.gigeresque.option.enableAcidLavaRemoval": "Make Lava be able to remove Acid",
   "config.screen.gigeresque": "Gigeresque Options"
 }
