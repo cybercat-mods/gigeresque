@@ -443,4 +443,9 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
         }
         return super.hurt(source, amount * multiplier);
     }
+
+    @Override
+    public boolean dampensVibrations() {
+        return true;
+    }
 }

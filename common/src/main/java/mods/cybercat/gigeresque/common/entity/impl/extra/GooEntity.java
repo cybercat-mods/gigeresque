@@ -104,4 +104,9 @@ public class GooEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
+
+    @Override
+    public boolean dampensVibrations() {
+        return true;
+    }
 }

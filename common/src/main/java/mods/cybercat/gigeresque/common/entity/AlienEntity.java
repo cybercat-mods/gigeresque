@@ -603,4 +603,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         return InteractionResult.PASS;
     }
 
+    @Override
+    public boolean dampensVibrations() {
+        return true;
+    }
+
 }
