@@ -91,7 +91,7 @@ public class AcidEntity extends Entity {
     }
 
     private void doBlockBreaking(RandomSource randomSource) {
-        this.level().setBlock(this.blockPosition().below(), Blocks.AIR.defaultBlockState(), 2);
+        this.level().setBlockAndUpdate(this.blockPosition().below(), Blocks.AIR.defaultBlockState());
         this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
                 this.blockPosition().getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
                 0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
