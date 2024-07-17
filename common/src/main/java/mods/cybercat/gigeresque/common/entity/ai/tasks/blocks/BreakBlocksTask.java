@@ -98,7 +98,7 @@ public class BreakBlocksTask<E extends PathfinderMob & AbstractAlien & GeoEntity
                 } else if (!entity.isCrawling() && !entity.isTunnelCrawling() && !entity.isVehicle() && !state.is(
                         GigTags.ACID_RESISTANT) && !state.isAir() && (entity.getHealth() >= (entity.getMaxHealth() * 0.50)) && useAcidBlood) {
                     if (!entity.level().isClientSide) {
-                        GigCommonMethods.generateGooBlood(entity, testPos.above(), 0, 0);
+                        GigCommonMethods.generateAcidPool(entity, testPos.above(), 0, 0);
                     }
                     entity.hurt(entity.damageSources().generic(), 5);
                 }
