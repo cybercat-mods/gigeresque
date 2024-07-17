@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 public class GooEntity extends Entity {
@@ -60,6 +61,8 @@ public class GooEntity extends Entity {
                     this.damageLivingEntities(livingEntity, this.random);
                 }
             });
+            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
+                this.remove(RemovalReason.KILLED);
             level().getEntities(this, this.getBoundingBox().inflate(1)).forEach(e -> {
                 if (e instanceof GooEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
             });
