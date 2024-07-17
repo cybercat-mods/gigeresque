@@ -96,7 +96,7 @@ public class EggmorpthTargetTask<E extends PathfinderMob & AbstractAlien & GeoEn
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
-        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 2.5F, 0));
+        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 1.5F, 0));
     }
 
 }
