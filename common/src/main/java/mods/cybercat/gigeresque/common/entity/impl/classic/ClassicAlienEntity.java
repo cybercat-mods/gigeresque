@@ -220,7 +220,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 new FleeFireTask<ClassicAlienEntity>(3.5F).whenStarting(
                         entity -> entity.setFleeingStatus(true)).whenStarting(entity -> entity.setFleeingStatus(false)),
                 // Take target to nest
-                new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle()),
+                new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle()).stopIf(entity -> !this.isVehicle()),
                 // Looks at target
                 new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting()).startCondition(
                         entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()),
