@@ -44,31 +44,36 @@ public class EggmorpthTargetTask<E extends PathfinderMob & AbstractAlien & GeoEn
 
     @Override
     protected void tick(@NotNull ServerLevel level, E entity, long gameTime) {
-        if (entity.isCrawling() || entity.isTunnelCrawling() || entity.getFirstPassenger() != null) return;
         var nestBlockLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_NEST_BLOCKS.get()).orElse(null);
         var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, level);
         var passenger = entity.getFirstPassenger();
-        if (nestBlockLocation != null && nestBlockLocation.stream().findFirst().isPresent()) {
-            var blockPos = nestBlockLocation.stream().findFirst().get().getFirst();
-
+        if (nestBlockLocation != null && nestBlockLocation.stream().findAny().isPresent()) {
+            var blockPos = nestBlockLocation.stream().findAny().get().getFirst();
             // Check if the block is within the entity's view direction and reachable via pathfinding
             if (isBlockInViewAndReachable(entity, blockPos)) {
-                for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-                    if (level.getBlockState(test).isAir() && level.getBlockState(
-                            test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
-                            new AABB(test)).stream().noneMatch(Objects::isNull)) {
-                        BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
-                        if (passenger != null) {
-                            passenger.setPos(Vec3.atBottomCenterOf(testPos));
-                            passenger.removeVehicle();
-                            entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-                            level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
-                            level.setBlockAndUpdate(testPos.above(),
-                                    GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
-                        }
-                    }
-            } else {
                 this.startMovingToTarget(entity, blockPos);
+
+                var blockCenter = Vec3.atCenterOf(blockPos);
+                var entityPos = entity.position();
+                // Calculate the squared distance between the entity and the block
+                var distanceSquared = blockCenter.distanceToSqr(entityPos);
+
+                // Check if the distance is within 3 blocks (3 blocks squared is 9.0)
+                if (distanceSquared <= 9.0)
+                    for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
+                        if (level.getBlockState(test).isAir() && level.getBlockState(
+                                test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
+                                new AABB(test)).stream().noneMatch(Objects::isNull)) {
+                            BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+                            if (passenger != null) {
+                                passenger.setPos(Vec3.atBottomCenterOf(testPos));
+                                passenger.removeVehicle();
+                                entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+                                level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                                level.setBlockAndUpdate(testPos.above(),
+                                        GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                            }
+                        }
             }
         }
     }
