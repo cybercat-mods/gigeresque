@@ -17,6 +17,10 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enabledCreativeBootAcidProtection = false;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean blackfuildNonrepacle = false;
 
     @Configurable

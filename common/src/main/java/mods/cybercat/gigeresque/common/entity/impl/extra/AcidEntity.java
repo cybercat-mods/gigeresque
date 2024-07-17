@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -74,7 +75,9 @@ public class AcidEntity extends Entity {
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
-                        this.damageBoots(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
+                        if (!CommonMod.config.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
+                            this.damageBoots(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
+                        }
                     }
                     if (entity instanceof ItemEntity itemEntity) {
                         this.damageItems(itemEntity, this.random);

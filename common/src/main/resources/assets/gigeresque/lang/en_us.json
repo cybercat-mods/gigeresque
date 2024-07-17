@@ -227,5 +227,6 @@
   "config.gigeresque.option.facehuggerStunTickTimer": "Facehugger Stun Timer",
   "config.gigeresque.option.enableFacehuggerAttachmentTimer": "Enable Facehugger On Screen Timer",
   "config.gigeresque.option.enableFacehuggerTimerTicks": "Make Facehugger Timer Screen Use Ticks",
+  "config.gigeresque.option.enabledCreativeBootAcidProtection": "Make Acid Not Damage Boots of Creative Players",
   "config.screen.gigeresque": "Gigeresque Options"
 }
