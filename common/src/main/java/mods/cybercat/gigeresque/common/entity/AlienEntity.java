@@ -495,7 +495,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             return super.hurt(source, amount);
 
         if (!this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType().is(
-                GigTags.NO_ACID_BLOOD)) {
+                GigTags.NO_ACID_BLOOD) && this.isAlive()) {
             if (getAcidDiameter() == 1) GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
             else {
                 var radius = (getAcidDiameter() - 1) / 2;
