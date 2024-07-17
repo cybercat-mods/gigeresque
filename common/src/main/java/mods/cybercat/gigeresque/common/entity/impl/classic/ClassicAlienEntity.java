@@ -45,6 +45,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -277,6 +278,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
+                new JumpToTargetTask<>(20),
                 new ClassicXenoMeleeAttackTask<>(5));
     }
 
