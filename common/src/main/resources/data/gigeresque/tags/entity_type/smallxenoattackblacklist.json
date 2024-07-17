@@ -6,6 +6,9 @@
     "minecraft:magma_cube",
     "minecraft:armor_stand",
     "minecraft:bat",
-    "minecraft:iron_golem"
+    "minecraft:iron_golem",
+    "minecraft:breeze",
+    "minecraft:armadillo",
+    "minecraft:bogged"
   ]
 }
