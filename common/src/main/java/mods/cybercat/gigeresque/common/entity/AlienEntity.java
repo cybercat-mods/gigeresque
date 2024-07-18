@@ -351,15 +351,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
-        if (!level().isClientSide && this.isVehicle()) this.setAggressive(false);
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
         }
-        if (!level().isClientSide && this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
-            this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
-                if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
-            });
         // Waking up logic
         if (this.isPassedOut()) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
@@ -370,11 +364,17 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             }
         }
         if (level() instanceof ServerLevel serverLevel) {
+            if (this.isAlive()) this.grow(this, 1 * getGrowthMultiplier());
+            if (this.isVehicle()) this.setAggressive(false);
+            if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
+                this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
+                    if (e.is(GigTags.NEST_BLOCKS)) this.heal(0.5833f);
+                });
             if (this.isAggressive() || this.getSpeed() > 0.1) {
-                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isSolid();
-                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isSolid();
+                var isAboveSolid = this.level().getBlockState(blockPosition().above()).isCollisionShapeFullBlock(level(), blockPosition().above());
+                var isTwoAboveSolid = this.level().getBlockState(blockPosition().above(2)).isCollisionShapeFullBlock(level(), blockPosition().above(2));
                 var offset = getDirectionVector();
-                var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isSolid();
+                var isFacingSolid = this.level().getBlockState(blockPosition().relative(getDirection())).isCollisionShapeFullBlock(level(), blockPosition().relative(getDirection()));
 
                 /** Offset is set to the block above the block position (which is at feet level) (since direction is used it's the block in front of both cases)
                  *  -----o                  -----o
@@ -385,9 +385,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                     offset = offset.offset(0, 1, 0);
                 }
 
-                var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isSolid();
+                var isOffsetFacingSolid = this.level().getBlockState(blockPosition().offset(offset)).isCollisionShapeFullBlock(level(), blockPosition().offset(offset));
                 var isOffsetFacingAboveSolid = this.level().getBlockState(
-                        blockPosition().offset(offset).above()).isSolid();
+                        blockPosition().offset(offset).above()).isCollisionShapeFullBlock(level(), blockPosition().offset(offset).above());
 
                 /** [- : blocks | o : alien | + : alien in solid block]
                  *   To handle these variants among other things:
@@ -569,7 +569,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
                 AlienEntity.class::isInstance)) return false;
         if (livingEntity.getType().is(GigTags.GIG_ALIENS)) return false;
         if (this.isAggressive()) return false;
-        return this.level().getBlockState(this.blockPosition().below()).isSolid();
+        return this.level().getBlockState(this.blockPosition().below()).isCollisionShapeFullBlock(level(), this.blockPosition().below());
     }
 
     public void drop(LivingEntity target, ItemStack itemStack) {

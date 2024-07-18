@@ -139,7 +139,7 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(Pose pose) {
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.isHatched() && !this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying()) return EntityDimensions.scalable(0.7f, 0.6f);
         return super.getDefaultDimensions(pose);
@@ -306,11 +306,12 @@ public class AlienEggEntity extends AlienEntity {
 
                                 // Check if any of the nearby blocks are not solid
                                 boolean isAnyBlockSolid = !this.level().getBlockState(
-                                        testPos).isSolid() && !this.level().getBlockState(
-                                        testPos1).isSolid() && !this.level().getBlockState(
-                                        testPos2).isSolid() && !this.level().getBlockState(
-                                        testPos3).isSolid() && !this.level().getBlockState(
-                                        testPos4).isSolid() && !this.level().getBlockState(testPos5).isSolid();
+                                        testPos).isCollisionShapeFullBlock(level(), testPos) && !this.level().getBlockState(
+                                        testPos1).isCollisionShapeFullBlock(level(), testPos1) && !this.level().getBlockState(
+                                        testPos2).isCollisionShapeFullBlock(level(), testPos2) && !this.level().getBlockState(
+                                        testPos3).isCollisionShapeFullBlock(level(), testPos3) && !this.level().getBlockState(
+                                        testPos4).isCollisionShapeFullBlock(level(), testPos4) && !this.level().getBlockState(
+                                                testPos5).isCollisionShapeFullBlock(level(), testPos5);
 
                                 // Set isHatching to false if conditions are met
                                 if (isAnyBlockSolid || isAnyBlockNotAir) {
