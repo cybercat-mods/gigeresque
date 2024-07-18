@@ -44,7 +44,6 @@ import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -215,16 +214,6 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         if (target instanceof Creeper creeper) creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
     }
 
     @Override

@@ -121,7 +121,7 @@ public final class NeoForgeMod {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
+    public static void onServerStarted(final ServerStartedEvent event) {
         GigVillagerTrades.addTrades();
     }
 

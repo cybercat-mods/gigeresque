@@ -146,10 +146,6 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
     }
 
     @Override
-    protected void registerGoals() {
-    }
-
-    @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (!this.level().isClientSide) {
             var attacker = source.getEntity();

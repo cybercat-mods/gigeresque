@@ -98,11 +98,6 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
