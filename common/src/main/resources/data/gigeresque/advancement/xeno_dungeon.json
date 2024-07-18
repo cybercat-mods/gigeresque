@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:nest_resin_web_cross",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.gigeresque.find_dungeon.title"
+    },
+    "description": {
+      "translate": "advancements.gigeresque.find_dungeon.description"
+    }
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "dungeon": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "gigeresque:gig_dungeon"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dungeon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
