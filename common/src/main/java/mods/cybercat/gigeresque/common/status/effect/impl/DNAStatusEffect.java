@@ -45,7 +45,7 @@ public class DNAStatusEffect extends MobEffect {
         var randomPhase = entity.getRandom().nextInt(0, 50);
         if (Constants.isCreeper.test(entity)) return;
         if (Constants.isCreativeSpecPlayer.test(entity)) return;
-        if (!GigEntityUtils.isTargetDNAImmune(entity)) return;
+        if (GigEntityUtils.isTargetDNAImmune(entity)) return;
         if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof DNAStatusEffect)) return;
         if (entity instanceof Mob mob && mob.isNoAi()) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {
