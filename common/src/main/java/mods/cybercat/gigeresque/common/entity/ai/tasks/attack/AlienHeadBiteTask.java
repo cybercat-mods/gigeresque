@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -68,6 +69,18 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                     lastUpdateTime = 0;
                 }
             } else if (entity.getFirstPassenger() != null) {
+                if (!entity.getFirstPassenger().getType().is(GigTags.CLASSIC_HOSTS)) {
+                    entity.getFirstPassenger().hurt(GigDamageSources.of(entity.level(), GigDamageSources.EXECUTION),
+                            Integer.MAX_VALUE);
+                    entity.heal(50);
+                    if (entity.level().isClientSide)
+                        entity.getFirstPassenger().level().addAlwaysVisibleParticle(GigParticles.BLOOD.get(), e, yOffset, f, 0.0,
+                                -0.15, 0.0);
+                    entity.setIsBiting(false);
+                    entity.setIsExecuting(false);
+                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "execution");
+                    lastUpdateTime = 0;
+                }
                 if (!entity.level().isClientSide()) {
                     lastUpdateTime++;
                     if (Services.PLATFORM.isDevelopmentEnvironment())
