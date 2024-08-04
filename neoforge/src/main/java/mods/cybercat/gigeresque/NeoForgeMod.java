@@ -21,20 +21,29 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.fluid.BlackFluid;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
+import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
@@ -42,18 +51,26 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Mod(CommonMod.MOD_ID)
@@ -70,6 +87,33 @@ public final class NeoForgeMod {
     public static DeferredRegister<CreativeModeTab> creativeModeTabDeferredRegister = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CommonMod.MOD_ID);
     public static DeferredRegister<MobEffect> statusEffectDeferredRegister = DeferredRegister.create(Registries.MOB_EFFECT, CommonMod.MOD_ID);
     public static DeferredRegister<Fluid> fluidDeferredRegister = DeferredRegister.create(Registries.FLUID, CommonMod.MOD_ID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CommonMod.MOD_ID);
+    public static final Supplier<FluidType> BLACKFLUID_TYPE = FLUID_TYPES.register("black_fluid_type", () -> new FluidType(FluidType.Properties.create()
+            .descriptionId("block.gigeresque.black_fuild_block").canSwim(false)
+            .canDrown(false).pathType(PathType.LAVA).adjacentPathType(null)
+            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_EMPTY)
+            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+            .lightLevel(15).density(3000).viscosity(6000)) {
+        @Override
+        public boolean canConvertToSource(@NotNull FluidState state, @NotNull LevelReader reader, @NotNull BlockPos pos) {
+            if (reader instanceof Level level) {
+                return level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
+            } else {
+                return super.canConvertToSource(state, reader, pos);
+            }
+        }
+
+        @Override
+        public double motionScale(@NotNull Entity entity) {
+            return 0.0023333333333333335;
+        }
+
+        @Override
+        public void setItemMovement(@NotNull ItemEntity entity) {
+            Vec3 vec3 = entity.getDeltaMovement();
+            entity.setDeltaMovement(vec3.x * 0.949999988079071, vec3.y + (vec3.y < 0.05999999865889549 ? 5.0E-4F : 0.0F), vec3.z * 0.949999988079071);
+        }
+    });
 
     public NeoForgeMod(IEventBus modEventBus) {
         AzureLib.initialize();
@@ -91,6 +135,7 @@ public final class NeoForgeMod {
         modEventBus.addListener(this::createEntityAttributes);
         modEventBus.addListener(this::onRegisterEvent);
         ModEntitySpawn.SERIALIZER.register(modEventBus);
+        FLUID_TYPES.register(modEventBus);
     }
 
     public void onRegisterEvent(RegisterSpawnPlacementsEvent event) {

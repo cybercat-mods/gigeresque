@@ -9,6 +9,8 @@ import mods.cybercat.gigeresque.client.particle.GooParticleFactory;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,9 +20,15 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 @EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class NeoForgeClientMod {
+
+    @SubscribeEvent
+    public static void fluidReg(final RegisterClientExtensionsEvent event) {
+        event.registerFluidType(new BlackFluidClientExtensions(), NeoForgeMod.BLACKFLUID_TYPE.get());
+    }
 
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
