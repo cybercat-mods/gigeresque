@@ -29,7 +29,7 @@ public record GigCommonMethods() {
         var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), pos.getX(), pos.getY() + 0.5,
                 pos.getZ());
         areaEffectCloudEntity.setRadius(3.0F);
-        areaEffectCloudEntity.setDuration(3);
+        areaEffectCloudEntity.setDuration(150);
         areaEffectCloudEntity.setRadiusPerTick(
                 -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
