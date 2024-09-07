@@ -16,9 +16,6 @@ public class RavenousTempleBeastEntityRenderer extends GeoEntityRenderer<Ravenou
 
     @Override
     public void render(RavenousTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (entity.onGround() && !entity.isVehicle()) {
-            poseStack.translate(0, -0.15, 0);
-        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 

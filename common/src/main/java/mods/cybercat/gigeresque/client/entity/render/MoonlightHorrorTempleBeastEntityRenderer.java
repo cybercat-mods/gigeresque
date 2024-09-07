@@ -16,9 +16,6 @@ public class MoonlightHorrorTempleBeastEntityRenderer extends GeoEntityRenderer<
 
     @Override
     public void render(MoonlightHorrorTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (!entity.isVehicle()) {
-            poseStack.translate(0, 0, 0);
-        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 

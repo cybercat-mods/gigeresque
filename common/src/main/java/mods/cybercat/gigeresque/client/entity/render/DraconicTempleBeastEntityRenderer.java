@@ -16,9 +16,6 @@ public class DraconicTempleBeastEntityRenderer extends GeoEntityRenderer<Draconi
 
     @Override
     public void render(DraconicTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (!entity.isVehicle()) {
-            poseStack.translate(0, -0.35, 0);
-        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
