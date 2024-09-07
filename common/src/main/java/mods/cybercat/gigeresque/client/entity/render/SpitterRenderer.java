@@ -18,9 +18,6 @@ public class SpitterRenderer extends GeoEntityRenderer<SpitterEntity> {
 
     @Override
     public void render(SpitterEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (!entity.isVehicle()) {
-            poseStack.translate(0, -0.86, 0);
-        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
