@@ -85,7 +85,6 @@ public abstract class BlackFluid extends FlowingFluid {
             blockPos = blockPos.offset(randomSource.nextInt(3) - 1, 1, randomSource.nextInt(3) - 1);
             if (!level.isLoaded(blockPos.offset(randomSource.nextInt(10) - 1, 1, randomSource.nextInt(10) - 1))) return;
             if (this.isSporeReplaceable(level, blockPos)) {
-                if (!this.hasSporeReplacements(level, blockPos)) continue;
                 level.setBlockAndUpdate(blockPos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
                 return;
             }
@@ -93,17 +92,7 @@ public abstract class BlackFluid extends FlowingFluid {
         }
     }
 
-    private boolean hasSporeReplacements(LevelReader levelReader, BlockPos blockPos) {
-        for (var direction : Direction.values()) {
-            if (!this.isSporeReplaceable(levelReader, blockPos.relative(direction))) continue;
-            return true;
-        }
-        return false;
-    }
-
     private boolean isSporeReplaceable(LevelReader levelReader, BlockPos blockPos) {
-        if (blockPos.getY() >= levelReader.getMinBuildHeight() && blockPos.getY() < levelReader.getMaxBuildHeight() && !levelReader.hasChunkAt(
-                blockPos)) return false;
         return levelReader.getBlockState(blockPos).is(GigTags.SPORE_REPLACE) && CommonMod.config.enableDevEntites;
     }
 
