@@ -18,10 +18,10 @@ public class StalkerEntityRenderer extends GeoEntityRenderer<StalkerEntity> {
     }
 
     @Override
-    public void actuallyRender(PoseStack poseStack, StalkerEntity animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void actuallyRender(PoseStack poseStack, StalkerEntity animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick,
-                packedLight, packedOverlay, red, green, blue,
-                animatable.walkAnimation.speedOld < 0.45F && !animatable.swinging ? 0.11F : 1.0F);
+                packedLight, packedOverlay,
+                (int) (animatable.walkAnimation.speedOld < 0.45F && !animatable.swinging ? 1.0F : -1.0F));
     }
 
     @Override

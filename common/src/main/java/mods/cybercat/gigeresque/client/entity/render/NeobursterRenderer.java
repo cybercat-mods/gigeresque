@@ -16,9 +16,9 @@ public class NeobursterRenderer extends GeoEntityRenderer<NeobursterEntity> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, NeobursterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void preRender(PoseStack poseStack, NeobursterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
-                packedOverlay, red, green, blue, alpha);
+                packedOverlay, color);
         poseStack.scale(0.6F, 0.6F, 0.6F);
     }
 

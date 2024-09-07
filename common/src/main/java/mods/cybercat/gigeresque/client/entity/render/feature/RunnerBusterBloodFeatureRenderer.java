@@ -23,7 +23,7 @@ public class RunnerBusterBloodFeatureRenderer extends GeoRenderLayer<Runnerburst
         var rendertype = RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD);
         if (animatable.getGrowth() < 1200)
             getRenderer().reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype,
-                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1, 1, 1,
-                    ((1200 - animatable.getBlood()) / 1200));
+                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv,
+                    (int) ((1200 - animatable.getBlood()) / 1200));
     }
 }

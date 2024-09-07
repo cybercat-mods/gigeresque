@@ -18,13 +18,13 @@ public class RunnerbursterEntityRenderer extends GeoEntityRenderer<Runnerburster
     }
 
     @Override
-    public void preRender(PoseStack poseStack, RunnerbursterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void preRender(PoseStack poseStack, RunnerbursterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         float scaleFactor = 1.0f + (animatable.getGrowth() / animatable.getMaxGrowth());
         poseStack.pushPose();
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         poseStack.popPose();
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
-                packedOverlay, red, green, blue, alpha);
+                packedOverlay, color);
     }
 
     @Override

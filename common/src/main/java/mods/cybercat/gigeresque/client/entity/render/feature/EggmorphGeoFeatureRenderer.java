@@ -32,8 +32,7 @@ public class EggmorphGeoFeatureRenderer<T extends Entity & GeoEntity> extends Ge
             var vertexConsumer = bufferSource.getBuffer(renderLayer);
             vertexConsumer.setColor(1, 1,1, progress);
             renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, renderLayer,
-                    vertexConsumer, partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0f,
-                    1.0f, 1.0f, progress);
+                    vertexConsumer, partialTick, packedLight, OverlayTexture.NO_OVERLAY, (int) progress);
         }
         super.render(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }

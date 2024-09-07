@@ -23,7 +23,7 @@ public class AquaBusterBloodFeatureRenderer extends GeoRenderLayer<AquaticChestb
         var rendertype = RenderType.entityTranslucent(EntityTextures.CHESTBURSTER_BLOOD);
         if (animatable.getGrowth() < 1200)
             renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype,
-                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f,
-                    ((1200 - animatable.getBlood()) / 1200));
+                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv,
+                    (int) ((1200 - animatable.getBlood()) / 1200));
     }
 }

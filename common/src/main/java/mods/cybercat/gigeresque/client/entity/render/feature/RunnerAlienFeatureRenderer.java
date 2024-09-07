@@ -23,7 +23,7 @@ public class RunnerAlienFeatureRenderer extends GeoRenderLayer<RunnerAlienEntity
         var rendertype = RenderType.entityTranslucent(EntityTextures.RUNNER_ALIEN_YOUNG);
         if (animatable.getGrowth() < animatable.getMaxGrowth())
             renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, rendertype,
-                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv, 1.0f, 1.0f, 1.0f,
-                    ((1200 - animatable.getGrowth()) / 1200));
+                    bufferSource.getBuffer(rendertype), partialTick, packedLight, uv,
+                    (int) ((1200 - animatable.getGrowth()) / 1200));
     }
 }
