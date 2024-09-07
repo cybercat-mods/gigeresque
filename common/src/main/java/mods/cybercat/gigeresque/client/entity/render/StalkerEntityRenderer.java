@@ -26,12 +26,6 @@ public class StalkerEntityRenderer extends GeoEntityRenderer<StalkerEntity> {
 
     @Override
     public void render(StalkerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-        if (!entity.isVehicle()) {
-            poseStack.translate(0, -0.18, 0);
-        }
-        if (entity.isNoAi()) {
-            poseStack.translate(0, 0.15, 0);
-        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
