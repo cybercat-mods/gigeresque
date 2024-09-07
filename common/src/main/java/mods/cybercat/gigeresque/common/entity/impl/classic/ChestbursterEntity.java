@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
@@ -67,7 +68,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(ChestbursterEntity.class,
             EntityDataSerializers.FLOAT);
-    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
+    private final GigNav landNavigation = new GigNav(this, level());
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public int bloodRendering = 0;
     public int eatingCounter = 0;

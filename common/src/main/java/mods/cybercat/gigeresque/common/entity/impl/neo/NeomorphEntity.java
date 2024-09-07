@@ -32,6 +32,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -66,7 +67,7 @@ import java.util.List;
 public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<NeomorphEntity> {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
+    private final GigNav landNavigation = new GigNav(this, level());
     public int breakingCounter = 0;
 
     public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {

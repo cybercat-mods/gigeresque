@@ -9,6 +9,7 @@ import mod.azure.azurelib.sblforked.api.core.navigation.SmoothGroundNavigation;
 import mod.azure.azurelib.sblforked.api.core.navigation.SmoothWaterBoundPathNavigation;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
@@ -32,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable {
 
-    private final SmoothGroundNavigation landNavigation = new SmoothGroundNavigation(this, level());
+    private final GigNav landNavigation = new GigNav(this, level());
     private final SmoothWaterBoundPathNavigation swimNavigation = new SmoothWaterBoundPathNavigation(this, level());
     private final MoveControl landMoveControl = new MoveControl(this);
     private final LookControl landLookControl = new LookControl(this);

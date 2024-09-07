@@ -4,9 +4,9 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.navigation.SmoothAmphibiousPathNavigation;
-import mod.azure.azurelib.sblforked.api.core.navigation.SmoothWallClimberNavigation;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -304,7 +304,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
         if (this.isUnderWater()) {
             pathNavigation = new SmoothAmphibiousPathNavigation(this, level());
         } else {
-            pathNavigation = new SmoothWallClimberNavigation(this, level());
+            pathNavigation = new GigNav(this, level());
         }
         return pathNavigation;
     }
