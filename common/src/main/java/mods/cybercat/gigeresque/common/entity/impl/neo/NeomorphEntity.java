@@ -22,7 +22,6 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateA
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.navigation.SmoothGroundNavigation;
 import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
@@ -45,7 +44,6 @@ import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -56,7 +54,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,28 +86,10 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     }
 
     @Override
-    public void die(@NotNull DamageSource source) {
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source,
-                this.damageSources()) || source == damageSources().genericKill()) {
-            super.die(source);
-            return;
-        }
-
-        var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
-        if (damageCheck) {
-            if (getAcidDiameter() == 1) GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0);
-            else {
-                var radius = (getAcidDiameter() - 1) / 2;
-                for (int i = 0; i < getAcidDiameter(); i++) {
-                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        GigCommonMethods.generateSporeCloud(this, this.blockPosition(), x, z);
-                    }
-                }
-            }
-        }
-        super.die(source);
+    protected void tickDeath() {
+        if (this.deathTime == 1)
+            GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0);
+        super.tickDeath();
     }
 
     @Override
@@ -163,10 +142,12 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 .setSoundKeyframeHandler(event -> {
                     if (this.level().isClientSide) {
                         if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_CLAW.get(),
+                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                    GigSounds.ALIEN_CLAW.get(),
                                     SoundSource.HOSTILE, 0.25F, 1.0F, true);
                         if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.ALIEN_TAIL.get(),
+                            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                    GigSounds.ALIEN_TAIL.get(),
                                     SoundSource.HOSTILE, 0.25F, 1.0F, true);
                     }
                 })).add(new AnimationController<>(this, "hissController", 0, event -> {
