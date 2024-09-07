@@ -165,7 +165,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return 4.0D;
+        return 8.0D;
     }
 
     @Override
