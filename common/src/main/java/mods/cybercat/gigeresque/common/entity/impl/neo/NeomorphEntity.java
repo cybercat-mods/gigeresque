@@ -41,18 +41,22 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -82,6 +86,31 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
                 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(
                 Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+    }
+
+    @Override
+    public void die(@NotNull DamageSource source) {
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source,
+                this.damageSources()) || source == damageSources().genericKill()) {
+            super.die(source);
+            return;
+        }
+
+        var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
+        if (damageCheck) {
+            if (getAcidDiameter() == 1) GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0);
+            else {
+                var radius = (getAcidDiameter() - 1) / 2;
+                for (int i = 0; i < getAcidDiameter(); i++) {
+                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
+                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
+                        GigCommonMethods.generateSporeCloud(this, this.blockPosition(), x, z);
+                    }
+                }
+            }
+        }
+        super.die(source);
     }
 
     @Override
