@@ -27,6 +27,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.azure.bettercrawling.CrawlerMonsterEntity;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -73,7 +74,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
+public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrainOwner<FacehuggerEntity> {
 
     public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);

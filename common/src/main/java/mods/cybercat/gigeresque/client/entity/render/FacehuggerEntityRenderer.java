@@ -5,17 +5,31 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
+import mod.azure.azurelib.common.platform.Services;
+import mods.azure.bettercrawling.entity.mob.IClimberEntity;
+import mods.azure.bettercrawling.entity.mob.Orientation;
+import mods.azure.bettercrawling.entity.mob.PathingTarget;
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerEntityModel;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity> {
     private final HashMap<EntityType<?>, TransformDataGenerator> headDistances = new HashMap<>();

@@ -18,7 +18,10 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.VillagerHostilesSensorMixin",
     "common.entity.WanderingTraderEntityMixin",
-    "common.entity.WardenEntityMixin"
+    "common.entity.WardenEntityMixin",
+    "common.crawling.CrawlingEntityMixin",
+    "common.crawling.LivingEntityMixin",
+    "common.crawling.MobEntityMixin"
   ],
   "client": [
     "client.entity.render.AzureEntityRendererMixin",
@@ -26,7 +29,9 @@
     "client.entity.render.feature.SheepWoolFeatureRendererMixin",
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
     "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
-    "client.render.InGameOverlayRendererMixin"
+    "client.render.InGameOverlayRendererMixin",
+    "common.crawling.client.LivingEntityClientMixin",
+    "common.crawling.client.MixinLivingRenderer"
   ],
   "server": []
 }
