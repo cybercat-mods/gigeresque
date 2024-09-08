@@ -42,6 +42,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -49,6 +50,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -313,6 +315,10 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
                     serverLevel.sendParticles(GigParticles.ACID.get(), vec34.x, vec34.y, vec34.z, 1, 0, 0, 0, 0);
             }
             this.playSound(SoundEvents.LAVA_EXTINGUISH, 3.0f, 1.0f);
+
+            // Give the entity the acid effect so they are damaged.
+            if (target instanceof LivingEntity livingEntity)
+                livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.ACID, 30));
 
             // Damage the target entity/shield if used
             if (!target.getUseItem().is(Items.SHIELD))
