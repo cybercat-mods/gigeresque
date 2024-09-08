@@ -76,7 +76,10 @@ public class AcidEntity extends Entity {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
                         if (!CommonMod.config.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
-                            this.damageBoots(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
+                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random);
+                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.LEGS), this.random);
+                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.CHEST), this.random);
+                            this.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.HEAD), this.random);
                         }
                     }
                     if (entity instanceof ItemEntity itemEntity) {
@@ -115,7 +118,7 @@ public class AcidEntity extends Entity {
         }
     }
 
-    private void damageBoots(ItemStack itemStack, RandomSource randomSource) {
+    private void damageArmor(ItemStack itemStack, RandomSource randomSource) {
         if (!Objects.equals(itemStack, ItemStack.EMPTY) && !itemStack.is(GigTags.ACID_IMMUNE_ITEMS)) {
             itemStack.setDamageValue(itemStack.getDamageValue() + randomSource.nextIntBetweenInclusive(0, 4));
         }
