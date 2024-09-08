@@ -376,12 +376,12 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Range(min = 1)
+    @Configurable.Range(min = 0)
     public int alienegg_spawn_weight = 10;
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Range(min = 1)
+    @Configurable.Range(min = 0)
     public int alienegg_min_group = 1;
 
     @Configurable
