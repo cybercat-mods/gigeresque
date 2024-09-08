@@ -186,51 +186,52 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
             player.connection.send(new ClientboundSetPassengersPacket(entity));
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-
+    public void handleAttachmentToHost() {
         if (isAttachedToHost()) {
             ticksAttachedToHost += 1;
 
             var host = this.getVehicle();
             if (!(host instanceof LivingEntity livingEntity)) return;
 
-            if (livingEntity != null) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-                if (livingEntity.getHealth() > livingEntity.getMaxHealth()) livingEntity.heal(6);
-                if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
-                    player.getFoodData().setFoodLevel(20);
-                if (ticksAttachedToHost > CommonMod.config.getFacehuggerAttachTickTimer()) {
-                    if (livingEntity.hasEffect(MobEffects.BLINDNESS)) {
-                        livingEntity.removeEffect(MobEffects.BLINDNESS);
-                    }
-                    if (!livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
-                        livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.IMPREGNATION,
-                                (int) CommonMod.config.getImpregnationTickTimer(), 0, false, true));
-                    }
-                    if (!level().isClientSide)
-                        this.level().playSound(this, this.blockPosition(), GigSounds.HUGGER_IMPLANT.get(),
-                                SoundSource.HOSTILE, 1.0F, 1.0F);
-                    setIsInfertile(true);
-                    this.unRide();
-                    this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
+            if (livingEntity.getHealth() > livingEntity.getMaxHealth()) livingEntity.heal(6);
+            if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
+                player.getFoodData().setFoodLevel(20);
+            if (ticksAttachedToHost > CommonMod.config.getFacehuggerAttachTickTimer()) {
+                if (livingEntity.hasEffect(MobEffects.BLINDNESS)) {
+                    livingEntity.removeEffect(MobEffects.BLINDNESS);
                 }
+                if (!livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+                    livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.IMPREGNATION,
+                            (int) CommonMod.config.getImpregnationTickTimer(), 0, false, true));
+                }
+                if (!level().isClientSide)
+                    this.level().playSound(this, this.blockPosition(), GigSounds.HUGGER_IMPLANT.get(),
+                            SoundSource.HOSTILE, 1.0F, 1.0F);
+                setIsInfertile(true);
+                this.unRide();
+                this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
             }
 
-            if (livingEntity != null && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
+            if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
                 if (livingEntity.hasEffect(MobEffects.BLINDNESS)) livingEntity.removeEffect(MobEffects.BLINDNESS);
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();
             }
+
             if (Constants.isCreativeSpecPlayer.test(host)) {
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();
             }
         } else ticksAttachedToHost = -1.0f;
+    }
 
+    @Override
+    public void tick() {
+        super.tick();
+        this.handleAttachmentToHost();
         if (isInfertile()) {
             this.kill();
             this.removeFreeWill();
@@ -344,7 +345,8 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
         return BrainActivityGroup.idleTasks(
                 new FirstApplicableBehaviour<FacehuggerEntity>(
                         new TargetOrRetaliate<>(),
-                        new SetPlayerLookTarget<>().predicate(target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
+                        new SetPlayerLookTarget<>().predicate(
+                                target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
                         new SetRandomLookTarget<>()),
                 new OneRandomBehaviour<>(
                         new SetRandomWalkTarget<>().speedModifier(0.65f),
