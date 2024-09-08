@@ -42,16 +42,14 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (GigEntityUtils.isTargetHostable(livingEntity) && this == GigStatusEffects.IMPREGNATION) {
             this.handleStatusEffects(livingEntity, (int) CommonMod.config.impregnationTickTimer, MobEffects.HUNGER,
                     MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN);
+            if (livingEntity.level().isClientSide()) this.applyParticle(livingEntity);
         }
         return super.applyEffectTick(livingEntity, amplifier);
     }
 
     private void handleStatusEffects(@NotNull LivingEntity livingEntity, int ticks, Holder<MobEffect>... statusEffects) {
-        for (Holder<MobEffect> effect : statusEffects) {
-            if (!livingEntity.hasEffect(effect)) {
-                livingEntity.addEffect(new MobEffectInstance(effect, ticks, 3, true, true));
-            }
-        }
+        for (Holder<MobEffect> effect : statusEffects)
+            if (!livingEntity.hasEffect(effect)) livingEntity.addEffect(new MobEffectInstance(effect, ticks, 3, true, true));
     }
 
     private void applyParticle(@NotNull LivingEntity livingEntity) {
@@ -102,9 +100,7 @@ public class ImpregnationStatusEffect extends MobEffect {
     }
 
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
-        if (entity.hasCustomName()) {
-            burster.setCustomName(entity.getCustomName());
-        }
+        if (entity.hasCustomName()) burster.setCustomName(entity.getCustomName());
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
     }
