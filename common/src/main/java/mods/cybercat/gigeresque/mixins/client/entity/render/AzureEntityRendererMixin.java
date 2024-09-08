@@ -135,9 +135,8 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
 
     @Inject(method = "actuallyRender(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/Entity;Lmod/azure/azurelib/common/internal/common/cache/object/BakedGeoModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/MultiBufferSource;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZFIII)V", at = @At("TAIL"))
     private void doPostRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour, CallbackInfo ci) {
-        if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof CrawlerMonsterEntity livingEntity) {
+        if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof CrawlerMonsterEntity livingEntity)
             onPostRenderLiving(livingEntity, partialTick, poseStack, bufferSource);
-        }
     }
 
     @Shadow
