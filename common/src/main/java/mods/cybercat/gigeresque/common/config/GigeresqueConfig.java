@@ -132,12 +132,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double classicXenoHealth = 100;
+    public double classicXenoHealth = 200;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double classicXenoArmor = 6;
+    public double classicXenoArmor = 9;
 
     @Configurable
     @Configurable.Synchronized
@@ -157,12 +157,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double aquaticXenoHealth = 90;
+    public double aquaticXenoHealth = 190;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double aquaticXenoArmor = 4;
+    public double aquaticXenoArmor = 6;
 
     @Configurable
     @Configurable.Synchronized
@@ -177,7 +177,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double hammerpedeHealth = 15;
+    public double hammerpedeHealth = 30;
 
     @Configurable
     @Configurable.Synchronized
@@ -187,7 +187,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double popperHealth = 15;
+    public double popperHealth = 30;
 
     @Configurable
     @Configurable.Synchronized
@@ -197,7 +197,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double runnerbusterHealth = 15;
+    public double runnerbusterHealth = 30;
 
     @Configurable
     @Configurable.Synchronized
@@ -207,12 +207,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double stalkerXenoHealth = 60;
+    public double stalkerXenoHealth = 120;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double stalkerXenoArmor = 2;
+    public double stalkerXenoArmor = 4;
 
     @Configurable
     @Configurable.Synchronized
@@ -232,12 +232,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double runnerXenoHealth = 80;
+    public double runnerXenoHealth = 160;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double runnerXenoArmor = 4;
+    public double runnerXenoArmor = 6;
 
     @Configurable
     @Configurable.Synchronized
@@ -257,7 +257,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double alieneggHealth = 20;
+    public double alieneggHealth = 40;
 
     @Configurable
     @Configurable.Synchronized
@@ -267,22 +267,22 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double chestbursterHealth = 15;
+    public double chestbursterHealth = 30;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double facehuggerHealth = 20;
+    public double facehuggerHealth = 40;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double spitterXenoHealth = 60;
+    public double spitterXenoHealth = 120;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double spitterXenoArmor = 2;
+    public double spitterXenoArmor = 4;
 
     @Configurable
     @Configurable.Synchronized
@@ -297,7 +297,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double neobursterXenoHealth = 60;
+    public double neobursterXenoHealth = 120;
 
     @Configurable
     @Configurable.Synchronized
@@ -307,7 +307,7 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double neomorph_adolescentXenoHealth = 30;
+    public double neomorph_adolescentXenoHealth = 60;
 
     @Configurable
     @Configurable.Synchronized
@@ -317,12 +317,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double neomorphXenoHealth = 60;
+    public double neomorphXenoHealth = 120;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double neomorphXenoArmor = 2;
+    public double neomorphXenoArmor = 4;
 
     @Configurable
     @Configurable.Synchronized
@@ -332,12 +332,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double draconicTempleBeastXenoHealth = 60;
+    public double draconicTempleBeastXenoHealth = 300;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double draconicTempleBeastXenoArmor = 2;
+    public double draconicTempleBeastXenoArmor = 9;
 
     @Configurable
     @Configurable.Synchronized
@@ -347,12 +347,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double moonlightHorrorTempleBeastXenoHealth = 60;
+    public double moonlightHorrorTempleBeastXenoHealth = 300;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double moonlightHorrorTempleBeastXenoArmor = 2;
+    public double moonlightHorrorTempleBeastXenoArmor = 9;
 
     @Configurable
     @Configurable.Synchronized
@@ -362,12 +362,12 @@ public class GigeresqueConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double ravenousTempleBeastXenoHealth = 60;
+    public double ravenousTempleBeastXenoHealth = 300;
 
     @Configurable
     @Configurable.Synchronized
     @Configurable.DecimalRange(min = 1)
-    public double ravenousTempleBeastXenoArmor = 2;
+    public double ravenousTempleBeastXenoArmor = 9;
 
     @Configurable
     @Configurable.Synchronized
