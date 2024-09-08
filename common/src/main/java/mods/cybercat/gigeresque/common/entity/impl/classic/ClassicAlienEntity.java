@@ -154,7 +154,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.classicXenoTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.classicXenoTailAttackDamage : (float) CommonMod.config.classicXenoAttackDamage);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
