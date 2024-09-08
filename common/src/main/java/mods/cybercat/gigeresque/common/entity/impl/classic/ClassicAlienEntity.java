@@ -113,6 +113,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         if (!this.isVehicle()) this.setIsExecuting(false);
         if (this.isExecuting()) this.setPassedOutStatus(false);
         if (this.isExecuting() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
+        if (this.isPassedOut() && this.getNavigation() != null) ((GigNav)this.getNavigation()).hardStop();
     }
 
     @Override
