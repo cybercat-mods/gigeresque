@@ -151,7 +151,8 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.Builder builder) {
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
         this.pathFinderDebugPreview = Services.PLATFORM.isDevelopmentEnvironment();
         if (this.shouldTrackPathingTargets()) {
             builder.define(MOVEMENT_TARGET_X, 0.0f);
@@ -170,7 +171,6 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         builder.define(ROTATION_BODY, new Rotations(0, 0, 0));
 
         builder.define(ROTATION_HEAD, new Rotations(0, 0, 0));
-        super.defineSynchedData(builder);
     }
 
     @Override
