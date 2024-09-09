@@ -1,8 +1,5 @@
-v0.6.10
+v0.6.11
 
-- Puts the Neo/Spitter generation to only happen if `enableDevEntites` is true
-- Allow setting to 0 values on `alienegg_spawn_weight` and `alienegg_min_group`.
-- Implement crawling on Facehugger only. 
-- Buff health and armor values for default. 
-- Acid now damages all armor pieces. 
-- (Beta tweak) Spitter acid applies acid status effect on hits. 
+- Fixes data sync crash on Facehuggers generated from eggs.
+- Fixes Facehuggers sometimes choosing that their people needs them. (floating away when spawning from egg)
+- Updates `ru_ru.json` translation thanks to Quarkrus.
