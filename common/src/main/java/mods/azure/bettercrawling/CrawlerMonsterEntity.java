@@ -54,17 +54,17 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimberEntity, IMobEntityRegisterGoalsHook, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, ILivingEntityJumpHook {
-    private static final AttributeModifier FOLLOW_RANGE_INCREASE = new AttributeModifier(
+    protected static final AttributeModifier FOLLOW_RANGE_INCREASE = new AttributeModifier(
             ResourceLocation.fromNamespaceAndPath(CommonMod.MOD_ID,"spider_follow_range_increase"), 8.0D, AttributeModifier.Operation.ADD_VALUE);
 
-    private static final EntityDataAccessor<Float> MOVEMENT_TARGET_X;
-    private static final EntityDataAccessor<Float> MOVEMENT_TARGET_Y;
-    private static final EntityDataAccessor<Float> MOVEMENT_TARGET_Z;
-    private static final ImmutableList<EntityDataAccessor<Optional<BlockPos>>> PATHING_TARGETS;
-    private static final ImmutableList<EntityDataAccessor<Direction>> PATHING_SIDES;
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_X;
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Y;
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Z;
+    protected static final ImmutableList<EntityDataAccessor<Optional<BlockPos>>> PATHING_TARGETS;
+    protected static final ImmutableList<EntityDataAccessor<Direction>> PATHING_SIDES;
 
-    private static final EntityDataAccessor<Rotations> ROTATION_BODY;
-    private static final EntityDataAccessor<Rotations> ROTATION_HEAD;
+    protected static final EntityDataAccessor<Rotations> ROTATION_BODY;
+    protected static final EntityDataAccessor<Rotations> ROTATION_HEAD;
 
     static {
         Class<CrawlerMonsterEntity> cls = (Class<CrawlerMonsterEntity>) MethodHandles.lookup().lookupClass();
@@ -86,44 +86,44 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         ROTATION_HEAD = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
     }
 
-    private double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
-    private double attachmentOffsetX, attachmentOffsetY, attachmentOffsetZ;
+    protected double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
+    protected double attachmentOffsetX, attachmentOffsetY, attachmentOffsetZ;
 
-    private Vec3 attachmentNormal = new Vec3(0, 1, 0);
-    private Vec3 prevAttachmentNormal = new Vec3(0, 1, 0);
+    protected Vec3 attachmentNormal = new Vec3(0, 1, 0);
+    protected Vec3 prevAttachmentNormal = new Vec3(0, 1, 0);
 
     protected float prevOrientationYawDelta;
-    private float orientationYawDelta;
+    protected float orientationYawDelta;
 
-    private double lastAttachmentOffsetX, lastAttachmentOffsetY, lastAttachmentOffsetZ;
-    private Vec3 lastAttachmentOrientationNormal = new Vec3(0, 1, 0);
+    protected double lastAttachmentOffsetX, lastAttachmentOffsetY, lastAttachmentOffsetZ;
+    protected Vec3 lastAttachmentOrientationNormal = new Vec3(0, 1, 0);
 
-    private int attachedTicks = 5;
+    protected int attachedTicks = 5;
 
-    private Vec3 attachedSides = new Vec3(0, 0, 0);
+    protected Vec3 attachedSides = new Vec3(0, 0, 0);
     protected Vec3 prevAttachedSides = new Vec3(0, 0, 0);
 
-    private boolean canClimbInWater = false;
-    private boolean canClimbInLava = false;
+    protected boolean canClimbInWater = false;
+    protected boolean canClimbInLava = false;
 
-    private boolean isTravelingInFluid = false;
+    protected boolean isTravelingInFluid = false;
 
-    private float collisionsInclusionRange = 2.0f;
-    private float collisionsSmoothingRange = 1.25f;
+    protected float collisionsInclusionRange = 2.0f;
+    protected float collisionsSmoothingRange = 1.25f;
 
-    private Orientation orientation;
-    private Pair<Direction, Vec3> groundDirection = Pair.of(Direction.DOWN, new Vec3(0, 0, 0));
+    protected Orientation orientation;
+    protected Pair<Direction, Vec3> groundDirection = Pair.of(Direction.DOWN, new Vec3(0, 0, 0));
 
-    private Orientation renderOrientation;
+    protected Orientation renderOrientation;
 
     protected float nextStepDistance, nextFlap;
-    private Vec3 preWalkingPosition;
+    protected Vec3 preWalkingPosition;
 
     protected double preMoveY;
 
     protected Vec3 jumpDir;
 
-    private boolean pathFinderDebugPreview;
+    protected boolean pathFinderDebugPreview;
 
     protected CrawlerMonsterEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -253,7 +253,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return attribute != null ? (float) attribute.getValue() : 1.0f;
     }
 
-    private static double calculateXOffset(AABB aabb, AABB other, double offsetX) {
+    protected static double calculateXOffset(AABB aabb, AABB other, double offsetX) {
         if (other.maxY > aabb.minY && other.minY < aabb.maxY && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
             if (offsetX > 0.0D && other.maxX <= aabb.minX) {
                 double dx = aabb.minX - other.maxX;
@@ -273,7 +273,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return offsetX;
     }
 
-    private static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
+    protected static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
         if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
             if (offsetY > 0.0D && other.maxY <= aabb.minY) {
                 double dy = aabb.minY - other.maxY;
@@ -293,7 +293,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return offsetY;
     }
 
-    private static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
+    protected static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
         if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxY > aabb.minY && other.minY < aabb.maxY) {
             if (offsetZ > 0.0D && other.maxZ <= aabb.minZ) {
                 double dz = aabb.minZ - other.maxZ;
@@ -313,7 +313,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return offsetZ;
     }
 
-    private void updateWalkingSide() {
+    protected void updateWalkingSide() {
         Direction avoidPathingFacing = null;
 
         AABB entityBox = this.getBoundingBox();
@@ -536,7 +536,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return 0.075f;
     }
 
-    private void forEachCollisonBox(AABB aabb, Shapes.DoubleLineConsumer action) {
+    protected void forEachCollisonBox(AABB aabb, Shapes.DoubleLineConsumer action) {
         int minChunkX = ((Mth.floor(aabb.minX - 1.0E-7D) - 1) >> 4);
         int maxChunkX = ((Mth.floor(aabb.maxX + 1.0E-7D) + 1) >> 4);
         int minChunkZ = ((Mth.floor(aabb.minZ - 1.0E-7D) - 1) >> 4);
@@ -604,14 +604,14 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         shapes.forEach(shape -> shape.forAllBoxes(action));
     }
 
-    private List<AABB> getCollisionBoxes(AABB aabb) {
+    protected List<AABB> getCollisionBoxes(AABB aabb) {
         List<AABB> boxes = new ArrayList<>();
         this.forEachCollisonBox(aabb,
                 (minX, minY, minZ, maxX, maxY, maxZ) -> boxes.add(new AABB(minX, minY, minZ, maxX, maxY, maxZ)));
         return boxes;
     }
 
-    private void updateOffsetsAndOrientation() {
+    protected void updateOffsetsAndOrientation() {
         Vec3 direction = this.getOrientation().getGlobal(this.getYRot(), this.getXRot());
 
         boolean isAttached = false;
@@ -698,7 +698,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         this.lerpXRot = Mth.wrapDegrees(this.lerpXRot + pitchDelta);
     }
 
-    private float wrapAngleInRange(float angle, float target) {
+    protected float wrapAngleInRange(float angle, float target) {
         while (target - angle < -180.0F) {
             angle -= 360.0F;
         }
@@ -797,7 +797,7 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         return 0.8d;
     }
 
-    private Vec3 getStickingForce(Pair<Direction, Vec3> walkingSide) {
+    protected Vec3 getStickingForce(Pair<Direction, Vec3> walkingSide) {
         double uprightness = Math.max(this.attachmentNormal.y, 0);
         double gravity = this.getGravity();
         double stickingForce = gravity * uprightness + 0.08D * (1 - uprightness);
@@ -851,11 +851,11 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
         }
     }
 
-    private float getRelevantMoveFactor() {
+    protected float getRelevantMoveFactor() {
         return this.getSpeed();
     }
 
-    private void travelOnGround(Vec3 relative) {
+    protected void travelOnGround(Vec3 relative) {
 
         Vec3 forwardVector = this.getOrientation().getGlobal(this.yRot, 0);
         Vec3 strafeVector = this.getOrientation().getGlobal(this.yRot + 90.0f, 0);
@@ -920,13 +920,13 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
                 Vec3 surfaceMovementDir = movementDir.subtract(
                         collisionNormal.scale(collisionNormal.dot(movementDir))).normalize();
 
-//                boolean isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(
-//                        collisionNormal.z) > 1.0001f;
-//
-//                //Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
-//                if (!isInnerCorner) {
-//                    movementDir = surfaceMovementDir;
-//                }
+                boolean isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(
+                        collisionNormal.z) > 1.0001f;
+
+                //Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
+                if (!isInnerCorner) {
+                    movementDir = surfaceMovementDir;
+                }
 
                 //Nullify sticking force along movement vector projected to surface
                 stickingForce = stickingForce.subtract(
