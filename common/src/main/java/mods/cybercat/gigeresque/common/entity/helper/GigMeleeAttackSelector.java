@@ -9,6 +9,7 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.world.phys.Vec3;
 
@@ -45,6 +46,16 @@ public record GigMeleeAttackSelector() {
     };
 
     public static final AnimationSelector<RunnerAlienEntity> RUNNER_ANIM_SELECTOR = runner -> {
+        var animKey = switch (runner.getRandom().nextInt(4)) {
+            case 1 -> Constants.RIGHT_CLAW;
+            case 2 -> Constants.LEFT_TAIL_BASIC;
+            case 3 -> Constants.RIGHT_TAIL_BASIC;
+            default -> Constants.LEFT_CLAW;
+        };
+        runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
+    };
+
+    public static final AnimationSelector<DraconicTempleBeastEntity> DRACONIC_ANIM_SELECTOR = runner -> {
         var animKey = switch (runner.getRandom().nextInt(4)) {
             case 1 -> Constants.RIGHT_CLAW;
             case 2 -> Constants.LEFT_TAIL_BASIC;
