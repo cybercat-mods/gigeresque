@@ -1,6 +1,8 @@
-v0.6.9
+v0.6.10
 
-- Updated Renders due to breaking AzureLib changes.
-- Added placeholder texture for spore effect.
-- Fixes neos death.
-- Fixes Stalkers, Spitters, Templebeasts, and Runner all having model offsets. 
+- Puts the Neo/Spitter generation to only happen if `enableDevEntites` is true
+- Allow setting to 0 values on `alienegg_spawn_weight` and `alienegg_min_group`.
+- Implement crawling on Facehugger only. 
+- Buff health and armor values for default. 
+- Acid now damages all armor pieces. 
+- (Beta tweak) Spitter acid applies acid status effect on hits. 
