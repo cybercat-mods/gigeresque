@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import mod.azure.azurelib.common.platform.Services;
 import mods.azure.bettercrawling.entity.mob.*;
 import mods.azure.bettercrawling.entity.movement.*;
-import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -15,7 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -25,7 +23,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -49,41 +46,37 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimberEntity, IMobEntityRegisterGoalsHook, IMobEntityLivingTickHook, ILivingEntityLookAtHook, IMobEntityTickHook, ILivingEntityRotationHook, ILivingEntityDataManagerHook, ILivingEntityTravelHook, IEntityMovementHook, IEntityReadWriteHook, ILivingEntityJumpHook {
-    protected static final AttributeModifier FOLLOW_RANGE_INCREASE = new AttributeModifier(
-            ResourceLocation.fromNamespaceAndPath(CommonMod.MOD_ID,"spider_follow_range_increase"), 8.0D, AttributeModifier.Operation.ADD_VALUE);
-
-    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_X;
-    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Y;
-    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Z;
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_X = SynchedEntityData.defineId(
+            CrawlerMonsterEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Y = SynchedEntityData.defineId(
+            CrawlerMonsterEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> MOVEMENT_TARGET_Z = SynchedEntityData.defineId(
+            CrawlerMonsterEntity.class, EntityDataSerializers.FLOAT);
     protected static final ImmutableList<EntityDataAccessor<Optional<BlockPos>>> PATHING_TARGETS;
     protected static final ImmutableList<EntityDataAccessor<Direction>> PATHING_SIDES;
 
-    protected static final EntityDataAccessor<Rotations> ROTATION_BODY;
-    protected static final EntityDataAccessor<Rotations> ROTATION_HEAD;
+    protected static final EntityDataAccessor<Rotations> ROTATION_BODY = SynchedEntityData.defineId(
+            CrawlerMonsterEntity.class, EntityDataSerializers.ROTATIONS);
+    protected static final EntityDataAccessor<Rotations> ROTATION_HEAD = SynchedEntityData.defineId(
+            CrawlerMonsterEntity.class, EntityDataSerializers.ROTATIONS);
 
     static {
-        Class<CrawlerMonsterEntity> cls = (Class<CrawlerMonsterEntity>) MethodHandles.lookup().lookupClass();
-
-        MOVEMENT_TARGET_X = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Y = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-        MOVEMENT_TARGET_Z = SynchedEntityData.defineId(cls, EntityDataSerializers.FLOAT);
-
         ImmutableList.Builder<EntityDataAccessor<Optional<BlockPos>>> pathingTargets = ImmutableList.builder();
         ImmutableList.Builder<EntityDataAccessor<Direction>> pathingSides = ImmutableList.builder();
         for (int i = 0; i < 8; i++) {
-            pathingTargets.add(SynchedEntityData.defineId(cls, EntityDataSerializers.OPTIONAL_BLOCK_POS));
-            pathingSides.add(SynchedEntityData.defineId(cls, EntityDataSerializers.DIRECTION));
+            pathingTargets.add(
+                    SynchedEntityData.defineId(CrawlerMonsterEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS));
+            pathingSides.add(SynchedEntityData.defineId(CrawlerMonsterEntity.class, EntityDataSerializers.DIRECTION));
         }
         PATHING_TARGETS = pathingTargets.build();
         PATHING_SIDES = pathingSides.build();
-
-        ROTATION_BODY = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
-        ROTATION_HEAD = SynchedEntityData.defineId(cls, EntityDataSerializers.ROTATIONS);
     }
 
     protected double prevAttachmentOffsetX, prevAttachmentOffsetY, prevAttachmentOffsetZ;
@@ -127,12 +120,71 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
 
     protected CrawlerMonsterEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
-        Objects.requireNonNull(this.getAttribute(Attributes.FOLLOW_RANGE)).addPermanentModifier(FOLLOW_RANGE_INCREASE);
         this.orientation = this.calculateOrientation(1);
         this.groundDirection = this.getGroundDirection();
         this.moveControl = new ClimberMoveController<>(this);
         this.lookControl = new ClimberLookController<>(this);
         this.jumpControl = new ClimberJumpController<>(this);
+    }
+
+    protected static double calculateXOffset(AABB aabb, AABB other, double offsetX) {
+        if (other.maxY > aabb.minY && other.minY < aabb.maxY && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
+            if (offsetX > 0.0D && other.maxX <= aabb.minX) {
+                double dx = aabb.minX - other.maxX;
+
+                if (dx < offsetX) {
+                    offsetX = dx;
+                }
+            } else if (offsetX < 0.0D && other.minX >= aabb.maxX) {
+                double dx = aabb.maxX - other.minX;
+
+                if (dx > offsetX) {
+                    offsetX = dx;
+                }
+            }
+
+        }
+        return offsetX;
+    }
+
+    protected static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
+        if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
+            if (offsetY > 0.0D && other.maxY <= aabb.minY) {
+                double dy = aabb.minY - other.maxY;
+
+                if (dy < offsetY) {
+                    offsetY = dy;
+                }
+            } else if (offsetY < 0.0D && other.minY >= aabb.maxY) {
+                double dy = aabb.maxY - other.minY;
+
+                if (dy > offsetY) {
+                    offsetY = dy;
+                }
+            }
+
+        }
+        return offsetY;
+    }
+
+    protected static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
+        if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxY > aabb.minY && other.minY < aabb.maxY) {
+            if (offsetZ > 0.0D && other.maxZ <= aabb.minZ) {
+                double dz = aabb.minZ - other.maxZ;
+
+                if (dz < offsetZ) {
+                    offsetZ = dz;
+                }
+            } else if (offsetZ < 0.0D && other.minZ >= aabb.maxZ) {
+                double dz = aabb.maxZ - other.minZ;
+
+                if (dz > offsetZ) {
+                    offsetZ = dz;
+                }
+            }
+
+        }
+        return offsetZ;
     }
 
     @Override
@@ -154,23 +206,28 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         this.pathFinderDebugPreview = Services.PLATFORM.isDevelopmentEnvironment();
-        if (this.shouldTrackPathingTargets()) {
-            builder.define(MOVEMENT_TARGET_X, 0.0f);
-            builder.define(MOVEMENT_TARGET_Y, 0.0f);
-            builder.define(MOVEMENT_TARGET_Z, 0.0f);
+        builder.define(MOVEMENT_TARGET_X, 0.0f);
+        builder.define(MOVEMENT_TARGET_Y, 0.0f);
+        builder.define(MOVEMENT_TARGET_Z, 0.0f);
 
-            for (EntityDataAccessor<Optional<BlockPos>> pathingTarget : PATHING_TARGETS) {
-                builder.define(pathingTarget, Optional.empty());
-            }
-
-            for (EntityDataAccessor<Direction> pathingSide : PATHING_SIDES) {
-                builder.define(pathingSide, Direction.DOWN);
-            }
+        for (EntityDataAccessor<Optional<BlockPos>> pathingTarget : PATHING_TARGETS) {
+            builder.define(pathingTarget, Optional.empty());
         }
 
+        for (EntityDataAccessor<Direction> pathingSide : PATHING_SIDES) {
+            builder.define(pathingSide, Direction.DOWN);
+        }
         builder.define(ROTATION_BODY, new Rotations(0, 0, 0));
-
         builder.define(ROTATION_HEAD, new Rotations(0, 0, 0));
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putDouble("bettercrawling.AttachmentNormalX", this.attachmentNormal.x);
+        compound.putDouble("bettercrawling.AttachmentNormalY", this.attachmentNormal.y);
+        compound.putDouble("bettercrawling.AttachmentNormalZ", this.attachmentNormal.z);
+        compound.putInt("bettercrawling.AttachedTicks", this.attachedTicks);
     }
 
     @Override
@@ -183,12 +240,21 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     }
 
     @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.prevAttachmentNormal = this.attachmentNormal = new Vec3(
+                compound.getDouble("bettercrawling.AttachmentNormalX"),
+                compound.getDouble("bettercrawling.AttachmentNormalY"),
+                compound.getDouble("bettercrawling.AttachmentNormalZ"));
+        this.attachedTicks = compound.getInt("bettercrawling.AttachedTicks");
+        this.orientation = this.calculateOrientation(1);
+    }
+
+    @Override
     public void onRead(CompoundTag nbt) {
         this.prevAttachmentNormal = this.attachmentNormal = new Vec3(nbt.getDouble("bettercrawling.AttachmentNormalX"),
                 nbt.getDouble("bettercrawling.AttachmentNormalY"), nbt.getDouble("bettercrawling.AttachmentNormalZ"));
-
         this.attachedTicks = nbt.getInt("bettercrawling.AttachedTicks");
-
         this.orientation = this.calculateOrientation(1);
     }
 
@@ -251,66 +317,6 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     public float getMovementSpeed() {
         AttributeInstance attribute = this.getAttribute(Attributes.MOVEMENT_SPEED); //MOVEMENT_SPEED
         return attribute != null ? (float) attribute.getValue() : 1.0f;
-    }
-
-    protected static double calculateXOffset(AABB aabb, AABB other, double offsetX) {
-        if (other.maxY > aabb.minY && other.minY < aabb.maxY && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
-            if (offsetX > 0.0D && other.maxX <= aabb.minX) {
-                double dx = aabb.minX - other.maxX;
-
-                if (dx < offsetX) {
-                    offsetX = dx;
-                }
-            } else if (offsetX < 0.0D && other.minX >= aabb.maxX) {
-                double dx = aabb.maxX - other.minX;
-
-                if (dx > offsetX) {
-                    offsetX = dx;
-                }
-            }
-
-        }
-        return offsetX;
-    }
-
-    protected static double calculateYOffset(AABB aabb, AABB other, double offsetY) {
-        if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxZ > aabb.minZ && other.minZ < aabb.maxZ) {
-            if (offsetY > 0.0D && other.maxY <= aabb.minY) {
-                double dy = aabb.minY - other.maxY;
-
-                if (dy < offsetY) {
-                    offsetY = dy;
-                }
-            } else if (offsetY < 0.0D && other.minY >= aabb.maxY) {
-                double dy = aabb.maxY - other.minY;
-
-                if (dy > offsetY) {
-                    offsetY = dy;
-                }
-            }
-
-        }
-        return offsetY;
-    }
-
-    protected static double calculateZOffset(AABB aabb, AABB other, double offsetZ) {
-        if (other.maxX > aabb.minX && other.minX < aabb.maxX && other.maxY > aabb.minY && other.minY < aabb.maxY) {
-            if (offsetZ > 0.0D && other.maxZ <= aabb.minZ) {
-                double dz = aabb.minZ - other.maxZ;
-
-                if (dz < offsetZ) {
-                    offsetZ = dz;
-                }
-            } else if (offsetZ < 0.0D && other.minZ >= aabb.maxZ) {
-                double dz = aabb.maxZ - other.minZ;
-
-                if (dz > offsetZ) {
-                    offsetZ = dz;
-                }
-            }
-
-        }
-        return offsetZ;
     }
 
     protected void updateWalkingSide() {
@@ -381,13 +387,13 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     }
 
     @Override
-    public void setRenderOrientation(Orientation orientation) {
-        this.renderOrientation = orientation;
+    public Orientation getRenderOrientation() {
+        return this.renderOrientation;
     }
 
     @Override
-    public Orientation getRenderOrientation() {
-        return this.renderOrientation;
+    public void setRenderOrientation(Orientation orientation) {
+        this.renderOrientation = orientation;
     }
 
     @Override
@@ -1134,7 +1140,8 @@ public abstract class CrawlerMonsterEntity extends AlienEntity implements IClimb
     }
 
     @Override
-    public float getPathingMalus(BlockGetter cache, Mob entity, PathType nodeType, BlockPos pos, Vec3i direction, Predicate<Direction> sides) {        if (direction.getY() != 0) {
+    public float getPathingMalus(BlockGetter cache, Mob entity, PathType nodeType, BlockPos pos, Vec3i direction, Predicate<Direction> sides) {
+        if (direction.getY() != 0) {
             boolean hasClimbableNeigbor = false;
 
             BlockPos.MutableBlockPos offsetPos = new BlockPos.MutableBlockPos();
