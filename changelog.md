@@ -1,5 +1,5 @@
-v0.6.11
+v0.6.12
 
-- Fixes data sync crash on Facehuggers generated from eggs.
-- Fixes Facehuggers sometimes choosing that their people needs them. (floating away when spawning from egg)
-- Updates `ru_ru.json` translation thanks to Quarkrus.
+- Fixes Attribute crash on Facehuggers.
+- Fixes Facehugger rendering slightly down. 
+- Updates `ru_ru.json` translation again thanks to Quarkrus.
