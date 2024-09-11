@@ -72,6 +72,7 @@ public class FacehuggerEntityRenderer extends GeoEntityRenderer<FacehuggerEntity
                     animatable.tickCount < 5 ? 0 : 1F);
             poseStack.popPose();
         }
+        poseStack.translate(0, 0.13, 0);
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
                 packedOverlay, color);
     }
