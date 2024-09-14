@@ -22,7 +22,10 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structures": "gigeresque:gig_dungeon"
+                "structures": [
+                  "gigeresque:gig_dungeon",
+                  "gigeresque:sculk_gig_dungeon"
+                ]
               }
             }
           }
