@@ -49,7 +49,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                         Entity::isAlive).size();
 
                 // Check if dungeon or nest blocks are present within the area
-                final var dungeonBlockCheck = player.level().getBlockStates(new AABB(player.blockPosition()).inflate(64D))
+                final var dungeonBlockCheck = player.level().getBlockStates(
+                                new AABB(player.blockPosition()).inflate(64D))
                         .findAny().get().is(GigTags.DUNGEON_BLOCKS);
                 final var nestBlockCheck = player.level().getBlockStates(new AABB(player.blockPosition()).inflate(64D))
                         .findAny().get().is(GigTags.NEST_BLOCKS);
@@ -58,7 +59,8 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 nonSolidBlockPos = GigEntityUtils.findFreeSpace(player.level(), player.blockPosition(), 64);
 
                 // If there are fewer than 4 entities and no dungeon/nest blocks are detected
-                if (entityCount < 4 && nonSolidBlockPos != null && spawnTimer == player.getRandom().nextIntBetweenInclusive(6000, 12000)
+                if (entityCount < 4 && spawnTimer == player.getRandom().nextIntBetweenInclusive(
+                        60, 120)
                         && !dungeonBlockCheck && !nestBlockCheck) {
                     this.spawnWave(player); // Spawn the wave
                     spawnTimer = 0; // Reset the spawnTimer after spawning
@@ -67,7 +69,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 else if (entityCount >= 4 || nonSolidBlockPos == null || dungeonBlockCheck || nestBlockCheck) {
                     spawnTimer = 0; // Reset spawnTimer when conditions are not met
                 }
-                if (spawnTimer >= 12001)
+                if (spawnTimer >= 121)
                     spawnTimer = 0;
             }
         }
@@ -76,27 +78,38 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
     public void spawnWave(ServerPlayer player) {
         final var random = player.getRandom();
+        var distance = 30 + random.nextDouble() * 30; // random distance from 30 to 60
+        var angle = random.nextDouble() * 2 * Math.PI; // angle in radians for random direction
+        // Calculate the new position
+        var offsetX = Math.cos(angle) * distance;
+        var offsetZ = Math.sin(angle) * distance;
+        if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
+            for (var k = 1; k < 4; ++k) {
+                var faceHugger = GigEntities.FACEHUGGER.get().create(player.level());
+                Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D,
+                        player.getZ() + offsetZ);
+                if (Services.PLATFORM.isDevelopmentEnvironment())
+                    faceHugger.setGlowingTag(true);
 
-        for (var k = 1; k < 4; ++k) {
-            // Generate a random distance between 30 and 60 blocks away
-            double distance = 30 + random.nextDouble() * 30; // random distance from 30 to 60
-
-            // Generate random angles for X and Z to spread the FaceHuggers around the player
-            double angle = random.nextDouble() * 2 * Math.PI; // angle in radians for random direction
-
-            // Calculate the new position
-            double offsetX = Math.cos(angle) * distance;
-            double offsetZ = Math.sin(angle) * distance;
-
-            var faceHugger = GigEntities.FACEHUGGER.get().create(player.level());
-            Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D, player.getZ() + offsetZ);
+                // Ensure the block is not solid and the world is loaded at that position
+                BlockPos spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
+                if (player.level().isLoaded(spawnPos) && !faceHugger.level().getBlockState(
+                        spawnPos).isSolid() && !player.level().getBiome(player.blockPosition()).is(
+                        GigTags.AQUASPAWN_BIOMES)) {
+                    player.level().addFreshEntity(faceHugger);
+                }
+            }
+        } else {
+            var aquaticAlien = GigEntities.AQUATIC_ALIEN.get().create(player.level());
+            Objects.requireNonNull(aquaticAlien).setPos(player.getX() + offsetX, player.getY() - 9.5D,
+                    player.getZ() + offsetZ);
             if (Services.PLATFORM.isDevelopmentEnvironment())
-                faceHugger.setGlowingTag(true);
+                aquaticAlien.setGlowingTag(true);
 
             // Ensure the block is not solid and the world is loaded at that position
-            BlockPos spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
-            if (player.level().isLoaded(spawnPos) && !faceHugger.level().getBlockState(spawnPos).isSolid()) {
-                player.level().addFreshEntity(faceHugger);
+            BlockPos spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
+            if (player.level().isLoaded(spawnPos)) {
+                player.level().addFreshEntity(aquaticAlien);
             }
         }
     }

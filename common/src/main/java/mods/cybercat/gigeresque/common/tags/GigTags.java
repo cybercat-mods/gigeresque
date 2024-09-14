@@ -55,6 +55,7 @@ public record GigTags() {
 
     /* SPAWN BIOMES */
     public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
+    public static final TagKey<Biome> AQUASPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("aquabiomes"));
 
     /* GAMEEVENT TAGS */
     public static final TagKey<GameEvent> ALIEN_CAN_LISTEN = TagKey.create(Registries.GAME_EVENT, Constants.modResource("alien_can_listen"));
