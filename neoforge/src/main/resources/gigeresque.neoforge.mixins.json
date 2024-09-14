@@ -7,7 +7,10 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "FlameBlockMixin",
+    "FluidMixin",
     "common.PointOfInterestTypesInvoker",
+    "common.RaidMixin",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.EntityMixin",
@@ -19,9 +22,7 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.VillagerHostilesSensorMixin",
     "common.entity.WanderingTraderEntityMixin",
-    "common.entity.WardenEntityMixin",
-    "FlameBlockMixin",
-    "FluidMixin"
+    "common.entity.WardenEntityMixin"
   ],
   "client": [
     "client.entity.render.AzureEntityRendererMixin",

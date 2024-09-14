@@ -7,6 +7,10 @@
   },
   "mixins": [
     "common.PointOfInterestTypesInvoker",
+    "common.RaidMixin",
+    "common.crawling.CrawlingEntityMixin",
+    "common.crawling.LivingEntityMixin",
+    "common.crawling.MobEntityMixin",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.EntityMixin",
@@ -18,10 +22,7 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.VillagerHostilesSensorMixin",
     "common.entity.WanderingTraderEntityMixin",
-    "common.entity.WardenEntityMixin",
-    "common.crawling.CrawlingEntityMixin",
-    "common.crawling.LivingEntityMixin",
-    "common.crawling.MobEntityMixin"
+    "common.entity.WardenEntityMixin"
   ],
   "client": [
     "client.entity.render.AzureEntityRendererMixin",
