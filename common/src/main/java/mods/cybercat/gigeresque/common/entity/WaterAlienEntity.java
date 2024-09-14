@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -40,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,8 +72,10 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
     public WaterAlienEntity(EntityType<? extends Dolphin> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
+        navigation = new AmphibiousPathNavigation(this, level());
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
+        setPathfindingMalus(PathType.WATER, 0.0f);
     }
 
     @Override
@@ -81,7 +85,7 @@ public abstract class WaterAlienEntity extends Dolphin implements Enemy, GeoEnti
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return new SmoothWaterBoundPathNavigation(this, level);
+        return new AmphibiousPathNavigation(this, level);
     }
 
     @Override
