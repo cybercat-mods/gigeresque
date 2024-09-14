@@ -30,11 +30,6 @@ public class DNAStatusEffect extends MobEffect {
     }
 
     @Override
-    public boolean isInstantenous() {
-        return false;
-    }
-
-    @Override
     public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         super.applyEffectTick(entity, amplifier);
         if (!entity.getType().is(GigTags.DNAIMMUNE) && this == GigStatusEffects.DNA) entity.heal(0);
