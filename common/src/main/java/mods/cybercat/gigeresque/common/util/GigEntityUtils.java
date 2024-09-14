@@ -7,6 +7,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -124,5 +125,24 @@ public record GigEntityUtils() {
                     entity.getZ() + 0.5, 1, entity.getRandom().nextGaussian() * 0.02,
                     entity.getRandom().nextGaussian() * 0.02, entity.getRandom().nextGaussian() * 0.02,
                     0.15000000596046448);
+    }
+
+    public static BlockPos findFreeSpace(Level world, BlockPos blockPos, int radius) {
+        if (blockPos == null) return null;
+
+        var offsets = new int[radius + 1];
+        for (var i = radius; i <= radius; i += radius) {
+            offsets[i - 1] = i / radius;
+            offsets[i] = -i / radius;
+        }
+        for (var x : offsets)
+            for (var y : offsets)
+                for (var z : offsets) {
+                    var offsetPos = blockPos.offset(x, y, z);
+                    var state = world.getBlockState(offsetPos);
+                    if (state.isAir()) return offsetPos;
+                }
+
+        return null;
     }
 }

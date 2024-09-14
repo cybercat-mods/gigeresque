@@ -21,17 +21,18 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
-import mods.cybercat.gigeresque.common.fluid.BlackFluid;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
-import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -54,18 +55,19 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -136,6 +138,8 @@ public final class NeoForgeMod {
         modEventBus.addListener(this::onRegisterEvent);
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
     }
 
     public void onRegisterEvent(RegisterSpawnPlacementsEvent event) {
@@ -165,10 +169,41 @@ public final class NeoForgeMod {
         event.put(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntity.createAttributes().build());
     }
 
-    @SubscribeEvent
-    public static void onServerStarted(final ServerStartedEvent event) {
+    public void onServerStarted(final ServerStartedEvent event) {
         GigVillagerTrades.addTrades();
     }
+
+    public void onWorldTick(final LevelTickEvent.Post event) {
+        // Ensure we are on the server side
+        if (event.getLevel().isClientSide) return;
+
+        boolean hasAdvancement = false;
+
+        // Check if any player has the advancement
+        for (var player : event.getLevel().players()) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                var advancement = serverPlayer.getServer().getAdvancements().get(Constants.modResource("xeno_dungeon"));
+
+                if (advancement != null) {
+
+                    if (serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                        hasAdvancement = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If at least one player has the advancement, apply the effect to all players
+        if (hasAdvancement) {
+            for (var player : event.getLevel().players()) {
+                if (!player.hasEffect(GigStatusEffects.DUNGEON_EFFECT)) {
+                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, true, false,false, null));
+                }
+            }
+        }
+    }
+
 
     record ModEntitySpawn(HolderSet<Biome> biomes, MobSpawnSettings.SpawnerData spawn) implements BiomeModifier {
 

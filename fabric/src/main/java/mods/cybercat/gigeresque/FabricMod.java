@@ -19,13 +19,18 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.compat.GigCompats;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public final class FabricMod implements ModInitializer {
 
@@ -55,5 +60,26 @@ public final class FabricMod implements ModInitializer {
         FabricDefaultAttributeRegistry.register(GigEntities.DRACONICTEMPLEBEAST.get(), DraconicTempleBeastEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntity.createAttributes());
+        ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
+    }
+
+    private void onWorldTick(ServerLevel level) {
+        boolean hasAdvancement = false;
+
+        for (ServerPlayer player : level.getPlayers(player -> true)) {
+            var advancement = player.server.getAdvancements().get(Constants.modResource("xeno_dungeon"));
+            if (advancement != null && player.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                hasAdvancement = true;
+                break;
+            }
+        }
+
+        if (hasAdvancement) {
+            for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
+                // Apply effect to all players
+                if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
+                 serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, true, false, true, null));
+            }
+        }
     }
 }
