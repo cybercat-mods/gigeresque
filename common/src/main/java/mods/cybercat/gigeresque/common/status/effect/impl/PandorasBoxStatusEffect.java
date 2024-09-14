@@ -88,6 +88,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 var faceHugger = GigEntities.FACEHUGGER.get().create(player.level());
                 Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D,
                         player.getZ() + offsetZ);
+                faceHugger.setOnGround(true);
                 if (Services.PLATFORM.isDevelopmentEnvironment())
                     faceHugger.setGlowingTag(true);
 
