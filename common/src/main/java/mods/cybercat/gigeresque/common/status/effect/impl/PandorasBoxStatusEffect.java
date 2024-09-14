@@ -60,7 +60,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
                 // If there are fewer than 4 entities and no dungeon/nest blocks are detected
                 if (entityCount < 4 && spawnTimer == player.getRandom().nextIntBetweenInclusive(
-                        60, 120)
+                        6000, 12000)
                         && !dungeonBlockCheck && !nestBlockCheck) {
                     this.spawnWave(player); // Spawn the wave
                     spawnTimer = 0; // Reset the spawnTimer after spawning
@@ -69,7 +69,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 else if (entityCount >= 4 || nonSolidBlockPos == null || dungeonBlockCheck || nestBlockCheck) {
                     spawnTimer = 0; // Reset spawnTimer when conditions are not met
                 }
-                if (spawnTimer >= 121)
+                if (spawnTimer >= 12001)
                     spawnTimer = 0;
             }
         }
