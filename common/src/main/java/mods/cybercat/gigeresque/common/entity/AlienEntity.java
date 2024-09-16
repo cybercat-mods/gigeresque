@@ -305,6 +305,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ge
             pathNavigation = new SmoothAmphibiousPathNavigation(this, level());
         } else {
             pathNavigation = new GigNav(this, level());
+            pathNavigation.setCanFloat(true);
         }
         return pathNavigation;
     }
