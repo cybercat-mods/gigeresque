@@ -29,18 +29,21 @@ public class SurgeryKitItem extends Item {
 
     @Override
     public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack, @NotNull Player player, LivingEntity livingEntity, @NotNull InteractionHand interactionHand) {
-        if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance)) {
+        if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
+            livingEntity.getActiveEffects().clear();
         }
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand) {
-        if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance))
+        if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)){
             tryRemoveParasite(user.getItemInHand(hand), user);
+            user.getActiveEffects().clear();
+        }
         return super.use(world, user, hand);
     }
 
@@ -50,7 +53,7 @@ public class SurgeryKitItem extends Item {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-            entity.removeEffect(GigStatusEffects.IMPREGNATION);
+            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
             LivingEntity burster = createBurster(entity);
             if (burster != null) {
                 setBursterProperties(entity, burster);
@@ -62,7 +65,7 @@ public class SurgeryKitItem extends Item {
                 playerentity.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
                 stack.hurtAndBreak(1, playerentity, playerentity.getEquipmentSlotForItem(stack));
             }
-            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
+            entity.removeEffect(GigStatusEffects.IMPREGNATION);
         }
     }
 

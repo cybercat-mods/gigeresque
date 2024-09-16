@@ -69,6 +69,7 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (!GigEntityUtils.isTargetHostable(entity)) return;
         if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof ImpregnationStatusEffect)) return;
         if (entity instanceof Mob mob && mob.isNoAi()) return;
+        if (entity.hasEffect(GigStatusEffects.TRAUMA)) return;
         LivingEntity burster = createBurster(entity);
         if (burster != null) {
             setBursterProperties(entity, burster);
