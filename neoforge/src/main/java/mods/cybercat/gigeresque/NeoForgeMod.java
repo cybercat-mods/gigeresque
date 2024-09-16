@@ -23,6 +23,7 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTe
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
+import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -201,6 +202,7 @@ public final class NeoForgeMod {
                 if (!player.hasEffect(GigStatusEffects.DUNGEON_EFFECT)) {
                     player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, true, false,false, null));
                 }
+                PandoraData.setIsTriggered(true);
             }
         }
     }

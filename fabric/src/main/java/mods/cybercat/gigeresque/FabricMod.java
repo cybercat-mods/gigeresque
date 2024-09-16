@@ -22,6 +22,7 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBea
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
+import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import mods.cybercat.gigeresque.compat.GigCompats;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -78,7 +79,8 @@ public final class FabricMod implements ModInitializer {
             for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
                 // Apply effect to all players
                 if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
-                 serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, true, false, false, null));
+                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, true, false, false, null));
+                PandoraData.setIsTriggered(true);
             }
         }
     }
