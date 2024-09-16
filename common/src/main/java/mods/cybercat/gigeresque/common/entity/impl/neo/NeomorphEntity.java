@@ -80,7 +80,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 CommonMod.config.neomorphXenoHealth).add(Attributes.ARMOR, CommonMod.config.neomorphXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
-                0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(
+                0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(
                 Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 

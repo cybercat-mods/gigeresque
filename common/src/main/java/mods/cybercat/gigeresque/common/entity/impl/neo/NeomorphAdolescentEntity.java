@@ -73,7 +73,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
                 CommonMod.config.neomorph_adolescentXenoHealth).add(Attributes.ARMOR, 0.0f).add(
                 Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE,
-                32.0).add(Attributes.MOVEMENT_SPEED, 0.13000000417232513).add(Attributes.ATTACK_DAMAGE,
+                32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.neomorph_adolescentAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
