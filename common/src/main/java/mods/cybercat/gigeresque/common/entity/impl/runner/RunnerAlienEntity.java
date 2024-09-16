@@ -80,7 +80,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.runnerXenoHealth).add(
                 Attributes.ARMOR, CommonMod.config.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED,
-                0.13000000417232513).add(Attributes.ATTACK_DAMAGE, CommonMod.config.runnerXenoAttackDamage).add(
+                0.3300000041723251).add(Attributes.ATTACK_DAMAGE, CommonMod.config.runnerXenoAttackDamage).add(
                 Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
@@ -206,7 +206,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> CommonMod.config.runnerXenoAttackSpeed - 0.9F).stopIf(
+                        (owner, target) -> CommonMod.config.runnerXenoAttackSpeed - 1.6F).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
