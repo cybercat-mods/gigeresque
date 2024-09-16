@@ -19,6 +19,6 @@ public abstract class VillagerEntityMixin {
     @Inject(method = {"mobInteract"}, at = {@At("HEAD")}, cancellable = true)
     protected void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem)
-            callbackInfo.setReturnValue(callbackInfo.getReturnValue());
+            callbackInfo.setReturnValue(InteractionResult.FAIL);
     }
 }
