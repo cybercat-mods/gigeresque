@@ -192,9 +192,6 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
-                // Build Nest
-                new BuildNestTask<>(90).stopIf(
-                        target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())),
                 // Kill Lights
                 new KillLightsTask<>().stopIf(target -> (this.isAggressive() || this.isVehicle())),
                 // Do first
