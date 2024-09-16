@@ -78,7 +78,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                 CommonMod.config.draconicTempleBeastXenoHealth).add(Attributes.ARMOR,
                 CommonMod.config.draconicTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
-                0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
+                1.000000041723251).add(Attributes.ATTACK_DAMAGE,
                 CommonMod.config.draconicTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 5.0);
     }
 
@@ -221,7 +221,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> (2.0F)).stopIf(
+                        (owner, target) -> (12.0F)).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR));

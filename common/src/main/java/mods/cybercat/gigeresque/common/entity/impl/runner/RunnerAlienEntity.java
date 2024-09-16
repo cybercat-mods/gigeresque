@@ -206,7 +206,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> CommonMod.config.runnerXenoAttackSpeed - 1.6F).stopIf(
+                        (owner, target) -> CommonMod.config.runnerXenoAttackSpeed).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
