@@ -47,7 +47,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -217,16 +216,6 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR).whenStopping(
                         e -> this.addEffect(
                                 new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false))));
-    }
-
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * 1.9f * (this.getBbWidth() * 1.9f) + livingEntity.getBbWidth();
-    }
-
-    @Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-        return d <= this.getMeleeAttackRangeSqr(livingEntity);
     }
 
     @Override

@@ -192,16 +192,6 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         return super.hurt(source, amount);
     }
 
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
-    }
-
-    @Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-        return d <= this.getMeleeAttackRangeSqr(livingEntity);
-    }
-
     @Override
     public boolean doHurtTarget(@NotNull Entity target) {
         if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,

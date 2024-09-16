@@ -259,16 +259,6 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * 3.0f * (this.getBbWidth() * 3.0f) + livingEntity.getBbWidth();
-    }
-
-    @Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-        return d <= this.getMeleeAttackRangeSqr(livingEntity);
-    }
-
     @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater) return EntityDimensions.scalable(3.0f, 1.0f);
