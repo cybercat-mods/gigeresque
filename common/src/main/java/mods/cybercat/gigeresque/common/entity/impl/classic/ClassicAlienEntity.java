@@ -165,16 +165,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return super.doHurtTarget(target);
     }
 
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return 8.0D;
-    }
-
-    @Override
-    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-        return this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ()) <= this.getMeleeAttackRangeSqr(livingEntity)
-                || this.getBoundingBox().intersects(livingEntity.getBoundingBox());
-    }
-
     @Override
     public boolean isPathFinding() {
         return false;
