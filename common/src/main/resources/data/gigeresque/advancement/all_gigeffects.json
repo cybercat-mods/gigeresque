@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:petrified_object"
+    },
+    "title": {
+      "translate": "advancements.gigeresque.all_gig_effects.title"
+    },
+    "description": {
+      "translate": "advancements.gigeresque.all_gig_effects.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "all_effects": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "gigeresque:impregnation": {},
+          "gigeresque:neo_spore": {},
+          "gigeresque:dna_disintegration": {}
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "all_effects"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

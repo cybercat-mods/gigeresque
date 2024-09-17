@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:spitter_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.gigeresque.doubletrouble.title"
+    },
+    "description": {
+      "translate": "advancements.gigeresque.doubletrouble.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "all_effects": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "gigeresque:impregnation": {},
+          "gigeresque:dna_disintegration": {}
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "all_effects"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
