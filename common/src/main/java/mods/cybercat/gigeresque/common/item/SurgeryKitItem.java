@@ -8,6 +8,7 @@ import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,6 +35,12 @@ public class SurgeryKitItem extends Item {
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             livingEntity.getActiveEffects().clear();
+            if (player instanceof ServerPlayer serverPlayer) {
+                var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
+                if (advancement != null) {
+                    serverPlayer.getAdvancements().award(advancement, "criteria_key");
+                }
+            }
         }
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
@@ -43,6 +50,12 @@ public class SurgeryKitItem extends Item {
         if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)){
             tryRemoveParasite(user.getItemInHand(hand), user);
             user.getActiveEffects().clear();
+            if (user instanceof ServerPlayer serverPlayer) {
+                var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
+                if (advancement != null) {
+                    serverPlayer.getAdvancements().award(advancement, "criteria_key");
+                }
+            }
         }
         return super.use(world, user, hand);
     }
