@@ -37,8 +37,8 @@ public class SurgeryKitItem extends Item {
             livingEntity.getActiveEffects().clear();
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
-                if (advancement != null) {
-                    serverPlayer.getAdvancements().award(advancement, "criteria_key");
+                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    serverPlayer.getAdvancements().award(advancement, "minecraft:using_item");
                 }
             }
         }
@@ -52,8 +52,8 @@ public class SurgeryKitItem extends Item {
             user.getActiveEffects().clear();
             if (user instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
-                if (advancement != null) {
-                    serverPlayer.getAdvancements().award(advancement, "criteria_key");
+                if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    serverPlayer.getAdvancements().award(advancement, "surgery_kit");
                 }
             }
         }
