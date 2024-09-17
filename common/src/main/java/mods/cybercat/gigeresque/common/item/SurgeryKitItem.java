@@ -52,7 +52,7 @@ public class SurgeryKitItem extends Item {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, Constants.TPD));
+            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, 500));
             LivingEntity burster = createBurster(entity);
             if (burster != null) {
                 setBursterProperties(entity, burster);
