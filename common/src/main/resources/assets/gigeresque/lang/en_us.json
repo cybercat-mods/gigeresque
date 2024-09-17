@@ -1,6 +1,10 @@
 {
   "advancements.gigeresque.find_dungeon.title": "An Ancient Structure",
-  "advancements.gigeresque.find_dungeon.description": "Some things should stay buried.",
+  "advancements.gigeresque.find_dungeon.description": "Some things can't be put back once uncovered...",
+  "advancements.gigeresque.surgery_kit.title": "Emergency Operation",
+  "advancements.gigeresque.surgery_kit.description": "Remove a parasite before it's too late.",
+  "advancements.gigeresque.dna_cure.title": "All I Am is Me",
+  "advancements.gigeresque.dna_cure.description": "Survive genetic collapse.",
   "block.gigeresque.petrified_object": "Petrified Object",
   "block.gigeresque.black_fuild_block": "Black Fluid",
   "block.gigeresque.nest_resin": "Nest Resin",

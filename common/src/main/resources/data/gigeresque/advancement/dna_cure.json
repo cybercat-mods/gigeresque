@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:black_fluid_bucket"
+    },
+    "title": {
+      "translate": "advancements.gigeresque.dna_cure.title"
+    },
+    "description": {
+      "translate": "advancements.gigeresque.dna_cure.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "all_effects": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "minecraft:absorption": {},
+          "minecraft:regeneration": {},
+          "minecraft:wither": {},
+          "gigeresque:dna_disintegration": {}
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "all_effects"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

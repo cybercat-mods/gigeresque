@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:surgery_kit"
+    },
+    "frame": "challenge",
+    "title": "advancements.gigeresque.surgery_kit.title",
+    "description": "advancements.gigeresque.surgery_kit.description",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:using_item",
+      "conditions": {
+        "item": {
+          "items": "gigeresque:surgery_kit",
+          "count": 1
+        }
+      }
+    }
+  }
+}
