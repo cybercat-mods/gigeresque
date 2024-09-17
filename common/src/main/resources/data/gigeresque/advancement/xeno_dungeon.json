@@ -4,12 +4,15 @@
       "id": "gigeresque:nest_resin_web_cross",
       "count": 1
     },
+    "frame": "challenge",
     "title": {
       "translate": "advancements.gigeresque.find_dungeon.title"
     },
     "description": {
       "translate": "advancements.gigeresque.find_dungeon.description"
-    }
+    },
+    "show_toast": true,
+    "announce_to_chat": true
   },
   "parent": "minecraft:adventure/adventuring_time",
   "criteria": {
