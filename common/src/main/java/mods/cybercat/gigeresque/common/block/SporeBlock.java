@@ -3,14 +3,17 @@ package mods.cybercat.gigeresque.common.block;
 import com.mojang.serialization.MapCodec;
 import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -66,6 +69,21 @@ public class SporeBlock extends BaseEntityBlock implements EntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING,
                 context.getHorizontalDirection().getClockWise().getClockWise());
+    }
+
+    @Override
+    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            var areaEffectCloudEntity = new AreaEffectCloud(serverLevel, pos.getX(), pos.getY(), pos.getZ());
+            areaEffectCloudEntity.setRadius(1.0F);
+            areaEffectCloudEntity.setDuration(60);
+            areaEffectCloudEntity.setRadiusPerTick(
+                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+            areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.SPORE, 600, 0));
+            serverLevel.addFreshEntity(areaEffectCloudEntity);
+        }
+        super.playerDestroy(level, player, pos, state, blockEntity, stack);
     }
 
 }
