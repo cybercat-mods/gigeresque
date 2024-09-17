@@ -34,7 +34,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -76,7 +75,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 0.7F);
         navigation = landNavigation;
     }
 
