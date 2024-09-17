@@ -48,8 +48,7 @@ public class SurgeryKitItem extends Item {
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
-        if (entity.hasEffect(GigStatusEffects.IMPREGNATION) || entity.hasEffect(
-                GigStatusEffects.SPORE) && !entity.level().isClientSide) {
+        if (entity.hasEffect(GigStatusEffects.IMPREGNATION) || entity.hasEffect(GigStatusEffects.SPORE) && !entity.level().isClientSide) {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
@@ -58,8 +57,7 @@ public class SurgeryKitItem extends Item {
             if (burster != null) {
                 setBursterProperties(entity, burster);
                 entity.level().addFreshEntity(burster);
-                entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL,
-                        2.0f, 1.0f);
+                entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL, 2.0f, 1.0f);
             }
             if (entity instanceof Player playerentity) {
                 playerentity.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
