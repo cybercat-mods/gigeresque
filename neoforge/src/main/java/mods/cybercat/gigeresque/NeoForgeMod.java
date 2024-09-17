@@ -200,7 +200,7 @@ public final class NeoForgeMod {
         if (hasAdvancement) {
             for (var player : event.getLevel().players()) {
                 if (!player.hasEffect(GigStatusEffects.DUNGEON_EFFECT)) {
-                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, true, false,false, null));
+                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, false, false,false, null));
                 }
                 PandoraData.setIsTriggered(true);
             }

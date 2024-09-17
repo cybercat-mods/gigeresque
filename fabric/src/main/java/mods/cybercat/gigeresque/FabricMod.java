@@ -79,7 +79,7 @@ public final class FabricMod implements ModInitializer {
             for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
                 // Apply effect to all players
                 if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
-                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, true, false, false, null));
+                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
                 PandoraData.setIsTriggered(true);
             }
         }
