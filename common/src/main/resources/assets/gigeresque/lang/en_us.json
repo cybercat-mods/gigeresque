@@ -1,5 +1,5 @@
 {
-  "advancements.gigeresque.find_dungeon.title": "An Ancient Structure",
+  "advancements.gigeresque.find_dungeon.title": "Enter the Unknown",
   "advancements.gigeresque.find_dungeon.description": "Some things can't be put back once uncovered...",
   "advancements.gigeresque.surgery_kit.title": "Emergency Operation",
   "advancements.gigeresque.surgery_kit.description": "Remove a parasite before it's too late.",
@@ -9,6 +9,8 @@
   "advancements.gigeresque.all_gig_effects.description": "Have three separate infections at once.",
   "advancements.gigeresque.doubletrouble.title": "Now You're Really In the Spit",
   "advancements.gigeresque.doubletrouble.description": "Have two things go horribly wrong at the same time.",
+  "advancements.gigeresque.facehugged.title": "Entered By the Unknown",
+  "advancements.gigeresque.facehugged.description": "What was that and why does my chest hurt?",
   "block.gigeresque.petrified_object": "Petrified Object",
   "block.gigeresque.black_fuild_block": "Black Fluid",
   "block.gigeresque.nest_resin": "Nest Resin",
