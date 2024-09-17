@@ -43,6 +43,7 @@ public class DNAStatusEffect extends MobEffect {
         if (GigEntityUtils.isTargetDNAImmune(entity)) return;
         if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof DNAStatusEffect)) return;
         if (entity instanceof Mob mob && mob.isNoAi()) return;
+        if (entity.hasEffect(MobEffects.ABSORPTION) && entity.hasEffect(MobEffects.WITHER) && entity.hasEffect(MobEffects.REGENERATION)) return;
         if (!entity.getType().is(GigTags.DNAIMMUNE)) {
             if (randomPhase > 25) {
                 if ((Constants.notPlayer.test(entity) && !(GigEntityUtils.isTargetDNAImmune(

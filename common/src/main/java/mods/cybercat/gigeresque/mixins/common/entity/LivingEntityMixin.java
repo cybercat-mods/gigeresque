@@ -14,7 +14,10 @@ import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffe
 import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -93,6 +96,15 @@ public abstract class LivingEntityMixin extends Entity {
             this.applyParticle();
         }
         if (!this.level().isClientSide) {
+            if (Constants.hasCureEffects.test(this)) {
+                this.removeEffect(GigStatusEffects.DNA);
+                if (Constants.self(this) instanceof ServerPlayer serverPlayer){
+                    var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dna_cure"));
+                    if (advancement != null) {
+                        serverPlayer.getAdvancements().award(advancement, "criteria_key");
+                    }
+                }
+            }
             if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(
                     GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
