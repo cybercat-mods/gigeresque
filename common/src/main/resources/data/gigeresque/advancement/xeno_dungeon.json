@@ -12,7 +12,8 @@
       "translate": "advancements.gigeresque.find_dungeon.description"
     },
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": false
   },
   "parent": "minecraft:adventure/adventuring_time",
   "criteria": {

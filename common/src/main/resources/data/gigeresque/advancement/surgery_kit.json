@@ -7,7 +7,8 @@
     "title": "advancements.gigeresque.surgery_kit.title",
     "description": "advancements.gigeresque.surgery_kit.description",
     "show_toast": true,
-    "announce_to_chat": false
+    "announce_to_chat": false,
+    "hidden": false
   },
   "parent": "minecraft:adventure/adventuring_time",
   "criteria": {
