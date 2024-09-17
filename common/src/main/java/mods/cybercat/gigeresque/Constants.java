@@ -5,6 +5,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
@@ -25,6 +26,8 @@ public record Constants() {
     public static Predicate<Entity> isCreativeSpecPlayer = entity -> (entity instanceof Player playerEntity && (playerEntity.isCreative() || playerEntity.isSpectator()));
     public static Predicate<Entity> hasEggEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
             livingEntity) && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING);
+    public static Predicate<Entity> hasCureEffects = entity -> entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.DNA)
+            && livingEntity.hasEffect(MobEffects.ABSORPTION) && livingEntity.hasEffect(MobEffects.WITHER) && livingEntity.hasEffect(MobEffects.REGENERATION);
     public static Predicate<Entity> hasDNAEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetGooable(
             livingEntity) && livingEntity.hasEffect(GigStatusEffects.DNA);
     public static Predicate<Entity> hasImpEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.isTargetHostable(
