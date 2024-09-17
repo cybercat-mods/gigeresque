@@ -5,16 +5,20 @@
     },
     "title": "advancements.gigeresque.facehugged.title",
     "description": "advancements.gigeresque.facehugged.description",
-    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false
   },
   "parent": "minecraft:adventure/adventuring_time",
   "criteria": {
-    "requirement": {
-      "trigger": "minecraft:impossible",
-      "conditions": {}
+    "facehugged": {
+      "trigger": "minecraft:impossible"
     }
-  }
+  },
+  "requirements": [
+    [
+      "facehugged"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

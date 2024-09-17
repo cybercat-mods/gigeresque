@@ -201,6 +201,16 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
             if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
                 player.getFoodData().setFoodLevel(20);
             if (ticksAttachedToHost > CommonMod.config.getFacehuggerAttachTickTimer()) {
+                if (getVehicle() instanceof Player player && player instanceof ServerPlayer serverPlayer) {
+                    var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("facehugged"));
+                    if (advancement == null) return;
+                    var advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
+                    if (!advancementProgress.isDone()) {
+                        for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                            serverPlayer.getAdvancements().award(advancement, s);
+                        }
+                    }
+                }
                 if (livingEntity.hasEffect(MobEffects.BLINDNESS)) {
                     livingEntity.removeEffect(MobEffects.BLINDNESS);
                 }
