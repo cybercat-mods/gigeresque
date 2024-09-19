@@ -71,10 +71,10 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.neomorph_adolescentXenoHealth).add(Attributes.ARMOR, 0.0f).add(
+                CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentXenoHealth).add(Attributes.ARMOR, 0.0f).add(
                 Attributes.ARMOR_TOUGHNESS, 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.neomorph_adolescentAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+                CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
         if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
                 10) > 7) {
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerXenoTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentXenoTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
@@ -95,7 +95,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.chestbursterGrowthMultiplier;
+        return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

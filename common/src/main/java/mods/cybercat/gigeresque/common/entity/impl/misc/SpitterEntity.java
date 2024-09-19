@@ -80,10 +80,10 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.spitterXenoHealth).add(Attributes.ARMOR, CommonMod.config.spitterXenoArmor).add(
+                CommonMod.config.spitterConfigs.spitterXenoHealth).add(Attributes.ARMOR, CommonMod.config.spitterConfigs.spitterXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE,
                 16.0).add(Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.spitterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                CommonMod.config.spitterConfigs.spitterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
@@ -281,7 +281,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.spitterConfigs.spitterXenoTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

@@ -89,10 +89,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.classicXenoArmor).add(
+                CommonMod.config.classicXenoConfigs.classicXenoHealth).add(Attributes.ARMOR, CommonMod.config.classicXenoConfigs.classicXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 7.0).add(Attributes.KNOCKBACK_RESISTANCE, 8.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+                CommonMod.config.classicXenoConfigs.classicXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.alienGrowthMultiplier;
+        return CommonMod.config.classicXenoConfigs.alienGrowthMultiplier;
     }
 
     @Nullable
@@ -155,7 +155,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.classicXenoTailAttackDamage : (float) CommonMod.config.classicXenoAttackDamage);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

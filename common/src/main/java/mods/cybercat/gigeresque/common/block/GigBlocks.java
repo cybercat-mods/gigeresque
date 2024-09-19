@@ -114,40 +114,40 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
             CommonMod.MOD_ID,
             "organic_alien_block",
             () -> new GigBlock(
-                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockHardness,
-                            CommonMod.config.alienblockResistance).sound(SoundType.NETHERRACK).explosionResistance(10)));
+                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockConfigs.alienblockHardness,
+                            CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.NETHERRACK).explosionResistance(10)));
     public static final Supplier<BlockItem> ORGANIC_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "organic_alien_block", () -> new BlockItem(ORGANIC_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> RESINOUS_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "resinous_alien_block",
             () -> new GigBlock(
-                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockHardness,
-                            CommonMod.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
+                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockConfigs.alienblockHardness,
+                            CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> RESINOUS_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "resinous_alien_block", () -> new BlockItem(RESINOUS_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> RIBBED_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "ribbed_alien_block",
             () -> new GigBlock(
-                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockHardness,
-                            CommonMod.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
+                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockConfigs.alienblockHardness,
+                            CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> RIBBED_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "ribbed_alien_block", () -> new BlockItem(RIBBED_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> ROUGH_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "rough_alien_block",
             () -> new GigBlock(
-                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockHardness,
-                            CommonMod.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
+                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockConfigs.alienblockHardness,
+                            CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> ROUGH_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "rough_alien_block", () -> new BlockItem(ROUGH_ALIEN_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Block> SINOUS_ALIEN_BLOCK = CommonBlockRegistryInterface.registerBlock(
             CommonMod.MOD_ID,
             "sinous_alien_block",
             () -> new GigBlock(
-                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockHardness,
-                            CommonMod.config.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
+                    Properties.of().requiresCorrectToolForDrops().strength(CommonMod.config.alienblockConfigs.alienblockHardness,
+                            CommonMod.config.alienblockConfigs.alienblockResistance).sound(SoundType.DEEPSLATE).explosionResistance(10)));
     public static final Supplier<BlockItem> SINOUS_ALIEN_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID,
             "sinous_alien_block", () -> new BlockItem(SINOUS_ALIEN_BLOCK.get(), new Item.Properties()));
 

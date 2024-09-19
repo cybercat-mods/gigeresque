@@ -232,7 +232,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.chestbursterGrowthMultiplier;
+        return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
     }
 
     @Override

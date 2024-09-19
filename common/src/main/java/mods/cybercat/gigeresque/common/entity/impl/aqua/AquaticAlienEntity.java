@@ -77,10 +77,10 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.aquaticXenoHealth).add(Attributes.ARMOR, CommonMod.config.aquaticXenoArmor).add(
+                CommonMod.config.aquaticXenoConfigs.aquaticXenoHealth).add(Attributes.ARMOR, CommonMod.config.aquaticXenoConfigs.aquaticXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 9.0).add(Attributes.KNOCKBACK_RESISTANCE, 9.0).add(Attributes.FOLLOW_RANGE,
                 32.0).add(Attributes.MOVEMENT_SPEED, 0.2500000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+                CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.aquaticAlienGrowthMultiplier;
+        return CommonMod.config.aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class AquaticAlienEntity extends WaterAlienEntity implements SmartBrainOw
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

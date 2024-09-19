@@ -73,10 +73,10 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.stalkerXenoHealth).add(Attributes.ARMOR, CommonMod.config.stalkerXenoArmor).add(
+                CommonMod.config.stalkerConfigs.stalkerXenoHealth).add(Attributes.ARMOR, CommonMod.config.stalkerConfigs.stalkerXenoArmor).add(
                 Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE,
                 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.stalkerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                CommonMod.config.stalkerConfigs.stalkerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
                 new LeapAtTargetTask<>(0),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.stalkerAttackSpeed),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.stalkerConfigs.stalkerAttackSpeed),
                 // move to
                 new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR));// attack
     }
@@ -197,7 +197,7 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         if (target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom().nextInt(0,
                 10) > 7) {
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerConfigs.stalkerTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

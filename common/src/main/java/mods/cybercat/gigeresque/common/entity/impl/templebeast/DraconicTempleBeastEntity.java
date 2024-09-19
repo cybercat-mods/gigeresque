@@ -75,11 +75,11 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.draconicTempleBeastXenoHealth).add(Attributes.ARMOR,
-                CommonMod.config.draconicTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth).add(Attributes.ARMOR,
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
                 1.000000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.draconicTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 5.0);
+                CommonMod.config.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 5.0);
     }
 
     @Override

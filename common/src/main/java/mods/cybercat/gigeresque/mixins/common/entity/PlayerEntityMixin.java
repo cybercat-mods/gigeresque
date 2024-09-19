@@ -52,12 +52,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     private String generateTimerMessage() {
         var ticksAttached = ((FacehuggerEntity) Objects.requireNonNull(this.getFirstPassenger())).ticksAttachedToHost;
-        var tickTimer = CommonMod.config.facehuggerAttachTickTimer;
+        var tickTimer = CommonMod.config.facehuggerConfigs.facehuggerAttachTickTimer;
 
         // Calculate seconds if needed
-        var secondsAttached = CommonMod.config.enableFacehuggerTimerTicks ? ticksAttached : Math.round(
+        var secondsAttached = CommonMod.config.facehuggerConfigs.enableFacehuggerTimerTicks ? ticksAttached : Math.round(
                 ticksAttached / 20);
-        var secondsTimer = CommonMod.config.enableFacehuggerTimerTicks ? tickTimer : Math.round(tickTimer / 20);
+        var secondsTimer = CommonMod.config.facehuggerConfigs.enableFacehuggerTimerTicks ? tickTimer : Math.round(tickTimer / 20);
 
         return "Attachment Timer: " + secondsAttached + " seconds / " + secondsTimer + " seconds";
     }
@@ -65,7 +65,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Inject(method = {"tick"}, at = {@At("HEAD")})
     public void tellPlayer(CallbackInfo ci) {
         if (this.level().isClientSide() && this.getPassengers().stream().anyMatch(
-                FacehuggerEntity.class::isInstance) && CommonMod.config.enableFacehuggerAttachmentTimer) {
+                FacehuggerEntity.class::isInstance) && CommonMod.config.facehuggerConfigs.enableFacehuggerAttachmentTimer) {
             var player = ClientUtils.getClientPlayer();
             if (player != null) {
                 // Get the current time in milliseconds

@@ -62,10 +62,10 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.runnerbusterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS,
+                CommonMod.config.runnerbusterConfigs.runnerbusterHealth).add(Attributes.ARMOR, 2.0).add(Attributes.ARMOR_TOUGHNESS,
                 0.0).add(Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(
                 Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.runnerbusterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                CommonMod.config.runnerbusterConfigs.runnerbusterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     /*
@@ -73,7 +73,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.runnerbursterGrowthMultiplier;
+        return CommonMod.config.bursterConfigs.runnerbursterGrowthMultiplier;
     }
 
     @Override

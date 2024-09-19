@@ -28,11 +28,11 @@ public class RavenousTempleBeastEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.ravenousTempleBeastXenoHealth).add(Attributes.ARMOR,
-                CommonMod.config.ravenousTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
+                CommonMod.config.ravenousTempleBeastConfigs.ravenousTempleBeastXenoHealth).add(Attributes.ARMOR,
+                CommonMod.config.ravenousTempleBeastConfigs.ravenousTempleBeastXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
                 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.ravenousTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                CommonMod.config.ravenousTempleBeastConfigs.ravenousTempleBeastAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override

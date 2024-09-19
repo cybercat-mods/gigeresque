@@ -17,9 +17,9 @@ public record MobSpawn() {
                 GigTags.EGGSPAWN_BIOMES),
                 MobCategory.MONSTER,
                 GigEntities.EGG.get(),
-                CommonMod.config.alienegg_spawn_weight,
-                CommonMod.config.alienegg_min_group,
-                CommonMod.config.alienegg_max_group);
+                CommonMod.config.eggConfigs.alienegg_spawn_weight,
+                CommonMod.config.eggConfigs.alienegg_min_group,
+                CommonMod.config.eggConfigs.alienegg_max_group);
         SpawnPlacements.register(
                 GigEntities.EGG.get(),
                 SpawnPlacementTypes.ON_GROUND,

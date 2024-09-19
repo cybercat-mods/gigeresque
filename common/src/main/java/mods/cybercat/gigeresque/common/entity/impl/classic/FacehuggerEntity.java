@@ -183,8 +183,8 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
         entity.yya = 0;
         entity.yBodyRot = 0;
         entity.setSpeed(0.0f);
-        if (CommonMod.config.facehuggerGivesBlindness) entity.addEffect(
-                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.facehuggerAttachTickTimer, 0));
+        if (CommonMod.config.facehuggerConfigs.facehuggerGivesBlindness) entity.addEffect(
+                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.facehuggerConfigs.facehuggerAttachTickTimer, 0));
         if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
             player.connection.send(new ClientboundSetPassengersPacket(entity));
     }

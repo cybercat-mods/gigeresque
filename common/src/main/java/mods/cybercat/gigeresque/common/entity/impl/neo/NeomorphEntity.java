@@ -78,10 +78,10 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.neomorphXenoHealth).add(Attributes.ARMOR, CommonMod.config.neomorphXenoArmor).add(
-                Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
+                CommonMod.config.neomorphConfigs.neomorphXenoHealth).add(Attributes.ARMOR, CommonMod.config.neomorphConfigs.neomorphXenoArmor).add(
+                Attributes.ARMOR_TOUGHNESS, CommonMod.config.neomorphConfigs.neomorphXenoArmor).add(Attributes.KNOCKBACK_RESISTANCE,
                 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251).add(
-                Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                Attributes.ATTACK_DAMAGE, CommonMod.config.neomorphConfigs.neomorphAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerXenoTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.neomorphConfigs.neomorphXenoTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }

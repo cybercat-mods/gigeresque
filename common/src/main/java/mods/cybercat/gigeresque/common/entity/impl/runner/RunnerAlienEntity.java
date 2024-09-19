@@ -77,10 +77,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.runnerXenoHealth).add(
-                Attributes.ARMOR, CommonMod.config.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, CommonMod.config.runnerConfigs.runnerXenoHealth).add(
+                Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 6.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(Attributes.MOVEMENT_SPEED,
-                0.3300000041723251).add(Attributes.ATTACK_DAMAGE, CommonMod.config.runnerXenoAttackDamage).add(
+                0.3300000041723251).add(Attributes.ATTACK_DAMAGE, CommonMod.config.runnerConfigs.runnerXenoAttackDamage).add(
                 Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
@@ -114,7 +114,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
             }
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(damageSources().mobAttack(this),
-                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerXenoTailAttackDamage : 0.0f);
+                    this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerConfigs.runnerXenoTailAttackDamage : 0.0f);
             this.heal(1.0833f);
             return super.doHurtTarget(target);
         }
@@ -125,7 +125,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.runnerAlienGrowthMultiplier;
+        return CommonMod.config.runnerbusterConfigs.runnerAlienGrowthMultiplier;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
                 new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> CommonMod.config.runnerXenoAttackSpeed).stopIf(
+                        (owner, target) -> CommonMod.config.runnerConfigs.runnerXenoAttackSpeed).stopIf(
                         entity -> this.isPassedOut()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));

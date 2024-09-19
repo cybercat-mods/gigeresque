@@ -28,11 +28,11 @@ public class HellmorphRunnerEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.hellmorph_runnerXenoHealth).add(Attributes.ARMOR,
-                CommonMod.config.hellmorph_runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
+                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerXenoHealth).add(Attributes.ARMOR,
+                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerXenoArmor).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(
                 Attributes.KNOCKBACK_RESISTANCE, 0.0).add(Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED,
                 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.hellmorph_runnerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
+                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
     @Override

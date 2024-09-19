@@ -77,7 +77,7 @@ public abstract class LivingEntityMixin extends Entity {
                 FacehuggerEntity.class::isInstance)) {
             this.getFirstPassenger().hurt(source, amount / 2);
             ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
-                    new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CommonMod.config.facehuggerStunTickTimer, 100,
+                    new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer, 100,
                             false, false));
             ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
             ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);

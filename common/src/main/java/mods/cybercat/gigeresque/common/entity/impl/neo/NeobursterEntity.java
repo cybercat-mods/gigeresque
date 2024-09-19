@@ -43,10 +43,10 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH,
-                CommonMod.config.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS,
+                CommonMod.config.neobursterConfigs.neobursterXenoHealth).add(Attributes.ARMOR, 0.0f).add(Attributes.ARMOR_TOUGHNESS,
                 6.0).add(Attributes.KNOCKBACK_RESISTANCE, 7.0).add(Attributes.FOLLOW_RANGE, 32.0).add(
                 Attributes.MOVEMENT_SPEED, 0.23000000417232513).add(Attributes.ATTACK_DAMAGE,
-                CommonMod.config.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
+                CommonMod.config.neobursterConfigs.neobursterAttackDamage).add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     /*
@@ -54,7 +54,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.chestbursterGrowthMultiplier;
+        return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
     }
 
     @Override
