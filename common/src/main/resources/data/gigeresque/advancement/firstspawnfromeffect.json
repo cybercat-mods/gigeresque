@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "id": "gigeresque:firstspawnfromeffect"
+    },
+    "title": "advancements.gigeresque.firstspawnfromeffect.title",
+    "description": "advancements.gigeresque.firstspawnfromeffect.description",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "parent": "minecraft:adventure/adventuring_time",
+  "criteria": {
+    "spawned": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "spawned"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

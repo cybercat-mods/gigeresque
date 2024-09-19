@@ -102,6 +102,13 @@ public class PandorasBoxStatusEffect extends MobEffect {
                     if (entityCount < 4 && spawnTimer == player.getRandom().nextIntBetweenInclusive(6000, 12000)
                             && !dungeonBlockCheck && !nestBlockCheck && nonSolidBlockPos != null && isOutOfSight) {
                         this.spawnWave(player);
+                        var advancement = player.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
+                        var advancementProgress = player.getAdvancements().getOrStartProgress(advancement);
+                        if (!advancementProgress.isDone()) {
+                            for (var s : player.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
+                                player.getAdvancements().award(advancement, s);
+                            }
+                        }
                         spawnTimer = 0; // Reset the spawnTimer after spawning
                     }
                     // Reset spawnTimer if conditions are not met
