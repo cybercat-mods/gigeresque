@@ -9,7 +9,6 @@ import mods.cybercat.gigeresque.client.particle.GooParticleFactory;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;

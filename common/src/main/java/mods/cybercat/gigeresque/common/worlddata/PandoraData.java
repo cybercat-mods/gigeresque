@@ -15,11 +15,7 @@ public class PandoraData extends SavedData {
     }
 
     public static SavedData.Factory<PandoraData> factory() {
-        return new SavedData.Factory<>(
-                PandoraData::new,
-                PandoraData::new,
-                null
-        );
+        return new SavedData.Factory<>(PandoraData::new, PandoraData::new, null);
     }
 
     public static boolean isTriggered(){
