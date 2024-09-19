@@ -376,6 +376,36 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double baphomorphXenoHealth = 300;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double baphomorphXenoArmor = 9;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double baphomorphAttackDamage = 9;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double hellmorph_runnerXenoHealth = 300;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double hellmorph_runnerXenoArmor = 9;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 1)
+    public double hellmorph_runnerAttackDamage = 9;
+
+    @Configurable
+    @Configurable.Synchronized
     @Configurable.Range(min = 0)
     public int alienegg_spawn_weight = 10;
 

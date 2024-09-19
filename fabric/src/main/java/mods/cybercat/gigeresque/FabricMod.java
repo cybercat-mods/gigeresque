@@ -7,6 +7,8 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
@@ -61,6 +63,8 @@ public final class FabricMod implements ModInitializer {
         FabricDefaultAttributeRegistry.register(GigEntities.DRACONICTEMPLEBEAST.get(), DraconicTempleBeastEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
     }
 

@@ -17,6 +17,8 @@ public record EntityTextures() {
     public static final ResourceLocation EGG_ACTIVE = Constants.modResource("%s/egg/egg_active.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation EGG_PETRIFIED = Constants.modResource("%s/egg/egg_petrified.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation RUNNER_ALIEN_YOUNG = Constants.modResource("%s/runner_alien/runner_alien_young.png".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation HELLMORPH_RUNNER = Constants.modResource("%s/hellmorph_runner/hellmorph_runner.png".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation BAPHOMORPH = Constants.modResource("%s/baphomorph/baphomorph.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource("%s/ravenoustemplebeast/ravenoustemplebeast.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation RAVENOUSTEMPLEBEAST_STATIS = Constants.modResource("%s/ravenoustemplebeast/ravenoustemplebeast_stasis.png".formatted(BASE_ENTITY_URL));
     public static final ResourceLocation MOONLIGHTHORRORTEMPLEBEAST = Constants.modResource("%s/moonlighthorrortemplebeast/moonlighthorrortemplebeast.png".formatted(BASE_ENTITY_URL));

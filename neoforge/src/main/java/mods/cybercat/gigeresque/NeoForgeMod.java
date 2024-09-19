@@ -9,6 +9,8 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellmorphRunnerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
@@ -166,6 +168,8 @@ public final class NeoForgeMod {
         event.put(GigEntities.DRACONICTEMPLEBEAST.get(), DraconicTempleBeastEntity.createAttributes().build());
         event.put(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntity.createAttributes().build());
         event.put(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), MoonlightHorrorTempleBeastEntity.createAttributes().build());
+        event.put(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntity.createAttributes().build());
+        event.put(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes().build());
     }
 
     public void onServerStarted(final ServerStartedEvent event) {
