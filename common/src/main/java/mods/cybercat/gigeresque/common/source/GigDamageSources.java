@@ -13,6 +13,7 @@ import java.util.SplittableRandom;
 public record GigDamageSources() {
 
     public static final ResourceKey<DamageType> ACID = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("acid"));
+    public static final ResourceKey<DamageType> FAILED_SURGERY = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("failed_surgery"));
     public static final ResourceKey<DamageType> CHESTBURSTING = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("chestburst"));
     public static final ResourceKey<DamageType> EGGMORPHING = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("eggmorph"));
     public static final ResourceKey<DamageType> GOO = ResourceKey.create(Registries.DAMAGE_TYPE, Constants.modResource("goo"));
