@@ -53,6 +53,8 @@ public class AlienEggEntity extends AlienEntity {
     public float ticksUntilNest = -1.0f;
     private long hatchProgress = 0L;
     private long ticksOpen = 0L;
+    private int hatchCheckTimer = 0;
+
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
         super(type, world);
@@ -264,54 +266,72 @@ public class AlienEggEntity extends AlienEntity {
     @Override
     public void baseTick() {
         super.baseTick();
-        this.level().getEntitiesOfClass(LivingEntity.class,
-                this.getBoundingBox().inflate(CommonMod.config.alieneggHatchRange)).forEach(target -> {
-            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                if (target instanceof Player player && !player.isSteppingCarefully() && !(player.isCreative() || player.isSpectator())) {
-                    setIsHatching(true);
+
+        // Increment the hatch check timer
+        hatchCheckTimer++;
+
+        // Perform hatching check once every second (20 ticks)
+        if (hatchCheckTimer >= 20) {
+            hatchCheckTimer = 0; // Reset the timer
+
+            // Get nearby entities within hatch range
+            this.level().getEntitiesOfClass(LivingEntity.class,
+                    this.getBoundingBox().inflate(CommonMod.config.alieneggHatchRange)).forEach(target -> {
+
+                // If the entity is alive and can be facehugged
+                if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
+
+                    // Apply random chance to hatch
+                    if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
+
+                        if (target instanceof Player player && !player.isSteppingCarefully() &&
+                                !(player.isCreative() || player.isSpectator())) {
+                            setIsHatching(true);
+                        }
+                        else if (!(target instanceof Player)) {
+                            setIsHatching(true);
+                        }
+                    }
                 }
-                if (!(target instanceof Player)) {
-                    setIsHatching(true);
+            });
+
+            // Smaller range for closer entities
+            this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
+                if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
+                    if (this.level().random.nextFloat() < 0.8f) { // 20% chance to hatch
+                        if (target instanceof Player player && !(player.isCreative() || player.isSpectator())) {
+                            setIsHatching(true);
+                        }
+                        else if (!(target instanceof Player)) {
+                            setIsHatching(true);
+                        }
+                    }
                 }
-            }
-        });
-        this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
-            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                if (target instanceof Player player && !(player.isCreative() || player.isSpectator())) {
-                    setIsHatching(true);
-                }
-                if (!(target instanceof Player)) {
-                    setIsHatching(true);
-                }
-            }
-        });
-        // Loop through nearby blocks in different directions
+            });
+        }
+
+        // Loop through nearby blocks in different directions (this logic remains the same)
         for (var testPos : BlockPos.betweenClosed(this.blockPosition().above(1), this.blockPosition().above(1))) {
             for (var testPos1 : BlockPos.betweenClosed(this.blockPosition().below(1), this.blockPosition().below(1))) {
-                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1),
-                        this.blockPosition().east(1))) {
-                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1),
-                            this.blockPosition().west(1))) {
-                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1),
-                                this.blockPosition().south(1))) {
-                            for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1),
-                                    this.blockPosition().north(1))) {
-                                // Check if any of the nearby blocks are not air
-                                boolean isAnyBlockNotAir = !this.level().getBlockState(
-                                        testPos).isAir() && !this.level().getBlockState(
-                                        testPos1).isAir() && !this.level().getBlockState(
-                                        testPos2).isAir() && !this.level().getBlockState(
-                                        testPos3).isAir() && !this.level().getBlockState(
-                                        testPos4).isAir() && !this.level().getBlockState(testPos5).isAir();
+                for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1), this.blockPosition().east(1))) {
+                    for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1), this.blockPosition().west(1))) {
+                        for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1), this.blockPosition().south(1))) {
+                            for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1), this.blockPosition().north(1))) {
+                                // Check if any nearby blocks are not air
+                                boolean isAnyBlockNotAir = !this.level().getBlockState(testPos).isAir() &&
+                                        !this.level().getBlockState(testPos1).isAir() &&
+                                        !this.level().getBlockState(testPos2).isAir() &&
+                                        !this.level().getBlockState(testPos3).isAir() &&
+                                        !this.level().getBlockState(testPos4).isAir() &&
+                                        !this.level().getBlockState(testPos5).isAir();
 
-                                // Check if any of the nearby blocks are not solid
-                                boolean isAnyBlockSolid = !this.level().getBlockState(
-                                        testPos).isCollisionShapeFullBlock(level(), testPos) && !this.level().getBlockState(
-                                        testPos1).isCollisionShapeFullBlock(level(), testPos1) && !this.level().getBlockState(
-                                        testPos2).isCollisionShapeFullBlock(level(), testPos2) && !this.level().getBlockState(
-                                        testPos3).isCollisionShapeFullBlock(level(), testPos3) && !this.level().getBlockState(
-                                        testPos4).isCollisionShapeFullBlock(level(), testPos4) && !this.level().getBlockState(
-                                                testPos5).isCollisionShapeFullBlock(level(), testPos5);
+                                // Check if any nearby blocks are solid
+                                boolean isAnyBlockSolid = !this.level().getBlockState(testPos).isCollisionShapeFullBlock(level(), testPos) &&
+                                        !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
+                                        !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
+                                        !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
+                                        !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
+                                        !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
 
                                 // Set isHatching to false if conditions are met
                                 if (isAnyBlockSolid || isAnyBlockNotAir) {
