@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.impl.extra;
+package mods.cybercat.gigeresque.common.entity.impl.misc;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;

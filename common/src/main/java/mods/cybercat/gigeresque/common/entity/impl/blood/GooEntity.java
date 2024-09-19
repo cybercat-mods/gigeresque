@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.impl.extra;
+package mods.cybercat.gigeresque.common.entity.impl.blood;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;

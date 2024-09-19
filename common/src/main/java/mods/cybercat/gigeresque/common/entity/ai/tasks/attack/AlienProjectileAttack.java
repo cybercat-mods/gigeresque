@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
-import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
