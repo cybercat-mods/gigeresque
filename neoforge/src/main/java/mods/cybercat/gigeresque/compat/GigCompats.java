@@ -172,5 +172,13 @@ public record GigCompats() {
                     PackSource.FEATURE,
                     true,
                     Pack.Position.TOP);
+
+        if (ModList.get().isLoaded("stellaris"))
+            event.addPackFinders(Constants.modResource("resourcepacks/stellariscompat"),
+                    PackType.SERVER_DATA,
+                    Component.literal("stellariscompat"),
+                    PackSource.FEATURE,
+                    true,
+                    Pack.Position.TOP);
     }
 }

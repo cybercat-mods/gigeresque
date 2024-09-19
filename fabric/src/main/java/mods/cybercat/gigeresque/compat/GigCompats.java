@@ -149,5 +149,12 @@ public record GigCompats() {
                             // Mod Compat datapack found in resources/resourcepacks
                             Constants.modResource("avpcompat"), modContainer,
                             Component.literal("avpcompat"), ResourcePackActivationType.DEFAULT_ENABLED)));
+
+        if (FabricLoader.getInstance().isModLoaded("stellaris"))
+            FabricLoader.getInstance().getModContainer(CommonMod.MOD_ID).ifPresent(
+                    (modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(
+                            // Mod Compat datapack found in resources/resourcepacks
+                            Constants.modResource("stellariscompat"), modContainer,
+                            Component.literal("stellariscompat"), ResourcePackActivationType.DEFAULT_ENABLED)));
     }
 }
