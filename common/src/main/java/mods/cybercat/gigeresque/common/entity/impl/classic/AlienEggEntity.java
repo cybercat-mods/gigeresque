@@ -274,7 +274,7 @@ public class AlienEggEntity extends AlienEntity {
         if (hatchCheckTimer >= 20) {
             hatchCheckTimer = 0; // Reset the timer
 
-            // Get nearby entities within hatch range
+            // Get nearby entities within normal hatch range
             this.level().getEntitiesOfClass(LivingEntity.class,
                     this.getBoundingBox().inflate(CommonMod.config.alieneggHatchRange)).forEach(target -> {
 
@@ -284,11 +284,9 @@ public class AlienEggEntity extends AlienEntity {
                     // Apply random chance to hatch
                     if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
 
-                        if (target instanceof Player player && !player.isSteppingCarefully() &&
-                                !(player.isCreative() || player.isSpectator())) {
+                        if (target instanceof Player player && !player.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(player)) {
                             setIsHatching(true);
-                        }
-                        else if (!(target instanceof Player)) {
+                        } else if (!(target instanceof Player)) {
                             setIsHatching(true);
                         }
                     }
