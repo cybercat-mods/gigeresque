@@ -66,7 +66,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 nonSolidBlockPos = GigEntityUtils.findFreeSpace(player.level(), player.blockPosition(), 64);
 
                 // Check if the spawn location is out of the player's line of sight
-                boolean isOutOfSight = true;
+                var isOutOfSight = true;
                 if (nonSolidBlockPos != null) {
                     Vec3 playerEyePosition = player.getEyePosition();
                     Vec3 spawnPosition = new Vec3(nonSolidBlockPos.getX(), nonSolidBlockPos.getY(), nonSolidBlockPos.getZ());
@@ -76,7 +76,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 }
 
                 // Calculate the chance to spawn based on player's Y level
-                double spawnChanceModifier = 1.0;  // Default spawn chance modifier
+                var spawnChanceModifier = 1.0;  // Default spawn chance modifier
 
                 if (player.getY() > 60) {
                     // Rarer spawns on the surface (Y level above 60)
@@ -87,7 +87,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 }
 
                 // Day/night spawn chance adjustment
-                long dayTime = player.level().getDayTime() % 24000; // Get the current time in the 24-hour Minecraft day cycle
+                var dayTime = player.level().getDayTime() % 24000; // Get the current time in the 24-hour Minecraft day cycle
                 if (dayTime >= 0 && dayTime < 13000) {
                     // Less likely to spawn during the day
                     spawnChanceModifier *= 0.5; // 50% of the normal spawn chance during the day
@@ -99,8 +99,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 // Apply chance to spawn based on height and time of day
                 if (player.getRandom().nextDouble() < spawnChanceModifier) {
                     // If there are fewer than 4 entities, no dungeon/nest blocks are detected, and the spawn is out of sight
-                    if (entityCount < 4 && spawnTimer == player.getRandom().nextIntBetweenInclusive(6000, 12000)
-                            && !dungeonBlockCheck && !nestBlockCheck && nonSolidBlockPos != null && isOutOfSight) {
+                    if (entityCount < 4 && !dungeonBlockCheck && !nestBlockCheck && nonSolidBlockPos != null && isOutOfSight) {
                         this.spawnWave(player);
                         var advancement = player.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
                         var advancementProgress = player.getAdvancements().getOrStartProgress(advancement);
