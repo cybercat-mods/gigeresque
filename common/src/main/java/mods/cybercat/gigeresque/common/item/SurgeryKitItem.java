@@ -6,6 +6,7 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +36,18 @@ public class SurgeryKitItem extends Item {
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             livingEntity.getActiveEffects().clear();
+            // Calculate kill chance based on durability
+            int currentDurability = itemStack.getDamageValue();
+            int maxDurability = itemStack.getMaxDamage();
+            double killChance = calculateKillChance(currentDurability, maxDurability);
+
+            // Apply the chance to kill the player
             if (player instanceof ServerPlayer serverPlayer) {
+                if (serverPlayer.getRandom().nextDouble() < killChance) {
+                    serverPlayer.hurt(GigDamageSources.of(serverPlayer.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+                }
+
+                // Award advancement if applicable
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
                     serverPlayer.getAdvancements().award(advancement, "minecraft:using_item");
@@ -50,7 +62,19 @@ public class SurgeryKitItem extends Item {
         if (user.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance) && user.hasEffect(GigStatusEffects.IMPREGNATION)){
             tryRemoveParasite(user.getItemInHand(hand), user);
             user.getActiveEffects().clear();
+            // Calculate kill chance based on durability
+            ItemStack itemStack = user.getItemInHand(hand);
+            int currentDurability = itemStack.getDamageValue();
+            int maxDurability = itemStack.getMaxDamage();
+            double killChance = calculateKillChance(currentDurability, maxDurability);
+
+            // Apply the chance to kill the player
             if (user instanceof ServerPlayer serverPlayer) {
+                if (serverPlayer.getRandom().nextDouble() < killChance) {
+                    serverPlayer.hurt(GigDamageSources.of(serverPlayer.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);  // Kill the player
+                }
+
+                // Award advancement if applicable
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
                     serverPlayer.getAdvancements().award(advancement, "surgery_kit");
@@ -58,6 +82,11 @@ public class SurgeryKitItem extends Item {
             }
         }
         return super.use(world, user, hand);
+    }
+
+    private double calculateKillChance(int currentDurability, int maxDurability) {
+        int durabilityLost = maxDurability - currentDurability;
+        return (durabilityLost / (double) maxDurability) * 0.40;  // Scale chance from 0% to 40%
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {

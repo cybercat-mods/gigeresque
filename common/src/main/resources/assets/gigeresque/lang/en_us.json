@@ -78,6 +78,7 @@
   "block.gigeresque.alien_storage_block5": "Alien Pile",
   "block.gigeresque.black_fluid": "Black Fluid",
   "death.attack.acid": "%s dissolved in acid.",
+  "death.attack.failed_surgery": "%s hand slipped.",
   "death.attack.chestburst": "A parasite ruptured %s's chest!",
   "death.attack.eggmorph": "%s perpetuates the cycle.",
   "death.attack.dna": "%s's genetic code was rearranged.",
