@@ -8,9 +8,6 @@
   "mixins": [
     "common.PointOfInterestTypesInvoker",
     "common.RaidMixin",
-    "common.crawling.CrawlingEntityMixin",
-    "common.crawling.LivingEntityMixin",
-    "common.crawling.MobEntityMixin",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.FoxMixin",
@@ -32,8 +29,6 @@
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
     "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
     "client.render.InGameOverlayRendererMixin",
-    "common.crawling.client.LivingEntityClientMixin",
-    "common.crawling.client.MixinLivingRenderer",
     "client.render.EffectRenderingMixin"
   ],
   "server": []

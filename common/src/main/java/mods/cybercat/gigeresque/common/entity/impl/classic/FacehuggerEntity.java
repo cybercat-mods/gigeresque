@@ -27,7 +27,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.azure.bettercrawling.CrawlerMonsterEntity;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -53,13 +52,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -71,13 +68,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrainOwner<FacehuggerEntity> {
+public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
 
     public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
             EntityDataSerializers.BOOLEAN);
@@ -150,7 +146,7 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
         builder.define(JUMPING, false);
     }
 
-    public void detachFromHost(boolean removesParasite) {
+    public void detachFromHost() {
         this.ticksAttachedToHost = -1.0f;
         this.unRide();
     }
@@ -228,13 +224,13 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
 
             if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
                 if (livingEntity.hasEffect(MobEffects.BLINDNESS)) livingEntity.removeEffect(MobEffects.BLINDNESS);
-                detachFromHost(true);
+                detachFromHost();
                 setIsInfertile(true);
                 this.kill();
             }
 
             if (Constants.isCreativeSpecPlayer.test(host)) {
-                detachFromHost(true);
+                detachFromHost();
                 setIsInfertile(true);
                 this.kill();
             }
@@ -247,7 +243,8 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
         this.handleAttachmentToHost();
         if (isInfertile()) {
             this.kill();
-            this.removeFreeWill();
+            this.removeAllGoals(goals -> true);
+            this.getBrain().removeAllBehaviors();
             return;
         }
         if (this.isEggSpawn() && this.tickCount > 30) {
@@ -322,184 +319,6 @@ public class FacehuggerEntity extends CrawlerMonsterEntity implements SmartBrain
                 this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
         return !this.level().getBlockState(this.blockPosition().above()).is(
                 BlockTags.STAIRS) && !this.isAggressive() && (this.fallDistance <= 0.1 || this.isEggSpawn());
-    }
-
-    @Override
-    protected void travelOnGround(Vec3 relative) {
-
-        Vec3 forwardVector = this.getOrientation().getGlobal(this.yRot, 0);
-        Vec3 strafeVector = this.getOrientation().getGlobal(this.yRot + 90.0f, 0);
-        Vec3 upVector = this.getOrientation().getGlobal(this.yRot, -90.0f);
-
-        Vec3 stickingForce = this.getStickingForce(this.getGroundDirection());
-
-        float forward = (float) relative.z;
-        float strafe = (float) relative.x;
-
-        if (forward != 0 || strafe != 0) {
-//            float slipperiness = 0.91f;
-//
-//            if (this.onGround()) {
-//                BlockPos offsetPos = new BlockPos(this.blockPosition()).relative(this.getGroundDirection().getLeft());
-//                slipperiness = this.getBlockSlipperiness(offsetPos);
-//            }
-
-            float f = forward * forward + strafe * strafe;
-            if (f >= 1.0E-4F) {
-                f = Math.max(Mth.sqrt(f), 1.0f);
-                f = this.getRelevantMoveFactor() / f;
-                forward *= f;
-                strafe *= f;
-
-                Vec3 movementOffset = new Vec3(forwardVector.x * forward + strafeVector.x * strafe,
-                        forwardVector.y * forward + strafeVector.y * strafe,
-                        forwardVector.z * forward + strafeVector.z * strafe);
-
-                double px = this.getX();
-                double py = this.getY();
-                double pz = this.getZ();
-                Vec3 motion = this.getDeltaMovement();
-                AABB aabb = this.getBoundingBox();
-
-                //Probe actual movement vector
-                this.move(MoverType.SELF, movementOffset);
-
-                Vec3 movementDir = new Vec3(this.getX() - px, this.getY() - py, this.getZ() - pz).normalize();
-
-                this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
-                this.setDeltaMovement(motion);
-
-                //Probe collision normal
-                Vec3 probeVector = new Vec3(Math.abs(movementDir.x) < 0.001D ? -Math.signum(upVector.x) : 0,
-                        Math.abs(movementDir.y) < 0.001D ? -Math.signum(upVector.y) : 0,
-                        Math.abs(movementDir.z) < 0.001D ? -Math.signum(upVector.z) : 0).normalize().scale(0.0001D);
-                this.move(MoverType.SELF, probeVector);
-
-                Vec3 collisionNormal = new Vec3(
-                        Math.abs(this.getX() - px - probeVector.x) > 0.000001D ? Math.signum(-probeVector.x) : 0,
-                        Math.abs(this.getY() - py - probeVector.y) > 0.000001D ? Math.signum(-probeVector.y) : 0,
-                        Math.abs(this.getZ() - pz - probeVector.z) > 0.000001D ? Math.signum(
-                                -probeVector.z) : 0).normalize();
-
-                this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
-                this.setDeltaMovement(motion);
-
-                //Movement vector projected to surface
-                Vec3 surfaceMovementDir = movementDir.subtract(
-                        collisionNormal.scale(collisionNormal.dot(movementDir))).normalize();
-
-                boolean isInnerCorner = Math.abs(collisionNormal.x) + Math.abs(collisionNormal.y) + Math.abs(
-                        collisionNormal.z) > 1.0001f;
-
-                //Only project movement vector to surface if not moving across inner corner, otherwise it'd get stuck in the corner
-                if (!isInnerCorner) {
-                    movementDir = surfaceMovementDir;
-                }
-
-                //Nullify sticking force along movement vector projected to surface
-                stickingForce = stickingForce.subtract(
-                        surfaceMovementDir.scale(surfaceMovementDir.normalize().dot(stickingForce)));
-
-                float moveSpeed = Mth.sqrt(forward * forward + strafe * strafe);
-                this.setDeltaMovement(this.getDeltaMovement().add(movementDir.scale(moveSpeed)));
-            }
-        }
-
-        this.setDeltaMovement(this.getDeltaMovement().add(stickingForce));
-
-        double px = this.getX();
-        double py = this.getY();
-        double pz = this.getZ();
-        Vec3 motion = this.getDeltaMovement();
-
-        if (this.tickCount > 10) {
-            this.setEggSpawnState(false);
-        }
-
-        if (!this.onGround() && !this.isEggSpawn()) {
-            this.move(MoverType.SELF, new Vec3(0, -0.1, 0));
-        }
-
-        if(!this.isEggSpawn())
-            this.move(MoverType.SELF, motion);
-
-        this.prevAttachedSides = this.attachedSides;
-        this.attachedSides = new Vec3(Math.abs(this.getX() - px - motion.x) > 0.001D ? -Math.signum(motion.x) : 0,
-                Math.abs(this.getY() - py - motion.y) > 0.001D ? -Math.signum(motion.y) : 0,
-                Math.abs(this.getZ() - pz - motion.z) > 0.001D ? -Math.signum(motion.z) : 0);
-
-        float slipperiness = 0.91f;
-
-        if (this.onGround()) {
-            this.fallDistance = 0;
-
-            BlockPos offsetPos = new BlockPos(blockPosition()).relative(this.getGroundDirection().getLeft());
-            slipperiness = this.getBlockSlipperiness(offsetPos);
-        }
-
-        motion = this.getDeltaMovement();
-        Vec3 orthogonalMotion = upVector.scale(upVector.dot(motion));
-        Vec3 tangentialMotion = motion.subtract(orthogonalMotion);
-
-        this.setDeltaMovement(tangentialMotion.x * slipperiness + orthogonalMotion.x * 0.98f,
-                tangentialMotion.y * slipperiness + orthogonalMotion.y * 0.98f,
-                tangentialMotion.z * slipperiness + orthogonalMotion.z * 0.98f);
-
-        boolean detachedX = this.attachedSides.x != this.prevAttachedSides.x && Math.abs(this.attachedSides.x) < 0.001D;
-        boolean detachedY = this.attachedSides.y != this.prevAttachedSides.y && Math.abs(this.attachedSides.y) < 0.001D;
-        boolean detachedZ = this.attachedSides.z != this.prevAttachedSides.z && Math.abs(this.attachedSides.z) < 0.001D;
-
-        if ((detachedX || detachedY || detachedZ)) {
-            float stepHeight = this.maxUpStep();
-
-            boolean prevOnGround = this.onGround();
-            boolean prevCollidedHorizontally = this.horizontalCollision;
-            boolean prevCollidedVertically = this.verticalCollision;
-
-            //Offset so that AABB is moved above the new surface
-            this.move(MoverType.SELF, new Vec3(detachedX ? -this.prevAttachedSides.x * 0.25f : 0,
-                    detachedY ? -this.prevAttachedSides.y * 0.25f : 0,
-                    detachedZ ? -this.prevAttachedSides.z * 0.25f : 0));
-
-            Vec3 axis = this.prevAttachedSides.normalize();
-            Vec3 attachVector = upVector.scale(-1);
-            attachVector = attachVector.subtract(axis.scale(axis.dot(attachVector)));
-
-            if (Math.abs(attachVector.x) > Math.abs(attachVector.y) && Math.abs(attachVector.x) > Math.abs(
-                    attachVector.z)) {
-                attachVector = new Vec3(Math.signum(attachVector.x), 0, 0);
-            } else if (Math.abs(attachVector.y) > Math.abs(attachVector.z)) {
-                attachVector = new Vec3(0, Math.signum(attachVector.y), 0);
-            } else {
-                attachVector = new Vec3(0, 0, Math.signum(attachVector.z));
-            }
-
-            double attachDst = motion.length() + 0.1f;
-
-            AABB aabb = this.getBoundingBox();
-            motion = this.getDeltaMovement();
-
-            //Offset AABB towards new surface until it touches
-            for (int i = 0; i < 2 && !this.onGround(); i++) {
-                this.move(MoverType.SELF, attachVector.scale(attachDst));
-            }
-
-            //Attaching failed, fall back to previous position
-            if (!this.onGround()) {
-                this.setBoundingBox(aabb);
-                this.setLocationFromBoundingbox();
-                this.setDeltaMovement(motion);
-                this.setOnGround(prevOnGround);
-                this.horizontalCollision = prevCollidedHorizontally;
-                this.verticalCollision = prevCollidedVertically;
-            } else {
-                this.setDeltaMovement(Vec3.ZERO);
-            }
-        }
-
-        this.calculateEntityAnimation(true);
     }
 
     @Override

@@ -14,9 +14,7 @@ import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffe
 import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -80,7 +78,7 @@ public abstract class LivingEntityMixin extends Entity {
                     new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer, 100,
                             false, false));
             ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
-            ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
+            ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost();
         }
     }
 

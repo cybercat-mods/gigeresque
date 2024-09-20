@@ -2,15 +2,12 @@ package mods.cybercat.gigeresque;
 
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Predicate;
 
@@ -58,13 +55,5 @@ public record Constants() {
 
     public static ResourceLocation modResource(String name) {
         return ResourceLocation.fromNamespaceAndPath(CommonMod.MOD_ID, name);
-    }
-
-    public static BlockPos blockPos(double pX, double pY, double pZ) {
-        return new BlockPos(Mth.floor(pX), Mth.floor(pY), Mth.floor(pZ));
-    }
-
-    public static BlockPos blockPos(Vec3 pVec3) {
-        return blockPos(pVec3.x, pVec3.y, pVec3.z);
     }
 }
