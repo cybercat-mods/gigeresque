@@ -3,8 +3,12 @@
     "icon": {
       "id": "gigeresque:facehugger_spawn_egg"
     },
-    "title": "advancements.gigeresque.firstspawnfromeffect.title",
-    "description": "advancements.gigeresque.firstspawnfromeffect.description",
+    "title": {
+      "translate": "advancements.gigeresque.firstspawnfromeffect.title"
+    },
+    "description": {
+      "translate": "advancements.gigeresque.firstspawnfromeffect.description"
+    },
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false
