@@ -1,21 +1,27 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
+import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.platform.Services;
 import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
@@ -51,10 +57,27 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 ++spawnTimer;
 
                 // Check entity count within 20 blocks around the player
-                final var entityCount = player.level().getEntities(EntityTypeTest.forClass(FacehuggerEntity.class),
-                        new AABB(player.blockPosition()).inflate(64D),
-                        Entity::isAlive).size();
+                var entityCount = 0;
+                var playerChunkPos = new ChunkPos(player.blockPosition());
+                var chunkRadius = 4; // Adjust this for the number of chunks to check around the player
+                var chunkSize = 16; // Each chunk is 16x16 blocks
 
+                // Iterate through all chunks within the chunkRadius around the player
+                for (var x = playerChunkPos.x - chunkRadius; x <= playerChunkPos.x + chunkRadius; x++) {
+                    for (var z = playerChunkPos.z - chunkRadius; z <= playerChunkPos.z + chunkRadius; z++) {
+                        // Convert chunk positions to block positions for AABB bounds
+                        var minPos = new BlockPos(x * chunkSize, player.blockPosition().getY() - 128, z * chunkSize);
+                        var maxPos = new BlockPos((x + 1) * chunkSize - 1, player.blockPosition().getY() + 128, (z + 1) * chunkSize - 1);
+
+                        // Define the AABB for the current chunk
+                        var chunkAABB = new AABB(
+                                new Vec3(minPos.getX(), minPos.getY(), minPos.getZ()),
+                                new Vec3(maxPos.getX() + 1, maxPos.getY() + 1, maxPos.getZ() + 1));  // +1 to cover the entire chunk space
+
+                        // Count entities in the chunk
+                        entityCount += player.level().getEntities(EntityTypeTest.forClass(AlienEntity.class), chunkAABB, Entity::isAlive).size();
+                    }
+                }
                 // Check if dungeon or nest blocks are present within the area
                 final var dungeonBlockCheck = player.level().getBlockStates(
                                 new AABB(player.blockPosition()).inflate(64D))
@@ -66,13 +89,16 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 nonSolidBlockPos = GigEntityUtils.findFreeSpace(player.level(), player.blockPosition(), 64);
 
                 // Check if the spawn location is out of the player's line of sight
-                var isOutOfSight = true;
+                var isOutOfSight = false; // Initialize as false for better clarity
                 if (nonSolidBlockPos != null) {
                     Vec3 playerEyePosition = player.getEyePosition();
-                    Vec3 spawnPosition = new Vec3(nonSolidBlockPos.getX(), nonSolidBlockPos.getY(), nonSolidBlockPos.getZ());
+                    Vec3 spawnPosition = new Vec3(nonSolidBlockPos.getX() + 0.5, nonSolidBlockPos.getY() + 0.5, nonSolidBlockPos.getZ() + 0.5); // Center the position
+                    // Create a context for the line-of-sight check
                     ClipContext context = new ClipContext(playerEyePosition, spawnPosition, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, player);
+                    // Perform the ray trace (clip)
                     BlockHitResult hitResult = player.level().clip(context);
-                    isOutOfSight = hitResult.getType() != HitResult.Type.MISS && !hitResult.getBlockPos().equals(nonSolidBlockPos);
+                    // Check if the hit result blocks the sight to the spawn location
+                    isOutOfSight = hitResult.getType() == HitResult.Type.BLOCK && !hitResult.getBlockPos().equals(nonSolidBlockPos);
                 }
 
                 // Calculate the chance to spawn based on player's Y level
@@ -99,15 +125,16 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 // Apply chance to spawn based on height and time of day
                 if (player.getRandom().nextDouble() < spawnChanceModifier) {
                     // If there are fewer than 4 entities, no dungeon/nest blocks are detected, and the spawn is out of sight
-                    if (entityCount < 4 && !dungeonBlockCheck && !nestBlockCheck && nonSolidBlockPos != null && isOutOfSight) {
+                    if (entityCount <= 4 && !dungeonBlockCheck && !nestBlockCheck && nonSolidBlockPos != null && isOutOfSight) {
                         this.spawnWave(player);
                         var advancement = player.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
-                        var advancementProgress = player.getAdvancements().getOrStartProgress(advancement);
-                        if (!advancementProgress.isDone()) {
+                        if (advancement != null && !player.getAdvancements().getOrStartProgress(advancement).isDone()) {
                             for (var s : player.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
                                 player.getAdvancements().award(advancement, s);
                             }
                         }
+                        AzureLib.LOGGER.info("Spawned Mob");
+                        player.level().playLocalSound(player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.HOSTILE, 1.0f, 1.0f, false);
                         spawnTimer = 0; // Reset the spawnTimer after spawning
                     }
                     // Reset spawnTimer if conditions are not met
@@ -131,8 +158,9 @@ public class PandorasBoxStatusEffect extends MobEffect {
         var offsetX = Math.cos(angle) * distance;
         var offsetZ = Math.sin(angle) * distance;
         if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
-            for (var k = 1; k < 4; ++k) {
-                var entityTypeToSpawn = player.getY() < 20 ? GigEntities.CHESTBURSTER.get() : GigEntities.FACEHUGGER.get();
+            var randomBurster = player.getRandom().nextInt(0, 100) > 70 ? GigEntities.RUNNERBURSTER.get(): GigEntities.CHESTBURSTER.get();
+            var entityTypeToSpawn = player.getY() < 20 ? randomBurster : GigEntities.FACEHUGGER.get();
+            for (var k = 1; k < (entityTypeToSpawn == GigEntities.FACEHUGGER.get() ? 4: 2); ++k) {
                 var faceHugger = entityTypeToSpawn.create(player.level());
                 Objects.requireNonNull(faceHugger).setPos(player.getX() + offsetX, player.getY() + 0.5D,
                         player.getZ() + offsetZ);
@@ -142,8 +170,9 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
                 // Ensure the block is not solid and the world is loaded at that position
                 var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
-                if (player.level().isLoaded(spawnPos) && !faceHugger.level().getBlockState(
-                        spawnPos).isSolid() && !player.level().getBiome(player.blockPosition()).is(
+                if (player.level().isLoaded(spawnPos) && (faceHugger.level().getBlockState(
+                        spawnPos).isAir() || faceHugger.level().getBlockState(
+                        spawnPos).is(Blocks.WATER)) && !player.level().getBiome(player.blockPosition()).is(
                         GigTags.AQUASPAWN_BIOMES)) {
                     player.level().addFreshEntity(faceHugger);
                     // Place resin blocks in a 3x3 area around the spawn position
@@ -157,7 +186,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                                     : GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState();
 
                             // Ensure the block is not solid and the world is loaded at that position
-                            if (player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
+                            if (!player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level().isLoaded(resinPos)) {
                                 player.level().setBlockAndUpdate(resinPos, resinBlockState);
                             }
                         }
