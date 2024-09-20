@@ -28,11 +28,9 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.azure.bettercrawling.entity.movement.BetterSpiderPathNavigator;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -47,13 +45,12 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +58,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,16 +85,6 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     @Override
     public int getAcidDiameter() {
         return 3;
-    }
-
-    @Override
-    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        GroundPathNavigation navigate;
-        navigate = new GigNav(this, level);
-        navigate.setCanFloat(true);
-        navigate.setCanWalkOverFences(true);
-        navigate.setCanOpenDoors(true);
-        return navigate;
     }
 
     @Override
@@ -132,6 +120,15 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (spawnType != MobSpawnType.NATURAL) setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
+    public boolean isPathFinding() {
+        return false;
+    }
+
+    @Override
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
     }
 
     @Override
@@ -191,8 +188,9 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 // Random
                 new OneRandomBehaviour<>(
                         // Randomly walk around
-                        new SetRandomWalkTarget<>().speedModifier(1.05f).startCondition(
-                                entity -> !this.isPassedOut()).stopIf(entity -> this.isPassedOut()),
+                        new SetRandomWalkTarget<>().speedModifier(1.2f).startCondition(
+                                entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()).stopIf(
+                                entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()),
                         // Idle
                         new Idle<>().startCondition(entity -> !this.isAggressive()).runFor(
                                 entity -> entity.getRandom().nextInt(30, 60))));
@@ -205,9 +203,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                 new InvalidateAttackTarget<>().invalidateIf(
                         (entity, target) -> GigEntityUtils.removeTarget(target)),
                 // Walk to Target
-                new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> CommonMod.config.runnerConfigs.runnerXenoAttackSpeed).stopIf(
-                        entity -> this.isPassedOut()),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> CommonMod.config.runnerConfigs.runnerXenoAttackSpeed).stopIf(entity ->  this.isPassedOut() || this.isVehicle()),
                 // Xeno attacking
                 new AlienMeleeAttack<>(10, GigMeleeAttackSelector.RUNNER_ANIM_SELECTOR));
     }
