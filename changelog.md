@@ -1,14 +1,21 @@
-v0.7.3
+v0.7.4
 
-- Removed sound tracking from Classic bursters and Aqua bursters.
-- Added the ability that eating an enchanted golden apple and wither rose made stew will cure DNA effect. 
-- Makes the dungeon Advancement show in chat.
-- Reduced the Trauma effect time. 
-- Added new Advancements
-  - Advancement for having the DNA and Impregnation status effects together.
-  - Advancement for DNA, Impregnation, and Spore status effects together.
-  - Advancement for being Facehugged. (Not yet active)
-  - Advancement for using a surgery kit on yourself.
-  - Advancement for curing DNA status effect with the new above method. 
-- Rewrote how black fluid will replace blocks logic.
-- Spore blocks broken will generate a small effect cloud.
+- Removed Pandora's Effect status from showing in inventory.
+- Added more biomes to aqua spawn biome tag, used for what biomes can spawn aquas after the seal is broken.
+- Added a chance that as the Surgery Kit is used more (it's durability decreases) that it may kill the entity instead. Starting from 0 up to 40%.
+- Added death message for the Surgery Kit death.
+- Configs have been reworked into groups. This will cause a config reset. 
+- Adds advancement for first spawn from breaking the seal.
+- Updates lang files for changes to advancement names and descriptions. 
+- Changed generation step for dungeon generation.
+- Eggs have been tweaked
+  - Eggs now do their check every 20 ticks instead each tick.
+  - Now has a chance to not open right away, instead having a 20% chance to open in the normal range and the player is not sneaking and 80% change if close to the egg.
+- Massive changes to the effects of breaking the dungeons seal:
+  - Aqua Xenos are swapped with Aqua bursters when in water biomes.
+  - No longer runs on Creative or Spectator mode players
+  - Spawns resin now with the mobs, if the mobs don't spawn in air.
+  - Increase spawn change the lower the player is in y level.
+  - If low enough change spawn from facehuggers to bursters.
+  - Spawning takes place now more in the night then the day.
+- Added more dev aliens with just skeleton needed code to load, no bug reports are accepted for anything locked behind the dev entities config at this time.
