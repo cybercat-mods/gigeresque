@@ -1,7 +1,7 @@
 {
   "type": "minecraft:jigsaw",
   "biomes": "#gigeresque:has_structure/gig_dungeon_biomes",
-  "step": "underground_structures",
+  "step": "strongholds",
   "spawn_overrides": {},
   "terrain_adaptation": "encapsulate",
   "start_pool": "gigeresque:gig_dungeon",
