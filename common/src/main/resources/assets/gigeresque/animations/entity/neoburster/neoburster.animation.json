@@ -3365,6 +3365,88 @@
 					"effect": "thudSoundkey"
 				}
 			}
+		},
+		"petrified": {
+			"loop": true,
+			"bones": {
+				"main": {
+					"position": [0, -4, 0]
+				},
+				"stomach": {
+					"rotation": [-17.5, 0, 0]
+				},
+				"chest": {
+					"rotation": [37.5, 0, 0]
+				},
+				"neck": {
+					"rotation": [-17.5, 0, 0]
+				},
+				"head": {
+					"rotation": [30, 0, 0],
+					"position": [0, -1, 1]
+				},
+				"tail01": {
+					"rotation": [0, -57.5, 0]
+				},
+				"tail02": {
+					"rotation": [-15, -70, 0]
+				},
+				"tail03": {
+					"rotation": [-10, -35, 0],
+					"position": [0.5, 0.25, 0]
+				},
+				"tail04": {
+					"rotation": [20.18908, -6.79382, -3.18458]
+				},
+				"tail05": {
+					"rotation": [-15, -10, 0]
+				},
+				"tail06": {
+					"rotation": [-30, -27.5, 0]
+				},
+				"tail07": {
+					"rotation": [0, -22.5, 0]
+				},
+				"tail08": {
+					"rotation": [-15, -30, 0]
+				},
+				"left_arm_reposition": {
+					"rotation": [-42.5, 0, 0],
+					"position": [-2, 2, 3]
+				},
+				"left_upperarm": {
+					"rotation": [103.25408, -39.21312, -0.69264]
+				},
+				"left_hand": {
+					"rotation": [45, 0, 0],
+					"position": [0, 0.5, -1]
+				},
+				"right_arm_reposition": {
+					"rotation": [-42.5, 0, 0],
+					"position": [2, 2, 3]
+				},
+				"right_upperarm": {
+					"rotation": [103.25408, 39.21312, 5.69264]
+				},
+				"right_hand": {
+					"rotation": [45, 0, 0],
+					"position": [0, 0.5, -1]
+				},
+				"left_leg_reposition": {
+					"rotation": [0, -10, 0],
+					"position": [-2, 4, 0]
+				},
+				"left_upperleg": {
+					"rotation": [-118.40086, 36.43129, -17.80232]
+				},
+				"right_leg_reposition": {
+					"rotation": [0, 10, 0],
+					"position": [2, 4, 0]
+				},
+				"right_upperleg": {
+					"rotation": [-118.40086, -36.43129, 17.80232]
+				}
+			}
 		}
 	},
 	"azurelib_format_version": 2

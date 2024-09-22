@@ -1131,6 +1131,33 @@
 					}
 				}
 			}
+		},
+		"petrified": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"position": [-3, 0, 4]
+				},
+				"upperChest": {
+					"rotation": [20, -30, 0]
+				},
+				"head": {
+					"rotation": [-25, -42.5, 0]
+				},
+				"tail02": {
+					"rotation": [0, 65, 0]
+				},
+				"tail03": {
+					"rotation": [0, 25, 0]
+				},
+				"tail04": {
+					"rotation": [-9.24606, 74.79781, -9.57524],
+					"position": [0, 0, 0.5]
+				},
+				"tail05": {
+					"rotation": [4.59519, 54.68982, 8.67258]
+				}
+			}
 		}
 	}
 }

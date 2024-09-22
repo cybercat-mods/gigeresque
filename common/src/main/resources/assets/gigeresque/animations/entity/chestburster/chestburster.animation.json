@@ -1229,6 +1229,34 @@
 					}
 				}
 			}
+		},
+		"petrified": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"position": [0, 0, 6]
+				},
+				"head": {
+					"rotation": [-10, 0, 0]
+				},
+				"tail01": {
+					"rotation": [0, 115, 0]
+				},
+				"tail02": {
+					"rotation": [0, 62.5, 0]
+				},
+				"tail03": {
+					"rotation": [0, 77.5, 0]
+				},
+				"tail04": {
+					"rotation": [0, 80, 0],
+					"position": [0, 0, 0.25]
+				},
+				"tail05": {
+					"rotation": [0, 72.5, 0],
+					"position": [0, 0, 0.5]
+				}
+			}
 		}
 	}
 }

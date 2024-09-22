@@ -2090,6 +2090,64 @@
 					}
 				}
 			}
+		},
+		"petrified": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"position": [0, -5, 0]
+				},
+				"rArm01": {
+					"rotation": [-45, 0, 0],
+					"position": [0, 0, 2]
+				},
+				"rArm02": {
+					"rotation": [-45, 0, 0],
+					"position": [0, 0.75, 0]
+				},
+				"lArm01": {
+					"rotation": [-45, 0, 0],
+					"position": [0, 0, 2]
+				},
+				"lArm02": {
+					"rotation": [-44.98168, -0.23151, 0.19924],
+					"position": [0, 0.75, 0]
+				},
+				"stomach": {
+					"rotation": [-10, 0, 0]
+				},
+				"hips": {
+					"rotation": [12.5, 0, 0]
+				},
+				"rLeg01": {
+					"rotation": [-62.5, 0, 0]
+				},
+				"rLeg02": {
+					"rotation": [150, 0, 0],
+					"position": [0, -1, -1]
+				},
+				"lLeg01": {
+					"rotation": [-62.5, 0, 0]
+				},
+				"lLeg02": {
+					"rotation": [150, 0, 0],
+					"position": [0, -1, -1]
+				},
+				"tail01": {
+					"rotation": [-101.21352, 74.37336, -123.73043],
+					"position": [-0.75, -0.5, 1]
+				},
+				"tail02": {
+					"rotation": [6.05109, 77.48876, -1.50601]
+				},
+				"tail03": {
+					"rotation": [26.30123, 53.25845, 48.71666],
+					"position": [-1, 0, 0]
+				},
+				"tailBlade": {
+					"rotation": [43.6201, 44.23295, 66.32703]
+				}
+			}
 		}
 	}
 }
