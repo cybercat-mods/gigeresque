@@ -2,6 +2,7 @@ plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
     id 'maven-publish'
     id "me.modmuss50.mod-publish-plugin" version "0.4.0"
+    id 'com.diffplug.spotless' version "7.0.0.BETA3"
 }
 
 
@@ -87,6 +88,21 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
+}
+
+spotless {
+    java {
+        eclipse().configFile("$rootDir/eclipse-formatter.xml")
+        endWithNewline()
+        importOrder("", "java", group.toString(), "\\#")
+        indentWithSpaces(4)
+        removeUnusedImports()
+        trimTrailingWhitespace()
+    }
+}
+
+tasks.build {
+    dependsOn("spotlessApply")
 }
 
 if (file('key.properties').exists()) {
