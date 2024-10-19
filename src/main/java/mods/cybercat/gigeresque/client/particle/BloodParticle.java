@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class BloodParticle extends TextureSheetParticle {
 
     private final SpriteSet spriteProvider;
+
     @SuppressWarnings("unused")
     private boolean reachedGround;
 
@@ -36,7 +37,8 @@ public class BloodParticle extends TextureSheetParticle {
         xo = x;
         yo = y;
         zo = z;
-        if (age++ >= lifetime) remove();
+        if (age++ >= lifetime)
+            remove();
         else {
             setSpriteFromAge(spriteProvider);
             if (onGround) {

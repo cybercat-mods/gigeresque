@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,15 +14,34 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
+import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
+
     private static int fovEggticker = 0;
+
     private static final HashMap<ResourceLocation, EggmorphLayerTexture> textureCache = new HashMap<>();
 
     public EggmorphFeatureRenderer(RenderLayerParent<T, M> context) {
         super(context);
     }
 
-    public static <T extends Entity> void renderEggmorphedModel(EntityModel<T> renderedModel, ResourceLocation texture, PoseStack matrices, MultiBufferSource vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+    public static <T extends Entity> void renderEggmorphedModel(
+        EntityModel<T> renderedModel,
+        ResourceLocation texture,
+        PoseStack matrices,
+        MultiBufferSource vertexConsumers,
+        int light,
+        T entity,
+        float limbAngle,
+        float limbDistance,
+        float tickDelta,
+        float animationProgress,
+        float headYaw,
+        float headPitch
+    ) {
         matrices.pushPose();
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
@@ -37,16 +53,44 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
     }
 
     public static EggmorphLayerTexture getEggmorphLayerTexture(ResourceLocation texture) {
-        return textureCache.computeIfAbsent(texture,
-                identifier -> new EggmorphLayerTexture(Minecraft.getInstance().getTextureManager(),
-                        Minecraft.getInstance().getResourceManager(), texture));
+        return textureCache.computeIfAbsent(
+            texture,
+            identifier -> new EggmorphLayerTexture(
+                Minecraft.getInstance().getTextureManager(),
+                Minecraft.getInstance().getResourceManager(),
+                texture
+            )
+        );
     }
 
     @Override
-    public void render(@NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers, int light, @NotNull T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+    public void render(
+        @NotNull PoseStack matrices,
+        @NotNull MultiBufferSource vertexConsumers,
+        int light,
+        @NotNull T entity,
+        float limbAngle,
+        float limbDistance,
+        float tickDelta,
+        float animationProgress,
+        float headYaw,
+        float headPitch
+    ) {
         if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
-            renderEggmorphedModel(getParentModel(), getTextureLocation(entity), matrices, vertexConsumers, light,
-                    entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+            renderEggmorphedModel(
+                getParentModel(),
+                getTextureLocation(entity),
+                matrices,
+                vertexConsumers,
+                light,
+                entity,
+                limbAngle,
+                limbDistance,
+                tickDelta,
+                animationProgress,
+                headYaw,
+                headPitch
+            );
         }
     }
 }

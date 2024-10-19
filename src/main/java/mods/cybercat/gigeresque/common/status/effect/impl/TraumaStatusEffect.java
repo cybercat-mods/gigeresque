@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
 public class TraumaStatusEffect extends MobEffect {
+
     public TraumaStatusEffect() {
         super(MobEffectCategory.HARMFUL, Color.RED.getColor());
     }

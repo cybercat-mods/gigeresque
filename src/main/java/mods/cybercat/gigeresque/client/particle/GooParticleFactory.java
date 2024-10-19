@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class GooParticleFactory implements ParticleProvider<SimpleParticleType> {
+
     private final SpriteSet spriteProvider;
 
     public GooParticleFactory(SpriteSet spriteProvider) {
@@ -18,7 +19,16 @@ public class GooParticleFactory implements ParticleProvider<SimpleParticleType> 
     }
 
     @Override
-    public Particle createParticle(@NotNull SimpleParticleType defaultParticleType, @NotNull ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+    public Particle createParticle(
+        @NotNull SimpleParticleType defaultParticleType,
+        @NotNull ClientLevel clientWorld,
+        double d,
+        double e,
+        double f,
+        double g,
+        double h,
+        double i
+    ) {
         return new GooParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
     }
 }

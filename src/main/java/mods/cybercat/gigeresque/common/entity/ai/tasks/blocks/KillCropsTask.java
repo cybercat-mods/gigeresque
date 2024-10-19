@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -19,10 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 public class KillCropsTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

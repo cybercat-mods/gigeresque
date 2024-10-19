@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,8 +14,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
+
 public class LeapAtTargetTask<E extends StalkerEntity> extends DelayedBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
+
+    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
+        Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)
+    );
+
     private static final double MAX_LEAP_DISTANCE = 3.0;
 
     @Nullable
@@ -36,7 +42,8 @@ public class LeapAtTargetTask<E extends StalkerEntity> extends DelayedBehaviour<
         this.target = BrainUtils.getTargetOfEntity(entity);
         assert target != null;
         var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
-        return !entity.isVehicle() && this.target != null && entity.onGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3 && entity.getBlockY() <= target.getBlockY();
+        return !entity.isVehicle() && this.target != null && entity.onGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3
+            && entity.getBlockY() <= target.getBlockY();
     }
 
     @Override

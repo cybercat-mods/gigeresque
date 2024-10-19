@@ -9,6 +9,7 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import org.jetbrains.annotations.NotNull;
 
 public class AmphibiousNavigation extends WaterBoundPathNavigation {
+
     public AmphibiousNavigation(Mob entity, Level world) {
         super(entity, world);
     }

@@ -6,9 +6,6 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
-import mods.cybercat.gigeresque.common.block.storage.StorageStates;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -31,37 +28,63 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
+import mods.cybercat.gigeresque.common.block.storage.StorageStates;
+import mods.cybercat.gigeresque.common.entity.Entities;
+
 public class JarStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
+
     protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
         @Override
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             assert JarStorageEntity.this.level != null;
-            JarStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f,
-                    1.0f);
+            JarStorageEntity.this.level.playSound(
+                null,
+                pos,
+                SoundEvents.ITEM_FRAME_BREAK,
+                SoundSource.BLOCKS,
+                1.0f,
+                1.0f
+            );
         }
 
         @Override
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             assert JarStorageEntity.this.level != null;
-            JarStorageEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS, 1.0f,
-                    1.0f);
+            JarStorageEntity.this.level.playSound(
+                null,
+                pos,
+                SoundEvents.ITEM_FRAME_BREAK,
+                SoundSource.BLOCKS,
+                1.0f,
+                1.0f
+            );
         }
 
         @Override
-        protected void openerCountChanged(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, int oldViewerCount, int newViewerCount) {
+        protected void openerCountChanged(
+            @NotNull Level world,
+            @NotNull BlockPos pos,
+            @NotNull BlockState state,
+            int oldViewerCount,
+            int newViewerCount
+        ) {
             JarStorageEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
         }
 
         @Override
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof ChestMenu menu) return menu.getContainer() == JarStorageEntity.this;
+            if (player.containerMenu instanceof ChestMenu menu)
+                return menu.getContainer() == JarStorageEntity.this;
             return false;
         }
     };
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
     private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
 
     public JarStorageEntity(BlockPos pos, BlockState state) {
@@ -70,21 +93,26 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 
     public static void tick(Level level, BlockPos pos, BlockState state, JarStorageEntity blockEntity) {
         if (blockEntity.getLevel() != null && !blockEntity.isRemoved())
-            blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(),
-                    blockEntity.getBlockState());
+            blockEntity.stateManager.recheckOpeners(
+                blockEntity.getLevel(),
+                blockEntity.getBlockPos(),
+                blockEntity.getBlockState()
+            );
     }
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(nbt))
+            ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
-        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
+        if (!this.trySaveLootTable(nbt))
+            ContainerHelper.saveAllItems(nbt, this.items);
     }
 
     @Override
@@ -115,28 +143,41 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
     @Override
     public void startOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.incrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
-                    this.getBlockState());
+            this.stateManager.incrementOpeners(
+                player,
+                Objects.requireNonNull(this.getLevel()),
+                this.getBlockPos(),
+                this.getBlockState()
+            );
     }
 
     @Override
     public void stopOpen(@NotNull Player player) {
         if (!this.isRemoved() && !player.isSpectator())
-            this.stateManager.decrementOpeners(player, Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
-                    this.getBlockState());
+            this.stateManager.decrementOpeners(
+                player,
+                Objects.requireNonNull(this.getLevel()),
+                this.getBlockPos(),
+                this.getBlockState()
+            );
     }
 
     public void tick() {
         if (!this.isRemoved())
-            this.stateManager.recheckOpeners(Objects.requireNonNull(this.getLevel()), this.getBlockPos(),
-                    this.getBlockState());
+            this.stateManager.recheckOpeners(
+                Objects.requireNonNull(this.getLevel()),
+                this.getBlockPos(),
+                this.getBlockState()
+            );
     }
 
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
         if (oldViewerCount != newViewerCount)
-            if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-            else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+            if (newViewerCount > 0)
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
     }
 
     public StorageStates getChestState() {
@@ -146,11 +187,17 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, event -> {
-            if (getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")))
+            if (
+                getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")
+                )
+            )
                 return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-            else if (getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")))
+            else if (
+                getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")
+                )
+            )
                 return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
             return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
         }));

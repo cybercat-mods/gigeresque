@@ -2,12 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,12 +16,24 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends CustomDelayedMeleeBehaviour<E> {
+
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS);
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
+
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
+
     @Nullable
     protected LivingEntity target = null;
 
@@ -70,8 +76,12 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
         if (this.target == null)
             return;
@@ -81,11 +91,18 @@ public class ClassicXenoMeleeAttackTask<E extends ClassicAlienEntity> extends Cu
 
         var list = entity.level().getBlockStatesIfLoaded(entity.getBoundingBox().inflate(18.0, 18.0, 18.0));
         var randomPhase = entity.getRandom().nextInt(0, 100);
-        if ((list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(
-                target) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST))
+        if (
+            (list.anyMatch(NEST) && randomPhase >= 50) && GigEntityUtils.isTargetHostable(
+                target
+            ) && !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST)
+        )
             entity.grabTarget(target);
-        else if ((target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType().is(
-                GigTags.XENO_EXECUTE_BLACKLIST)) {
+        else if (
+            (target.getHealth() <= (target.getMaxHealth() * 0.50)) && randomPhase >= 80 && !target.getType()
+                .is(
+                    GigTags.XENO_EXECUTE_BLACKLIST
+                )
+        ) {
             entity.grabTarget(target);
             entity.setIsBiting(true);
         } else if (!entity.isVehicle()) {

@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,16 +30,25 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
+
 public class AlienSarcophagusBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
+
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
+
     BlockPos[] blockPoss;
 
     public AlienSarcophagusBlock() {
         super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
@@ -90,7 +96,8 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
-            if (!testPos.equals(pos)) world.destroyBlock(testPos, true);
+            if (!testPos.equals(pos))
+                world.destroyBlock(testPos, true);
         });
         super.playerWillDestroy(world, pos, state, player);
     }
@@ -106,18 +113,21 @@ public class AlienSarcophagusBlock extends BaseEntityBlock {
     @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         for (var testPos : BlockPos.betweenClosed(pos, pos.above(2)))
-            if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir()) return false;
+            if (!testPos.equals(pos) && !world.getBlockState(testPos).isAir())
+                return false;
         return true;
     }
 
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-        if (world.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity) alienStorageEntity.tick();
+        if (world.getBlockEntity(pos) instanceof AlienStorageEntity alienStorageEntity)
+            alienStorageEntity.tick();
     }
 
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock())) return;
+        if (blockState.is(blockState2.getBlock()))
+            return;
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof Container container) {
             Containers.dropContents(level, blockPos, container);

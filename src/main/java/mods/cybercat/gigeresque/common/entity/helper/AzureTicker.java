@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import mods.cybercat.gigeresque.common.Gigeresque;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.server.level.ServerLevel;
@@ -11,16 +10,23 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Data;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Listener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem.User;
 
+import mods.cybercat.gigeresque.common.Gigeresque;
+
 public interface AzureTicker {
+
     static void tick(Level level, Data data, User user) {
-        if (!(level instanceof ServerLevel serverLevel)) return;
-        if (data.getCurrentVibration() == null) AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
-        if (data.getCurrentVibration() == null) return;
+        if (!(level instanceof ServerLevel serverLevel))
+            return;
+        if (data.getCurrentVibration() == null)
+            AzureTicker.trySelectAndScheduleVibration(serverLevel, data, user);
+        if (data.getCurrentVibration() == null)
+            return;
         var travelCheck = data.getTravelTimeInTicks() > 0;
         data.decrementTravelTime();
         if (data.getTravelTimeInTicks() <= 0)
             travelCheck = AzureTicker.receiveVibration(serverLevel, data, user, data.getCurrentVibration());
-        if (travelCheck) user.onDataChanged();
+        if (travelCheck)
+            user.onDataChanged();
     }
 
     private static void trySelectAndScheduleVibration(ServerLevel serverLevel, Data data, User user) {
@@ -29,7 +35,17 @@ public interface AzureTicker {
             var vec3 = vibrationInfo.pos();
             data.setTravelTimeInTicks(user.calculateTravelTimeInTicks(vibrationInfo.distance()));
             if (Gigeresque.config.enableDevparticles)
-                serverLevel.sendParticles(new VibrationParticleOption(user.getPositionSource(), data.getTravelTimeInTicks()), vec3.x, vec3.y, vec3.z, 1, 0.0, 0.0, 0.0, 0.0);
+                serverLevel.sendParticles(
+                    new VibrationParticleOption(user.getPositionSource(), data.getTravelTimeInTicks()),
+                    vec3.x,
+                    vec3.y,
+                    vec3.z,
+                    1,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                );
             user.onDataChanged();
             data.getSelectionStrategy().startOver();
         });
@@ -40,7 +56,14 @@ public interface AzureTicker {
         var blockPos2 = user.getPositionSource().getPosition(serverLevel).map(BlockPos::containing).orElse(blockPos);
         if (user.requiresAdjacentChunksToBeTicking() && !AzureTicker.areAdjacentChunksTicking(serverLevel, blockPos2))
             return false;
-        user.onReceiveVibration(serverLevel, blockPos, vibrationInfo.gameEvent(), vibrationInfo.getEntity(serverLevel).orElse(null), vibrationInfo.getProjectileOwner(serverLevel).orElse(null), Listener.distanceBetweenInBlocks(blockPos, blockPos2));
+        user.onReceiveVibration(
+            serverLevel,
+            blockPos,
+            vibrationInfo.gameEvent(),
+            vibrationInfo.getEntity(serverLevel).orElse(null),
+            vibrationInfo.getProjectileOwner(serverLevel).orElse(null),
+            Listener.distanceBetweenInBlocks(blockPos, blockPos2)
+        );
         data.setCurrentVibration(null);
         return true;
     }
@@ -50,7 +73,8 @@ public interface AzureTicker {
         for (var i = chunkPos.x - 1; i < chunkPos.x + 1; ++i)
             for (var j = chunkPos.z - 1; j < chunkPos.z + 1; ++j) {
                 var chunkAccess = level.getChunkSource().getChunkNow(i, j);
-                if (chunkAccess != null && level.shouldTickBlocksAt(chunkAccess.getPos().toLong())) continue;
+                if (chunkAccess != null && level.shouldTickBlocksAt(chunkAccess.getPos().toLong()))
+                    continue;
                 return false;
             }
         return true;

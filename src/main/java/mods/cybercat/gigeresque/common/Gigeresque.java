@@ -2,6 +2,10 @@ package mods.cybercat.gigeresque.common;
 
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.config.format.ConfigFormats;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.compat.GigCompats;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
@@ -17,12 +21,11 @@ import mods.cybercat.gigeresque.common.structures.GigStructures;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.util.MobSpawn;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
 public class Gigeresque implements ModInitializer {
+
     public static final String MOD_ID = "gigeresque";
+
     public static GigeresqueConfig config;
 
     @Override

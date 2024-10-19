@@ -1,29 +1,22 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends ExtendedBehaviour<E> {
+
     protected final int delayTime;
+
     protected long delayFinishedAt = 0;
-    protected Consumer<E> delayedCallback = entity -> {
-    };
+
+    protected Consumer<E> delayedCallback = entity -> {};
+
     private final AnimationSelector<? super E> animationSelector;
 
     protected CustomDelayedMeleeBehaviour(int delayTicks, AnimationSelector<? super E> animationSelector) {
@@ -85,6 +78,5 @@ public abstract class CustomDelayedMeleeBehaviour<E extends AlienEntity> extends
      *
      * @param entity The owner of the brain
      */
-    protected void doDelayedAction(E entity) {
-    }
+    protected void doDelayedAction(E entity) {}
 }

@@ -8,7 +8,9 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class GooParticle extends TextureSheetParticle {
+
     private final SpriteSet spriteProvider;
+
     private boolean reachedGround;
 
     public GooParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
@@ -30,14 +32,16 @@ public class GooParticle extends TextureSheetParticle {
         xo = x;
         yo = y;
         zo = z;
-        if (age++ >= lifetime) remove();
+        if (age++ >= lifetime)
+            remove();
         else {
             setSpriteFromAge(spriteProvider);
             if (onGround) {
                 yd = 0.0;
                 reachedGround = true;
             }
-            if (reachedGround) yd += 0.002;
+            if (reachedGround)
+                yd += 0.002;
             this.move(xd, yd, zd);
             if (y == yo) {
                 xd *= 1.1;

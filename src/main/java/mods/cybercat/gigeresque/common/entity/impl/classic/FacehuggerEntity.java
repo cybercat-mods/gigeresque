@@ -11,19 +11,6 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.bettercrawling.entity.movement.BetterSpiderPathNavigator;
 import mod.azure.bettercrawling.entity.movement.ClimberLookController;
 import mod.azure.bettercrawling.entity.movement.ClimberMoveController;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -79,22 +66,59 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.ai.pathing.AmphibiousNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.CrawlerAlien;
+import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBrainOwner<FacehuggerEntity> {
 
-    public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(FacehuggerEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(FacehuggerEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(FacehuggerEntity.class,
-            EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(FacehuggerEntity.class,
-            EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(
+        FacehuggerEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(
+        FacehuggerEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(
+        FacehuggerEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(
+        FacehuggerEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     private final BetterSpiderPathNavigator<?> landNavigation = new BetterSpiderPathNavigator<>(this, level(), false);
+
     private final AmphibiousNavigation swimNavigation = new AmphibiousNavigation(this, level());
-    private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.7f, 1.0f,
-            false);
+
+    private final SmoothSwimmingMoveControl swimMoveControl = new SmoothSwimmingMoveControl(
+        this,
+        85,
+        10,
+        0.7f,
+        1.0f,
+        false
+    );
+
     private final SmoothSwimmingLookControl swimLookControl = new SmoothSwimmingLookControl(this, 10);
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends CrawlerAlien> type, Level world) {
@@ -105,10 +129,24 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, Gigeresque.config.facehuggerHealth).add(
-                Attributes.ARMOR, 1.0).add(Attributes.ARMOR_TOUGHNESS, 0.0).add(Attributes.KNOCKBACK_RESISTANCE,
-                0.0).add(Attributes.ATTACK_KNOCKBACK, 0.0).add(Attributes.ATTACK_DAMAGE, 0.0).add(
-                Attributes.FOLLOW_RANGE, 16.0).add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
+        return LivingEntity.createLivingAttributes()
+            .add(Attributes.MAX_HEALTH, Gigeresque.config.facehuggerHealth)
+            .add(
+                Attributes.ARMOR,
+                1.0
+            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
+            .add(
+                Attributes.KNOCKBACK_RESISTANCE,
+                0.0
+            )
+            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+            .add(Attributes.ATTACK_DAMAGE, 0.0)
+            .add(
+                Attributes.FOLLOW_RANGE,
+                16.0
+            )
+            .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251);
     }
 
     @Override
@@ -175,7 +213,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public int calculateFallDamage(float fallDistance, float damageMultiplier) {
-        if (fallDistance <= 12) return 0;
+        if (fallDistance <= 12)
+            return 0;
         return super.calculateFallDamage(fallDistance, damageMultiplier);
     }
 
@@ -193,8 +232,10 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
         entity.yya = 0;
         entity.yBodyRot = 0;
         entity.setSpeed(0.0f);
-        if (Gigeresque.config.facehuggerGivesBlindness) entity.addEffect(
-                new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0));
+        if (Gigeresque.config.facehuggerGivesBlindness)
+            entity.addEffect(
+                new MobEffectInstance(MobEffects.BLINDNESS, (int) Gigeresque.config.facehuggerAttachTickTimer, 0)
+            );
         if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
             player.connection.send(new ClientboundSetPassengersPacket(entity));
     }
@@ -207,11 +248,13 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             ticksAttachedToHost += 1;
 
             var host = this.getVehicle();
-            if (!(host instanceof LivingEntity livingEntity)) return;
+            if (!(host instanceof LivingEntity livingEntity))
+                return;
 
             if (livingEntity != null) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 1000, 10, false, false));
-                if (livingEntity.getHealth() > livingEntity.getMaxHealth()) livingEntity.heal(6);
+                if (livingEntity.getHealth() > livingEntity.getMaxHealth())
+                    livingEntity.heal(6);
                 if (getVehicle() instanceof Player player && player.getFoodData().needsFood())
                     player.getFoodData().setFoodLevel(20);
                 if (ticksAttachedToHost > Gigeresque.config.getFacehuggerAttachTickTimer()) {
@@ -219,12 +262,26 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                         livingEntity.removeEffect(MobEffects.BLINDNESS);
                     }
                     if (!livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
-                        livingEntity.addEffect(new MobEffectInstance(GigStatusEffects.IMPREGNATION,
-                                (int) Gigeresque.config.getImpregnationTickTimer(), 0, false, true));
+                        livingEntity.addEffect(
+                            new MobEffectInstance(
+                                GigStatusEffects.IMPREGNATION,
+                                (int) Gigeresque.config.getImpregnationTickTimer(),
+                                0,
+                                false,
+                                true
+                            )
+                        );
                     }
                     if (!level().isClientSide)
-                        this.level().playSound(this, this.blockPosition(), GigSounds.HUGGER_IMPLANT,
-                                SoundSource.HOSTILE, 1.0F, 1.0F);
+                        this.level()
+                            .playSound(
+                                this,
+                                this.blockPosition(),
+                                GigSounds.HUGGER_IMPLANT,
+                                SoundSource.HOSTILE,
+                                1.0F,
+                                1.0F
+                            );
                     setIsInfertile(true);
                     this.unRide();
                     this.hurt(damageSources().genericKill(), Float.MAX_VALUE);
@@ -232,7 +289,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             }
 
             if (livingEntity != null && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)) {
-                if (livingEntity.hasEffect(MobEffects.BLINDNESS)) livingEntity.removeEffect(MobEffects.BLINDNESS);
+                if (livingEntity.hasEffect(MobEffects.BLINDNESS))
+                    livingEntity.removeEffect(MobEffects.BLINDNESS);
                 detachFromHost(true);
                 setIsInfertile(true);
                 this.kill();
@@ -242,7 +300,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 setIsInfertile(true);
                 this.kill();
             }
-        } else ticksAttachedToHost = -1.0f;
+        } else
+            ticksAttachedToHost = -1.0f;
 
         if (isInfertile()) {
             this.kill();
@@ -250,7 +309,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             return;
         }
         if (this.isEggSpawn() && this.tickCount > 30) {
-            if (this.hasEffect(MobEffects.SLOW_FALLING)) this.removeEffect(MobEffects.SLOW_FALLING);
+            if (this.hasEffect(MobEffects.SLOW_FALLING))
+                this.removeEffect(MobEffects.SLOW_FALLING);
             this.setEggSpawnState(false);
         }
     }
@@ -265,8 +325,10 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        if (nbt.contains("isInfertile")) setIsInfertile(nbt.getBoolean("isInfertile"));
-        if (nbt.contains("ticksAttachedToHost")) ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
+        if (nbt.contains("isInfertile"))
+            setIsInfertile(nbt.getBoolean("isInfertile"));
+        if (nbt.contains("ticksAttachedToHost"))
+            ticksAttachedToHost = nbt.getFloat("ticksAttachedToHost");
     }
 
     @Override
@@ -276,7 +338,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown())) return false;
+        if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
+            return false;
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity livingEntity)
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
@@ -286,7 +349,8 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public void knockback(double strength, double x, double z) {
-        if (!isInfertile()) super.knockback(strength, x, z);
+        if (!isInfertile())
+            super.knockback(strength, x, z);
     }
 
     @Override
@@ -310,27 +374,47 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
     }
 
     @Override
-    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {
-    }
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     @Override
     public void stopRiding() {
-        if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive() && ticksAttachedToHost < Constants.TPM * 5 && isInWater())
+        if (
+            this.getVehicle() != null && this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()
+                && ticksAttachedToHost < Constants.TPM * 5 && isInWater()
+        )
             return;
         super.stopRiding();
     }
 
     @Override
     public void travel(@NotNull Vec3 movementInput) {
-        this.navigation = (this.isUnderWater() || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimNavigation : landNavigation;
-        this.moveControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
-        this.lookControl = (this.wasEyeInWater || (this.level().getFluidState(this.blockPosition()).is(
-                Fluids.WATER) && this.level().getFluidState(
-                this.blockPosition()).getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
+        this.navigation = (this.isUnderWater() || (this.level()
+            .getFluidState(this.blockPosition())
+            .is(
+                Fluids.WATER
+            ) && this.level()
+                .getFluidState(
+                    this.blockPosition()
+                )
+                .getAmount() >= 8)) ? swimNavigation : landNavigation;
+        this.moveControl = (this.wasEyeInWater || (this.level()
+            .getFluidState(this.blockPosition())
+            .is(
+                Fluids.WATER
+            ) && this.level()
+                .getFluidState(
+                    this.blockPosition()
+                )
+                .getAmount() >= 8)) ? swimMoveControl : new ClimberMoveController<>(this);
+        this.lookControl = (this.wasEyeInWater || (this.level()
+            .getFluidState(this.blockPosition())
+            .is(
+                Fluids.WATER
+            ) && this.level()
+                .getFluidState(
+                    this.blockPosition()
+                )
+                .getAmount() >= 8)) ? swimLookControl : new ClimberLookController<>(this);
 
         this.navigation.setCanFloat(true);
         super.travel(movementInput);
@@ -348,10 +432,18 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public boolean onClimbable() {
-        setIsCrawling(this.horizontalCollision && !this.isNoGravity() && !this.level().getBlockState(
-                this.blockPosition().above()).is(BlockTags.STAIRS) || this.isAggressive());
-        return !this.level().getBlockState(this.blockPosition().above()).is(
-                BlockTags.STAIRS) && !this.isAggressive() && (this.fallDistance <= 0.1 || this.isEggSpawn());
+        setIsCrawling(
+            this.horizontalCollision && !this.isNoGravity() && !this.level()
+                .getBlockState(
+                    this.blockPosition().above()
+                )
+                .is(BlockTags.STAIRS) || this.isAggressive()
+        );
+        return !this.level()
+            .getBlockState(this.blockPosition().above())
+            .is(
+                BlockTags.STAIRS
+            ) && !this.isAggressive() && (this.fallDistance <= 0.1 || this.isEggSpawn());
     }
 
     @Override
@@ -367,14 +459,22 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate(
-                        (target, self) -> GigEntityUtils.entityTest(target,
-                                self) || !(target instanceof Creeper || target instanceof IronGolem) && target.getMobType() != MobType.UNDEAD),
-                new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
-                new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15).setPredicate(
-                        (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)),
-                new UnreachableTargetSensor<>(), new HurtBySensor<>());
+        return ObjectArrayList.of(
+            new NearbyPlayersSensor<>(),
+            new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate(
+                (target, self) -> GigEntityUtils.entityTest(
+                    target,
+                    self
+                ) || !(target instanceof Creeper || target instanceof IronGolem) && target.getMobType() != MobType.UNDEAD
+            ),
+            new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
+            new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
+                .setPredicate(
+                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
+                ),
+            new UnreachableTargetSensor<>(),
+            new HurtBySensor<>()
+        );
     }
 
     @Override
@@ -384,19 +484,32 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
 
     @Override
     public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<FacehuggerEntity>(new TargetOrRetaliate<>(),
+        return BrainActivityGroup.idleTasks(
+            new FirstApplicableBehaviour<FacehuggerEntity>(
+                new TargetOrRetaliate<>(),
                 new SetPlayerLookTarget<>().predicate(
-                        target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())),
-                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f),
-                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
+                ),
+                new SetRandomLookTarget<>()
+            ),
+            new OneRandomBehaviour<>(
+                new SetRandomWalkTarget<>().speedModifier(0.65f),
+                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))
+            )
+        );
     }
 
     @Override
     public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
-                        (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
-                                target) || target.getMobType() == MobType.UNDEAD),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F), new FacehuggerPounceTask<>(6));
+        return BrainActivityGroup.fightTasks(
+            new InvalidateAttackTarget<>().invalidateIf(
+                (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
+                    target
+                ) || target.getMobType() == MobType.UNDEAD
+            ),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F),
+            new FacehuggerPounceTask<>(6)
+        );
     }
 
     /*
@@ -409,12 +522,18 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
                 return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
             if (!this.isUpsideDown() && !this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (!this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying())
-                if (!this.isAttacking() && event.isMoving()) return event.setAndContinue(GigAnimationsDefault.SWIM);
+            if (
+                !this.isUpsideDown() && !this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this
+                    .isDeadOrDying()
+            )
+                if (!this.isAttacking() && event.isMoving())
+                    return event.setAndContinue(GigAnimationsDefault.SWIM);
                 else if (this.isAttacking() && event.isMoving())
                     return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                else return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            if (this.isJumping()) return event.setAndContinue(GigAnimationsDefault.CHARGE);
+                else
+                    return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
+            if (this.isJumping())
+                return event.setAndContinue(GigAnimationsDefault.CHARGE);
             if (this.isEggSpawn() && !this.isDeadOrDying())
                 return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
             if (!this.isUpsideDown() && !this.isJumping() && this.isAttacking() && !this.isDeadOrDying() && event.isMoving()) {
@@ -428,8 +547,17 @@ public class FacehuggerEntity extends CrawlerAlien implements GeoEntity, SmartBr
             return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("huggingSoundkey") && this.level().isClientSide)
-                this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), GigSounds.HUGGER_IMPLANT,
-                        SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                this.level()
+                    .playLocalSound(
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        GigSounds.HUGGER_IMPLANT,
+                        SoundSource.HOSTILE,
+                        0.25F,
+                        1.0F,
+                        true
+                    );
         }).triggerableAnim("stun", RawAnimation.begin().then("stunned", LoopType.PLAY_ONCE)));
     }
 

@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.client.fluid.render;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
-import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -24,6 +21,10 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
+
 @Environment(EnvType.CLIENT)
 public record FluidRenderHandlers() implements GigeresqueInitializer {
 
@@ -42,6 +43,7 @@ public record FluidRenderHandlers() implements GigeresqueInitializer {
         var fluidSprites = new TextureAtlasSprite[2];
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+
             @Override
             public void onResourceManagerReload(@NotNull ResourceManager manager) {
                 var atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
@@ -56,6 +58,7 @@ public record FluidRenderHandlers() implements GigeresqueInitializer {
         });
 
         var renderHandler = new FluidRenderHandler() {
+
             @Override
             public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
                 return fluidSprites;

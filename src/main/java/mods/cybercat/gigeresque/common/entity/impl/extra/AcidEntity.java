@@ -1,9 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,6 +14,11 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class AcidEntity extends Entity {
 
@@ -34,9 +35,16 @@ public class AcidEntity extends Entity {
         var canGrief = this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
         if (this.level().isClientSide()) {
             for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                this.level().addAlwaysVisibleParticle(Particles.ACID,
-                        this.blockPosition().getX() + this.random.nextDouble(), this.blockPosition().getY() + 0.01,
-                        this.blockPosition().getZ() + this.random.nextDouble(), 0.0, 0.0, 0.0);
+                this.level()
+                    .addAlwaysVisibleParticle(
+                        Particles.ACID,
+                        this.blockPosition().getX() + this.random.nextDouble(),
+                        this.blockPosition().getY() + 0.01,
+                        this.blockPosition().getZ() + this.random.nextDouble(),
+                        0.0,
+                        0.0,
+                        0.0
+                    );
             }
         }
         if (!this.level().isClientSide()) {
@@ -81,26 +89,44 @@ public class AcidEntity extends Entity {
                 });
             }
             level().getEntities(this, this.getBoundingBox()).forEach(e -> {
-                if (e instanceof AcidEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
+                if (e instanceof AcidEntity && e.tickCount < this.tickCount)
+                    e.remove(RemovalReason.KILLED);
             });
         }
     }
 
     private void doBlockBreaking(RandomSource randomSource) {
         this.level().setBlock(this.blockPosition().below(), Blocks.AIR.defaultBlockState(), 2);
-        this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
-                this.blockPosition().getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-                0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
+        this.level()
+            .playSound(
+                null,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ(),
+                SoundEvents.LAVA_EXTINGUISH,
+                SoundSource.BLOCKS,
+                0.2f + randomSource.nextFloat() * 0.2f,
+                0.9f + randomSource.nextFloat() * 0.15f
+            );
     }
 
     private void doParticleSounds(RandomSource randomSource) {
-        this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
-                this.blockPosition().getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS,
-                0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
+        this.level()
+            .playSound(
+                null,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ(),
+                SoundEvents.LAVA_EXTINGUISH,
+                SoundSource.BLOCKS,
+                0.2f + randomSource.nextFloat() * 0.2f,
+                0.9f + randomSource.nextFloat() * 0.15f
+            );
     }
 
     private void damageItems(ItemEntity itemEntity, RandomSource randomSource) {
-        if (itemEntity.getItem().is(GigTags.ACID_IMMUNE_ITEMS)) return;
+        if (itemEntity.getItem().is(GigTags.ACID_IMMUNE_ITEMS))
+            return;
         var itemStack = itemEntity.getItem();
         if (itemStack.getMaxDamage() < 2) {
             itemStack.shrink(1);
@@ -120,7 +146,8 @@ public class AcidEntity extends Entity {
             return;
         if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
-                    new MobEffectInstance(GigStatusEffects.ACID, 600, randomSource.nextIntBetweenInclusive(0, 4)));
+                new MobEffectInstance(GigStatusEffects.ACID, 600, randomSource.nextIntBetweenInclusive(0, 4))
+            );
         }
     }
 
@@ -135,21 +162,14 @@ public class AcidEntity extends Entity {
     }
 
     @Override
-    public void checkDespawn() {
-    }
+    public void checkDespawn() {}
 
     @Override
-    protected void defineSynchedData() {
-
-    }
+    protected void defineSynchedData() {}
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
-
-    }
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
-
-    }
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
 }

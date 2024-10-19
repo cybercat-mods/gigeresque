@@ -9,7 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class EggmorphLayerTexture implements AutoCloseable {
+
     public RenderType renderLayer;
+
     private DynamicTexture texture;
 
     public EggmorphLayerTexture(TextureManager textureManager, ResourceManager resourceManager, ResourceLocation base) {
@@ -29,14 +31,14 @@ public class EggmorphLayerTexture implements AutoCloseable {
                         var alpha = color >> 24 & 255;
                         if (alpha > 25) {
                             NativeImage image = texture.getPixels();
-                            if (image != null) image.setPixelRGBA(x, y, layerImage.getPixelRGBA(x, y));
+                            if (image != null)
+                                image.setPixelRGBA(x, y, layerImage.getPixelRGBA(x, y));
                         }
                     }
                 }
                 texture.upload();
                 baseImage.close();
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         });
         ResourceLocation id = textureManager.register("eggmorph_layer/" + base.getPath(), texture);
         renderLayer = RenderType.entityTranslucent(id);

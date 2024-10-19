@@ -2,10 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
-import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,10 +14,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedRangedBehaviour;
+import mods.cybercat.gigeresque.common.entity.impl.extra.SpitterEntity;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedRangedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
 
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 90;
 
@@ -70,12 +73,18 @@ public class AlienProjectileAttack<E extends AlienEntity> extends CustomDelayedR
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
-        if (this.target == null) return;
+        if (this.target == null)
+            return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target)) return;
+        if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target))
+            return;
 
         if (entity instanceof SpitterEntity spitterEntity) {
             entity.swing(InteractionHand.MAIN_HAND);

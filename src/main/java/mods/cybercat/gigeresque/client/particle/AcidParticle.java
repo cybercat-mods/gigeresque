@@ -8,7 +8,9 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class AcidParticle extends TextureSheetParticle {
+
     protected final SpriteSet spriteProvider;
+
     protected boolean reachedGround;
 
     public AcidParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
@@ -42,8 +44,10 @@ public class AcidParticle extends TextureSheetParticle {
             this.zd += this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1);
             this.yd -= this.gravity;
             this.move(this.xd, this.yd, this.zd);
-            if (this.age >= this.lifetime && this.alpha > 0.01F) this.alpha -= 0.015F;
-        } else this.remove();
+            if (this.age >= this.lifetime && this.alpha > 0.01F)
+                this.alpha -= 0.015F;
+        } else
+            this.remove();
     }
 
     @Override

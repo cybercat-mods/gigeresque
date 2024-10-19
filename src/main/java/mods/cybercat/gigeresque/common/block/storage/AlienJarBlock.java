@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,15 +31,28 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
+import mods.cybercat.gigeresque.common.entity.Entities;
+
 public class AlienJarBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
-    private static final VoxelShape OUTLINE_SHAPE = Stream.of(Block.box(5.5, 0, 5.5, 10.5, 3, 10.5), Block.box(5, 3, 5, 11, 9, 11), Block.box(4.5, 9, 4.5, 11.5, 16, 11.5), Block.box(4.5, 12, 4.5, 11.5, 16, 11.5), Block.box(5, 16, 5, 11, 18, 11)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape OUTLINE_SHAPE = Stream.of(
+        Block.box(5.5, 0, 5.5, 10.5, 3, 10.5),
+        Block.box(5, 3, 5, 11, 9, 11),
+        Block.box(4.5, 9, 4.5, 11.5, 16, 11.5),
+        Block.box(4.5, 12, 4.5, 11.5, 16, 11.5),
+        Block.box(5, 16, 5, 11, 18, 11)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     public AlienJarBlock() {
         super(FabricBlockSettings.of().sounds(SoundType.DRIPSTONE_BLOCK).strength(5.0f, 8.0f).nonOpaque());
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
@@ -88,12 +99,14 @@ public class AlienJarBlock extends BaseEntityBlock {
 
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity) jarStorageEntity.tick();
+        if (world.getBlockEntity(pos) instanceof JarStorageEntity jarStorageEntity)
+            jarStorageEntity.tick();
     }
 
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (blockState.is(blockState2.getBlock())) return;
+        if (blockState.is(blockState2.getBlock()))
+            return;
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof Container container) {
             Containers.dropContents(level, blockPos, container);

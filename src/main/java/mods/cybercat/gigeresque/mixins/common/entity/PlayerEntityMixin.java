@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
 import mod.azure.azurelib.util.ClientUtils;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,6 +17,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
 
@@ -27,25 +28,28 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    @Inject(method = {"wantsToStopRiding"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "wantsToStopRiding" }, at = { @At("RETURN") }, cancellable = true)
     protected void shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getVehicle() instanceof AlienEntity) callbackInfo.setReturnValue(false);
+        if (this.getVehicle() instanceof AlienEntity)
+            callbackInfo.setReturnValue(false);
     }
 
-    @Inject(method = {"interactOn"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "interactOn" }, at = { @At("HEAD") }, cancellable = true)
     protected void stopPlayerUsing(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.setReturnValue(InteractionResult.FAIL);
     }
 
-    @Inject(method = {"attack"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "attack" }, at = { @At("HEAD") }, cancellable = true)
     protected void noAttacking(Entity target, CallbackInfo callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) this.stopUsingItem();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+            this.stopUsingItem();
     }
 
-    @Inject(method = {"aiStep"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "aiStep" }, at = { @At("HEAD") }, cancellable = true)
     public void tickMovement(CallbackInfo callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+            callbackInfo.cancel();
     }
 
     private long lastUpdateTime = 0L;
@@ -55,17 +59,25 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         var tickTimer = Gigeresque.config.facehuggerAttachTickTimer;
 
         // Calculate seconds if needed
-        var secondsAttached = Gigeresque.config.enableFacehuggerTimerTicks ? ticksAttached : Math.round(
-                ticksAttached / 20);
+        var secondsAttached = Gigeresque.config.enableFacehuggerTimerTicks
+            ? ticksAttached
+            : Math.round(
+                ticksAttached / 20
+            );
         var secondsTimer = Gigeresque.config.enableFacehuggerTimerTicks ? tickTimer : Math.round(tickTimer / 20);
 
         return "Attachment Timer: " + secondsAttached + " seconds / " + secondsTimer + " seconds";
     }
 
-    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    @Inject(method = { "tick" }, at = { @At("HEAD") })
     public void tellPlayer(CallbackInfo ci) {
-        if (this.level().isClientSide() && this.getPassengers().stream().anyMatch(
-                FacehuggerEntity.class::isInstance) && Gigeresque.config.enableFacehuggerAttachmentTimer) {
+        if (
+            this.level().isClientSide() && this.getPassengers()
+                .stream()
+                .anyMatch(
+                    FacehuggerEntity.class::isInstance
+                ) && Gigeresque.config.enableFacehuggerAttachmentTimer
+        ) {
             var player = ClientUtils.getClientPlayer();
             if (player != null) {
                 // Get the current time in milliseconds

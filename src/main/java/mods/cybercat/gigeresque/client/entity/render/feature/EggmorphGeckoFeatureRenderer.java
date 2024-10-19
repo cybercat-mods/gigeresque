@@ -2,8 +2,6 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,6 +12,9 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class EggmorphGeckoFeatureRenderer<T extends Entity & GeoEntity> extends GeoRenderLayer<T> {
 
     private int fovEggticker = 0;
@@ -23,15 +24,38 @@ public class EggmorphGeckoFeatureRenderer<T extends Entity & GeoEntity> extends 
     }
 
     @Override
-    public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(
+        PoseStack poseStack,
+        T animatable,
+        BakedGeoModel bakedModel,
+        RenderType renderType,
+        MultiBufferSource bufferSource,
+        VertexConsumer buffer,
+        float partialTick,
+        int packedLight,
+        int packedOverlay
+    ) {
         var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(
-                getGeoModel().getTextureResource(animatable)).renderLayer;
+            getGeoModel().getTextureResource(animatable)
+        ).renderLayer;
         if (animatable instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
             fovEggticker++;
             var progress = Math.max(0, Math.min(fovEggticker / Gigeresque.config.getEggmorphTickTimer(), 1));
-            renderer.reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, renderLayer,
-                    bufferSource.getBuffer(renderLayer), partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1.0f,
-                    1.0f, 1.0f, progress);
+            renderer.reRender(
+                getDefaultBakedModel(animatable),
+                poseStack,
+                bufferSource,
+                animatable,
+                renderLayer,
+                bufferSource.getBuffer(renderLayer),
+                partialTick,
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                1.0f,
+                1.0f,
+                1.0f,
+                progress
+            );
         }
     }
 }

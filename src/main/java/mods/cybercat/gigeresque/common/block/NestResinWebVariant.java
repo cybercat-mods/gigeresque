@@ -4,7 +4,13 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 public enum NestResinWebVariant implements StringRepresentable {
-    ONE("one"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six");
+
+    ONE("one"),
+    TWO("two"),
+    THREE("three"),
+    FOUR("four"),
+    FIVE("five"),
+    SIX("six");
 
     public final String dirName;
 

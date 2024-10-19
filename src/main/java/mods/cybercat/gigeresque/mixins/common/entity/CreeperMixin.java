@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 @Mixin(Creeper.class)
 public abstract class CreeperMixin extends Monster {
 
@@ -19,7 +20,7 @@ public abstract class CreeperMixin extends Monster {
         super(entityType, world);
     }
 
-    @Inject(method = {"explodeCreeper"}, at = {@At("HEAD")})
+    @Inject(method = { "explodeCreeper" }, at = { @At("HEAD") })
     void tick(CallbackInfo callbackInfo) {
         if (this.hasEffect(GigStatusEffects.DNA)) {
             var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());

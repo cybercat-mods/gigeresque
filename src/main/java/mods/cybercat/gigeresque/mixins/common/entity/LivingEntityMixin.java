@@ -1,15 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.fluid.GigFluids;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -26,6 +16,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.fluid.GigFluids;
+import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 /**
  * @author Boston Vanseghi
@@ -67,36 +68,57 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract boolean removeEffect(MobEffect effect);
 
-    @Inject(method = {"hurt"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getVehicle() != null && this.getVehicle().getType().is(
-                GigTags.GIG_ALIENS) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1)
+        if (
+            this.getVehicle() != null && this.getVehicle()
+                .getType()
+                .is(
+                    GigTags.GIG_ALIENS
+                ) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1
+        )
             callbackInfo.setReturnValue(false);
-        if (amount >= 2 && this.getFirstPassenger() != null && this.getPassengers().stream().anyMatch(
-                FacehuggerEntity.class::isInstance)) {
+        if (
+            amount >= 2 && this.getFirstPassenger() != null && this.getPassengers()
+                .stream()
+                .anyMatch(
+                    FacehuggerEntity.class::isInstance
+                )
+        ) {
             this.getFirstPassenger().hurt(source, amount / 2);
             ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
-                    new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Gigeresque.config.facehuggerStunTickTimer, 100,
-                            false, false));
+                new MobEffectInstance(
+                    MobEffects.MOVEMENT_SLOWDOWN,
+                    Gigeresque.config.facehuggerStunTickTimer,
+                    100,
+                    false,
+                    false
+                )
+            );
             ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
             ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost(false);
         }
     }
 
-    @Inject(method = {"doPush"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "doPush" }, at = { @At("HEAD") }, cancellable = true)
     void pushAway(CallbackInfo callbackInfo) {
         if (this.hasEffect(GigStatusEffects.EGGMORPHING) && GigEntityUtils.isTargetHostable(this))
             callbackInfo.cancel();
     }
 
-    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    @Inject(method = { "tick" }, at = { @At("HEAD") })
     void tick(CallbackInfo callbackInfo) {
         if (this.level().isClientSide && (Constants.shouldApplyImpEffects.test(this))) {
             this.applyParticle();
         }
         if (!this.level().isClientSide) {
-            if (Constants.hasEggEffect.test(this) && !this.level().getBlockState(this.blockPosition()).is(
-                    GigBlocks.NEST_RESIN_WEB_CROSS)) {
+            if (
+                Constants.hasEggEffect.test(this) && !this.level()
+                    .getBlockState(this.blockPosition())
+                    .is(
+                        GigBlocks.NEST_RESIN_WEB_CROSS
+                    )
+            ) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
             }
             if (Constants.isCreativeSpecPlayer.test(this)) {
@@ -120,13 +142,17 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(method = {"isUsingItem"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "isUsingItem" }, at = { @At("RETURN") }, cancellable = true)
     public void isUsingItem(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(false);
+        if (
+            this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
+                GigStatusEffects.EGGMORPHING
+            )
+        )
+            callbackInfo.setReturnValue(false);
     }
 
-    @Inject(method = {"isPushable"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "isPushable" }, at = { @At("RETURN") }, cancellable = true)
     public void noPush(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.hasEffect(GigStatusEffects.EGGMORPHING) && GigEntityUtils.isTargetHostable(this))
             callbackInfo.setReturnValue(false);
@@ -142,8 +168,10 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     private void handleBlackGooLogic(Entity entity) {
-        if (!(entity instanceof LivingEntity livingEntity)) return;
-        if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity)) return;
+        if (!(entity instanceof LivingEntity livingEntity))
+            return;
+        if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity))
+            return;
         if (Constants.notPlayer.test(livingEntity) && !(livingEntity instanceof Creeper))
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
         if (livingEntity instanceof Creeper && Constants.notPlayer.test(livingEntity))
@@ -152,13 +180,17 @@ public abstract class LivingEntityMixin extends Entity {
             this.addEffect(new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.getgooEffectTickTimer(), 0));
     }
 
-    @Inject(method = {"isImmobile"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "isImmobile" }, at = { @At("RETURN") }, cancellable = true)
     protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
-                GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(true);
+        if (
+            this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance) || this.hasEffect(
+                GigStatusEffects.EGGMORPHING
+            )
+        )
+            callbackInfo.setReturnValue(true);
     }
 
-    @Inject(method = {"removeAllEffects"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "removeAllEffects" }, at = { @At("HEAD") }, cancellable = true)
     public void noMilkRemoval(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.hasEffect(GigStatusEffects.ACID) || this.hasEffect(GigStatusEffects.DNA))
             callbackInfo.setReturnValue(false);

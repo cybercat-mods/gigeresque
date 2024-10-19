@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 @Mixin(AbstractHorse.class)
 public abstract class HorseMixin extends Animal {
 
@@ -19,7 +20,7 @@ public abstract class HorseMixin extends Animal {
         super(entityType, level);
     }
 
-    @Inject(method = {"tick"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "tick" }, at = { @At("HEAD") }, cancellable = true)
     void noBuckling(CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(AlienEntity.class::isInstance)) {
             this.removeFreeWill();

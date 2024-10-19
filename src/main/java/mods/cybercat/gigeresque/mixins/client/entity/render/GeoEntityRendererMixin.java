@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.client.entity.render;
 
-import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeckoFeatureRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -16,6 +15,8 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+
+import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeckoFeatureRenderer;
 
 /**
  * @author Aelpecyem

@@ -21,8 +21,12 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class AlienPanic extends Behavior<PathfinderMob> {
-    private static final Predicate<PathfinderMob> DEFAULT_SHOULD_PANIC_PREDICATE = pathfinderMob -> pathfinderMob.getLastHurtByMob() != null || pathfinderMob.isFreezing() || pathfinderMob.isOnFire();
+
+    private static final Predicate<PathfinderMob> DEFAULT_SHOULD_PANIC_PREDICATE = pathfinderMob -> pathfinderMob.getLastHurtByMob() != null
+        || pathfinderMob.isFreezing() || pathfinderMob.isOnFire();
+
     private final float speedMultiplier;
+
     private final Predicate<PathfinderMob> shouldPanic;
 
     public AlienPanic(float f) {
@@ -30,7 +34,11 @@ public class AlienPanic extends Behavior<PathfinderMob> {
     }
 
     public AlienPanic(float f, Predicate<PathfinderMob> predicate) {
-        super(ImmutableMap.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED, MemoryModuleType.HURT_BY, MemoryStatus.VALUE_PRESENT), 20, 40);
+        super(
+            ImmutableMap.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED, MemoryModuleType.HURT_BY, MemoryStatus.VALUE_PRESENT),
+            20,
+            40
+        );
         this.speedMultiplier = f;
         this.shouldPanic = predicate;
     }
@@ -68,7 +76,9 @@ public class AlienPanic extends Behavior<PathfinderMob> {
     @Nullable
     private Vec3 getPanicPos(PathfinderMob pathfinderMob, ServerLevel serverLevel) {
         Optional<Vec3> optional;
-        if (pathfinderMob.isOnFire() && (optional = this.lookForWater(serverLevel, pathfinderMob).map(Vec3::atBottomCenterOf)).isPresent()) {
+        if (
+            pathfinderMob.isOnFire() && (optional = this.lookForWater(serverLevel, pathfinderMob).map(Vec3::atBottomCenterOf)).isPresent()
+        ) {
             return optional.get();
         }
         return LandRandomPos.getPos(pathfinderMob, 5, 4);

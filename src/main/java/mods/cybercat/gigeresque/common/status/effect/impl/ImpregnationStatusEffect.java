@@ -1,6 +1,15 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import org.jetbrains.annotations.NotNull;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.Particles;
 import mods.cybercat.gigeresque.common.Gigeresque;
@@ -10,14 +19,6 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import org.jetbrains.annotations.NotNull;
 
 public class ImpregnationStatusEffect extends MobEffect {
 
@@ -39,8 +40,13 @@ public class ImpregnationStatusEffect extends MobEffect {
     public void applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
         super.applyEffectTick(livingEntity, amplifier);
         if (GigEntityUtils.isTargetHostable(livingEntity) && this == GigStatusEffects.IMPREGNATION) {
-            this.handleStatusEffects(livingEntity, (int) Gigeresque.config.impregnationTickTimer, MobEffects.HUNGER,
-                    MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN);
+            this.handleStatusEffects(
+                livingEntity,
+                (int) Gigeresque.config.impregnationTickTimer,
+                MobEffects.HUNGER,
+                MobEffects.WEAKNESS,
+                MobEffects.DIG_SLOWDOWN
+            );
         }
     }
 
@@ -59,21 +65,38 @@ public class ImpregnationStatusEffect extends MobEffect {
             var customX = livingEntity.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
             var customZ = livingEntity.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
             for (var i = 0; i < 1 + (int) (livingEntity.getMaxHealth() - livingEntity.getHealth()); i++)
-                livingEntity.level().addAlwaysVisibleParticle(Particles.BLOOD, customX, yOffset, customZ, 0.0, -0.15,
-                        0.0);
+                livingEntity.level()
+                    .addAlwaysVisibleParticle(
+                        Particles.BLOOD,
+                        customX,
+                        yOffset,
+                        customZ,
+                        0.0,
+                        -0.15,
+                        0.0
+                    );
         }
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
-        if (Constants.isCreativeSpecPlayer.test(entity)) return;
-        if (!GigEntityUtils.isTargetHostable(entity)) return;
+        if (Constants.isCreativeSpecPlayer.test(entity))
+            return;
+        if (!GigEntityUtils.isTargetHostable(entity))
+            return;
         LivingEntity burster = createBurster(entity);
         if (burster != null) {
             setBursterProperties(entity, burster);
             entity.level().addFreshEntity(burster);
-            entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL, 2.0f,
-                    1.0f);
+            entity.level()
+                .playSound(
+                    entity,
+                    entity.blockPosition(),
+                    GigSounds.CHESTBURSTING,
+                    SoundSource.NEUTRAL,
+                    2.0f,
+                    1.0f
+                );
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), entity.getMaxHealth());
         }
     }

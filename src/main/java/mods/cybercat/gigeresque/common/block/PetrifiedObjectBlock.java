@@ -1,9 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
-import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
-import mods.cybercat.gigeresque.common.block.storage.StorageStates;
-import mods.cybercat.gigeresque.common.entity.Entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -36,18 +32,33 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
+import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
+import mods.cybercat.gigeresque.common.block.storage.StorageStates;
+import mods.cybercat.gigeresque.common.entity.Entities;
+
 public class PetrifiedObjectBlock extends BaseEntityBlock {
+
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
 
     protected PetrifiedObjectBlock() {
         super(BlockBehaviour.Properties.of().sound(SoundType.STONE).randomTicks().strength(15, 15).noLootTable());
         this.registerDefaultState(
-                this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
+            this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED)
+        );
     }
 
     @Override
-    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity, @NotNull ItemStack itemStack) {
+    public void playerDestroy(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        @Nullable BlockEntity blockEntity,
+        @NotNull ItemStack itemStack
+    ) {
         if (state.getValue(STORAGE_STATE) == StorageStates.OPENED) {
             player.awardStat(Stats.BLOCK_MINED.get(this));
             player.causeFoodExhaustion(0.005F);
@@ -75,8 +86,13 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
             var x = pos.getX() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
             var y = pos.getY() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25) - d;
             var z = pos.getZ() + 0.5 + Mth.nextDouble(level.random, -0.25, 0.25);
-            var itemEntity = new ItemEntity(level, x, y, z,
-                    GigBlocks.PETRIFIED_OBJECT_BLOCK.asItem().getDefaultInstance());
+            var itemEntity = new ItemEntity(
+                level,
+                x,
+                y,
+                z,
+                GigBlocks.PETRIFIED_OBJECT_BLOCK.asItem().getDefaultInstance()
+            );
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
             state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, false);
@@ -95,14 +111,30 @@ public class PetrifiedObjectBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return Stream.of(Block.box(3.5, 0, 3.5, 12.5, 2, 12.5), Block.box(3, 1, 3, 13, 10, 13),
-                Block.box(4, 10, 3.5, 12, 12, 12.5), Block.box(5, 11.5, 4.5, 11, 13.5, 11.5)).reduce(
-                (v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
+        return Stream.of(
+            Block.box(3.5, 0, 3.5, 12.5, 2, 12.5),
+            Block.box(3, 1, 3, 13, 10, 13),
+            Block.box(4, 10, 3.5, 12, 12, 12.5),
+            Block.box(5, 11.5, 4.5, 11, 13.5, 11.5)
+        )
+            .reduce(
+                (v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)
+            )
+            .get();
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
+    ) {
         return createTickerHelper(type, Entities.PETRIFIED_OBJECT, PetrifiedOjbectEntity::tick);
     }
 }

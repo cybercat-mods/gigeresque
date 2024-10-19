@@ -16,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CustomSkullBlock extends AbstractSkullBlock {
+
     public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
+
     public static final VoxelShape SHAPE = box(4.0, 0.0, 4.0, 12.0, 8.0, 12.0);
 
     public CustomSkullBlock(SkullBlock.Type type, Properties settings) {
@@ -25,7 +27,12 @@ public class CustomSkullBlock extends AbstractSkullBlock {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public @NotNull VoxelShape getShape(
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         return SHAPE;
     }
 
@@ -56,6 +63,8 @@ public class CustomSkullBlock extends AbstractSkullBlock {
     }
 
     public enum AlienSkullType implements SkullBlock.Type {
-        AQUA, CLASSIC, RUNNER,
+        AQUA,
+        CLASSIC,
+        RUNNER,
     }
 }

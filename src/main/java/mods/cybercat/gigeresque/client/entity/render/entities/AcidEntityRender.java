@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class AcidEntityRender extends EntityRenderer<Entity> {
+
     private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/allay/allay.png");
 
     public AcidEntityRender(EntityRendererProvider.Context context) {
@@ -21,7 +22,14 @@ public class AcidEntityRender extends EntityRenderer<Entity> {
     }
 
     @Override
-    public void render(@NotNull Entity entity, float f, float g, @NotNull PoseStack matrixStack, @NotNull MultiBufferSource vertexConsumerProvider, int i) {
+    public void render(
+        @NotNull Entity entity,
+        float f,
+        float g,
+        @NotNull PoseStack matrixStack,
+        @NotNull MultiBufferSource vertexConsumerProvider,
+        int i
+    ) {
         super.render(entity, f, g, matrixStack, vertexConsumerProvider, i);
         matrixStack.pushPose();
         matrixStack.scale(0, 0, 0);

@@ -2,11 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -20,10 +15,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+
 public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDelayedMeleeBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
+
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 80;
 
     @Nullable
@@ -55,8 +59,12 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
         this.target = BrainUtils.getTargetOfEntity(entity);
         assert this.target != null;
         return GigEntityUtils.faceHuggerTest(this.target) && entity.isWithinMeleeAttackRange(
-                this.target) && this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).noneMatch(
-                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)) && entity.getMobType() != MobType.UNDEAD;
+            this.target
+        ) && this.target.level()
+            .getBlockStates(this.target.getBoundingBox().inflate(1))
+            .noneMatch(
+                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)
+            ) && entity.getMobType() != MobType.UNDEAD;
     }
 
     @Override
@@ -71,13 +79,24 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
-        if (this.target == null) return;
+        if (this.target == null)
+            return;
 
-        if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(
-                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS))) return;
+        if (
+            this.target.level()
+                .getBlockStates(this.target.getBoundingBox().inflate(1))
+                .anyMatch(
+                    state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)
+                )
+        )
+            return;
 
         // Check if the target is within the entity's view direction and reachable via pathfinding
         if (!this.target.getUseItem().is(Items.SHIELD)) {

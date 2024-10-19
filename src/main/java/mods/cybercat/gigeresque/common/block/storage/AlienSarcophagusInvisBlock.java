@@ -1,10 +1,5 @@
 package mods.cybercat.gigeresque.common.block.storage;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
-import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -21,6 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageGooEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
+import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
 
 public class AlienSarcophagusInvisBlock extends Block {
 
@@ -67,14 +68,21 @@ public class AlienSarcophagusInvisBlock extends Block {
 
     @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (world.isClientSide) return;
+        if (world.isClientSide)
+            return;
         var radius = new Vec3i(2, 2, 2);
         for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
             BlockState testState;
-            if ((testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)) {
+            if (
+                (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1) || (testState = world.getBlockState(testPos))
+                    .is(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO) || (testState = world.getBlockState(testPos)).is(
+                        GigBlocks.ALIEN_STORAGE_BLOCK_1_SPORE
+                    ) || (testState = world.getBlockState(testPos)).is(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER)
+            ) {
                 world.destroyBlock(testPos, true);
                 Block.dropResources(testState, world, testPos);
-            } else if (testState.is(this)) world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            } else if (testState.is(this))
+                world.setBlock(testPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
     }
 

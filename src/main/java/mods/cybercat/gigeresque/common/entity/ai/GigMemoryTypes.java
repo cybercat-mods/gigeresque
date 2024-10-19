@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,12 +12,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.common.util.GigeresqueInitializer;
+
 public record GigMemoryTypes() implements GigeresqueInitializer {
 
     public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_LIGHT_BLOCKS = register("nearby_light_blocks");
+
     public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_NEST_BLOCKS = register("nearby_nest_blocks");
-    public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_REPELLENT_BLOCKS = register("nearby_repellent_blocks");
+
+    public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_REPELLENT_BLOCKS = register(
+        "nearby_repellent_blocks"
+    );
+
     public static final Supplier<MemoryModuleType<List<ItemEntity>>> FOOD_ITEMS = register("food_items");
+
     private static GigMemoryTypes instance;
 
     public static synchronized GigMemoryTypes getInstance() {
@@ -39,7 +46,7 @@ public record GigMemoryTypes() implements GigeresqueInitializer {
     @Override
     public void initialize() {
         /*
-        Fine to leave empty
+         * Fine to leave empty
          */
     }
 

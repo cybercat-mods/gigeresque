@@ -2,10 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity.RemovalReason;
@@ -20,10 +16,18 @@ import java.util.List;
 import java.util.SplittableRandom;
 import java.util.function.ToIntFunction;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
+import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
+
 public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMeleeBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
-            Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+        Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),
+        Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT)
+    );
+
     protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
     @Nullable
@@ -54,8 +58,12 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
         return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(
-                this.target) && this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).noneMatch(
-                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS));
+            this.target
+        ) && this.target.level()
+            .getBlockStates(this.target.getBoundingBox().inflate(1))
+            .noneMatch(
+                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)
+            );
     }
 
     @Override
@@ -70,8 +78,12 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
 
     @Override
     protected void doDelayedAction(E entity) {
-        BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-                this.attackIntervalSupplier.applyAsInt(entity));
+        BrainUtils.setForgettableMemory(
+            entity,
+            MemoryModuleType.ATTACK_COOLING_DOWN,
+            true,
+            this.attackIntervalSupplier.applyAsInt(entity)
+        );
 
         if (this.target == null)
             return;
@@ -79,8 +91,13 @@ public class AttackExplodeTask<E extends PopperEntity> extends CustomDelayedMele
         if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
             return;
 
-        if (this.target.level().getBlockStates(this.target.getBoundingBox().inflate(1)).anyMatch(
-                state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)))
+        if (
+            this.target.level()
+                .getBlockStates(this.target.getBoundingBox().inflate(1))
+                .anyMatch(
+                    state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS)
+                )
+        )
             return;
 
         var random = new SplittableRandom();

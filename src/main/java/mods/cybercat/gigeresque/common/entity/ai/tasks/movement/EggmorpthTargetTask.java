@@ -2,9 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,9 +18,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
+
 public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
-            Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+        Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
+    );
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -42,7 +45,8 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
 
     @Override
     protected void tick(@NotNull ServerLevel level, E entity, long gameTime) {
-        if (entity.isCrawling() || entity.isTunnelCrawling() || entity.getFirstPassenger() != null) return;
+        if (entity.isCrawling() || entity.isTunnelCrawling() || entity.getFirstPassenger() != null)
+            return;
         var nestBlockLocation = entity.getBrain().getMemory(GigMemoryTypes.NEARBY_NEST_BLOCKS.get()).orElse(null);
         var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, level);
         var passenger = entity.getFirstPassenger();
@@ -52,17 +56,24 @@ public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviou
             // Check if the block is within the entity's view direction and reachable via pathfinding
             if (isBlockInViewAndReachable(entity, blockPos)) {
                 for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2)))
-                    if (level.getBlockState(test).isAir() && level.getBlockState(
-                            test.below()).isSolid() && level.getEntitiesOfClass(LivingEntity.class,
-                            new AABB(test)).stream().noneMatch(Objects::isNull)) {
+                    if (
+                        level.getBlockState(test).isAir() && level.getBlockState(
+                            test.below()
+                        ).isSolid() && level.getEntitiesOfClass(
+                            LivingEntity.class,
+                            new AABB(test)
+                        ).stream().noneMatch(Objects::isNull)
+                    ) {
                         BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
                         if (passenger != null) {
                             passenger.setPos(Vec3.atBottomCenterOf(testPos));
                             passenger.removeVehicle();
                             entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                             level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
-                            level.setBlockAndUpdate(testPos.above(),
-                                    GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState());
+                            level.setBlockAndUpdate(
+                                testPos.above(),
+                                GigBlocks.NEST_RESIN_WEB_CROSS.defaultBlockState()
+                            );
                         }
                     }
             } else {

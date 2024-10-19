@@ -13,9 +13,6 @@ import mod.azure.bettercrawling.entity.mob.IClimberEntity;
 import mod.azure.bettercrawling.entity.mob.Orientation;
 import mod.azure.bettercrawling.entity.mob.PathingTarget;
 import mod.azure.bettercrawling.platform.Services;
-import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -38,6 +35,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 /**
  * @author Aelpecyem
  */
@@ -58,13 +59,45 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
     }
 
     @Inject(method = "actuallyRender*", at = @At("HEAD"))
-    private void doPreRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
+    private void doPreRender(
+        PoseStack poseStack,
+        T animatable,
+        BakedGeoModel model,
+        RenderType renderType,
+        MultiBufferSource bufferSource,
+        VertexConsumer buffer,
+        boolean isReRender,
+        float partialTick,
+        int packedLight,
+        int packedOverlay,
+        float red,
+        float green,
+        float blue,
+        float alpha,
+        CallbackInfo ci
+    ) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity)
             onPreRenderLiving(livingEntity, partialTick, poseStack);
     }
 
     @Inject(method = "actuallyRender*", at = @At("TAIL"))
-    private void doPostRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
+    private void doPostRender(
+        PoseStack poseStack,
+        T animatable,
+        BakedGeoModel model,
+        RenderType renderType,
+        MultiBufferSource bufferSource,
+        VertexConsumer buffer,
+        boolean isReRender,
+        float partialTick,
+        int packedLight,
+        int packedOverlay,
+        float red,
+        float green,
+        float blue,
+        float alpha,
+        CallbackInfo ci
+    ) {
         if (!animatable.isPassenger() && !animatable.isVehicle() && animatable instanceof LivingEntity livingEntity) {
             onPostRenderLiving(livingEntity, partialTick, poseStack, bufferSource);
         }
@@ -82,17 +115,28 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
         Orientation renderOrientation = climber.calculateOrientation(partialTicks);
         climber.setRenderOrientation(renderOrientation);
         float verticalOffset = climber.getVerticalOffset(partialTicks);
-        float x = climber.getAttachmentOffset(Direction.Axis.X,
-                partialTicks) - (float) renderOrientation.normal().x * verticalOffset;
-        float y = climber.getAttachmentOffset(Direction.Axis.Y,
-                partialTicks) - (float) renderOrientation.normal().y * verticalOffset;
-        float z = climber.getAttachmentOffset(Direction.Axis.Z,
-                partialTicks) - (float) renderOrientation.normal().z * verticalOffset;
+        float x = climber.getAttachmentOffset(
+            Direction.Axis.X,
+            partialTicks
+        ) - (float) renderOrientation.normal().x * verticalOffset;
+        float y = climber.getAttachmentOffset(
+            Direction.Axis.Y,
+            partialTicks
+        ) - (float) renderOrientation.normal().y * verticalOffset;
+        float z = climber.getAttachmentOffset(
+            Direction.Axis.Z,
+            partialTicks
+        ) - (float) renderOrientation.normal().z * verticalOffset;
         matrixStack.translate(x, y, z);
         matrixStack.mulPose(Axis.YP.rotationDegrees(renderOrientation.yaw()));
         matrixStack.mulPose(Axis.XP.rotationDegrees(renderOrientation.pitch()));
-        matrixStack.mulPose(Axis.YP.rotationDegrees(Math.signum(
-                0.5F - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
+        matrixStack.mulPose(
+            Axis.YP.rotationDegrees(
+                Math.signum(
+                    0.5F - orientation.componentY() - orientation.componentZ() - orientation.componentX()
+                ) * renderOrientation.yaw()
+            )
+        );
     }
 
     private static void onPostRenderLiving(LivingEntity entity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn) {
@@ -101,30 +145,61 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
             Orientation renderOrientation = climber.getRenderOrientation();
             if (renderOrientation != null) {
                 float verticalOffset = climber.getVerticalOffset(partialTicks);
-                float x = climber.getAttachmentOffset(Direction.Axis.X,
-                        partialTicks) - (float) renderOrientation.normal().x * verticalOffset;
-                float y = climber.getAttachmentOffset(Direction.Axis.Y,
-                        partialTicks) - (float) renderOrientation.normal().y * verticalOffset;
-                float z = climber.getAttachmentOffset(Direction.Axis.Z,
-                        partialTicks) - (float) renderOrientation.normal().z * verticalOffset;
-                matrixStack.mulPose(Axis.YP.rotationDegrees(-Math.signum(
-                        0.5F - orientation.componentY() - orientation.componentZ() - orientation.componentX()) * renderOrientation.yaw()));
+                float x = climber.getAttachmentOffset(
+                    Direction.Axis.X,
+                    partialTicks
+                ) - (float) renderOrientation.normal().x * verticalOffset;
+                float y = climber.getAttachmentOffset(
+                    Direction.Axis.Y,
+                    partialTicks
+                ) - (float) renderOrientation.normal().y * verticalOffset;
+                float z = climber.getAttachmentOffset(
+                    Direction.Axis.Z,
+                    partialTicks
+                ) - (float) renderOrientation.normal().z * verticalOffset;
+                matrixStack.mulPose(
+                    Axis.YP.rotationDegrees(
+                        -Math.signum(
+                            0.5F - orientation.componentY() - orientation.componentZ() - orientation.componentX()
+                        ) * renderOrientation.yaw()
+                    )
+                );
                 matrixStack.mulPose(Axis.XP.rotationDegrees(-renderOrientation.pitch()));
                 matrixStack.mulPose(Axis.YP.rotationDegrees(-renderOrientation.yaw()));
-                if (Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes() && (Services.PLATFORM.isDevelopmentEnvironment() || Gigeresque.config.enableDevparticles)) {
-                    LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
-                            (new AABB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)).inflate(0.20000000298023224), 1.0F, 1.0F, 1.0F,
-                            1.0F);
+                if (
+                    Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes() && (Services.PLATFORM
+                        .isDevelopmentEnvironment() || Gigeresque.config.enableDevparticles)
+                ) {
+                    LevelRenderer.renderLineBox(
+                        matrixStack,
+                        bufferIn.getBuffer(RenderType.LINES),
+                        (new AABB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)).inflate(0.20000000298023224),
+                        1.0F,
+                        1.0F,
+                        1.0F,
+                        1.0F
+                    );
                     double rx = entity.xo + (entity.getX() - entity.xo) * partialTicks;
                     double ry = entity.yo + (entity.getY() - entity.yo) * partialTicks;
                     double rz = entity.zo + (entity.getZ() - entity.zo) * partialTicks;
                     Vec3 movementTarget = climber.getTrackedMovementTarget();
                     if (movementTarget != null) {
-                        LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
-                                (new AABB(movementTarget.x() - 0.25, movementTarget.y() - 0.25,
-                                        movementTarget.z() - 0.25, movementTarget.x() + 0.25, movementTarget.y() + 0.25,
-                                        movementTarget.z() + 0.25)).move(-rx - x, -ry - y, -rz - z), 0.0F, 1.0F, 1.0F,
-                                1.0F);
+                        LevelRenderer.renderLineBox(
+                            matrixStack,
+                            bufferIn.getBuffer(RenderType.LINES),
+                            (new AABB(
+                                movementTarget.x() - 0.25,
+                                movementTarget.y() - 0.25,
+                                movementTarget.z() - 0.25,
+                                movementTarget.x() + 0.25,
+                                movementTarget.y() + 0.25,
+                                movementTarget.z() + 0.25
+                            )).move(-rx - x, -ry - y, -rz - z),
+                            0.0F,
+                            1.0F,
+                            1.0F,
+                            1.0F
+                        );
                     }
 
                     List<PathingTarget> pathingTargets = climber.getTrackedPathingTargets();
@@ -134,16 +209,31 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
                         for (var var20 = pathingTargets.iterator(); var20.hasNext(); ++i) {
                             PathingTarget pathingTarget = var20.next();
                             BlockPos pos = pathingTarget.pos();
-                            LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
-                                    (new AABB(pos)).move(-rx - x, -ry - y, -rz - z), 1.0F,
-                                    (float) i / (float) (pathingTargets.size() - 1), 0.0F, 0.15F);
+                            LevelRenderer.renderLineBox(
+                                matrixStack,
+                                bufferIn.getBuffer(RenderType.LINES),
+                                (new AABB(pos)).move(-rx - x, -ry - y, -rz - z),
+                                1.0F,
+                                (float) i / (float) (pathingTargets.size() - 1),
+                                0.0F,
+                                0.15F
+                            );
                             matrixStack.pushPose();
-                            matrixStack.translate(pos.getX() + 0.5 - rx - x, pos.getY() + 0.5 - ry - y,
-                                    pos.getZ() + 0.5 - rz - z);
+                            matrixStack.translate(
+                                pos.getX() + 0.5 - rx - x,
+                                pos.getY() + 0.5 - ry - y,
+                                pos.getZ() + 0.5 - rz - z
+                            );
                             matrixStack.mulPose(pathingTarget.side().getOpposite().getRotation());
-                            LevelRenderer.renderLineBox(matrixStack, bufferIn.getBuffer(RenderType.LINES),
-                                    new AABB(-0.501, -0.501, -0.501, 0.501, -0.45, 0.501), 1.0F,
-                                    (float) i / (float) (pathingTargets.size() - 1), 0.0F, 1.0F);
+                            LevelRenderer.renderLineBox(
+                                matrixStack,
+                                bufferIn.getBuffer(RenderType.LINES),
+                                new AABB(-0.501, -0.501, -0.501, 0.501, -0.45, 0.501),
+                                1.0F,
+                                (float) i / (float) (pathingTargets.size() - 1),
+                                0.0F,
+                                1.0F
+                            );
                             matrixStack.popPose();
                         }
                     }
@@ -152,6 +242,5 @@ public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
                 matrixStack.translate(-x, -y, -z);
             }
         }
-
     }
 }

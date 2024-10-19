@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.model.items;
 
 import mod.azure.azurelib.model.DefaultedBlockGeoModel;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.item.GigBlockItem;
 

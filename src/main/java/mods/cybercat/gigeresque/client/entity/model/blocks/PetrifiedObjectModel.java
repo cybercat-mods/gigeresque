@@ -1,11 +1,12 @@
 package mods.cybercat.gigeresque.client.entity.model.blocks;
 
 import mod.azure.azurelib.model.GeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.entity.PetrifiedOjbectEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 
 public class PetrifiedObjectModel extends GeoModel<PetrifiedOjbectEntity> {
 

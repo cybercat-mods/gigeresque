@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -12,6 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 /**
  * @author Boston Vanseghi
@@ -26,23 +27,31 @@ public abstract class MobEntityMixin extends LivingEntity {
         super(type, world);
     }
 
-    @Inject(method = {"playAmbientSound"}, at = {@At("HEAD")}, cancellable = true)
+    @Inject(method = { "playAmbientSound" }, at = { @At("HEAD") }, cancellable = true)
     public void playAmbientSound(CallbackInfo callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING)) callbackInfo.cancel();
-        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance)) callbackInfo.cancel();
+        if (this.hasEffect(GigStatusEffects.EGGMORPHING))
+            callbackInfo.cancel();
+        if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
+            callbackInfo.cancel();
     }
 
-    @Inject(method = {"requiresCustomPersistence"}, at = {@At("RETURN")}, cancellable = true)
+    @Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") }, cancellable = true)
     public void cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.IMPREGNATION)) callbackInfo.setReturnValue(true);
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING)) callbackInfo.setReturnValue(true);
-        if (this.hasEffect(GigStatusEffects.DNA)) callbackInfo.setReturnValue(true);
+        if (this.hasEffect(GigStatusEffects.IMPREGNATION))
+            callbackInfo.setReturnValue(true);
+        if (this.hasEffect(GigStatusEffects.EGGMORPHING))
+            callbackInfo.setReturnValue(true);
+        if (this.hasEffect(GigStatusEffects.DNA))
+            callbackInfo.setReturnValue(true);
     }
 
-    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    @Inject(method = { "tick" }, at = { @At("HEAD") })
     void tick(CallbackInfo callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.IMPREGNATION)) this.persistenceRequired = true;
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING)) this.persistenceRequired = true;
-        if (this.hasEffect(GigStatusEffects.DNA)) this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.IMPREGNATION))
+            this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.EGGMORPHING))
+            this.persistenceRequired = true;
+        if (this.hasEffect(GigStatusEffects.DNA))
+            this.persistenceRequired = true;
     }
 }

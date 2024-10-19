@@ -1,10 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.extra;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.Particles;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,6 +10,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.particle.Particles;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class GooEntity extends Entity {
 
@@ -28,9 +29,16 @@ public class GooEntity extends Entity {
         super.tick();
         if (this.level().isClientSide()) {
             for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                this.level().addAlwaysVisibleParticle(Particles.GOO,
-                        this.blockPosition().getX() + this.random.nextDouble(), this.blockPosition().getY() + 0.01,
-                        this.blockPosition().getZ() + this.random.nextDouble(), 0.0, 0.0, 0.0);
+                this.level()
+                    .addAlwaysVisibleParticle(
+                        Particles.GOO,
+                        this.blockPosition().getX() + this.random.nextDouble(),
+                        this.blockPosition().getY() + 0.01,
+                        this.blockPosition().getZ() + this.random.nextDouble(),
+                        0.0,
+                        0.0,
+                        0.0
+                    );
             }
         }
         if (!this.level().isClientSide()) {
@@ -59,22 +67,33 @@ public class GooEntity extends Entity {
                 }
             });
             level().getEntities(this, this.getBoundingBox().inflate(1)).forEach(e -> {
-                if (e instanceof GooEntity && e.tickCount < this.tickCount) e.remove(RemovalReason.KILLED);
+                if (e instanceof GooEntity && e.tickCount < this.tickCount)
+                    e.remove(RemovalReason.KILLED);
             });
         }
     }
 
     private void doParticleSounds(RandomSource randomSource) {
-        this.level().playSound(null, this.blockPosition().getX(), this.blockPosition().getY(),
-                this.blockPosition().getZ(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS,
-                0.2f + randomSource.nextFloat() * 0.2f, 0.9f + randomSource.nextFloat() * 0.15f);
+        this.level()
+            .playSound(
+                null,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ(),
+                SoundEvents.SCULK_BLOCK_SPREAD,
+                SoundSource.BLOCKS,
+                0.2f + randomSource.nextFloat() * 0.2f,
+                0.9f + randomSource.nextFloat() * 0.15f
+            );
     }
 
     private void damageLivingEntities(LivingEntity livingEntity, RandomSource randomSource) {
-        if (livingEntity.hasEffect(GigStatusEffects.DNA) || livingEntity.getType().is(GigTags.DNAIMMUNE)) return;
+        if (livingEntity.hasEffect(GigStatusEffects.DNA) || livingEntity.getType().is(GigTags.DNAIMMUNE))
+            return;
         if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
-                    new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.gooEffectTickTimer / 2, 0));
+                new MobEffectInstance(GigStatusEffects.DNA, Gigeresque.config.gooEffectTickTimer / 2, 0)
+            );
         }
     }
 
@@ -89,21 +108,14 @@ public class GooEntity extends Entity {
     }
 
     @Override
-    public void checkDespawn() {
-    }
+    public void checkDespawn() {}
 
     @Override
-    protected void defineSynchedData() {
-
-    }
+    protected void defineSynchedData() {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-
-    }
+    protected void readAdditionalSaveData(CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-
-    }
+    protected void addAdditionalSaveData(CompoundTag compound) {}
 }

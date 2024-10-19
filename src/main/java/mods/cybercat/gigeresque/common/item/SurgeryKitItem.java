@@ -1,15 +1,5 @@
 package mods.cybercat.gigeresque.common.item;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +13,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class SurgeryKitItem extends Item {
 
     public SurgeryKitItem() {
@@ -30,7 +29,12 @@ public class SurgeryKitItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack, @NotNull Player player, LivingEntity livingEntity, @NotNull InteractionHand interactionHand) {
+    public @NotNull InteractionResult interactLivingEntity(
+        @NotNull ItemStack itemStack,
+        @NotNull Player player,
+        LivingEntity livingEntity,
+        @NotNull InteractionHand interactionHand
+    ) {
         if (livingEntity.getPassengers().stream().noneMatch(FacehuggerEntity.class::isInstance)) {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);
@@ -47,8 +51,11 @@ public class SurgeryKitItem extends Item {
     }
 
     private void tryRemoveParasite(ItemStack stack, LivingEntity entity) {
-        if (entity.hasEffect(GigStatusEffects.IMPREGNATION) || entity.hasEffect(
-                GigStatusEffects.SPORE) && !entity.level().isClientSide) {
+        if (
+            entity.hasEffect(GigStatusEffects.IMPREGNATION) || entity.hasEffect(
+                GigStatusEffects.SPORE
+            ) && !entity.level().isClientSide
+        ) {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
@@ -57,8 +64,15 @@ public class SurgeryKitItem extends Item {
             if (burster != null) {
                 setBursterProperties(entity, burster);
                 entity.level().addFreshEntity(burster);
-                entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING, SoundSource.NEUTRAL,
-                        2.0f, 1.0f);
+                entity.level()
+                    .playSound(
+                        entity,
+                        entity.blockPosition(),
+                        GigSounds.CHESTBURSTING,
+                        SoundSource.NEUTRAL,
+                        2.0f,
+                        1.0f
+                    );
             }
             if (entity instanceof Player playerentity) {
                 playerentity.getCooldowns().addCooldown(this, Gigeresque.config.surgeryKitCooldownTicks);

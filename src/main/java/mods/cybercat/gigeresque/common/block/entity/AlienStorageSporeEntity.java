@@ -6,12 +6,6 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mods.cybercat.gigeresque.common.Gigeresque;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
-import mods.cybercat.gigeresque.common.block.storage.StorageStates;
-import mods.cybercat.gigeresque.common.entity.Entities;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -38,27 +32,53 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.Gigeresque;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
+import mods.cybercat.gigeresque.common.block.storage.StorageStates;
+import mods.cybercat.gigeresque.common.entity.Entities;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
+
     protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
         @Override
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             assert AlienStorageSporeEntity.this.level != null;
-            AlienStorageSporeEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS,
-                    1.0f, 1.0f);
+            AlienStorageSporeEntity.this.level.playSound(
+                null,
+                pos,
+                SoundEvents.ITEM_FRAME_BREAK,
+                SoundSource.BLOCKS,
+                1.0f,
+                1.0f
+            );
         }
 
         @Override
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             assert AlienStorageSporeEntity.this.level != null;
-            AlienStorageSporeEntity.this.level.playSound(null, pos, SoundEvents.ITEM_FRAME_BREAK, SoundSource.BLOCKS,
-                    1.0f, 1.0f);
+            AlienStorageSporeEntity.this.level.playSound(
+                null,
+                pos,
+                SoundEvents.ITEM_FRAME_BREAK,
+                SoundSource.BLOCKS,
+                1.0f,
+                1.0f
+            );
         }
 
         @Override
-        protected void openerCountChanged(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, int oldViewerCount, int newViewerCount) {
+        protected void openerCountChanged(
+            @NotNull Level world,
+            @NotNull BlockPos pos,
+            @NotNull BlockState state,
+            int oldViewerCount,
+            int newViewerCount
+        ) {
             AlienStorageSporeEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
         }
 
@@ -69,8 +89,11 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
             return false;
         }
     };
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
     private NonNullList<ItemStack> items = NonNullList.withSize(36, ItemStack.EMPTY);
+
     private boolean check = true;
 
     public AlienStorageSporeEntity(BlockPos pos, BlockState state) {
@@ -82,19 +105,32 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
             if (!blockEntity.getLevel().isClientSide()) {
                 BlockPos.betweenClosed(pos, pos.above(2)).forEach(testPos -> {
                     if (!testPos.equals(pos) && !level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS))
-                        level.setBlock(testPos, GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(),
-                                Block.UPDATE_ALL);
+                        level.setBlock(
+                            testPos,
+                            GigBlocks.ALIEN_STORAGE_BLOCK_INVIS.defaultBlockState(),
+                            Block.UPDATE_ALL
+                        );
                 });
                 if (blockEntity.getChestState().equals(StorageStates.OPENED) && blockEntity.checkSporestatus()) {
                     blockEntity.particleCloud();
                     blockEntity.hasSpawnSpore(false);
-                    blockEntity.getLevel().playSound(null, pos, SoundEvents.SPLASH_POTION_BREAK, SoundSource.BLOCKS,
-                            1.0f, 1.0f);
+                    blockEntity.getLevel()
+                        .playSound(
+                            null,
+                            pos,
+                            SoundEvents.SPLASH_POTION_BREAK,
+                            SoundSource.BLOCKS,
+                            1.0f,
+                            1.0f
+                        );
                 }
             }
             if (!blockEntity.isRemoved())
-                blockEntity.stateManager.recheckOpeners(blockEntity.getLevel(), blockEntity.getBlockPos(),
-                        blockEntity.getBlockState());
+                blockEntity.stateManager.recheckOpeners(
+                    blockEntity.getLevel(),
+                    blockEntity.getBlockPos(),
+                    blockEntity.getBlockState()
+                );
         }
     }
 
@@ -115,14 +151,16 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
         super.load(nbt);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         hasSpawnSpore(nbt.getBoolean("spawnspore"));
-        if (!this.tryLoadLootTable(nbt)) ContainerHelper.loadAllItems(nbt, this.items);
+        if (!this.tryLoadLootTable(nbt))
+            ContainerHelper.loadAllItems(nbt, this.items);
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
         nbt.putBoolean("spawnspore", check);
-        if (!this.trySaveLootTable(nbt)) ContainerHelper.saveAllItems(nbt, this.items);
+        if (!this.trySaveLootTable(nbt))
+            ContainerHelper.saveAllItems(nbt, this.items);
     }
 
     @Override
@@ -170,8 +208,10 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         world.blockEvent(pos, state.getBlock(), 1, newViewerCount);
         if (oldViewerCount != newViewerCount)
-            if (newViewerCount > 0) world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
-            else world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
+            if (newViewerCount > 0)
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
+            else
+                world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
     }
 
     public StorageStates getChestState() {
@@ -181,11 +221,17 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, event -> {
-            if (getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")))
+            if (
+                getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")
+                )
+            )
                 return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-            else if (getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")))
+            else if (
+                getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
+                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")
+                )
+            )
                 return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
             return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
         }));
@@ -206,14 +252,20 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity im
 
     public void particleCloud() {
         assert this.level != null;
-        var areaEffectCloudEntity = new AreaEffectCloud(this.level, worldPosition.getX(), worldPosition.getY() + 0.5,
-                worldPosition.getZ());
+        var areaEffectCloudEntity = new AreaEffectCloud(
+            this.level,
+            worldPosition.getX(),
+            worldPosition.getY() + 0.5,
+            worldPosition.getZ()
+        );
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(3);
         areaEffectCloudEntity.setRadiusPerTick(
-                -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration());
+            -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+        );
         areaEffectCloudEntity.addEffect(
-                new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0));
+            new MobEffectInstance(GigStatusEffects.SPORE, Gigeresque.config.sporeTickTimer, 0)
+        );
         this.level.addFreshEntity(areaEffectCloudEntity);
     }
 }

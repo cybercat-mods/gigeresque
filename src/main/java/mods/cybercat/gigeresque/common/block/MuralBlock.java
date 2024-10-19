@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class MuralBlock extends GigBlock {
 
     public MuralBlock() {
@@ -21,7 +22,14 @@ public class MuralBlock extends GigBlock {
     }
 
     @Override
-    public void playerDestroy(Level world, @NotNull Player player, @NotNull BlockPos pos, @NotNull BlockState state, BlockEntity blockEntity, @NotNull ItemStack stack) {
+    public void playerDestroy(
+        Level world,
+        @NotNull Player player,
+        @NotNull BlockPos pos,
+        @NotNull BlockState state,
+        BlockEntity blockEntity,
+        @NotNull ItemStack stack
+    ) {
         world.setBlock(pos, GigBlocks.ROUGH_ALIEN_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
         var areaEffectCloudEntity = new AreaEffectCloud(world, pos.getX(), pos.getY(), pos.getZ());
         areaEffectCloudEntity.setRadius(1.0F);

@@ -1,18 +1,22 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.function.Consumer;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
+
 public abstract class CustomDelayedRangedBehaviour<E extends AlienEntity> extends ExtendedBehaviour<E> {
+
     protected final int delayTime;
+
     protected long delayFinishedAt = 0;
-    protected Consumer<E> delayedCallback = entity -> {
-    };
+
+    protected Consumer<E> delayedCallback = entity -> {};
+
     private final AnimationSelector<? super E> animationSelector;
 
     public CustomDelayedRangedBehaviour(int delayTicks, AnimationSelector<? super E> animationSelector) {
@@ -62,6 +66,5 @@ public abstract class CustomDelayedRangedBehaviour<E extends AlienEntity> extend
         }
     }
 
-    protected void doDelayedAction(E entity) {
-    }
+    protected void doDelayedAction(E entity) {}
 }

@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -8,7 +7,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
@@ -22,12 +20,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+
 @Mixin(BrushableBlockEntity.class)
 public abstract class BrushableBlockEntityMixin extends BlockEntity {
 
     protected final RandomSource random = RandomSource.create();
+
     @Shadow
     private ItemStack item;
+
     @Shadow
     private Direction hitDirection;
 
@@ -35,7 +37,7 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
         super(type, pos, blockState);
     }
 
-    @Inject(method = "dropContent", at = {@At("HEAD")})
+    @Inject(method = "dropContent", at = { @At("HEAD") })
     private void dropEggTest(Player player, CallbackInfo ci) {
         if (this.level != null && this.level.getServer() != null && random.nextInt(0, 100) > 95) {
             var d = EntityType.ITEM.getWidth();

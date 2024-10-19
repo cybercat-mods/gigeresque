@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
@@ -19,12 +17,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
 @Mixin(SlimeOuterLayer.class)
 public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> extends RenderLayer<T, SlimeModel<T>> {
+
     @Shadow
     @Final
     private EntityModel<T> model;
@@ -34,13 +36,37 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, T entity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+    private void render(
+        PoseStack matrixStack,
+        MultiBufferSource vertexConsumerProvider,
+        int light,
+        T entity,
+        float f,
+        float g,
+        float h,
+        float j,
+        float k,
+        float l,
+        CallbackInfo ci
+    ) {
         if (entity.hasEffect(GigStatusEffects.EGGMORPHING)) {
             this.model.prepareMobModel(entity, f, g, h);
             this.model.setupAnim(entity, f, g, j, k, l);
             this.getParentModel().copyPropertiesTo(this.model);
-            EggmorphFeatureRenderer.renderEggmorphedModel(this.model, getTextureLocation(entity), matrixStack,
-                    vertexConsumerProvider, light, entity, f, g, h, j, k, l);
+            EggmorphFeatureRenderer.renderEggmorphedModel(
+                this.model,
+                getTextureLocation(entity),
+                matrixStack,
+                vertexConsumerProvider,
+                light,
+                entity,
+                f,
+                g,
+                h,
+                j,
+                k,
+                l
+            );
         }
     }
 }

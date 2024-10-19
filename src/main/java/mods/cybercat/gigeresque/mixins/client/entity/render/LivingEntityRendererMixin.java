@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.client.entity.render;
 
-import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
@@ -15,12 +14,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
+
 /**
  * @author Aelpecyem
  */
 @Environment(EnvType.CLIENT)
 @Mixin(LivingEntityRenderer.class)
 public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> {
+
     @Shadow
     protected abstract boolean addLayer(RenderLayer<T, M> feature);
 

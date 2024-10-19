@@ -2,11 +2,12 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.client.entity.model.AlienEntityModel;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 
 public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
 
@@ -16,7 +17,14 @@ public class AlienEntityRenderer extends GeoEntityRenderer<ClassicAlienEntity> {
     }
 
     @Override
-    public void render(ClassicAlienEntity entity, float entityYaw, float partialTick, PoseStack stack, @NotNull MultiBufferSource bufferSource, int packedLightIn) {
+    public void render(
+        ClassicAlienEntity entity,
+        float entityYaw,
+        float partialTick,
+        PoseStack stack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLightIn
+    ) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         if (!entity.isVehicle()) {

@@ -1,6 +1,13 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.Entities;
@@ -8,12 +15,6 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.NotNull;
 
 public class EggMorphingStatusEffect extends MobEffect {
 
@@ -33,9 +34,12 @@ public class EggMorphingStatusEffect extends MobEffect {
 
     @Override
     public void removeAttributeModifiers(@NotNull LivingEntity entity, @NotNull AttributeMap attributes, int amplifier) {
-        if (Constants.isCreativeSpecPlayer.test(entity)) return;
-        if (!GigEntityUtils.isTargetHostable(entity)) return;
-        if (!entity.level().getBlockState(entity.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS)) return;
+        if (Constants.isCreativeSpecPlayer.test(entity))
+            return;
+        if (!GigEntityUtils.isTargetHostable(entity))
+            return;
+        if (!entity.level().getBlockState(entity.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS))
+            return;
         var egg = new AlienEggEntity(Entities.EGG, entity.level());
         egg.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
         if (entity.level().getBlockState(entity.blockPosition()).is(GigTags.NEST_BLOCKS))
