@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,8 +35,7 @@ public class InGameOverlayRendererMixin {
 
     @Inject(method = { "renderScreenEffect" }, at = { @At("RETURN") })
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
-        assert client.player != null;
-        if (!client.player.isSpectator()) {
+        if (client.player != null && !client.player.isSpectator()) {
             var d = client.player.getEyeY() - 0.1111111119389534D;
             var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
             var fluidState = client.player.level().getFluidState(blockPos);
@@ -68,6 +68,7 @@ public class InGameOverlayRendererMixin {
         }
     }
 
+    @Unique
     private static void renderOverlay(Minecraft client, PoseStack matrices, float progress, ResourceLocation resourceLocation) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
