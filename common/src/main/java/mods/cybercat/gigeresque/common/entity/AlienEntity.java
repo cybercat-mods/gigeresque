@@ -36,7 +36,6 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.warden.AngerManagement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,7 +54,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -155,8 +153,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     public boolean inTwoBlockSpace = false;
 
     public int breakingCounter = 0;
-
-    protected AngerManagement angerManagement = new AngerManagement(this::canTargetEntity, Collections.emptyList());
 
     protected User vibrationUser;
 
@@ -375,12 +371,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                 LOGGER::error
             )
             .ifPresent(tag -> compound.put("listener", tag));
-        AngerManagement.codec(this::canTargetEntity)
-            .encodeStart(NbtOps.INSTANCE, this.angerManagement)
-            .resultOrPartial(
-                LOGGER::error
-            )
-            .ifPresent(tag -> compound.put("anger", tag));
         compound.putFloat("growth", this.getGrowth());
         compound.putBoolean("isStasis", this.isPassedOut());
         compound.putBoolean("wakingup", this.isWakingUp());
@@ -395,17 +385,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         super.readAdditionalSaveData(compound);
         if (compound.contains("isCrawling"))
             this.setIsCrawling(compound.getBoolean("isCrawling"));
-        if (compound.contains("anger")) {
-            AngerManagement.codec(this::canTargetEntity)
-                .parse(
-                    new Dynamic<>(NbtOps.INSTANCE, compound.get("anger"))
-                )
-                .resultOrPartial(LOGGER::error)
-                .ifPresent(
-                    angerM -> this.angerManagement = angerM
-                );
-            this.syncClientAngerLevel();
-        }
         if (compound.contains("listener", 10))
             Data.CODEC.parse(
                 new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))
@@ -448,27 +427,9 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         return 9;
     }
 
-    protected void syncClientAngerLevel() {
-        this.entityData.set(CLIENT_ANGER_LEVEL, this.getActiveAnger());
-    }
-
-    private int getActiveAnger() {
-        return this.angerManagement.getActiveAnger(this.getTarget());
-    }
-
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        var serverLevel = (ServerLevel) this.level();
-        super.customServerAiStep();
-        if (this.tickCount % 20 == 0) {
-            this.angerManagement.tick(serverLevel, this::canTargetEntity);
-            this.syncClientAngerLevel();
-        }
     }
 
     @Override

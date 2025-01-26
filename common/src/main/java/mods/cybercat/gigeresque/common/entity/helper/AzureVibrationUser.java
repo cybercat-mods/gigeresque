@@ -7,6 +7,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -26,13 +27,13 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class AzureVibrationUser implements VibrationSystem.User {
 
-    private final AlienEntity mob;
+    private final Mob mob;
 
     private final float moveSpeed;
 
     private final PositionSource positionSource;
 
-    public AzureVibrationUser(AlienEntity entity, float speed) {
+    public AzureVibrationUser(Mob entity, float speed) {
         this.positionSource = new EntityPositionSource(entity, entity.getEyeHeight());
         this.mob = entity;
         this.moveSpeed = speed;
@@ -109,7 +110,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         )
             return false;
         var entity = context.sourceEntity();
-        return !(entity instanceof LivingEntity) || mob.canTargetEntity(entity);
+        return !(entity instanceof LivingEntity) || (this.mob instanceof AlienEntity alienEntity && alienEntity.canTargetEntity(entity));
     }
 
     @Override
@@ -130,27 +131,27 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
-        if (!this.mob.isCrawling() && !this.mob.isTunnelCrawling()) {
-            this.mob.wakeupCounter++;
-            if (this.mob.isPassedOut() && this.mob.wakeupCounter == 1)
-                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
-            if (this.mob.wakeupCounter == 2) {
-                if (this.mob.level().getBlockState(this.mob.blockPosition().below()).isSolid())
-                    this.mob.setPassedOutStatus(false);
-                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "alert");
+        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
+            alienEntity.wakeupCounter++;
+            if (alienEntity.isPassedOut() && alienEntity.wakeupCounter == 1)
+                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
+            if (alienEntity.wakeupCounter == 2) {
+                if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
+                    alienEntity.setPassedOutStatus(false);
+                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "alert");
             }
-            if (this.mob.wakeupCounter >= 3) {
-                this.mob.triggerAnim(Constants.ATTACK_CONTROLLER, "run");
-                this.mob.setPassedOutStatus(false);
-                this.mob.setAggressive(true);
-                this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
-                this.mob.wakeupCounter = 0;
+            if (alienEntity.wakeupCounter >= 3) {
+                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "run");
+                alienEntity.setPassedOutStatus(false);
+                alienEntity.setAggressive(true);
+                alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+                alienEntity.wakeupCounter = 0;
             }
         }
 
-        if (this.mob.isCrawling() || this.mob.isTunnelCrawling()) {
-            this.mob.setPassedOutStatus(false);
-            this.mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+        if (this.mob instanceof AlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
+            alienEntity.setPassedOutStatus(false);
+            alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
         }
 
         if (
