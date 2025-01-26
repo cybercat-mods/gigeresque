@@ -59,6 +59,8 @@ public record Constants() {
 
     public static final String LIVING_CONTROLLER = "livingController";
 
+    public static final String BASE_CONTROLLER = "base_controller";
+
     public static final String LEFT_CLAW = "left_claw";
 
     public static final String RIGHT_CLAW = "right_claw";

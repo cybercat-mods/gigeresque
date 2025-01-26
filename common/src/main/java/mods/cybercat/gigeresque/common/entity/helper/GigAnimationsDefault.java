@@ -70,6 +70,12 @@ public record GigAnimationsDefault() {
 
     public static final RawAnimation HATCH_LEAP = RawAnimation.begin().thenPlayAndHold("hatch_leap");
 
+    public static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("death");
+
+    public static final RawAnimation IMPREGNATE = RawAnimation.begin().thenPlayAndHold("impregnate");
+
+    public static final RawAnimation KIDNAP = RawAnimation.begin().thenLoop("kidnap");
+
     /* ATTACKING */
     public static final RawAnimation SPIT = RawAnimation.begin().then("spit", Animation.LoopType.PLAY_ONCE);
 
@@ -78,10 +84,6 @@ public record GigAnimationsDefault() {
     public static final RawAnimation CHARGE = RawAnimation.begin().then("charge", Animation.LoopType.PLAY_ONCE);
 
     public static final RawAnimation ATTACK = RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE);
-
-    public static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("death");
-
-    public static final RawAnimation IMPREGNATE = RawAnimation.begin().thenPlayAndHold("impregnate");
 
     public static final RawAnimation CHOMP = RawAnimation.begin().then("chomp", Animation.LoopType.PLAY_ONCE);
 
@@ -99,25 +101,15 @@ public record GigAnimationsDefault() {
 
     public static final RawAnimation LEFT_CLAW_BASIC = RawAnimation.begin().then("left_claw_basic", Animation.LoopType.PLAY_ONCE);
 
-    public static final RawAnimation RIGHT_CLAW_BASIC = RawAnimation.begin()
-        .then(
-            "right_claw_basic",
-            Animation.LoopType.PLAY_ONCE
-        );
+    public static final RawAnimation RIGHT_CLAW_BASIC = RawAnimation.begin().then("right_claw_basic", Animation.LoopType.PLAY_ONCE);
 
     public static final RawAnimation LEFT_TAIL_BASIC = RawAnimation.begin().then("left_tail_basic", Animation.LoopType.PLAY_ONCE);
 
-    public static final RawAnimation RIGHT_TAIL_BASIC = RawAnimation.begin()
-        .then(
-            "right_tail_basic",
-            Animation.LoopType.PLAY_ONCE
-        );
+    public static final RawAnimation RIGHT_TAIL_BASIC = RawAnimation.begin().then("right_tail_basic", Animation.LoopType.PLAY_ONCE);
 
-    public static final RawAnimation KIDNAP = RawAnimation.begin().thenLoop("kidnap");
+    public static final RawAnimation EXECUTION = RawAnimation.begin().then("execution", Animation.LoopType.PLAY_ONCE);
 
-    public static final RawAnimation EXECUTION = RawAnimation.begin().thenPlayXTimes("execution", 1);
+    public static final RawAnimation EXECUTION_CARRY = RawAnimation.begin().then("execution_carry", Animation.LoopType.PLAY_ONCE);
 
-    public static final RawAnimation EXECUTION_CARRY = RawAnimation.begin().thenPlayXTimes("execution_carry", 1);
-
-    public static final RawAnimation EXECUTION_GRAB = RawAnimation.begin().thenPlayXTimes("execution_grab", 1);
+    public static final RawAnimation EXECUTION_GRAB = RawAnimation.begin().then("execution_grab", Animation.LoopType.PLAY_ONCE);
 }

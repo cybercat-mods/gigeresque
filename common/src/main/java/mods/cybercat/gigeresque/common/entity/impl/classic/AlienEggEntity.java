@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -34,12 +31,13 @@ import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class AlienEggEntity extends AlienEntity {
+public class AlienEggEntity extends NewAlienEntity {
 
     private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(
         AlienEggEntity.class,
@@ -61,21 +59,26 @@ public class AlienEggEntity extends AlienEntity {
         EntityDataSerializers.FLOAT
     );
 
-    private static final long MAX_HATCH_PROGRESS = 50L;
+    private static final EntityDataAccessor<Integer> EGG_STATE = SynchedEntityData.defineId(
+        AlienEggEntity.class,
+        EntityDataSerializers.INT
+    );
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public static final long MAX_HATCH_PROGRESS = 50L;
 
     public float ticksUntilNest = -1.0f;
 
-    private long hatchProgress = 0L;
+    public long hatchProgress = 0L;
 
-    private long ticksOpen = 0L;
+    public long ticksOpen = 0L;
 
-    private int hatchCheckTimer = 0;
+    public int hatchCheckTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
         super(type, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
     }
 
     public static boolean canSpawn(
@@ -115,6 +118,14 @@ public class AlienEggEntity extends AlienEntity {
         return entityData.get(IS_HATCHING);
     }
 
+    public void setEggState(int value) {
+        entityData.set(EGG_STATE, value);
+    }
+
+    public int getEggState() {
+        return entityData.get(EGG_STATE);
+    }
+
     public void setIsHatching(boolean value) {
         entityData.set(IS_HATCHING, value);
     }
@@ -150,6 +161,7 @@ public class AlienEggEntity extends AlienEntity {
         builder.define(IS_HATCHED, false);
         builder.define(HAS_FACEHUGGER, true);
         builder.define(NEST_TICKS, -1.0f);
+        builder.define(EGG_STATE, 0);
     }
 
     @Override
@@ -161,6 +173,7 @@ public class AlienEggEntity extends AlienEntity {
         nbt.putLong("hatchProgress", hatchProgress);
         nbt.putLong("ticksOpen", ticksOpen);
         nbt.putFloat("ticksUntilEggmorphed", getTicksUntilNest());
+        nbt.putInt("eggState", getEggState());
     }
 
     @Override
@@ -172,6 +185,7 @@ public class AlienEggEntity extends AlienEntity {
         hatchProgress = nbt.getLong("hatchProgress");
         ticksOpen = nbt.getLong("ticksOpen");
         setTicksUntilNest(nbt.getInt("ticksUntilEggmorphed"));
+        setEggState(nbt.getInt("eggState"));
     }
 
     @Override
@@ -264,6 +278,27 @@ public class AlienEggEntity extends AlienEntity {
             facehugger.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 400, 30, false, false));
             level().addFreshEntity(facehugger);
             setHasFacehugger(false);
+        }
+
+        /*
+         * ANIMATIONS
+         */
+        if (this.level().isClientSide) {
+            Runnable animationRunner;
+
+            if (this.isDeadOrDying()) {
+                animationRunner = animationDispatcher::sendDeath;
+            } else if (isHatching()) {
+                animationRunner = animationDispatcher::sendHatching;
+            } else if (isHatched()) {
+                animationRunner = hasFacehugger()
+                    ? animationDispatcher::sendHatched
+                    : animationDispatcher::sendHatchEmpty;
+            } else {
+                animationRunner = animationDispatcher::sendIdle;
+            }
+
+            animationRunner.run();
         }
     }
 
@@ -410,37 +445,19 @@ public class AlienEggEntity extends AlienEntity {
     /*
      * ANIMATIONS
      */
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            if (isHatched() && !this.isDeadOrDying()) {
-                if (!hasFacehugger())
-                    return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
-                return event.setAndContinue(GigAnimationsDefault.HATCHED);
-            }
-            if (this.isDeadOrDying())
-                return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (isHatching() && !this.isDeadOrDying())
-                event.getController().setAnimation(GigAnimationsDefault.HATCHING);
-            return event.setAndContinue(GigAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("hatching") && this.level().isClientSide)
-                this.level()
-                    .playLocalSound(
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        GigSounds.EGG_OPEN.get(),
-                        SoundSource.HOSTILE,
-                        0.75F,
-                        0.1F,
-                        true
-                    );
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
-    }
+    // @Override
+    // public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    // controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
+    // if (isHatched() && !this.isDeadOrDying()) {
+    // if (!hasFacehugger())
+    // return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
+    // return event.setAndContinue(GigAnimationsDefault.HATCHED);
+    // }
+    // if (this.isDeadOrDying())
+    // return event.setAndContinue(GigAnimationsDefault.DEATH);
+    // if (isHatching() && !this.isDeadOrDying())
+    // event.getController().setAnimation(GigAnimationsDefault.HATCHING);
+    // return event.setAndContinue(GigAnimationsDefault.IDLE);
+    // }));
+    // }
 }
