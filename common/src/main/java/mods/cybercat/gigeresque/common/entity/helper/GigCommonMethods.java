@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,7 +9,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -126,8 +126,6 @@ public record GigCommonMethods() {
                     0.7,
                     Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
                 );
-                facehugger.setEggSpawnState(true);
-                facehugger.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 400, 30, false, false));
                 alienEggEntity.level().addFreshEntity(facehugger);
             }
             alienEggEntity.setHasFacehugger(false);

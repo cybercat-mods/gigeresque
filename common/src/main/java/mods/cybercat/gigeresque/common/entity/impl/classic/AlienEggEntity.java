@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -8,14 +10,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -30,7 +28,6 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -38,16 +35,6 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class AlienEggEntity extends NewAlienEntity {
-
-    private static final EntityDataAccessor<Boolean> IS_HATCHING = SynchedEntityData.defineId(
-        AlienEggEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
-    private static final EntityDataAccessor<Boolean> IS_HATCHED = SynchedEntityData.defineId(
-        AlienEggEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
 
     private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(
         AlienEggEntity.class,
@@ -114,28 +101,12 @@ public class AlienEggEntity extends NewAlienEntity {
         return 1;
     }
 
-    public boolean isHatching() {
-        return entityData.get(IS_HATCHING);
-    }
-
     public void setEggState(int value) {
         entityData.set(EGG_STATE, value);
     }
 
     public int getEggState() {
         return entityData.get(EGG_STATE);
-    }
-
-    public void setIsHatching(boolean value) {
-        entityData.set(IS_HATCHING, value);
-    }
-
-    public boolean isHatched() {
-        return entityData.get(IS_HATCHED);
-    }
-
-    public void setIsHatched(boolean value) {
-        entityData.set(IS_HATCHED, value);
     }
 
     public boolean hasFacehugger() {
@@ -157,8 +128,6 @@ public class AlienEggEntity extends NewAlienEntity {
     @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(IS_HATCHING, false);
-        builder.define(IS_HATCHED, false);
         builder.define(HAS_FACEHUGGER, true);
         builder.define(NEST_TICKS, -1.0f);
         builder.define(EGG_STATE, 0);
@@ -167,8 +136,6 @@ public class AlienEggEntity extends NewAlienEntity {
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putBoolean("isHatching", isHatching());
-        nbt.putBoolean("isHatched", isHatched());
         nbt.putBoolean("hasFacehugger", hasFacehugger());
         nbt.putLong("hatchProgress", hatchProgress);
         nbt.putLong("ticksOpen", ticksOpen);
@@ -179,8 +146,6 @@ public class AlienEggEntity extends NewAlienEntity {
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        setIsHatching(nbt.getBoolean("isHatching"));
-        setIsHatched(nbt.getBoolean("isHatched"));
         setHasFacehugger(nbt.getBoolean("hasFacehugger"));
         hatchProgress = nbt.getLong("hatchProgress");
         ticksOpen = nbt.getLong("ticksOpen");
@@ -190,7 +155,7 @@ public class AlienEggEntity extends NewAlienEntity {
 
     @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.isHatched() && !this.isDeadOrDying())
+        if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.isDeadOrDying())
             return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying())
             return EntityDimensions.scalable(0.7f, 0.6f);
@@ -230,7 +195,7 @@ public class AlienEggEntity extends NewAlienEntity {
         if (this.isNoAi())
             return;
 
-        if (this.isHatched() && this.isAlive() && !this.level().isClientSide)
+        if (this.getEggState() == EggStates.HATCHED.ordinal() && this.isAlive() && !this.level().isClientSide)
             this.setTicksUntilNest(ticksUntilNest++);
         if (this.getTicksUntilNest() == 6000f) {
             if (this.level().isClientSide) {
@@ -250,34 +215,10 @@ public class AlienEggEntity extends NewAlienEntity {
             this.kill();
         }
 
-        if (isHatching() && hatchProgress < MAX_HATCH_PROGRESS)
-            hatchProgress++;
-
-        if (hatchProgress == 40L && !level().isClientSide)
-            this.level().playSound(this, blockPosition(), GigSounds.EGG_OPEN.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
-
-        if (hatchProgress >= MAX_HATCH_PROGRESS) {
-            setIsHatching(false);
-            setIsHatched(true);
-            ticksOpen++;
-        }
-
-        if (isHatched() && hasFacehugger())
-            ticksOpen++;
+        GigCommonMethods.handleHatchingProgress(this);
 
         if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
-            var facehugger = GigEntities.FACEHUGGER.get().create(level());
-            assert facehugger != null;
-            facehugger.setPos(this.position().x, this.position().y + 1, this.position().z);
-            facehugger.setDeltaMovement(
-                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
-                0.7,
-                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
-            );
-            facehugger.setEggSpawnState(true);
-            facehugger.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 400, 30, false, false));
-            level().addFreshEntity(facehugger);
-            setHasFacehugger(false);
+            GigCommonMethods.handleFacehuggerSpawn(this);
         }
 
         /*
@@ -288,12 +229,10 @@ public class AlienEggEntity extends NewAlienEntity {
 
             if (this.isDeadOrDying()) {
                 animationRunner = animationDispatcher::sendDeath;
-            } else if (isHatching()) {
+            } else if (this.getEggState() == EggStates.HATCHING.ordinal()) {
                 animationRunner = animationDispatcher::sendHatching;
-            } else if (isHatched()) {
-                animationRunner = hasFacehugger()
-                    ? animationDispatcher::sendHatched
-                    : animationDispatcher::sendHatchEmpty;
+            } else if (this.getEggState() == EggStates.HATCHED.ordinal()) {
+                animationRunner = animationDispatcher::sendHatchEmpty;
             } else {
                 animationRunner = animationDispatcher::sendIdle;
             }
@@ -308,7 +247,7 @@ public class AlienEggEntity extends NewAlienEntity {
     @Override
     public void doPush(@NotNull Entity entity) {
         if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living))) {
-            setIsHatching(true);
+            this.setEggState(EggStates.HATCHING.ordinal());
         }
     }
 
@@ -344,8 +283,9 @@ public class AlienEggEntity extends NewAlienEntity {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source != damageSources().genericKill() && source.getDirectEntity() != null && !this.isHatched())
-            setIsHatching(true);
+        if (source != damageSources().genericKill() && source.getDirectEntity() != null && this.getEggState() != EggStates.HATCHED.ordinal()) {
+            this.setEggState(EggStates.HATCHING.ordinal());
+        }
         return source != damageSources().inWall() && super.hurt(source, amount);
     }
 
@@ -356,8 +296,9 @@ public class AlienEggEntity extends NewAlienEntity {
         // Increment the hatch check timer
         hatchCheckTimer++;
 
-        if (this.getLastHurtMob() != null)
-            setIsHatching(true);
+        if (this.getLastHurtMob() != null) {
+            this.setEggState(EggStates.HATCHING.ordinal());
+        }
 
         // Perform hatching check once every second (20 ticks)
         if (hatchCheckTimer >= 20) {
@@ -375,7 +316,7 @@ public class AlienEggEntity extends NewAlienEntity {
                         // Apply random chance to hatch
                         if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
                             if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
-                                setIsHatching(true);
+                                this.setEggState(EggStates.HATCHING.ordinal());
                             }
                         }
                     }
@@ -388,7 +329,7 @@ public class AlienEggEntity extends NewAlienEntity {
                         && (target instanceof Player player && !(player.isCreative() || player.isSpectator())
                             || !(target instanceof Player))
                 ) {
-                    setIsHatching(true);
+                    this.setEggState(EggStates.HATCHING.ordinal());
                 }
             });
         }
@@ -421,7 +362,7 @@ public class AlienEggEntity extends NewAlienEntity {
 
                                     // Set isHatching to false if conditions are met
                                     if (isAnyBlockSolid || isAnyBlockNotAir) {
-                                        setIsHatching(false);
+                                        this.setEggState(EggStates.IDLE.ordinal());
                                     }
                                 }
                             }
@@ -433,31 +374,12 @@ public class AlienEggEntity extends NewAlienEntity {
 
     @Override
     public boolean requiresCustomPersistence() {
-        return (!this.isHatched() || this.hasFacehugger());
+        return (this.getEggState() != EggStates.HATCHED.ordinal() || this.hasFacehugger());
     }
 
     @Override
     public void checkDespawn() {
-        if (this.isHatched() && !this.hasFacehugger())
+        if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger())
             super.checkDespawn();
     }
-
-    /*
-     * ANIMATIONS
-     */
-    // @Override
-    // public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-    // controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-    // if (isHatched() && !this.isDeadOrDying()) {
-    // if (!hasFacehugger())
-    // return event.setAndContinue(GigAnimationsDefault.HATCHED_EMPTY);
-    // return event.setAndContinue(GigAnimationsDefault.HATCHED);
-    // }
-    // if (this.isDeadOrDying())
-    // return event.setAndContinue(GigAnimationsDefault.DEATH);
-    // if (isHatching() && !this.isDeadOrDying())
-    // event.getController().setAnimation(GigAnimationsDefault.HATCHING);
-    // return event.setAndContinue(GigAnimationsDefault.IDLE);
-    // }));
-    // }
 }
