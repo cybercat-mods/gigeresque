@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.classic.AlienEggAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 
 public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
@@ -24,14 +24,16 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
         super(
             AzEntityRendererConfig.<AlienEggEntity>builder(
                 alienEggEntity -> MODEL,
-                alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity.getEggState() == EggStates.HATCHED.ordinal() ? EntityTextures.EGG_ACTIVE : EntityTextures.EGG
+                alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
+                    .getEggState() == EggStates.HATCHED.ordinal() ? EntityTextures.EGG_ACTIVE : EntityTextures.EGG
             )
                 .setAnimatorProvider(AlienEggAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .setRenderType(
-                    alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity.getEggState() == EggStates.HATCHED.ordinal()
-                        ? EGG_ACTIVE_RENDER_TYPE
-                        : EGG_RENDER_TYPE
+                    alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
+                        .getEggState() == EggStates.HATCHED.ordinal()
+                            ? EGG_ACTIVE_RENDER_TYPE
+                            : EGG_RENDER_TYPE
                 )
                 .build(),
             context

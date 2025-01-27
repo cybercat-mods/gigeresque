@@ -1,36 +1,26 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -66,18 +56,6 @@ public class AlienEggEntity extends NewAlienEntity {
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-    }
-
-    public static boolean canSpawn(
-        EntityType<? extends AlienEntity> type,
-        ServerLevelAccessor world,
-        MobSpawnType reason,
-        BlockPos pos,
-        RandomSource random
-    ) {
-        if (world.getDifficulty() == Difficulty.PEACEFUL)
-            return false;
-        return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -195,31 +173,9 @@ public class AlienEggEntity extends NewAlienEntity {
         if (this.isNoAi())
             return;
 
-        if (this.getEggState() == EggStates.HATCHED.ordinal() && this.isAlive() && !this.level().isClientSide)
-            this.setTicksUntilNest(ticksUntilNest++);
-        if (this.getTicksUntilNest() == 6000f) {
-            if (this.level().isClientSide) {
-                for (var i = 0; i < 2; i++)
-                    this.level()
-                        .addAlwaysVisibleParticle(
-                            GigParticles.GOO.get(),
-                            this.getRandomX(1.0),
-                            this.getRandomY(),
-                            this.getRandomZ(1.0),
-                            0.0,
-                            0.0,
-                            0.0
-                        );
-            }
-            this.level().setBlockAndUpdate(this.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
-            this.kill();
-        }
-
+        GigCommonMethods.handleNestProgress(this);
         GigCommonMethods.handleHatchingProgress(this);
-
-        if (ticksOpen >= 3L * Constants.TPS && hasFacehugger() && !level().isClientSide && !this.isDeadOrDying()) {
-            GigCommonMethods.handleFacehuggerSpawn(this);
-        }
+        GigCommonMethods.handleFacehuggerSpawn(this);
 
         /*
          * ANIMATIONS
@@ -283,7 +239,9 @@ public class AlienEggEntity extends NewAlienEntity {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source != damageSources().genericKill() && source.getDirectEntity() != null && this.getEggState() != EggStates.HATCHED.ordinal()) {
+        if (
+            source != damageSources().genericKill() && source.getDirectEntity() != null && this.getEggState() != EggStates.HATCHED.ordinal()
+        ) {
             this.setEggState(EggStates.HATCHING.ordinal());
         }
         return source != damageSources().inWall() && super.hurt(source, amount);
@@ -292,84 +250,10 @@ public class AlienEggEntity extends NewAlienEntity {
     @Override
     public void baseTick() {
         super.baseTick();
-
-        // Increment the hatch check timer
         hatchCheckTimer++;
 
-        if (this.getLastHurtMob() != null) {
-            this.setEggState(EggStates.HATCHING.ordinal());
-        }
-
-        // Perform hatching check once every second (20 ticks)
-        if (hatchCheckTimer >= 20) {
-            hatchCheckTimer = 0; // Reset the timer
-
-            // Get nearby entities within normal hatch range
-            this.level()
-                .getEntitiesOfClass(
-                    LivingEntity.class,
-                    this.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)
-                )
-                .forEach(target -> {
-                    // If the entity is alive and can be facehugged
-                    if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                        // Apply random chance to hatch
-                        if (this.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
-                            if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
-                                this.setEggState(EggStates.HATCHING.ordinal());
-                            }
-                        }
-                    }
-                });
-
-            // Smaller range for closer entities
-            this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3)).forEach(target -> {
-                if (
-                    target.isAlive() && GigEntityUtils.faceHuggerTest(target) && this.level().random.nextFloat() < 0.8f
-                        && (target instanceof Player player && !(player.isCreative() || player.isSpectator())
-                            || !(target instanceof Player))
-                ) {
-                    this.setEggState(EggStates.HATCHING.ordinal());
-                }
-            });
-        }
-
-        if (this.getLastHurtMob() == null)
-            // Loop through nearby blocks in different directions (this logic remains the same)
-            for (var testPos : BlockPos.betweenClosed(this.blockPosition().above(1), this.blockPosition().above(1))) {
-                for (var testPos1 : BlockPos.betweenClosed(this.blockPosition().below(1), this.blockPosition().below(1))) {
-                    for (var testPos2 : BlockPos.betweenClosed(this.blockPosition().east(1), this.blockPosition().east(1))) {
-                        for (var testPos3 : BlockPos.betweenClosed(this.blockPosition().west(1), this.blockPosition().west(1))) {
-                            for (var testPos4 : BlockPos.betweenClosed(this.blockPosition().south(1), this.blockPosition().south(1))) {
-                                for (var testPos5 : BlockPos.betweenClosed(this.blockPosition().north(1), this.blockPosition().north(1))) {
-                                    // Check if any nearby blocks are not air
-                                    boolean isAnyBlockNotAir = !this.level().getBlockState(testPos).isAir() &&
-                                        !this.level().getBlockState(testPos1).isAir() &&
-                                        !this.level().getBlockState(testPos2).isAir() &&
-                                        !this.level().getBlockState(testPos3).isAir() &&
-                                        !this.level().getBlockState(testPos4).isAir() &&
-                                        !this.level().getBlockState(testPos5).isAir();
-
-                                    // Check if any nearby blocks are solid
-                                    boolean isAnyBlockSolid = !this.level()
-                                        .getBlockState(testPos)
-                                        .isCollisionShapeFullBlock(level(), testPos) &&
-                                        !this.level().getBlockState(testPos1).isCollisionShapeFullBlock(level(), testPos1) &&
-                                        !this.level().getBlockState(testPos2).isCollisionShapeFullBlock(level(), testPos2) &&
-                                        !this.level().getBlockState(testPos3).isCollisionShapeFullBlock(level(), testPos3) &&
-                                        !this.level().getBlockState(testPos4).isCollisionShapeFullBlock(level(), testPos4) &&
-                                        !this.level().getBlockState(testPos5).isCollisionShapeFullBlock(level(), testPos5);
-
-                                    // Set isHatching to false if conditions are met
-                                    if (isAnyBlockSolid || isAnyBlockNotAir) {
-                                        this.setEggState(EggStates.IDLE.ordinal());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        GigCommonMethods.handleAoEEntityHatchCheck(this);
+        GigCommonMethods.handleAoEBlockHatchCheck(this);
     }
 
     @Override

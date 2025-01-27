@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -66,10 +65,12 @@ public record GigCommonMethods() {
     }
 
     public static void handleNestProgress(AlienEggEntity alienEggEntity) {
-        if (alienEggEntity.getEggState() == EggStates.IDLE.ordinal() && alienEggEntity.isAlive()) {
+        if (alienEggEntity.getEggState() == EggStates.HATCHED.ordinal() && alienEggEntity.isAlive()) {
             alienEggEntity.setTicksUntilNest(alienEggEntity.ticksUntilNest++);
 
             if (alienEggEntity.getTicksUntilNest() >= 6000f) {
+                if (alienEggEntity.level().isClientSide)
+                    GigCommonMethods.spawnParticlesForNesting(alienEggEntity);
                 alienEggEntity.level()
                     .setBlockAndUpdate(alienEggEntity.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
                 alienEggEntity.kill();
@@ -130,6 +131,109 @@ public record GigCommonMethods() {
             }
             alienEggEntity.setHasFacehugger(false);
         }
+    }
+
+    public static void handleAoEEntityHatchCheck(AlienEggEntity alienEggEntity) {
+        // Perform hatching check once every second (20 ticks)
+        if (alienEggEntity.hatchCheckTimer >= 20) {
+            alienEggEntity.hatchCheckTimer = 0; // Reset the timer
+
+            alienEggEntity.level()
+                .getEntitiesOfClass(
+                    LivingEntity.class,
+                    alienEggEntity.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)
+                )
+                .forEach(target -> {
+                    if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
+                        if (alienEggEntity.level().random.nextFloat() < 0.2f) { // 20% chance to hatch every second
+                            if (!target.isSteppingCarefully() && Constants.isNotCreativeSpecPlayer.test(target)) {
+                                alienEggEntity.setEggState(EggStates.HATCHING.ordinal());
+                            }
+                        }
+                    }
+                });
+
+            alienEggEntity.level().getEntitiesOfClass(LivingEntity.class, alienEggEntity.getBoundingBox().inflate(3)).forEach(target -> {
+                if (
+                    target.isAlive() && GigEntityUtils.faceHuggerTest(target) && alienEggEntity.level().random.nextFloat() < 0.8f
+                        && (target instanceof Player player && !(player.isCreative() || player.isSpectator())
+                            || !(target instanceof Player))
+                ) {
+                    alienEggEntity.setEggState(EggStates.HATCHING.ordinal());
+                }
+            });
+        }
+    }
+
+    public static void handleAoEBlockHatchCheck(AlienEggEntity alienEggEntity) {
+        if (alienEggEntity.getLastHurtMob() == null)
+            // Loop through nearby blocks in different directions (this logic remains the same)
+            for (var testPos : BlockPos.betweenClosed(alienEggEntity.blockPosition().above(1), alienEggEntity.blockPosition().above(1))) {
+                for (
+                    var testPos1 : BlockPos.betweenClosed(alienEggEntity.blockPosition().below(1), alienEggEntity.blockPosition().below(1))
+                ) {
+                    for (
+                        var testPos2 : BlockPos.betweenClosed(
+                            alienEggEntity.blockPosition().east(1),
+                            alienEggEntity.blockPosition().east(1)
+                        )
+                    ) {
+                        for (
+                            var testPos3 : BlockPos.betweenClosed(
+                                alienEggEntity.blockPosition().west(1),
+                                alienEggEntity.blockPosition().west(1)
+                            )
+                        ) {
+                            for (
+                                var testPos4 : BlockPos.betweenClosed(
+                                    alienEggEntity.blockPosition().south(1),
+                                    alienEggEntity.blockPosition().south(1)
+                                )
+                            ) {
+                                for (
+                                    var testPos5 : BlockPos.betweenClosed(
+                                        alienEggEntity.blockPosition().north(1),
+                                        alienEggEntity.blockPosition().north(1)
+                                    )
+                                ) {
+                                    // Check if any nearby blocks are not air
+                                    boolean isAnyBlockNotAir = !alienEggEntity.level().getBlockState(testPos).isAir() &&
+                                        !alienEggEntity.level().getBlockState(testPos1).isAir() &&
+                                        !alienEggEntity.level().getBlockState(testPos2).isAir() &&
+                                        !alienEggEntity.level().getBlockState(testPos3).isAir() &&
+                                        !alienEggEntity.level().getBlockState(testPos4).isAir() &&
+                                        !alienEggEntity.level().getBlockState(testPos5).isAir();
+
+                                    // Check if any nearby blocks are solid
+                                    boolean isAnyBlockSolid = !alienEggEntity.level()
+                                        .getBlockState(testPos)
+                                        .isCollisionShapeFullBlock(alienEggEntity.level(), testPos) &&
+                                        !alienEggEntity.level()
+                                            .getBlockState(testPos1)
+                                            .isCollisionShapeFullBlock(alienEggEntity.level(), testPos1) &&
+                                        !alienEggEntity.level()
+                                            .getBlockState(testPos2)
+                                            .isCollisionShapeFullBlock(alienEggEntity.level(), testPos2) &&
+                                        !alienEggEntity.level()
+                                            .getBlockState(testPos3)
+                                            .isCollisionShapeFullBlock(alienEggEntity.level(), testPos3) &&
+                                        !alienEggEntity.level()
+                                            .getBlockState(testPos4)
+                                            .isCollisionShapeFullBlock(alienEggEntity.level(), testPos4) &&
+                                        !alienEggEntity.level()
+                                            .getBlockState(testPos5)
+                                            .isCollisionShapeFullBlock(alienEggEntity.level(), testPos5);
+
+                                    // Set isHatching to false if conditions are met
+                                    if (isAnyBlockSolid || isAnyBlockNotAir) {
+                                        alienEggEntity.setEggState(EggStates.IDLE.ordinal());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     public static void handlePlayerInteraction(AlienEggEntity alienEggEntity) {
