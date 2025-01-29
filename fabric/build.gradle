@@ -14,6 +14,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "mod.azure.azurelib:azurelib-fabric-${minecraft_version}:${azurelib_version}"
+    modImplementation "curse.maven:spark-361579:5759670"
+    modImplementation "maven.modrinth:fabric-permissions-api:0.3.3"
     modApi "com.terraformersmc:modmenu:${modmenu_version}"
 }
 

@@ -36,6 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.world.BiomeModifier;
@@ -186,6 +187,7 @@ public final class NeoForgeMod {
         FLUID_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
+        NeoForge.EVENT_BUS.addListener(this::onJoin);
     }
 
     public void onRegisterEvent(RegisterSpawnPlacementsEvent event) {
@@ -258,6 +260,10 @@ public final class NeoForgeMod {
                 PandoraData.setIsTriggered(true);
             }
         }
+    }
+
+    private void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+        Constants.particleCount = 0;
     }
 
     record ModEntitySpawn(

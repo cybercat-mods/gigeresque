@@ -5,8 +5,17 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
-import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class is licensed under the MIT License.
+ * See the full license here: <a href="https://github.com/PigCart/particle-rain/blob/main/LICENSE">MIT License</a>.
+ * <br>
+ * This is a modified version of the original class:
+ * <a href="https://github.com/PigCart/particle-rain/blob/1.21/src/main/java/pigcart/particlerain/particle/GroundFogParticle.java">
+ * GroundFogParticle.java</a>.
+ * <br>
+ * Credit to PigCart and the Particle Rain project for the original implementation.
+ */
 public class MistParticleFactory implements ParticleProvider<SimpleParticleType> {
 
     private final SpriteSet spriteProvider;
@@ -16,16 +25,7 @@ public class MistParticleFactory implements ParticleProvider<SimpleParticleType>
     }
 
     @Override
-    public Particle createParticle(
-        @NotNull SimpleParticleType defaultParticleType,
-        @NotNull ClientLevel clientWorld,
-        double d,
-        double e,
-        double f,
-        double g,
-        double h,
-        double i
-    ) {
-        return new MistParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
+    public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+        return new MistParticle(level, x, y, z, this.spriteProvider);
     }
 }

@@ -2,7 +2,11 @@ package mods.cybercat.gigeresque;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -112,6 +116,7 @@ public class FabricModClient implements ClientModInitializer {
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
         );
+        ClientPlayConnectionEvents.JOIN.register(this::onJoin);
     }
 
     private void registerParticle(
@@ -121,5 +126,9 @@ public class FabricModClient implements ClientModInitializer {
     ) {
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, Constants.modResource(path), type);
         ParticleFactoryRegistry.getInstance().register(type, factory);
+    }
+
+    private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
+        Constants.particleCount = 0;
     }
 }

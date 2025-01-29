@@ -14,6 +14,8 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public record Constants() {
 
+    public static int particleCount = 0;
+
     public static final int TPS = 20; // Ticks per second
 
     public static final int TPM = TPS * 60; // Ticks per minute
