@@ -99,7 +99,7 @@ public class FacehuggerPounceTask<E extends FacehuggerEntity> extends CustomDela
             return;
 
         // Check if the target is within the entity's view direction and reachable via pathfinding
-        if (!this.target.getUseItem().is(Items.SHIELD)) {
+        if (!this.target.getUseItem().is(Items.SHIELD) && entity.isWithinMeleeAttackRange(this.target)) {
             entity.grabTarget(this.target);
         }
     }
