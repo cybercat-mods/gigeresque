@@ -6,6 +6,9 @@
 			"animation_length": 2,
 			"bones": {
 				"body": {
+					"rotation": {
+						"vector": [2.5, 0, 0]
+					},
 					"position": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -343,7 +346,7 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [0, "Math.cos(query.anim_time*360)*1.5", "Math.sin(query.anim_time*360)*1.5"]
+						"vector": [2.5, 0, 0]
 					}
 				},
 				"lLegA02": {
@@ -1512,7 +1515,7 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [-180, "Math.sin(query.anim_time*360)*3", "Math.cos(query.anim_time*360)*3"]
+						"vector": [-177.5, "Math.sin(query.anim_time*360)*3", "Math.cos(query.anim_time*360)*3"]
 					},
 					"position": {
 						"vector": [0, 0, -2.5]
@@ -1963,7 +1966,7 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [0, "Math.cos(query.anim_time*815)*2.5", "Math.sin(query.anim_time*815)*2.5"]
+						"vector": [2.5, "Math.cos(query.anim_time*815)*2.5", "Math.sin(query.anim_time*815)*2.5"]
 					}
 				},
 				"lLegA02": {
@@ -2845,7 +2848,7 @@
 				},
 				"body": {
 					"rotation": {
-						"vector": ["Math.sin(query.anim_time*180)*-1.5", 0, 0]
+						"vector": ["Math.sin(query.anim_time*180)*0.5", 0, 0]
 					},
 					"position": {
 						"vector": [0, "2+Math.cos(query.anim_time*180)*-0.15", -3]
@@ -3118,7 +3121,7 @@
 				},
 				"body": {
 					"rotation": {
-						"vector": ["Math.sin(query.anim_time*360)*-4", 0, 0]
+						"vector": ["Math.sin(query.anim_time*360)*-1.5", 0, 0]
 					},
 					"position": {
 						"vector": [0, "2+Math.cos(query.anim_time*360)*-0.4", -3]
@@ -3391,7 +3394,7 @@
 				},
 				"body": {
 					"rotation": {
-						"vector": ["Math.sin(query.anim_time*720)*-6", 0, 0]
+						"vector": ["Math.sin(query.anim_time*720)*-3.5", 0, 0]
 					},
 					"position": {
 						"vector": [0, "2+Math.cos(query.anim_time*720)*-0.6", -3]
@@ -3592,7 +3595,7 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [-75, 0, 0]
+						"vector": [-72.5, 0, 0]
 					},
 					"position": {
 						"vector": [0, 5, 1]
@@ -4481,7 +4484,7 @@
 				"body": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, 0]
+							"vector": [2.5, 0, 0]
 						},
 						"0.52": {
 							"vector": [5, 0, 0],
@@ -4775,10 +4778,10 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [-92.5, 0, 0]
+						"vector": [-90, 0, 0]
 					},
 					"position": {
-						"vector": [0, 5, 1]
+						"vector": [0, 5, 0]
 					}
 				},
 				"tube01": {
@@ -5086,10 +5089,10 @@
 			"bones": {
 				"body": {
 					"rotation": {
-						"vector": [-2.5, 0, 180]
+						"vector": [0, 0, 180]
 					},
 					"position": {
-						"vector": [0, -0.5, -3]
+						"vector": [0, 2.5, -3]
 					}
 				},
 				"rLegA02": {

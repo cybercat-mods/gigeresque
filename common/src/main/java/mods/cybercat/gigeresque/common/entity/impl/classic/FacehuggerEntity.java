@@ -1,12 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.Animation;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
@@ -27,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -37,7 +33,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -62,12 +57,12 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -76,34 +71,19 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 /**
  * TODO: Ensure crawling works good
  */
-public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
-
-    public static final EntityDataAccessor<Boolean> EGGSPAWN = SynchedEntityData.defineId(
-        FacehuggerEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
-    public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(
-        FacehuggerEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
-    public static final EntityDataAccessor<Boolean> JUMPING = SynchedEntityData.defineId(
-        FacehuggerEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
+public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<FacehuggerEntity> {
 
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(
         FacehuggerEntity.class,
         EntityDataSerializers.BOOLEAN
     );
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     public float ticksAttachedToHost = -1.0f;
 
-    public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
+    public FacehuggerEntity(EntityType<? extends NewAlienEntity> type, Level world) {
         super(type, world);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.2F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
     }
@@ -139,14 +119,6 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         }
     }
 
-    public boolean isEggSpawn() {
-        return this.entityData.get(EGGSPAWN);
-    }
-
-    public void setEggSpawnState(boolean state) {
-        this.entityData.set(EGGSPAWN, state);
-    }
-
     @Override
     public int getAcidDiameter() {
         return this.isPassenger() ? 0 : 1;
@@ -160,31 +132,15 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         entityData.set(IS_INFERTILE, value);
     }
 
-    public boolean isAttacking() {
-        return entityData.get(ATTACKING);
-    }
-
-    public boolean isJumping() {
-        return entityData.get(JUMPING);
-    }
-
     @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_INFERTILE, false);
-        builder.define(EGGSPAWN, false);
-        builder.define(ATTACKING, false);
-        builder.define(JUMPING, false);
     }
 
     public void detachFromHost() {
         this.ticksAttachedToHost = -1.0f;
         this.unRide();
-    }
-
-    @Override
-    public @NotNull Vec3 getDismountLocationForPassenger(@NotNull LivingEntity passenger) {
-        return super.getDismountLocationForPassenger(passenger);
     }
 
     public boolean isAttachedToHost() {
@@ -206,10 +162,6 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     public void grabTarget(LivingEntity entity) {
         this.startRiding(entity, true);
         this.setAggressive(false);
-        entity.xxa = 0;
-        entity.zza = 0;
-        entity.yya = 0;
-        entity.yBodyRot = 0;
         entity.setSpeed(0.0f);
         if (CommonMod.config.facehuggerConfigs.facehuggerGivesBlindness)
             entity.addEffect(
@@ -290,6 +242,11 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     @Override
     public void tick() {
         super.tick();
+        moveAnalysis.update();
+
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+        }
         this.handleAttachmentToHost();
         if (isInfertile()) {
             this.kill();
@@ -297,10 +254,31 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
             this.getBrain().removeAllBehaviors();
             return;
         }
-        if (this.isEggSpawn() && this.tickCount > 30) {
-            if (this.hasEffect(MobEffects.SLOW_FALLING))
-                this.removeEffect(MobEffects.SLOW_FALLING);
-            this.setEggSpawnState(false);
+        /*
+         * ANIMATIONS
+         */
+        if (this.level().isClientSide) {
+            if (this.isDeadOrDying() || !this.isAlive()) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            }
+            if (isPassenger() && !this.isDeadOrDying()) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+            }
+            if (moveAnalysis.isMoving() && onGround() && !isPassenger() && !this.isDeadOrDying()) {
+                if (!isInWater()) {
+                    GigCommonMethods.setAnimation(this.isAggressive()
+                            ? animationDispatcher::sendCrawlRush
+                            : animationDispatcher::sendCrawl);
+                } else {
+                    GigCommonMethods.setAnimation(this.isAggressive()
+                            ? animationDispatcher::sendRushSwim
+                            : animationDispatcher::sendSwim);
+                }
+            } else if (!moveAnalysis.isMoving() && onGround() && !isPassenger() && !this.isDeadOrDying()) {
+                GigCommonMethods.setAnimation(this.isInWater()
+                        ? animationDispatcher::sendIdleWater
+                        : animationDispatcher::sendIdleLand);
+            }
         }
     }
 
@@ -363,27 +341,6 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     @Override
-    public boolean isPathFinding() {
-        return false;
-    }
-
-    @Override
-    public boolean onClimbable() {
-        setIsCrawling(
-            this.horizontalCollision && !this.isNoGravity() && !this.level()
-                .getBlockState(
-                    this.blockPosition().above()
-                )
-                .is(BlockTags.STAIRS) || this.isAggressive()
-        );
-        return !this.level()
-            .getBlockState(this.blockPosition().above())
-            .is(
-                BlockTags.STAIRS
-            ) && !this.isAggressive() && (this.fallDistance <= 0.1 || this.isEggSpawn());
-    }
-
-    @Override
     protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
@@ -440,7 +397,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.75f),
                 new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))
             )
         );
@@ -454,59 +411,8 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
                     target
                 ) || target.getType().is(EntityTypeTags.UNDEAD) || this.isFleeing()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.85F),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F),
             new FacehuggerPounceTask<>(6)
         );
-    }
-
-    /*
-     * ANIMATIONS
-     */
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            if (this.getVehicle() instanceof LivingEntity && !this.isDeadOrDying())
-                return event.setAndContinue(GigAnimationsDefault.IMPREGNATE);
-            if (!this.isJumping() && !this.isAttacking() && isInfertile() || this.isDeadOrDying())
-                return event.setAndContinue(GigAnimationsDefault.DEATH);
-            if (!this.isJumping() && this.isUnderWater() && !(this.isCrawling() || this.isTunnelCrawling()) && !this.isDeadOrDying())
-                if (!this.isAttacking() && event.isMoving())
-                    return event.setAndContinue(GigAnimationsDefault.SWIM);
-                else if (this.isAttacking() && event.isMoving())
-                    return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-            if (this.isJumping())
-                return event.setAndContinue(GigAnimationsDefault.CHARGE);
-            if (this.isEggSpawn() && !this.isDeadOrDying())
-                return event.setAndContinue(GigAnimationsDefault.HATCH_LEAP);
-            if (!this.isJumping() && this.isAttacking() && !this.isDeadOrDying() && event.isMoving()) {
-                event.getController().setAnimationSpeed(3f);
-                return event.setAndContinue(GigAnimationsDefault.CRAWL_RUSH);
-            }
-            if (!this.isJumping() && !this.isEggSpawn() && event.isMoving() && !this.isDeadOrDying() && !this.isAttacking()) {
-                event.getController().setAnimationSpeed(3f);
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            }
-            return event.setAndContinue(GigAnimationsDefault.IDLE_LAND);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("huggingSoundkey") && this.level().isClientSide)
-                this.level()
-                    .playLocalSound(
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        GigSounds.HUGGER_IMPLANT.get(),
-                        SoundSource.HOSTILE,
-                        0.25F,
-                        1.0F,
-                        true
-                    );
-        }).triggerableAnim("stun", RawAnimation.begin().then("stunned", Animation.LoopType.PLAY_ONCE)));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

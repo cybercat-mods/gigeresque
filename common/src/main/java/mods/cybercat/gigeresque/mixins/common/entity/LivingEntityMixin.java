@@ -94,7 +94,7 @@ public abstract class LivingEntityMixin extends Entity {
                     false
                 )
             );
-            ((FacehuggerEntity) this.getFirstPassenger()).triggerAnim(Constants.LIVING_CONTROLLER, "stun");
+            ((FacehuggerEntity) this.getFirstPassenger()).animationDispatcher.sendStunned();
             ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost();
         }
     }
