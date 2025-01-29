@@ -18,7 +18,7 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
 
     private static final RenderType EGG_RENDER_TYPE = RenderType.entityCutoutNoCull(EntityTextures.EGG);
 
-    private static final RenderType EGG_ACTIVE_RENDER_TYPE = RenderType.entityTranslucent(EntityTextures.EGG_ACTIVE);
+    private static final RenderType EGG_ACTIVE_RENDER_TYPE = RenderType.entityTranslucentCull(EntityTextures.EGG_ACTIVE);
 
     public EggEntityRenderer(EntityRendererProvider.Context context) {
         super(
