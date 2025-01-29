@@ -97,7 +97,7 @@ public record GigEntityUtils() {
                 GigTags.SMALL_XENO_ATTACK_BLACKLIST
             )) || GigEntityUtils.mainCheck(target) || GigEntityUtils.mainCheck2(
                 target
-            ) || !GigEntityUtils.isTargetHostable(target) && !target.isAlive());
+            ) || !GigEntityUtils.isTargetHostable(target) || !target.isAlive());
     }
 
     public static boolean mainCheck(LivingEntity target) {
