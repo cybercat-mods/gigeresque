@@ -1,7 +1,11 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
+import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
+import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.render.helper.FacehuggerModelRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
@@ -23,6 +27,16 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
+        this.shadowRadius = 0.25f;
+    }
+
+    @Override
+    protected AzEntityRendererPipeline<FacehuggerEntity> createPipeline(AzEntityRendererConfig<FacehuggerEntity> config) {
+        return new AzEntityRendererPipeline<>(config, this) {
+            @Override
+            protected AzModelRenderer<FacehuggerEntity> createModelRenderer(AzLayerRenderer<FacehuggerEntity> layerRenderer) {
+                return new FacehuggerModelRenderer(this, layerRenderer);
+            }
+        };
     }
 }

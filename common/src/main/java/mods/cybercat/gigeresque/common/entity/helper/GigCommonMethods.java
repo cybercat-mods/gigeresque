@@ -29,6 +29,10 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public record GigCommonMethods() {
 
+    public static void setAnimation(Runnable animationAction) {
+        animationAction.run();
+    }
+
     public static void generateAcidPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
         var acidEntity = GigEntities.ACID.get().create(entity.level());
         assert acidEntity != null;
