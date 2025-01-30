@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
+import mods.cybercat.gigeresque.common.entity.impl.blood.AcidEntity;
+import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -11,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
@@ -39,10 +42,6 @@ public class FragileRoughBlock extends Block implements Fallable {
         ) {
             if (Constants.particleCount < 1500) {
                 level.addParticle(
-                        GigParticles.MIST.get(),
-                        pos.getX() + 0.5D + offsetX,
-                        pos.getY() + offsetY,
-                        pos.getZ() + 0.5D + offsetZ,
                     GigParticles.MIST.get(),
                     pos.getX() + 0.5D + offsetX,
                     pos.getY() + offsetY,
@@ -63,7 +62,17 @@ public class FragileRoughBlock extends Block implements Fallable {
             return;
         super.stepOn(level, pos, state, entity);
         if (entity instanceof LivingEntity livingEntity) {
+            var invisAcid = new AcidEntity(level, false);
             standingTick++;
+            /**
+             * TODO: Update to using break manager for breaking effect
+             */
+//            if (standingTick >= (livingEntity.isSteppingCarefully() ? 40 : 20)) {
+//                invisAcid.setUseEffects(false);
+//                invisAcid.setPos(livingEntity.position().x, livingEntity.position().y + 1, livingEntity.position().z);
+//                level.addFreshEntity(invisAcid);
+//                standingTick = 0;
+//            }
             if (standingTick >= (livingEntity.isSteppingCarefully() ? 80 : 40)) {
                 var areaEffectCloudEntity = new AreaEffectCloud(level, pos.getX(), pos.getY(), pos.getZ());
                 areaEffectCloudEntity.setRadius(1.0F);
