@@ -25,12 +25,11 @@ public class AcidParticle extends TextureSheetParticle {
         var colorGreen = Mth.nextFloat(random, green - 0.05f, green + 0.05f);
         var colorBlue = Mth.nextFloat(random, blue - 0.015f, blue + 0.015f);
         this.setColor(colorRed, colorGreen, colorBlue);
-        this.gravity = 3.0E-6F;
+        this.gravity = 0.0002F;
         this.quadSize *= 0.75f;
         this.lifetime = (int) (10.0 / ((random.nextFloat()) * 0.8 + 0.2));
         this.reachedGround = false;
         this.hasPhysics = true;
-        this.gravity = 0.1F;
         this.spriteProvider = spriteProvider;
         this.setSpriteFromAge(spriteProvider);
     }
