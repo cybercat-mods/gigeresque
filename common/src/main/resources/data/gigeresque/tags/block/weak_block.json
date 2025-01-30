@@ -201,6 +201,11 @@
     "minecraft:crafting_table",
     "minecraft:flower_pot",
     "minecraft:turtle_egg",
-    "minecraft:crafting_table"
+    "minecraft:crafting_table",
+    "gigeresque:sinous_fragile_alien_block",
+    "gigeresque:organic_fragile_alien_block",
+    "gigeresque:resinous_fragile_alien_block",
+    "gigeresque:ribbed_fragile_alien_block",
+    "gigeresque:rough_fragile_alien_block"
   ]
 }
