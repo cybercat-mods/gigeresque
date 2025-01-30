@@ -61,7 +61,7 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
             if (entity.distanceToSqr(foodItem.stream().findFirst().get()) < 1) {
                 entity.getNavigation().stop();
                 entity.setEatingStatus(true);
-                entity.triggerAnim(Constants.ATTACK_CONTROLLER, Constants.EAT);
+                entity.animationDispatcher.sendChomp();
                 item.getItem().finishUsingItem(entity.level(), entity);
                 item.getItem().shrink(1);
                 entity.grow(entity, 2400.0f);
@@ -72,6 +72,6 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
-        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 3.7F, 0));
+        BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 0.9F, 0));
     }
 }

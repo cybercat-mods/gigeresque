@@ -5,21 +5,32 @@ import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 
 /**
  * Credit to Boston for this code
  */
 public class FacehuggerModelRenderer extends AzEntityModelRenderer<FacehuggerEntity> {
 
-    public FacehuggerModelRenderer(AzEntityRendererPipeline<FacehuggerEntity> entityRendererPipeline, AzLayerRenderer<FacehuggerEntity> layerRenderer) {
+    public FacehuggerModelRenderer(
+        AzEntityRendererPipeline<FacehuggerEntity> entityRendererPipeline,
+        AzLayerRenderer<FacehuggerEntity> layerRenderer
+    ) {
         super(entityRendererPipeline, layerRenderer);
     }
 
     @Override
-    protected void applyRotations(FacehuggerEntity animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick, float nativeScale) {
+    protected void applyRotations(
+        FacehuggerEntity animatable,
+        PoseStack poseStack,
+        float ageInTicks,
+        float rotationYaw,
+        float partialTick,
+        float nativeScale
+    ) {
         if (!animatable.isPassenger()) {
             super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
             return;
@@ -40,7 +51,13 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<FacehuggerEnt
         applyFaceRotations(animatable, poseStack, partialTick, host, data);
     }
 
-    private void applyFaceRotations(FacehuggerEntity facehuggerEntity, PoseStack poseStack, float partialTick, LivingEntity host, EntityHeadData data) {
+    private void applyFaceRotations(
+        FacehuggerEntity facehuggerEntity,
+        PoseStack poseStack,
+        float partialTick,
+        LivingEntity host,
+        EntityHeadData data
+    ) {
         var bodyYaw = Mth.rotLerp(partialTick, host.yBodyRotO, host.yBodyRot);
         var headYaw = Mth.rotLerp(partialTick, host.yHeadRotO, host.yHeadRot) - bodyYaw;
         var headPitch = Mth.rotLerp(partialTick, host.getXRot(), host.xRotO);

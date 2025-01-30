@@ -57,7 +57,7 @@ public record Constants() {
         GigStatusEffects.IMPREGNATION
     ).getDuration() < (0.2 * CommonMod.config.getImpregnationTickTimer()) && (livingEntity.tickCount % Constants.TPS == 0L));
 
-    public static final String ATTACK_CONTROLLER = "attackController";
+    public static final String ATTACK_CONTROLLER = "attack_controller";
 
     public static final String LIVING_CONTROLLER = "livingController";
 

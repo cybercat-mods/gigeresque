@@ -16,9 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FragileRoughBlock extends Block implements Fallable {
 
@@ -44,9 +43,13 @@ public class FragileRoughBlock extends Block implements Fallable {
                         pos.getX() + 0.5D + offsetX,
                         pos.getY() + offsetY,
                         pos.getZ() + 0.5D + offsetZ,
-                        0.0D,
-                        0.002D,
-                        0.0D
+                    GigParticles.MIST.get(),
+                    pos.getX() + 0.5D + offsetX,
+                    pos.getY() + offsetY,
+                    pos.getZ() + 0.5D + offsetZ,
+                    0.0D,
+                    0.0D,
+                    0.0D
                 );
             }
         }

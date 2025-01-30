@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block;
 
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -9,11 +8,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class GigBlock extends Block {
 
@@ -35,13 +32,13 @@ public class GigBlock extends Block {
         ) {
             if (Constants.particleCount < 1500) {
                 level.addParticle(
-                        GigParticles.MIST.get(),
-                        pos.getX() + 0.5D + offsetX,
-                        pos.getY() + offsetY,
-                        pos.getZ() + 0.5D + offsetZ,
-                        0.0D,
-                        0.002D,
-                        0.0D
+                    GigParticles.MIST.get(),
+                    pos.getX() + 0.5D + offsetX,
+                    pos.getY() + offsetY,
+                    pos.getZ() + 0.5D + offsetZ,
+                    0.0D,
+                    0.002D,
+                    0.0D
                 );
             }
         }

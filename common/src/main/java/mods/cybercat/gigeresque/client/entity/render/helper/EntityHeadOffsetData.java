@@ -11,100 +11,100 @@ import java.util.function.BiFunction;
  * Credit to Boston for this code
  */
 public record EntityHeadOffsetData(
-        BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
-        BiFunction<EntityHeadData, Entity, Double> faceOffsetSupplier
+    BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
+    BiFunction<EntityHeadData, Entity, Double> faceOffsetSupplier
 
 ) {
 
     private static final EntityHeadOffsetData COW = new EntityHeadOffsetData(
-            EntityHeadOffsetData::cowVerticalOffset,
-            EntityHeadOffsetData::cowFaceOffset
+        EntityHeadOffsetData::cowVerticalOffset,
+        EntityHeadOffsetData::cowFaceOffset
     );
 
     private static final EntityHeadOffsetData LLAMA = new EntityHeadOffsetData(
-            EntityHeadOffsetData::llamaVerticalOffset,
-            EntityHeadOffsetData::llamaFaceOffset
+        EntityHeadOffsetData::llamaVerticalOffset,
+        EntityHeadOffsetData::llamaFaceOffset
     );
 
     private static final EntityHeadOffsetData VILLAGER = new EntityHeadOffsetData(
-            EntityHeadOffsetData::villagerVerticalOffset,
-            EntityHeadOffsetData::villagerFaceOffset
+        EntityHeadOffsetData::villagerVerticalOffset,
+        EntityHeadOffsetData::villagerFaceOffset
     );
 
     public static final Map<EntityType<?>, EntityHeadOffsetData> ENTITY_HEAD_OFFSET_DATA_BY_TYPE = new HashMap<>(
-            Map.ofEntries(
-                    Map.entry(
-                            EntityType.CAMEL,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::camelVerticalOffset, EntityHeadOffsetData::camelFaceOffset)
-                    ),
-                    Map.entry(EntityType.COW, COW),
-                    Map.entry(
-                            EntityType.DONKEY,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::donkeyVerticalOffset, EntityHeadOffsetData::donkeyFaceOffset)
-                    ),
-                    Map.entry(EntityType.EVOKER, VILLAGER),
-                    Map.entry(
-                            EntityType.FOX,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::foxVerticalOffset, EntityHeadOffsetData::foxFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.GOAT,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::goatVerticalOffset, EntityHeadOffsetData::goatFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.HORSE,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::horseVerticalOffset, EntityHeadOffsetData::horseFaceOffset)
-                    ),
-                    Map.entry(EntityType.ILLUSIONER, VILLAGER),
-                    Map.entry(EntityType.LLAMA, LLAMA),
-                    Map.entry(EntityType.MOOSHROOM, COW),
-                    Map.entry(
-                            EntityType.MULE,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::muleVerticalOffset, EntityHeadOffsetData::muleFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.PANDA,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::pandaVerticalOffset, EntityHeadOffsetData::pandaFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.PIG,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::pigVerticalOffset, EntityHeadOffsetData::pigFaceOffset)
-                    ),
-                    Map.entry(EntityType.PIGLIN, VILLAGER),
-                    Map.entry(EntityType.PIGLIN_BRUTE, VILLAGER),
-                    Map.entry(EntityType.PILLAGER, VILLAGER),
-                    Map.entry(
-                            EntityType.PLAYER,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::playerVerticalOffset, EntityHeadOffsetData::playerFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.POLAR_BEAR,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::polarBearVerticalOffset, EntityHeadOffsetData::polarBearFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.RAVAGER,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::ravagerVerticalOffset, EntityHeadOffsetData::ravagerFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.SHEEP,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::sheepVerticalOffset, EntityHeadOffsetData::sheepFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.SNIFFER,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::snifferVerticalOffset, EntityHeadOffsetData::snifferFaceOffset)
-                    ),
-                    Map.entry(EntityType.TRADER_LLAMA, LLAMA),
-                    Map.entry(EntityType.VILLAGER, VILLAGER),
-                    Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
-                    Map.entry(
-                            EntityType.WITCH,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::witchVerticalOffset, EntityHeadOffsetData::villagerFaceOffset)
-                    ),
-                    Map.entry(
-                            EntityType.WOLF,
-                            new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
-                    )
+        Map.ofEntries(
+            Map.entry(
+                EntityType.CAMEL,
+                new EntityHeadOffsetData(EntityHeadOffsetData::camelVerticalOffset, EntityHeadOffsetData::camelFaceOffset)
+            ),
+            Map.entry(EntityType.COW, COW),
+            Map.entry(
+                EntityType.DONKEY,
+                new EntityHeadOffsetData(EntityHeadOffsetData::donkeyVerticalOffset, EntityHeadOffsetData::donkeyFaceOffset)
+            ),
+            Map.entry(EntityType.EVOKER, VILLAGER),
+            Map.entry(
+                EntityType.FOX,
+                new EntityHeadOffsetData(EntityHeadOffsetData::foxVerticalOffset, EntityHeadOffsetData::foxFaceOffset)
+            ),
+            Map.entry(
+                EntityType.GOAT,
+                new EntityHeadOffsetData(EntityHeadOffsetData::goatVerticalOffset, EntityHeadOffsetData::goatFaceOffset)
+            ),
+            Map.entry(
+                EntityType.HORSE,
+                new EntityHeadOffsetData(EntityHeadOffsetData::horseVerticalOffset, EntityHeadOffsetData::horseFaceOffset)
+            ),
+            Map.entry(EntityType.ILLUSIONER, VILLAGER),
+            Map.entry(EntityType.LLAMA, LLAMA),
+            Map.entry(EntityType.MOOSHROOM, COW),
+            Map.entry(
+                EntityType.MULE,
+                new EntityHeadOffsetData(EntityHeadOffsetData::muleVerticalOffset, EntityHeadOffsetData::muleFaceOffset)
+            ),
+            Map.entry(
+                EntityType.PANDA,
+                new EntityHeadOffsetData(EntityHeadOffsetData::pandaVerticalOffset, EntityHeadOffsetData::pandaFaceOffset)
+            ),
+            Map.entry(
+                EntityType.PIG,
+                new EntityHeadOffsetData(EntityHeadOffsetData::pigVerticalOffset, EntityHeadOffsetData::pigFaceOffset)
+            ),
+            Map.entry(EntityType.PIGLIN, VILLAGER),
+            Map.entry(EntityType.PIGLIN_BRUTE, VILLAGER),
+            Map.entry(EntityType.PILLAGER, VILLAGER),
+            Map.entry(
+                EntityType.PLAYER,
+                new EntityHeadOffsetData(EntityHeadOffsetData::playerVerticalOffset, EntityHeadOffsetData::playerFaceOffset)
+            ),
+            Map.entry(
+                EntityType.POLAR_BEAR,
+                new EntityHeadOffsetData(EntityHeadOffsetData::polarBearVerticalOffset, EntityHeadOffsetData::polarBearFaceOffset)
+            ),
+            Map.entry(
+                EntityType.RAVAGER,
+                new EntityHeadOffsetData(EntityHeadOffsetData::ravagerVerticalOffset, EntityHeadOffsetData::ravagerFaceOffset)
+            ),
+            Map.entry(
+                EntityType.SHEEP,
+                new EntityHeadOffsetData(EntityHeadOffsetData::sheepVerticalOffset, EntityHeadOffsetData::sheepFaceOffset)
+            ),
+            Map.entry(
+                EntityType.SNIFFER,
+                new EntityHeadOffsetData(EntityHeadOffsetData::snifferVerticalOffset, EntityHeadOffsetData::snifferFaceOffset)
+            ),
+            Map.entry(EntityType.TRADER_LLAMA, LLAMA),
+            Map.entry(EntityType.VILLAGER, VILLAGER),
+            Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
+            Map.entry(
+                EntityType.WITCH,
+                new EntityHeadOffsetData(EntityHeadOffsetData::witchVerticalOffset, EntityHeadOffsetData::villagerFaceOffset)
+            ),
+            Map.entry(
+                EntityType.WOLF,
+                new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
             )
+        )
     );
 
     private static double camelVerticalOffset(EntityHeadData data, Entity parasite) {

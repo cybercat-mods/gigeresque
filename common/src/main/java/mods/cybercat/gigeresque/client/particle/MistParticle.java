@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.client.particle;
 
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,23 +15,28 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import mods.cybercat.gigeresque.Constants;
+
 /**
- * This class is licensed under the MIT License.
- * See the full license here: <a href="https://github.com/PigCart/particle-rain/blob/main/LICENSE">MIT License</a>.
- * <br>
- * This is a modified version of the original class:
- * <a href="https://github.com/PigCart/particle-rain/blob/1.21/src/main/java/pigcart/particlerain/particle/GroundFogParticle.java">
- * GroundFogParticle.java</a>.
- * <br>
+ * This class is licensed under the MIT License. See the full license here:
+ * <a href="https://github.com/PigCart/particle-rain/blob/main/LICENSE">MIT License</a>. <br>
+ * This is a modified version of the original class: <a href=
+ * "https://github.com/PigCart/particle-rain/blob/1.21/src/main/java/pigcart/particlerain/particle/GroundFogParticle.java">
+ * GroundFogParticle.java</a>. <br>
  * Credit to PigCart and the Particle Rain project for the original implementation.
  */
 public class MistParticle extends TextureSheetParticle {
 
     private float xdxd;
+
     private float zdzd;
+
     protected BlockPos.MutableBlockPos pos;
+
     private static final float FADE_DURATION = 40f;
+
     private float targetAlpha = 0.6f;
+
     boolean shouldFadeOut = false;
 
     public MistParticle(ClientLevel level, double x, double y, double z, SpriteSet provider) {
@@ -66,7 +70,8 @@ public class MistParticle extends TextureSheetParticle {
         } else {
             fadeIn();
         }
-        if (this.onGround) this.remove();
+        if (this.onGround)
+            this.remove();
 
         this.xd = this.xdxd;
         this.zd = this.zdzd;
@@ -123,7 +128,8 @@ public class MistParticle extends TextureSheetParticle {
         quaternion.rotateZ((float) Math.atan2(x, z));
         // the z rotation doubles up on the -y axis instead of negating it like the positive axis. idk how to fix
         // for now we remove them before it gets to look too weird
-        if (yAngle < -1) shouldFadeOut = true;
+        if (yAngle < -1)
+            shouldFadeOut = true;
 
         quaternion.rotateZ(Mth.lerp(f, this.oRoll, this.roll));
         this.renderRotatedQuad(vertexConsumer, quaternion, x, y, z, f);
