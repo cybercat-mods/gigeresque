@@ -4,7 +4,7 @@ import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import net.minecraft.world.entity.Entity;
 
 public class AnimationDispatcher {
 
@@ -146,10 +146,40 @@ public class AnimationDispatcher {
         AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final NewAlienEntity animatedEntity;
+    public final AzCommand STAGE_2_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "stagger_walk",
+            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    );
 
-    public AnimationDispatcher(NewAlienEntity animatedEntity) {
+    public final AzCommand STAGE_3_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "death_walk",
+            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    );
+
+    public final AzCommand STAGE_1_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "limp_walk",
+            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    );
+
+    public final Entity animatedEntity;
+
+    public AnimationDispatcher(Entity animatedEntity) {
         this.animatedEntity = animatedEntity;
+    }
+
+    public void sendStage1() {
+        STAGE_1_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendStage2() {
+        STAGE_2_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendStage3() {
+        STAGE_3_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendIdle() {
