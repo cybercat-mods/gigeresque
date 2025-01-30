@@ -89,10 +89,6 @@
     "minecraft:structure_block",
     "minecraft:spawner",
     "minecraft:structure_void",
-    "minecraft:pink_petals",
-    {
-      "id": "#avpr:acid_immune",
-      "required": false
-    }
+    "minecraft:pink_petals"
   ]
 }
