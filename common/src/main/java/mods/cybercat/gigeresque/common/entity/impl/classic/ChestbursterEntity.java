@@ -1,11 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
@@ -25,12 +21,14 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -47,7 +45,6 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
@@ -58,14 +55,13 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class ChestbursterEntity extends AlienEntity implements Growable, SmartBrainOwner<ChestbursterEntity> {
+public class ChestbursterEntity extends NewAlienEntity implements Growable, SmartBrainOwner<ChestbursterEntity> {
 
     public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(
         ChestbursterEntity.class,
@@ -87,8 +83,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         EntityDataSerializers.FLOAT
     );
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     public int bloodRendering = 0;
 
     public int eatingCounter = 0;
@@ -97,6 +91,8 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
     }
@@ -189,20 +185,65 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
+    public boolean canBeCollidedWith() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
+        moveAnalysis.update();
+
         if (!level().isClientSide && this.isAlive()) {
             setBlood(bloodRendering++);
             grow(this, 1 * getGrowthMultiplier());
         }
+        this.handleEatingFunctions();
+        if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
+            this.setBirthStatus(false);
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+        }
+        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
+        if (!this.isEating() && this.level().isClientSide())
+            this.handleAnimations();
+    }
+
+    protected void handleEatingFunctions() {
         if (this.isEating())
             eatingCounter++;
         if (eatingCounter >= 20) {
             this.setEatingStatus(false);
             eatingCounter = 0;
         }
-        if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
-            this.setBirthStatus(false);
+    }
+
+    protected void handleAnimations() {
+        if (this.tickCount < 60 && this.isBirthed()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendBirth);
+        } else if (!this.isPassenger() && !this.isDeadOrDying()) {
+            if (this.isAggressive()) {
+                this.handleAggroMovementAniamtions();
+            } else {
+                this.handleMovementAniamtions();
+            }
+        }
+    }
+
+    protected void handleMovementAniamtions() {
+        if (this.moveAnalysis.isMoving()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSlither);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+        }
+    }
+
+    protected void handleAggroMovementAniamtions() {
+        if (this.moveAnalysis.isMoving()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRushSlither);
+        }
     }
 
     @Override
@@ -270,8 +311,8 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Flee Fire
-            new FleeFireTask<>(3.5F),
-            new AlienPanic(4.0f),
+            new FleeFireTask<>(1.0F),
+            new AlienPanic(1.0f),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
                 .startCondition(
@@ -317,13 +358,13 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.2f)
-            ),
-            // Idle
-            new Idle<>().startCondition(entity -> !this.isAggressive())
-                .runFor(
-                    entity -> entity.getRandom().nextInt(30, 60)
-                )
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.67f),
+                // Idle
+                new Idle<>().startCondition(entity -> !this.isAggressive())
+                        .runFor(
+                                entity -> entity.getRandom().nextInt(30, 60)
+                        )
+            )
         );
     }
 
@@ -337,7 +378,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     /*
      * GROWTH
      */
-
     @Override
     public float getGrowthMultiplier() {
         return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
@@ -363,54 +403,5 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
                 entity.setCustomName(this.getCustomName());
         }
         return entity;
-    }
-
-    /*
-     * ANIMATIONS
-     */
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && walkAnimation.speedOld > 0.15F)
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUSH_SLITHER);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.SLITHER);
-            else if (this.tickCount < 60 && event.getAnimatable().isBirthed())
-                return event.setAndContinue(GigAnimationsDefault.BIRTH);
-            else
-                return event.setAndContinue(GigAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("stepSoundkey") && this.level().isClientSide)
-                this.level()
-                    .playLocalSound(
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        GigSounds.BURSTER_CRAWL.get(),
-                        SoundSource.HOSTILE,
-                        0.25F,
-                        1.0F,
-                        true
-                    );
-        }));
-        controllers.add(
-            new AnimationController<>(
-                this,
-                Constants.ATTACK_CONTROLLER,
-                0,
-                event -> PlayState.STOP
-            ).triggerableAnim(Constants.EAT, GigAnimationsDefault.CHOMP)
-                .triggerableAnim(
-                    "death",
-                    GigAnimationsDefault.DEATH
-                )
-        );
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

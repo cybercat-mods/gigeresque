@@ -1,21 +1,31 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.animators.classic.ChestbursterAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-import mods.cybercat.gigeresque.client.entity.model.ChestbursterEntityModel;
-import mods.cybercat.gigeresque.client.entity.render.feature.BusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 
-public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEntity> {
+public class ChestbursterEntityRenderer extends AzEntityRenderer<ChestbursterEntity> {
 
-    public ChestbursterEntityRenderer(EntityRendererProvider.Context ctx) {
-        super(ctx, new ChestbursterEntityModel());
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/chestburster/chestburster.geo.json");
+
+    private static final ResourceLocation TEX = Constants.modResource("textures/entity/chestburster/chestburster.png");
+
+    public ChestbursterEntityRenderer(EntityRendererProvider.Context context) {
+        super(
+                AzEntityRendererConfig.<ChestbursterEntity>builder(MODEL, TEX)
+                        .setAnimatorProvider(ChestbursterAnimator::new)
+                        .setDeathMaxRotation(0.0F)
+                        .build(),
+                context
+        );
         this.shadowRadius = 0.1f;
-        this.addRenderLayer(new BusterBloodFeatureRenderer(this));
     }
 
     @Override
@@ -30,10 +40,5 @@ public class ChestbursterEntityRenderer extends GeoEntityRenderer<ChestbursterEn
         float scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 4.0f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(ChestbursterEntity entityLivingBaseIn) {
-        return 0;
     }
 }
