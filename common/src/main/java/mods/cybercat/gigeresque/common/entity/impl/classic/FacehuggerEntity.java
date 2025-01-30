@@ -22,7 +22,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -50,7 +49,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -63,6 +61,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounce
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -84,7 +83,7 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.vibrationUser = new AzureVibrationUser(this, 1.2F);
+        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
     }
 
@@ -112,7 +111,7 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
     @Override
     protected void tickDeath() {
         ++this.deathTime;
-        if (this.deathTime == 200) {
+        if (this.deathTime == 20) {
             this.remove(RemovalReason.KILLED);
             super.tickDeath();
             this.dropExperience(this);
@@ -247,6 +246,16 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
         if (this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
         }
+        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
+        if (this.level().isClientSide() && !this.isPassenger() && !this.isDeadOrDying()) {
+            if (this.isInWater()) {
+                this.handleWaterMovementAniamtions();
+            } else {
+                this.handleMovementAniamtions();
+            }
+        }
         this.handleAttachmentToHost();
         if (isInfertile()) {
             this.kill();
@@ -254,31 +263,29 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
             this.getBrain().removeAllBehaviors();
             return;
         }
-        /*
-         * ANIMATIONS
-         */
-        if (this.level().isClientSide) {
-            if (this.isDeadOrDying() || !this.isAlive()) {
-                GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+    }
+
+    protected void handleWaterMovementAniamtions() {
+        if (this.moveAnalysis.isMoving()) {
+            if (this.isAggressive() && this.isInWater()) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
+            } else {
+                GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
             }
-            if (isPassenger() && !this.isDeadOrDying()) {
-                GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        } else {
+            if (this.isInWater()) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
+            } else {
+                GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
             }
-            if (moveAnalysis.isMoving() && onGround() && !isPassenger() && !this.isDeadOrDying()) {
-                if (!isInWater()) {
-                    GigCommonMethods.setAnimation(this.isAggressive()
-                            ? animationDispatcher::sendCrawlRush
-                            : animationDispatcher::sendCrawl);
-                } else {
-                    GigCommonMethods.setAnimation(this.isAggressive()
-                            ? animationDispatcher::sendRushSwim
-                            : animationDispatcher::sendSwim);
-                }
-            } else if (!moveAnalysis.isMoving() && onGround() && !isPassenger() && !this.isDeadOrDying()) {
-                GigCommonMethods.setAnimation(this.isInWater()
-                        ? animationDispatcher::sendIdleWater
-                        : animationDispatcher::sendIdleLand);
-            }
+        }
+    }
+
+    protected void handleMovementAniamtions() {
+        if (this.moveAnalysis.isMoving()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
         }
     }
 
@@ -411,8 +418,31 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
                     target
                 ) || target.getType().is(EntityTypeTags.UNDEAD) || this.isFleeing()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F)
+                .whenStarting(
+                    entity -> GigCommonMethods.setAnimation(
+                        this.isInWater()
+                            ? animationDispatcher::sendRushSwim
+                            : animationDispatcher::sendCrawlRush
+                    )
+                ),
             new FacehuggerPounceTask<>(6)
+        );
+    }
+
+    public void sendFacehuggerWalkingAnimations(FacehuggerEntity facehuggerEntity) {
+        GigCommonMethods.setAnimation(
+                facehuggerEntity.isInWater()
+                        ? facehuggerEntity.animationDispatcher::sendSwim
+                        : facehuggerEntity.animationDispatcher::sendCrawl
+        );
+    }
+
+    public void sendFacehuggerIdleAnimations(FacehuggerEntity facehuggerEntity) {
+        GigCommonMethods.setAnimation(
+                facehuggerEntity.isInWater()
+                        ? facehuggerEntity.animationDispatcher::sendIdleWater
+                        : facehuggerEntity.animationDispatcher::sendIdleLand
         );
     }
 }
