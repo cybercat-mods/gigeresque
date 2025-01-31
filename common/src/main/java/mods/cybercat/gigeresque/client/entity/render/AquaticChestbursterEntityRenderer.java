@@ -1,21 +1,32 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.animators.aqua.AquaticChestbursterAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.client.entity.model.AquaticChestbursterEntityModel;
-import mods.cybercat.gigeresque.client.entity.render.feature.AquaBusterBloodFeatureRenderer;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 
-public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<AquaticChestbursterEntity> {
+public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticChestbursterEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/aquatic_chestburster/aquatic_chestburster.geo.json");
+
+    private static final ResourceLocation TEX = Constants.modResource("textures/entity/aquatic_chestburster/aquatic_chestburster.png");
 
     public AquaticChestbursterEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new AquaticChestbursterEntityModel());
-        this.shadowRadius = 0.5f;
-        this.addRenderLayer(new AquaBusterBloodFeatureRenderer(this));
+        super(
+                AzEntityRendererConfig.<AquaticChestbursterEntity>builder(MODEL, TEX)
+                        .setAnimatorProvider(AquaticChestbursterAnimator::new)
+                        .setDeathMaxRotation(0.0F)
+                        .build(),
+                context
+        );
+        this.shadowRadius = 0.1f;
     }
 
     @Override
@@ -30,10 +41,5 @@ public class AquaticChestbursterEntityRenderer extends GeoEntityRenderer<Aquatic
         float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(AquaticChestbursterEntity entityLivingBaseIn) {
-        return 0;
     }
 }
