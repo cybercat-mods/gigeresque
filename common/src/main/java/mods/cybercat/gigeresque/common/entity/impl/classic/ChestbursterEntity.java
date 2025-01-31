@@ -21,9 +21,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,6 +43,7 @@ import java.util.List;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -54,7 +52,9 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -221,29 +221,37 @@ public class ChestbursterEntity extends NewAlienEntity implements Growable, Smar
     }
 
     protected void handleAnimations() {
-        if (this.tickCount < 60 && this.isBirthed()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendBirth);
-        } else if (!this.isPassenger() && !this.isDeadOrDying()) {
-            if (this.isAggressive()) {
-                this.handleAggroMovementAniamtions();
-            } else {
-                this.handleMovementAniamtions();
-            }
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            return;
         }
-    }
-
-    protected void handleMovementAniamtions() {
         if (this.moveAnalysis.isMoving()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSlither);
+            this.handleMovementAnimations();
         } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+            this.handleIdleAnimations();
         }
     }
 
-    protected void handleAggroMovementAniamtions() {
-        if (this.moveAnalysis.isMoving()) {
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendRushSlither);
         }
+    }
+
+    protected void handleMovementAnimations() {
+        if (this.isAggressive()) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSlither);
+        }
+    }
+
+    protected void handleIdleAnimations() {
+        GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
     }
 
     @Override
@@ -361,9 +369,9 @@ public class ChestbursterEntity extends NewAlienEntity implements Growable, Smar
                 new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.67f),
                 // Idle
                 new Idle<>().startCondition(entity -> !this.isAggressive())
-                        .runFor(
-                                entity -> entity.getRandom().nextInt(30, 60)
-                        )
+                    .runFor(
+                        entity -> entity.getRandom().nextInt(30, 60)
+                    )
             )
         );
     }

@@ -1,55 +1,45 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.client.entity.model.HellbursterEntityModel;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.animators.hellmorphs.HellbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.HellbursterEntity;
 
-public class HellbursterEntityRenderer extends GeoEntityRenderer<HellbursterEntity> {
+public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/hell_burster/hell_burster.geo.json");
+
+    private static final ResourceLocation TEX = Constants.modResource("textures/entity/hell_burster/hell_burster.png");
 
     public HellbursterEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new HellbursterEntityModel());
+        super(
+            AzEntityRendererConfig.<HellbursterEntity>builder(MODEL, TEX)
+                .setAnimatorProvider(HellbursterAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .build(),
+            context
+        );
         this.shadowRadius = 0.3f;
     }
 
     @Override
-    public void preRender(
-        PoseStack poseStack,
-        HellbursterEntity animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
+    public void render(
+        @NotNull HellbursterEntity entity,
+        float entityYaw,
         float partialTick,
-        int packedLight,
-        int packedOverlay,
-        int color
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight
     ) {
-        float scaleFactor = 1.0f + (animatable.getGrowth() / animatable.getMaxGrowth());
-        poseStack.pushPose();
+        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
-        poseStack.popPose();
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            color
-        );
-    }
-
-    @Override
-    protected float getDeathMaxRotation(HellbursterEntity entityLivingBaseIn) {
-        return 0;
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

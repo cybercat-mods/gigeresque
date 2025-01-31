@@ -1,10 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
@@ -20,22 +16,18 @@ import net.minecraft.world.level.Level;
 import java.util.Objects;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements Growable {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
@@ -73,7 +65,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     public void tick() {
         super.tick();
         if (this.tickCount < 5) {
-            this.triggerAnim(Constants.ATTACK_CONTROLLER, "birth");
+            this.animationDispatcher.sendBirth();
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 10), this);
         }
     }
@@ -103,39 +95,23 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         );
     }
 
-    /*
-     * ANIMATIONS
-     */
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && !this.isInWater())
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-            if (event.isMoving() && !isDead && this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.SWIM);
-            return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
-        }));
-        controllers.add(
-            new AnimationController<>(
-                this,
-                Constants.ATTACK_CONTROLLER,
-                0,
-                event -> PlayState.STOP
-            ).triggerableAnim("eat", GigAnimationsDefault.CHOMP)
-                .triggerableAnim(
-                    "birth",
-                    GigAnimationsDefault.BIRTH
-                )
-                .triggerableAnim("death", GigAnimationsDefault.DEATH)
-        );
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
+        }
     }
 
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+    protected void handleMovementAnimations() {
+        if (this.isAggressive()) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
+        }
     }
 }

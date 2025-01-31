@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.animators.classic;
+package mods.cybercat.gigeresque.common.entity.animators.neo;
 
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -9,24 +9,38 @@ import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 
-public class ChestbursterAnimator extends AzEntityAnimator<ChestbursterEntity> {
+public class NeobursterAnimator extends AzEntityAnimator<NeobursterEntity> {
 
     private static final ResourceLocation ANIMATIONS = Constants.modResource(
-        "animations/entity/chestburster/chestburster.animation.json"
+        "animations/entity/neoburster/neoburster.animation.json"
     );
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<ChestbursterEntity> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<NeobursterEntity> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
                 .setTransitionLength(5)
                 .setKeyframeCallbacks(
-                    AzKeyframeCallbacks.<ChestbursterEntity>builder()
+                    AzKeyframeCallbacks.<NeobursterEntity>builder()
                         .setSoundKeyframeHandler(
                             event -> {
+                                if (event.getKeyframeData().getSound().equals("thudSoundkey")) {
+                                    event.getAnimatable()
+                                        .level()
+                                        .playLocalSound(
+                                            event.getAnimatable().getX(),
+                                            event.getAnimatable().getY(),
+                                            event.getAnimatable().getZ(),
+                                            GigSounds.ALIEN_DEATH_THUD.get(),
+                                            SoundSource.HOSTILE,
+                                            0.5F,
+                                            1.0F,
+                                            true
+                                        );
+                                }
                                 if (event.getKeyframeData().getSound().equals("stepSoundkey")) {
                                     event.getAnimatable()
                                         .level()
@@ -34,9 +48,9 @@ public class ChestbursterAnimator extends AzEntityAnimator<ChestbursterEntity> {
                                             event.getAnimatable().getX(),
                                             event.getAnimatable().getY(),
                                             event.getAnimatable().getZ(),
-                                            GigSounds.BURSTER_CRAWL.get(),
+                                            GigSounds.ALIEN_HANDSTEP.get(),
                                             SoundSource.HOSTILE,
-                                            0.25F,
+                                            0.5F,
                                             1.0F,
                                             true
                                         );
@@ -48,14 +62,14 @@ public class ChestbursterAnimator extends AzEntityAnimator<ChestbursterEntity> {
                 .build()
         );
         animationControllerContainer.add(
-            AzAnimationController.builder(this, Constants.LIVING_CONTROLLER)
-                .setTransitionLength(0)
+            AzAnimationController.builder(this, Constants.ATTACK_CONTROLLER)
+                .setTransitionLength(5)
                 .build()
         );
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(ChestbursterEntity animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(NeobursterEntity animatable) {
         return ANIMATIONS;
     }
 }

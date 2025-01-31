@@ -2,169 +2,173 @@ package mods.cybercat.gigeresque.common.entity.helper;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import net.minecraft.world.entity.Entity;
 
 import mods.cybercat.gigeresque.Constants;
-import net.minecraft.world.entity.Entity;
 
 public class AnimationDispatcher {
 
-    public final AzCommand BIRTH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "birth", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand BIRTH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "birth", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand HISS_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hiss", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand HISS_COMMAND = AzCommand.create(Constants.HISS_CONTROLLER, "hiss", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand AMBIENT_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "ambient", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand AMBIENT_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "ambient", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand IDLE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle", AzPlayBehaviors.LOOP);
+    private final AzCommand IDLE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle", AzPlayBehaviors.LOOP);
 
-    public final AzCommand IDLE_LAND_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_land", AzPlayBehaviors.LOOP);
+    private final AzCommand IDLE_LAND_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_land", AzPlayBehaviors.LOOP);
 
-    public final AzCommand IDLE_LAND2_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_land2", AzPlayBehaviors.LOOP);
+    private final AzCommand IDLE_LAND2_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_land2", AzPlayBehaviors.LOOP);
 
-    public final AzCommand IDLE_WATER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_water", AzPlayBehaviors.LOOP);
+    private final AzCommand IDLE_WATER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "idle_water", AzPlayBehaviors.LOOP);
 
-    public final AzCommand STATIS_ENTER_COMMAND = AzCommand.builder()
-        .playSequence(
-            Constants.BASE_CONTROLLER,
-            sequenceBuilder -> sequenceBuilder.queue("stasis_enter", props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE))
-                .queue("stasis_loop", props -> props.withPlayBehavior(AzPlayBehaviors.LOOP))
-        )
-        .build();
+    private final AzCommand ENTER_STASIS_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stasis_enter", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand STATIS_LEAVE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stasis_leave", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand STASIS_LOOP_COMMAND = AzCommand.create(
+        Constants.BASE_CONTROLLER,
+        "stasis_loop",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    );
 
-    public final AzCommand HATCHING_COMMAND = AzCommand.builder()
-        .playSequence(
-            Constants.BASE_CONTROLLER,
-            sequenceBuilder -> sequenceBuilder.queue("hatch", props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE))
-                .queue("hatched", props -> props.withPlayBehavior(AzPlayBehaviors.HOLD_ON_LAST_FRAME))
-        )
-        .build();
+    private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
 
-    public final AzCommand HATCHED_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched", AzPlayBehaviors.LOOP);
+    private final AzCommand STATIS_LEAVE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stasis_leave", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand HATCHED_EMPTY_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched_empty", AzPlayBehaviors.LOOP);
+    private final AzCommand HATCH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatch", AzPlayBehaviors.LOOP);
 
-    public final AzCommand DEATH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "death", AzPlayBehaviors.HOLD_ON_LAST_FRAME);
+    private final AzCommand HATCHED_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched", AzPlayBehaviors.HOLD_ON_LAST_FRAME);
 
-    public final AzCommand IMPREGNATE_COMMAND = AzCommand.create(
+    private final AzCommand HATCHING_COMMAND = AzCommand.compose(HATCH_COMMAND, HATCHED_COMMAND);
+
+    private final AzCommand HATCHED_EMPTY_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched_empty", AzPlayBehaviors.LOOP);
+
+    private final AzCommand DEATH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "death", AzPlayBehaviors.HOLD_ON_LAST_FRAME);
+
+    private final AzCommand IMPREGNATE_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "impregnate",
         AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final AzCommand STUNNED_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stunned", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand STUNNED_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stunned", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.LOOP);
+    private final AzCommand SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.LOOP);
 
-    public final AzCommand RUSH_SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_swim", AzPlayBehaviors.LOOP);
+    private final AzCommand RUSH_SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_swim", AzPlayBehaviors.LOOP);
 
-    public final AzCommand RUN_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "run", AzPlayBehaviors.LOOP);
+    private final AzCommand RUN_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "run", AzPlayBehaviors.LOOP);
 
-    public final AzCommand RUNNING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "running", AzPlayBehaviors.LOOP);
+    private final AzCommand RUNNING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "running", AzPlayBehaviors.LOOP);
 
-    public final AzCommand MOVING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "moving", AzPlayBehaviors.LOOP);
+    private final AzCommand MOVING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "moving", AzPlayBehaviors.LOOP);
 
-    public final AzCommand WALK_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk", AzPlayBehaviors.LOOP);
+    private final AzCommand WALK_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk", AzPlayBehaviors.LOOP);
 
-    public final AzCommand WALK_HOSTILE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk_hostile", AzPlayBehaviors.LOOP);
+    private final AzCommand WALK_HOSTILE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk_hostile", AzPlayBehaviors.LOOP);
 
-    public final AzCommand WALK_CARRYING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk_carrying", AzPlayBehaviors.LOOP);
+    private final AzCommand WALK_CARRYING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk_carrying", AzPlayBehaviors.LOOP);
 
-    public final AzCommand CRAWL_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "crawl", AzPlayBehaviors.LOOP);
+    private final AzCommand CRAWL_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "crawl", AzPlayBehaviors.LOOP);
 
-    public final AzCommand CRAWL_RUSH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_crawl", AzPlayBehaviors.LOOP);
+    private final AzCommand CRAWL_RUSH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_crawl", AzPlayBehaviors.LOOP);
 
-    public final AzCommand SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "slither", AzPlayBehaviors.LOOP);
+    private final AzCommand SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "slither", AzPlayBehaviors.LOOP);
 
-    public final AzCommand RUSH_SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_slither", AzPlayBehaviors.LOOP);
+    private final AzCommand RUSH_SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_slither", AzPlayBehaviors.LOOP);
 
-    public final AzCommand KIDNAP_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "kidnap", AzPlayBehaviors.LOOP);
+    private final AzCommand KIDNAP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "kidnap", AzPlayBehaviors.LOOP);
 
-    public final AzCommand SPIT_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spit", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand SPIT_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spit", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand SPRAY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spray", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand SPRAY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spray", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand CHARGE_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "charge", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand CHARGE_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "charge", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand ATTACK_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand EAT_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "eat", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand CHOMP_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "chomp", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand ATTACK_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand ATTACK_NORMAL_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack_normal", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand CHOMP_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "chomp", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand ATTACK_HEAVY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack_heavy", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand ATTACK_NORMAL_COMMAND = AzCommand.create(
+        Constants.ATTACK_CONTROLLER,
+        "attack_normal",
+        AzPlayBehaviors.PLAY_ONCE
+    );
 
-    public final AzCommand LEFT_CLAW_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "left_claw", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand ATTACK_HEAVY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack_heavy", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand RIGHT_CLAW_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "right_claw", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand LEFT_CLAW_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "left_claw", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand LEFT_TAIL_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "left_tail", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand RIGHT_CLAW_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "right_claw", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand RIGHT_TAIL_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "right_tail", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand LEFT_TAIL_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "left_tail", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand LEFT_CLAW_BASIC_COMMAND = AzCommand.create(
+    private final AzCommand RIGHT_TAIL_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "right_tail", AzPlayBehaviors.PLAY_ONCE);
+
+    private final AzCommand LEFT_CLAW_BASIC_COMMAND = AzCommand.create(
         Constants.ATTACK_CONTROLLER,
         "left_claw_basic",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand RIGHT_CLAW_BASIC_COMMAND = AzCommand.create(
+    private final AzCommand RIGHT_CLAW_BASIC_COMMAND = AzCommand.create(
         Constants.ATTACK_CONTROLLER,
         "right_claw_basic",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand LEFT_TAIL_BASIC_COMMAND = AzCommand.create(
+    private final AzCommand LEFT_TAIL_BASIC_COMMAND = AzCommand.create(
         Constants.ATTACK_CONTROLLER,
         "left_tail_basic",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand RIGHT_TAIL_BASIC_COMMAND = AzCommand.create(
+    private final AzCommand RIGHT_TAIL_BASIC_COMMAND = AzCommand.create(
         Constants.ATTACK_CONTROLLER,
         "right_tail_basic",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand EXECUTION_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "execution", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand EXECUTION_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "execution", AzPlayBehaviors.PLAY_ONCE);
 
-    public final AzCommand EXECUTION_CARRY_COMMAND = AzCommand.create(
+    private final AzCommand EXECUTION_CARRY_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "execution_carry",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand EXECUTION_GRAB_COMMAND = AzCommand.create(
+    private final AzCommand EXECUTION_GRAB_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "execution_grab",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    public final AzCommand HATCH_LEAP_COMMAND = AzCommand.create(
+    private final AzCommand HATCH_LEAP_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "hatch_leap",
         AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final AzCommand STAGE_2_COMMAND = AzCommand.create(
-            Constants.BASE_CONTROLLER,
-            "stagger_walk",
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    private final AzCommand STAGE_2_COMMAND = AzCommand.create(
+        Constants.BASE_CONTROLLER,
+        "stagger_walk",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final AzCommand STAGE_3_COMMAND = AzCommand.create(
-            Constants.BASE_CONTROLLER,
-            "death_walk",
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    private final AzCommand STAGE_3_COMMAND = AzCommand.create(
+        Constants.BASE_CONTROLLER,
+        "death_walk",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final AzCommand STAGE_1_COMMAND = AzCommand.create(
-            Constants.BASE_CONTROLLER,
-            "limp_walk",
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    private final AzCommand STAGE_1_COMMAND = AzCommand.create(
+        Constants.BASE_CONTROLLER,
+        "limp_walk",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    public final Entity animatedEntity;
+    private final Entity animatedEntity;
 
     public AnimationDispatcher(Entity animatedEntity) {
         this.animatedEntity = animatedEntity;
@@ -200,10 +204,6 @@ public class AnimationDispatcher {
 
     public void sendHatchEmpty() {
         HATCHED_EMPTY_COMMAND.sendForEntity(animatedEntity);
-    }
-
-    public void sendHatched() {
-        HATCHED_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendHatching() {
@@ -308,5 +308,53 @@ public class AnimationDispatcher {
 
     public void sendChomp() {
         CHOMP_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendExecutionCarry() {
+        EXECUTION_CARRY_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendExecutionGrab() {
+        EXECUTION_GRAB_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendLeftClaw() {
+        LEFT_CLAW_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendRightClaw() {
+        RIGHT_CLAW_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendLeftTail() {
+        LEFT_TAIL_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendRightTail() {
+        RIGHT_TAIL_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendLeftClawBasic() {
+        LEFT_CLAW_BASIC_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendRightClawBasic() {
+        RIGHT_CLAW_BASIC_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendLeftTailBasic() {
+        LEFT_TAIL_BASIC_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendRightTailBasic() {
+        RIGHT_TAIL_BASIC_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendExecution() {
+        EXECUTION_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendEat() {
+        EAT_COMMAND.sendForEntity(animatedEntity);
     }
 }

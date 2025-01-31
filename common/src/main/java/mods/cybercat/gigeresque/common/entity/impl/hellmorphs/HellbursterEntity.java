@@ -1,10 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.hellmorphs;
 
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
 import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
@@ -13,8 +9,6 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalk
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -23,23 +17,22 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 
 public class HellbursterEntity extends RunnerbursterEntity implements Growable {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     public HellbursterEntity(EntityType<? extends HellbursterEntity> type, Level level) {
         super(type, level);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
@@ -71,15 +64,6 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
     @Override
     public float getGrowthMultiplier() {
         return CommonMod.config.hellbusterConfigs.hellbusterGrowthMultiplier;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (this.tickCount < 5) {
-            this.triggerAnim(Constants.ATTACK_CONTROLLER, "birth");
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 10), this);
-        }
     }
 
     @Override
@@ -133,41 +117,5 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
                     entity -> entity.getRandom().nextInt(30, 60)
                 )
         );
-    }
-
-    /*
-     * ANIMATIONS
-     */
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && !this.isInWater())
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-            if (event.isMoving() && !isDead && this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.SWIM);
-            return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
-        }));
-        controllers.add(
-            new AnimationController<>(
-                this,
-                Constants.ATTACK_CONTROLLER,
-                0,
-                event -> PlayState.STOP
-            ).triggerableAnim("eat", GigAnimationsDefault.CHOMP)
-                .triggerableAnim(
-                    "birth",
-                    GigAnimationsDefault.BIRTH
-                )
-                .triggerableAnim("death", GigAnimationsDefault.DEATH)
-        );
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

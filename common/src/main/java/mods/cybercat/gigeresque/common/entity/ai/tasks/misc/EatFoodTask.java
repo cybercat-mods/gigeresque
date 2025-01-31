@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 
