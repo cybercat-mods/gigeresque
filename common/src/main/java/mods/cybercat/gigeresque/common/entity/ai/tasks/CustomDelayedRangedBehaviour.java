@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -12,7 +11,7 @@ import java.util.function.Consumer;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
-public abstract class CustomDelayedRangedBehaviour<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+public abstract class CustomDelayedRangedBehaviour<E extends PathfinderMob & AbstractAlien> extends ExtendedBehaviour<E> {
 
     protected final int delayTime;
 

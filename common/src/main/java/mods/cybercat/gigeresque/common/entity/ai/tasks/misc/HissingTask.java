@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class HissingTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
+public class HissingTask<E extends PathfinderMob & AbstractAlien> extends DelayedBehaviour<E> {
 
     @Nullable
     protected LivingEntity target = null;
@@ -48,7 +47,6 @@ public class HissingTask<E extends PathfinderMob & AbstractAlien & GeoEntity> ex
 
     @Override
     protected void doDelayedAction(E entity) {
-        entity.triggerAnim("hissController", "hiss");
         entity.setIsHissing(true);
     }
 }

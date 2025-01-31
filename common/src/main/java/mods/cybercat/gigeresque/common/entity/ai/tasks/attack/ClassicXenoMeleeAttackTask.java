@@ -18,13 +18,13 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class ClassicXenoMeleeAttackTask<E extends AlienEntity> extends CustomDelayedMeleeBehaviour<E> {
+public class ClassicXenoMeleeAttackTask<E extends NewAlienEntity> extends CustomDelayedMeleeBehaviour<E> {
 
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
 

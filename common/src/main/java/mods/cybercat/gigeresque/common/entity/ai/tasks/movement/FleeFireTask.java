@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.movement;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +18,7 @@ import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class FleeFireTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+public class FleeFireTask<E extends PathfinderMob & AbstractAlien> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)

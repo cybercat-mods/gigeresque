@@ -12,11 +12,11 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
 
-public class BuildNestTask<E extends AlienEntity> extends DelayedBehaviour<E> {
+public class BuildNestTask<E extends NewAlienEntity> extends DelayedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),

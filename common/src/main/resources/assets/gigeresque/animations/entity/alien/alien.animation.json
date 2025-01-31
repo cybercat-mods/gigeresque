@@ -4732,6 +4732,97 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"rArm01": {
+					"rotation": {
+						"vector": [-68.06687, 15.2575, 1.86561]
+					}
+				},
+				"rArm02": {
+					"rotation": {
+						"vector": [26.97564, 6.9143, -0.2539]
+					}
+				},
+				"rHand": {
+					"rotation": {
+						"vector": [-40.98993, 12.6748, -45.7382]
+					}
+				},
+				"rFinger01": {
+					"rotation": {
+						"vector": [-7.41604, -1.0341, -7.1166]
+					},
+					"position": {
+						"vector": [0, 0.2, 0]
+					}
+				},
+				"rFinger02": {
+					"rotation": {
+						"vector": [9, -8.5, 23]
+					}
+				},
+				"rFinger03": {
+					"rotation": {
+						"vector": [2.54089, 2.3414, 0.8772]
+					}
+				},
+				"rFinger04": {
+					"rotation": {
+						"vector": [-5.23262, 11.2634, -13.9051]
+					}
+				},
+				"rFinger05": {
+					"rotation": {
+						"vector": [-12.67485, 17.0019, -36.9799]
+					}
+				},
+				"mobBone": {
+					"position": {
+						"vector": [-7, -1, -9]
+					}
+				},
+				"lArm01": {
+					"rotation": {
+						"vector": [-68.06687, -15.2575, -1.86559]
+					}
+				},
+				"lArm02": {
+					"rotation": {
+						"vector": [26.97564, -6.91434, 0.25387]
+					}
+				},
+				"lHand": {
+					"rotation": {
+						"vector": [-40.98993, -12.67485, 45.73825]
+					}
+				},
+				"lFinger01": {
+					"rotation": {
+						"vector": [-7.41604, 1.03407, 7.11664]
+					},
+					"position": {
+						"vector": [0, 0.2, 0]
+					}
+				},
+				"lFinger02": {
+					"rotation": {
+						"vector": [9, 8.5, -23]
+					}
+				},
+				"lFinger03": {
+					"rotation": {
+						"vector": [2.54089, -2.34141, -0.87725]
+					}
+				},
+				"lFinger04": {
+					"rotation": {
+						"vector": [-5.23262, -11.26337, 13.9051]
+					}
+				},
+				"lFinger05": {
+					"rotation": {
+						"vector": [-12.67485, -17.00191, 36.97987]
+					}
 				}
 			},
 			"sound_effects": {

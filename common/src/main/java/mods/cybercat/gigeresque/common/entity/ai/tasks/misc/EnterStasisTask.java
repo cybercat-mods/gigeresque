@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -10,10 +9,9 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class EnterStasisTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
+public class EnterStasisTask<E extends PathfinderMob & AbstractAlien> extends DelayedBehaviour<E> {
 
     public EnterStasisTask(int delayTicks) {
         super(delayTicks);
@@ -32,7 +30,6 @@ public class EnterStasisTask<E extends PathfinderMob & AbstractAlien & GeoEntity
 
     @Override
     protected void doDelayedAction(E entity) {
-        entity.triggerAnim(Constants.ATTACK_CONTROLLER, "passout");
         entity.setPassedOutStatus(true);
     }
 }

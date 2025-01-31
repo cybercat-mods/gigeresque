@@ -141,9 +141,9 @@ public abstract class NewAlienEntity extends WaterAnimal implements Enemy, Vibra
         EntityDataSerializers.BOOLEAN
     );
 
-    protected AnimationDispatcher animationDispatcher;
+    public AnimationDispatcher animationDispatcher;
 
-    protected MoveAnalysis moveAnalysis;
+    public MoveAnalysis moveAnalysis;
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -215,7 +215,6 @@ public abstract class NewAlienEntity extends WaterAnimal implements Enemy, Vibra
     @Override
     protected void tickDeath() {
         ++this.deathTime;
-        this.animationDispatcher.DEATH_COMMAND.sendForEntity(this);
         if (this.deathTime == 150) {
             this.remove(RemovalReason.KILLED);
             super.tickDeath();
@@ -443,7 +442,7 @@ public abstract class NewAlienEntity extends WaterAnimal implements Enemy, Vibra
         if (this.isPassedOut()) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
             if (this.isAggressive()) {
-                this.animationDispatcher.STATIS_LEAVE_COMMAND.sendForEntity(this);
+                this.animationDispatcher.sendStatisLeave();
                 this.setPassedOutStatus(false);
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
@@ -654,11 +653,6 @@ public abstract class NewAlienEntity extends WaterAnimal implements Enemy, Vibra
             }
         }
         return super.hurt(source, amount * multiplier);
-    }
-
-    @Override
-    public boolean onClimbable() {
-        return this.fallDistance <= 0.1;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -12,7 +11,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class SearchTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
+public class SearchTask<E extends PathfinderMob & AbstractAlien> extends DelayedBehaviour<E> {
 
     public SearchTask(int delayTicks) {
         super(delayTicks);

@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.platform.Services;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
@@ -15,13 +14,13 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends DelayedBehaviour<E> {
+public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien> extends DelayedBehaviour<E> {
 
     private long lastUpdateTime = 0L;
 
@@ -50,8 +49,6 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
             var f = entity.getFirstPassenger().getZ() + ((entity.getRandom().nextDouble() / 2.0) - 0.5) * (entity.getRandom().nextBoolean()
                 ? -1
                 : 1);
-            if (!entity.isExecuting())
-                entity.triggerAnim(Constants.ATTACK_CONTROLLER, "kidnap");
             if (entity.getFirstPassenger() instanceof Mob mob && !mob.isPersistenceRequired())
                 mob.setPersistenceRequired();
             if (entity.isBiting() && entity.getFirstPassenger() != null) {
@@ -61,6 +58,10 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                         AzureLib.LOGGER.debug(lastUpdateTime);
                 }
                 // Check if enough time has elapsed since the last update
+                if (lastUpdateTime == 520L) {
+                    if (entity instanceof ClassicAlienEntity classicAlienEntity)
+                        GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendExecution);
+                }
                 if (lastUpdateTime >= 600L) {
                     if (entity.getNavigation() != null)
                         entity.getNavigation().stop();
@@ -84,34 +85,9 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                             );
                     entity.setIsBiting(false);
                     entity.setIsExecuting(false);
-                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "execution");
                     lastUpdateTime = 0;
                 }
             } else if (entity.getFirstPassenger() != null) {
-                if (!entity.getFirstPassenger().getType().is(GigTags.CLASSIC_HOSTS)) {
-                    entity.getFirstPassenger()
-                        .hurt(
-                            GigDamageSources.of(entity.level(), GigDamageSources.EXECUTION),
-                            Integer.MAX_VALUE
-                        );
-                    entity.heal(50);
-                    if (entity.level().isClientSide)
-                        entity.getFirstPassenger()
-                            .level()
-                            .addAlwaysVisibleParticle(
-                                GigParticles.BLOOD.get(),
-                                e,
-                                yOffset,
-                                f,
-                                0.0,
-                                -0.15,
-                                0.0
-                            );
-                    entity.setIsBiting(false);
-                    entity.setIsExecuting(false);
-                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "execution");
-                    lastUpdateTime = 0;
-                }
                 if (!entity.level().isClientSide()) {
                     lastUpdateTime++;
                     if (Services.PLATFORM.isDevelopmentEnvironment())
@@ -122,7 +98,8 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                     entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 100, false, false));
                     entity.setIsExecuting(true);
                     entity.setAggressive(false);
-                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "execution");
+                    if (entity instanceof ClassicAlienEntity classicAlienEntity)
+                        GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendExecution);
                 }
                 if (lastUpdateTime >= 1280L) {
                     entity.getFirstPassenger()
@@ -143,7 +120,6 @@ public class AlienHeadBiteTask<E extends PathfinderMob & AbstractAlien & GeoEnti
                                 -0.15,
                                 0.0
                             );
-                    entity.triggerAnim(Constants.ATTACK_CONTROLLER, "reset");
                     lastUpdateTime = 0;
                 }
             }
