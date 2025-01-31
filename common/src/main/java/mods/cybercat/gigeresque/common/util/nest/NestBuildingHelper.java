@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.util.nest;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -13,11 +14,12 @@ import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebBlock;
 import mods.cybercat.gigeresque.common.block.NestResinWebVariant;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public record NestBuildingHelper() {
 
-    public static void tryBuildNestAround(Level level, BlockPos pos, AlienEntity alienEntity) {
+    public static void tryBuildNestAround(Level level, BlockPos pos, PathfinderMob alienEntity) {
         for (var x = -1; x <= 1; x++) {
             for (var z = -1; z <= 1; z++) {
                 for (var y = -1; y <= 3; y++) {
@@ -68,12 +70,18 @@ public record NestBuildingHelper() {
                                 blockPos,
                                 level.getRandom().nextInt(0, 50) > 30 ? webBlock : resinBlock
                             );
-                            alienEntity.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof AlienEntity alienEntity1)
+                                alienEntity1.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof NewAlienEntity alienEntity2)
+                                alienEntity2.savedNestWebCross = blockPos;
                         }
 
                         if (nestBlockData.isCorner() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS)) {
                             level.setBlockAndUpdate(blockPos, webBlock);
-                            alienEntity.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof AlienEntity alienEntity1)
+                                alienEntity1.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof NewAlienEntity alienEntity2)
+                                alienEntity2.savedNestWebCross = blockPos;
                         }
 
                         if (
@@ -81,7 +89,10 @@ public record NestBuildingHelper() {
                                 .is(GigTags.DUNGEON_BLOCKS)
                         ) {
                             level.setBlockAndUpdate(blockPos, nestResinWebState);
-                            alienEntity.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof AlienEntity alienEntity1)
+                                alienEntity1.savedNestWebCross = blockPos;
+                            if (alienEntity instanceof NewAlienEntity alienEntity2)
+                                alienEntity2.savedNestWebCross = blockPos;
                         }
                     }
                 }

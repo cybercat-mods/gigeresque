@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -21,7 +22,7 @@ import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 
-public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable {
+public class AquaticChestbursterEntity extends ChestbursterEntity implements Growable, GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
