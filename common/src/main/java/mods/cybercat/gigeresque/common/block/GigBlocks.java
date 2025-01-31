@@ -332,7 +332,8 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "organic_fragile_alien_block",
         () -> new FragileRoughBlock(
-            Properties.of().strength(0.5F)
+            Properties.of()
+                .strength(0.5F)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .noLootTable()
@@ -370,7 +371,8 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "resinous_fragile_alien_block",
         () -> new FragileRoughBlock(
-            Properties.of().strength(0.5F)
+            Properties.of()
+                .strength(0.5F)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .noLootTable()
@@ -408,7 +410,8 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "ribbed_fragile_alien_block",
         () -> new FragileRoughBlock(
-            Properties.of().strength(0.5F)
+            Properties.of()
+                .strength(0.5F)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .noLootTable()
@@ -446,7 +449,8 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "rough_fragile_alien_block",
         () -> new FragileRoughBlock(
-            Properties.of().strength(0.5F)
+            Properties.of()
+                .strength(0.5F)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .noLootTable()
@@ -463,7 +467,8 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "sinous_fragile_alien_block",
         () -> new FragileRoughBlock(
-            Properties.of().strength(0.5F)
+            Properties.of()
+                .strength(0.5F)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .noLootTable()

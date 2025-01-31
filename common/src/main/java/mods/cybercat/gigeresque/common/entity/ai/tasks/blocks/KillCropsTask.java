@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.blocks;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.registry.SBLMemoryTypes;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
@@ -22,7 +21,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class KillCropsTask<E extends PathfinderMob & AbstractAlien & GeoEntity> extends ExtendedBehaviour<E> {
+public class KillCropsTask<E extends PathfinderMob & AbstractAlien> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)

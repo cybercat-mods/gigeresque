@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.blood;
 
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -33,7 +33,10 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 
 public class AcidEntity extends Entity {
 
-    public static final EntityDataAccessor<Boolean> USEEFFECTS = SynchedEntityData.defineId(AcidEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> USEEFFECTS = SynchedEntityData.defineId(
+        AcidEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     public AcidEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
@@ -120,16 +123,16 @@ public class AcidEntity extends Entity {
         BlockBreakProgressManager.damage(level(), this.blockPosition().below());
         if (this.getUseEffects()) {
             this.level()
-                    .playSound(
-                            null,
-                            this.blockPosition().getX(),
-                            this.blockPosition().getY(),
-                            this.blockPosition().getZ(),
-                            SoundEvents.LAVA_EXTINGUISH,
-                            SoundSource.BLOCKS,
-                            0.2f + randomSource.nextFloat() * 0.2f,
-                            0.9f + randomSource.nextFloat() * 0.15f
-                    );
+                .playSound(
+                    null,
+                    this.blockPosition().getX(),
+                    this.blockPosition().getY(),
+                    this.blockPosition().getZ(),
+                    SoundEvents.LAVA_EXTINGUISH,
+                    SoundSource.BLOCKS,
+                    0.2f + randomSource.nextFloat() * 0.2f,
+                    0.9f + randomSource.nextFloat() * 0.15f
+                );
         }
     }
 

@@ -60,13 +60,11 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienHeadBiteTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.ClassicXenoMeleeAttackTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -267,8 +265,8 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                 .startCondition(romAlienEntity -> !romAlienEntity.isPassedOut())
                 .stopIf(AlienEntity::isPassedOut),
             // Take target to nest
-            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() || !this.isPassedOut())
-                .stopIf(entity -> !this.isVehicle() || this.isPassedOut()),
+            // new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() || !this.isPassedOut())
+            // .stopIf(entity -> !this.isVehicle() || this.isPassedOut()),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive())
                 .startCondition(
@@ -345,8 +343,9 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
     public BrainActivityGroup<RomAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isVehicle())
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle())
+            // new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting() ||
+            // this.isVehicle())
         );
     }
 

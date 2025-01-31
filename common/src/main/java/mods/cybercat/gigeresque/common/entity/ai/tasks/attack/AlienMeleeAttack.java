@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.attack;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +23,7 @@ import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
-public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien & GeoEntity> extends CustomDelayedMeleeBehaviour<E> {
+public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien> extends CustomDelayedMeleeBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT),

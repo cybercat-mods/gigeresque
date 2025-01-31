@@ -432,17 +432,17 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
 
     public void sendFacehuggerWalkingAnimations(FacehuggerEntity facehuggerEntity) {
         GigCommonMethods.setAnimation(
-                facehuggerEntity.isInWater()
-                        ? facehuggerEntity.animationDispatcher::sendSwim
-                        : facehuggerEntity.animationDispatcher::sendCrawl
+            facehuggerEntity.isInWater()
+                ? facehuggerEntity.animationDispatcher::sendSwim
+                : facehuggerEntity.animationDispatcher::sendCrawl
         );
     }
 
     public void sendFacehuggerIdleAnimations(FacehuggerEntity facehuggerEntity) {
         GigCommonMethods.setAnimation(
-                facehuggerEntity.isInWater()
-                        ? facehuggerEntity.animationDispatcher::sendIdleWater
-                        : facehuggerEntity.animationDispatcher::sendIdleLand
+            facehuggerEntity.isInWater()
+                ? facehuggerEntity.animationDispatcher::sendIdleWater
+                : facehuggerEntity.animationDispatcher::sendIdleLand
         );
     }
 }
