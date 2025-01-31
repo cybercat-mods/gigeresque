@@ -1,36 +1,31 @@
 package mods.cybercat.gigeresque.mixins.client.entity.render;
 
-import mod.azure.azurelib.common.api.client.model.GeoModel;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.api.client.renderer.layer.GeoRenderLayer;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
-import mod.azure.azurelib.common.internal.client.renderer.GeoRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import mod.azure.azurelib.rewrite.render.AzRendererConfig;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.function.Function;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureRenderer;
 
-/**
- * @author Aelpecyem
- */
-@Mixin(value = GeoEntityRenderer.class)
-public abstract class AzureEntityRendererMixin<T extends Entity & GeoEntity> {
+@Mixin(value = AzEntityRendererConfig.Builder.class)
+public abstract class AzureEntityRendererMixin<T extends Entity> extends AzRendererConfig.Builder<T> {
 
-    @Shadow
-    public abstract T getAnimatable();
+    protected AzureEntityRendererMixin(Function<T, ResourceLocation> modelLocationProvider, Function<T, ResourceLocation> textureLocationProvider) {
+        super(modelLocationProvider, textureLocationProvider);
+    }
 
-    @Shadow
-    public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
-
-    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
-    private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-        if (this.getAnimatable() instanceof Mob)
-            this.addRenderLayer(new EggmorphGeoFeatureRenderer<>((GeoRenderer<T>) this));
+    @Inject(
+        method = "addRenderLayer(Lmod/azure/azurelib/rewrite/render/layer/AzRenderLayer;)Lmod/azure/azurelib/rewrite/render/entity/AzEntityRendererConfig$Builder;",
+        at = @At("RETURN"), remap = false
+    )
+    private void gig$InjectEggMorph(AzRenderLayer<T> renderLayer, CallbackInfoReturnable<AzEntityRendererConfig.Builder<T>> cir) {
+        cir.setReturnValue((AzEntityRendererConfig.Builder<T>) super.addRenderLayer(new EggmorphGeoFeatureRenderer<>()));
     }
 }
