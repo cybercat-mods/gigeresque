@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque;
 
+import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,9 +17,11 @@ import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 
 @EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -34,6 +37,7 @@ public class NeoForgeClientMod {
         ItemBlockRenderTypes.setRenderLayer(GigBlocks.NEST_RESIN_WEB.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(GigBlocks.NEST_RESIN_WEB_CROSS.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(GigBlocks.BEACON_BLOCK.get(), RenderType.translucent());
+        AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
     }
 
     @SubscribeEvent

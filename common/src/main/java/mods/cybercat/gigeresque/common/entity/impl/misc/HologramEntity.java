@@ -1,12 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,12 +11,13 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 
 /**
- * TODO: Add new aniamtions when compeleted. TODO: Animate Model to time with tracker item timing
+ * TODO: Animate Model to time with tracker item timing
  */
-public class HologramEntity extends Entity implements GeoEntity {
+public class HologramEntity extends Entity {
 
     public static final EntityDataAccessor<Integer> DISTANCE_STATE = SynchedEntityData.defineId(
         HologramEntity.class,
@@ -35,10 +29,11 @@ public class HologramEntity extends Entity implements GeoEntity {
         EntityDataSerializers.INT
     );
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public AnimationDispatcher animationDispatcher;
 
     public HologramEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
+        this.animationDispatcher = new AnimationDispatcher(this);
     }
 
     public int getDistanceState() {
@@ -109,29 +104,19 @@ public class HologramEntity extends Entity implements GeoEntity {
         this.move(MoverType.SELF, this.getDeltaMovement());
         this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
         super.tick();
-        if (!this.level().isClientSide() && this.tickCount >= 250)
+        this.handleAnimations();
+        if (!this.level().isClientSide() && this.tickCount >= 125) {
             this.kill();
+        }
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 0, event -> {
-            if (this.getDistanceState() == 2)
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("middle"));
-            if (this.getDistanceState() == 3)
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("close"));
-            return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("far_away"));
-        }).setParticleKeyframeHandler(event -> {
-            if (this.level().isClientSide && event.getKeyframeData().getEffect().matches("smoke")) {
-                double d2 = this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D;
-                double f2 = this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D;
-                this.level().addParticle(ParticleTypes.FLASH, true, d2, this.getY(0.5), f2, 0, 0, 0);
-            }
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+    protected void handleAnimations() {
+        if (this.getDistanceState() == 2) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendStage2);
+        } else if (this.getDistanceState() == 3) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendStage3);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendStage1);
+        }
     }
 }

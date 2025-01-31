@@ -3,13 +3,13 @@ package mods.cybercat.gigeresque.client.entity.render.entities;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.animators.misc.HologramAnimator;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-
-import mods.cybercat.gigeresque.common.entity.impl.misc.HologramEntity;
 import net.minecraft.resources.ResourceLocation;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.animators.misc.HologramAnimator;
+import mods.cybercat.gigeresque.common.entity.impl.misc.HologramEntity;
 
 public class HologramEntityRender extends AzEntityRenderer<HologramEntity> {
 
@@ -21,13 +21,13 @@ public class HologramEntityRender extends AzEntityRenderer<HologramEntity> {
 
     public HologramEntityRender(EntityRendererProvider.Context context) {
         super(
-                AzEntityRendererConfig.<HologramEntity>builder(MODEL, TEX)
-                        .setAnimatorProvider(HologramAnimator::new)
-                        .setDeathMaxRotation(0.0F)
-                        .setRenderType(RENDER_TYPE)
-                        .addRenderLayer(new AzAutoGlowingLayer<>())
-                        .build(),
-                context
+            AzEntityRendererConfig.<HologramEntity>builder(MODEL, TEX)
+                .setAnimatorProvider(HologramAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .setRenderType(RENDER_TYPE)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
+                .build(),
+            context
         );
     }
 }

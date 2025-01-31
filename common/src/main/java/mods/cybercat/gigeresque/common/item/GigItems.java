@@ -17,7 +17,7 @@ public record GigItems() implements CommonItemRegistryInterface {
         DevDebugItem::new
     );
 
-    public static final Supplier<Item> TRACKER = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID, "tracker", UnnamedItem::new);
+    public static final Supplier<Item> TRACKER = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID, "tracker", TrackerItem::new);
 
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,

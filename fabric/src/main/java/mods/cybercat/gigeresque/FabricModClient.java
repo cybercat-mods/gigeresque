@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque;
 
+import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -21,9 +22,11 @@ import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.item.GigItems;
 
 public class FabricModClient implements ClientModInitializer {
 
@@ -116,6 +119,7 @@ public class FabricModClient implements ClientModInitializer {
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
         );
+        AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
     }
 
