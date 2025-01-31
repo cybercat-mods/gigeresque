@@ -242,20 +242,8 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
     public void tick() {
         super.tick();
         moveAnalysis.update();
-
-        if (this.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
-        }
-        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
-        }
-        if (this.level().isClientSide() && !this.isPassenger() && !this.isDeadOrDying()) {
-            if (this.isInWater()) {
-                this.handleWaterMovementAniamtions();
-            } else {
-                this.handleMovementAniamtions();
-            }
-        }
+        if (this.level().isClientSide)
+            this.handleAnimations();
         this.handleAttachmentToHost();
         if (isInfertile()) {
             this.kill();
@@ -265,25 +253,42 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
         }
     }
 
-    protected void handleWaterMovementAniamtions() {
+    protected void handleAnimations() {
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            return;
+        }
+        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
         if (this.moveAnalysis.isMoving()) {
-            if (this.isAggressive() && this.isInWater()) {
-                GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
-            } else {
-                GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-            }
+            this.handleMovementAnimations();
         } else {
-            if (this.isInWater()) {
-                GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
-            } else {
-                GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
-            }
+            this.handleIdleAnimations();
         }
     }
 
-    protected void handleMovementAniamtions() {
-        if (this.moveAnalysis.isMoving()) {
+    protected void handleMovementAnimations() {
+        if (this.isAggressive()) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        }
+    }
+
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawlRush);
+        }
+    }
+
+    protected void handleIdleAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
         }
