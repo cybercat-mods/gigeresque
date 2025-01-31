@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
 import net.minecraft.world.phys.Vec3;
 
 import mods.cybercat.gigeresque.Constants;
@@ -10,9 +9,9 @@ import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
+import mods.cybercat.gigeresque.common.entity.impl.neo.NeobursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public record GigMeleeAttackSelector() {
@@ -22,17 +21,17 @@ public record GigMeleeAttackSelector() {
         var basicCheck = classicAlienEntity.isCrawling() || classicAlienEntity.isTunnelCrawling() || classicAlienEntity.isInWater();
         Runnable animKey = switch (classicAlienEntity.getRandom().nextInt(4)) {
             case 1 -> basicCheck
-                    ? classicAlienEntity.animationDispatcher::sendRightClawBasic
-                    : classicAlienEntity.animationDispatcher::sendRightClaw;
+                ? classicAlienEntity.animationDispatcher::sendRightClawBasic
+                : classicAlienEntity.animationDispatcher::sendRightClaw;
             case 2 -> basicCheck
-                    ? classicAlienEntity.animationDispatcher::sendLeftTailBasic
-                    : classicAlienEntity.animationDispatcher::sendLeftTail;
+                ? classicAlienEntity.animationDispatcher::sendLeftTailBasic
+                : classicAlienEntity.animationDispatcher::sendLeftTail;
             case 3 -> basicCheck
-                    ? classicAlienEntity.animationDispatcher::sendRightTailBasic
-                    : classicAlienEntity.animationDispatcher::sendRightTail;
+                ? classicAlienEntity.animationDispatcher::sendRightTailBasic
+                : classicAlienEntity.animationDispatcher::sendRightTail;
             default -> basicCheck
-                    ? classicAlienEntity.animationDispatcher::sendLeftClawBasic
-                    : classicAlienEntity.animationDispatcher::sendLeftClaw;
+                ? classicAlienEntity.animationDispatcher::sendLeftClawBasic
+                : classicAlienEntity.animationDispatcher::sendLeftClaw;
         };
         GigCommonMethods.setAnimation(animKey);
     };
@@ -66,23 +65,23 @@ public record GigMeleeAttackSelector() {
         // runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<DraconicTempleBeastEntity> DRACONIC_ANIM_SELECTOR = runner -> {
-        var animKey = switch (runner.getRandom().nextInt(4)) {
-            case 1 -> Constants.RIGHT_CLAW;
-            case 2 -> Constants.LEFT_TAIL_BASIC;
-            case 3 -> Constants.RIGHT_TAIL_BASIC;
-            default -> Constants.LEFT_CLAW;
+    public static final AnimationSelector<NewAlienEntity> STANDARD_ANIM_SELECTOR = templeBeastEntity -> {
+        Runnable animKey = switch (templeBeastEntity.getRandom().nextInt(4)) {
+            case 1 -> templeBeastEntity.animationDispatcher::sendRightClaw;
+            case 2 -> templeBeastEntity.animationDispatcher::sendLeftTail;
+            case 3 -> templeBeastEntity.animationDispatcher::sendRightTail;
+            default -> templeBeastEntity.animationDispatcher::sendLeftClaw;
         };
-        // runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
+        GigCommonMethods.setAnimation(animKey);
     };
 
     public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.triggerAnim(
-            Constants.ATTACK_CONTROLLER,
-            Constants.ATTACK
+        Constants.ATTACK_CONTROLLER,
+        Constants.ATTACK
     );
 
-    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR = runnerbursterEntity ->
-            runnerbursterEntity.animationDispatcher.sendChomp();
+    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR =
+        runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp();
 
     public static final AnimationSelector<NeobursterEntity> NBUSTER_ANIM_SELECTOR = neobursterEntity -> {
         Runnable animKey = switch (neobursterEntity.getRandom().nextInt(4)) {

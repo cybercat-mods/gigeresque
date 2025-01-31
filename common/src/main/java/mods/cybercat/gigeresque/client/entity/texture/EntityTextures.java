@@ -30,7 +30,9 @@ public record EntityTextures() {
 
     public static final ResourceLocation ALIEN_YOUNG = Constants.modResource("%s/alien/alien_young.png".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation ROM_ALIEN_YOUNG = Constants.modResource("%s/rom_alien/rom_alien_young.png".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation ROM_ALIEN_YOUNG = Constants.modResource(
+        "%s/rom_alien/rom_alien_young.png".formatted(BASE_ENTITY_URL)
+    );
 
     public static final ResourceLocation CHESTBURSTER_BLOOD = Constants.modResource(
         "%s/chestburster/burster_blood.png".formatted(BASE_ENTITY_URL)

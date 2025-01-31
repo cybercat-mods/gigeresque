@@ -3,13 +3,13 @@ package mods.cybercat.gigeresque.client.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.animators.aqua.AquaticChestbursterAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.animators.aqua.AquaticChestbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 
 public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticChestbursterEntity> {
@@ -20,11 +20,11 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
 
     public AquaticChestbursterEntityRenderer(EntityRendererProvider.Context context) {
         super(
-                AzEntityRendererConfig.<AquaticChestbursterEntity>builder(MODEL, TEX)
-                        .setAnimatorProvider(AquaticChestbursterAnimator::new)
-                        .setDeathMaxRotation(0.0F)
-                        .build(),
-                context
+            AzEntityRendererConfig.<AquaticChestbursterEntity>builder(MODEL, TEX)
+                .setAnimatorProvider(AquaticChestbursterAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .build(),
+            context
         );
         this.shadowRadius = 0.1f;
     }

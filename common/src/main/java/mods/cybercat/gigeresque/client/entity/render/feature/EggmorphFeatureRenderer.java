@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mod.azure.azurelib.core.object.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -46,7 +47,13 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
         renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-        renderedModel.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        renderedModel.renderToBuffer(
+            matrices,
+            vertexConsumer,
+            light,
+            OverlayTexture.NO_OVERLAY,
+            -1
+        );
         matrices.popPose();
     }
 
