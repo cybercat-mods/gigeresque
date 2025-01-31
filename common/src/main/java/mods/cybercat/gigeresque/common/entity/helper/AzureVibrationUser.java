@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
@@ -131,34 +131,35 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
-        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof NewAlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
             alienEntity.wakeupCounter++;
             if (alienEntity.isPassedOut() && alienEntity.wakeupCounter == 1)
-                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
-            if (alienEntity.wakeupCounter == 2) {
+                alienEntity.animationDispatcher.sendStatisLeave();
+            if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
+                alienEntity.setPassedOutStatus(false);
+            if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                     alienEntity.setPassedOutStatus(false);
-                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "alert");
+                alienEntity.animationDispatcher.sendAmbient();
             }
             if (alienEntity.wakeupCounter >= 3) {
-                alienEntity.triggerAnim(Constants.ATTACK_CONTROLLER, "run");
                 alienEntity.setPassedOutStatus(false);
                 alienEntity.setAggressive(true);
-                alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+                alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
                 alienEntity.wakeupCounter = 0;
             }
         }
 
-        if (this.mob instanceof AlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof NewAlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
             alienEntity.setPassedOutStatus(false);
-            alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+            alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
         }
 
         if (
             this.mob instanceof PopperEntity || this.mob instanceof HammerpedeEntity || this.mob instanceof FacehuggerEntity
                 && !(entity2 instanceof IronGolem)
         )
-            mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.moveSpeed);
+            mob.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
     }
 
 }
