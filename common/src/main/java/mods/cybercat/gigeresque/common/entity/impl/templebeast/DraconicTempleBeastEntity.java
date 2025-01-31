@@ -347,7 +347,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
             new JumpToTargetTask<>(20),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.DRACONIC_ANIM_SELECTOR)
+            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)
         );
     }
 
