@@ -90,7 +90,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
             new InvalidateAttackTarget<>().invalidateIf(
                 (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.0f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
             new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR)
         );
     }
