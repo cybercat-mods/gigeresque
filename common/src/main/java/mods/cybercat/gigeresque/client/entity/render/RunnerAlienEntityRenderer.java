@@ -1,21 +1,34 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.client.entity.model.RunnerAlienEntityModel;
-import mods.cybercat.gigeresque.client.entity.render.feature.RunnerAlienFeatureRenderer;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.runner.RunnerAlienAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 
-public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEntity> {
+public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/runner_alien/runner_alien.geo.json");
 
     public RunnerAlienEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new RunnerAlienEntityModel());
+        super(
+            AzEntityRendererConfig.<RunnerAlienEntity>builder(
+                MODEL,
+                EntityTextures.RUNNER_ALIEN
+            )
+                .setAnimatorProvider(RunnerAlienAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .build(),
+            context
+        );
         this.shadowRadius = 0.5f;
-        this.addRenderLayer(new RunnerAlienFeatureRenderer(this));
     }
 
     @Override
@@ -30,15 +43,5 @@ public class RunnerAlienEntityRenderer extends GeoEntityRenderer<RunnerAlienEnti
         float scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(RunnerAlienEntity entityLivingBaseIn) {
-        return 0;
-    }
-
-    @Override
-    public float getMotionAnimThreshold(RunnerAlienEntity animatable) {
-        return 0.005f;
     }
 }

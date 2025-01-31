@@ -64,6 +64,10 @@ public record EntityTextures() {
         "%s/neomorph_spore_pods/neomorph_spore_pods_petrified.png".formatted(BASE_BLOCK_URL)
     );
 
+    public static final ResourceLocation RUNNER_ALIEN = Constants.modResource(
+        "%s/runner_alien/runner_alien.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation RUNNER_ALIEN_YOUNG = Constants.modResource(
         "%s/runner_alien/runner_alien_young.png".formatted(BASE_ENTITY_URL)
     );
