@@ -1,61 +1,41 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.common.api.client.renderer.layer.GeoRenderLayer;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
-import mod.azure.azurelib.common.internal.client.renderer.GeoRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import mod.azure.azurelib.core.object.Color;
+import mod.azure.azurelib.rewrite.model.AzBone;
+import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
+import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
+import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
-public class EggmorphGeoFeatureRenderer<T extends Entity & GeoEntity> extends GeoRenderLayer<T> {
+public class EggmorphGeoFeatureRenderer<T extends Entity> implements AzRenderLayer<T> {
 
     private int fovEggticker = 0;
 
-    public EggmorphGeoFeatureRenderer(GeoRenderer<T> entityRenderer) {
-        super(entityRenderer);
-    }
+    @Override
+    public void preRender(AzRendererPipelineContext<T> context) {}
 
     @Override
-    public void render(
-        PoseStack poseStack,
-        T animatable,
-        BakedGeoModel bakedModel,
-        RenderType renderType,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        float partialTick,
-        int packedLight,
-        int packedOverlay
-    ) {
-        var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(
-            getGeoModel().getTextureResource(animatable)
-        ).renderLayer;
+    public void render(AzRendererPipelineContext<T> context) {
+        T animatable = (T) context.animatable();
+        AzRendererPipeline<T> renderPipeline = context.rendererPipeline();
+        var bufferSource = context.multiBufferSource();
+        ResourceLocation textureLocation = renderPipeline.config().textureLocation(animatable);
+        var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(textureLocation).renderLayer;
         if (animatable instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
             fovEggticker++;
             var progress = Math.max(0, Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1));
             var vertexConsumer = bufferSource.getBuffer(renderLayer);
             vertexConsumer.setColor(1, 1, 1, progress);
-            renderer.reRender(
-                getDefaultBakedModel(animatable),
-                poseStack,
-                bufferSource,
-                animatable,
-                renderLayer,
-                vertexConsumer,
-                partialTick,
-                packedLight,
-                OverlayTexture.NO_OVERLAY,
-                (int) progress
-            );
+            context.setRenderColor(Color.ofRGBA(1, 1, 1, progress).getColor());
+            renderPipeline.reRender(context);
         }
-        super.render(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
+
+    @Override
+    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
 }

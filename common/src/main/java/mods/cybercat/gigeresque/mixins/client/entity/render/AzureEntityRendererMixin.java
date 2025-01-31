@@ -17,7 +17,10 @@ import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeoFeatureR
 @Mixin(value = AzEntityRendererConfig.Builder.class)
 public abstract class AzureEntityRendererMixin<T extends Entity> extends AzRendererConfig.Builder<T> {
 
-    protected AzureEntityRendererMixin(Function<T, ResourceLocation> modelLocationProvider, Function<T, ResourceLocation> textureLocationProvider) {
+    protected AzureEntityRendererMixin(
+        Function<T, ResourceLocation> modelLocationProvider,
+        Function<T, ResourceLocation> textureLocationProvider
+    ) {
         super(modelLocationProvider, textureLocationProvider);
     }
 
@@ -25,7 +28,14 @@ public abstract class AzureEntityRendererMixin<T extends Entity> extends AzRende
         method = "addRenderLayer(Lmod/azure/azurelib/rewrite/render/layer/AzRenderLayer;)Lmod/azure/azurelib/rewrite/render/entity/AzEntityRendererConfig$Builder;",
         at = @At("RETURN"), remap = false
     )
-    private void gig$InjectEggMorph(AzRenderLayer<T> renderLayer, CallbackInfoReturnable<AzEntityRendererConfig.Builder<T>> cir) {
-        cir.setReturnValue((AzEntityRendererConfig.Builder<T>) super.addRenderLayer(new EggmorphGeoFeatureRenderer<>()));
+    private <T extends Entity> void gig$InjectEggMorph(
+        AzRenderLayer<T> renderLayer,
+        CallbackInfoReturnable<AzEntityRendererConfig.Builder<T>> cir
+    ) {
+        AzEntityRendererConfig.Builder<T> originalBuilder = cir.getReturnValue();
+
+        originalBuilder.renderLayers.add(new EggmorphGeoFeatureRenderer<>());
+
+        cir.setReturnValue(originalBuilder);
     }
 }

@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.core.object.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
