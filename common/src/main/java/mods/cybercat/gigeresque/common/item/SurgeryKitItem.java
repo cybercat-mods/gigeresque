@@ -48,10 +48,8 @@ public class SurgeryKitItem extends Item {
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             livingEntity.getActiveEffects().clear();
-            if (livingEntity.getRandom().nextDouble() < killChance)
-                livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE); // Kill
-                                                                                                                                // the
-                                                                                                                                // player
+            if (currentDurability < maxDurability && livingEntity.getRandom().nextInt(0, 100) < killChance)
+                livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone())
@@ -71,10 +69,8 @@ public class SurgeryKitItem extends Item {
             var killChance = calculateKillChance(currentDurability, maxDurability);
             tryRemoveParasite(user.getItemInHand(hand), user);
             user.getActiveEffects().clear();
-            if (user.getRandom().nextDouble() < killChance)
-                user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE); // Kill
-                                                                                                                // the
-                                                                                                                // player
+            if (currentDurability < maxDurability && user.getRandom().nextInt(0, 100) < killChance)
+                user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);
             if (user instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("surgery_kit"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone())
@@ -95,7 +91,7 @@ public class SurgeryKitItem extends Item {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, 500));
+            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, 75, 0, false, false, true));
             var burster = GigEntityUtils.spawnBurster(entity);
             if (burster != null) {
                 setBursterProperties(entity, burster);
