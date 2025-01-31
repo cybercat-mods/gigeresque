@@ -2,17 +2,34 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.classic.AlienEggAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
+import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.AquaEggEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.misc.AquaEggEntity;
 
-public class AquaEggEntityRender extends GeoEntityRenderer<AquaEggEntity> {
+public class AquaEggEntityRender extends AzEntityRenderer<AquaEggEntity> {
 
-    public AquaEggEntityRender(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new AquaEggEntityModel());
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/egg/egg.geo.json");
+
+    public AquaEggEntityRender(EntityRendererProvider.Context context) {
+        super(
+                AzEntityRendererConfig.<AquaEggEntity>builder(MODEL, EntityTextures.AQUA_EGG
+                        )
+                        .setDeathMaxRotation(0.0F)
+                        .build(),
+                context
+        );
     }
 
     @Override

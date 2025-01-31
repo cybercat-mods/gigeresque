@@ -1,9 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -21,11 +17,9 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 
-public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
+public class AquaEggEntity extends Entity implements Growable {
 
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AquaEggEntity.class, EntityDataSerializers.FLOAT);
-
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public AquaEggEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -102,18 +96,5 @@ public class AquaEggEntity extends Entity implements Growable, GeoAnimatable {
     public float getVisualRotationYInDegrees() {
         return 180.0F - ((this.tickCount + 0.5F) / 20.0F + this.random.nextFloat() * (float) Math.PI * 2.0F) / (float) (Math.PI * 2)
             * 360.0F;
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
-    }
-
-    @Override
-    public double getTick(Object object) {
-        return this.tickCount;
     }
 }

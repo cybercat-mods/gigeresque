@@ -34,6 +34,8 @@ public record EntityTextures() {
 
     public static final ResourceLocation EGG = Constants.modResource("%s/egg/egg.png".formatted(BASE_ENTITY_URL));
 
+    public static final ResourceLocation AQUA_EGG = Constants.modResource("%s/egg/egg_aqua.png".formatted(BASE_ENTITY_URL));
+
     public static final ResourceLocation EGG_ACTIVE = Constants.modResource("%s/egg/egg_active.png".formatted(BASE_ENTITY_URL));
 
     public static final ResourceLocation EGG_PETRIFIED = Constants.modResource("%s/egg/egg_petrified.png".formatted(BASE_ENTITY_URL));
