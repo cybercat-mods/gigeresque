@@ -54,6 +54,22 @@ public record EntityTextures() {
         "%s/aquatic_chestburster/aquatic_chestburster_petrified.png".formatted(BASE_ENTITY_URL)
     );
 
+    public static final ResourceLocation HAMMERPEDE = Constants.modResource(
+            "%s/hammerpede/hammerpede.png".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation POPPER = Constants.modResource(
+            "%s/popper/popper.png".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation STALKER = Constants.modResource(
+            "%s/stalker/stalker.png".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation STALKER_TRANSPARENT = Constants.modResource(
+            "%s/stalker/stalker_transparent.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation CHESTBURSTER_PETRIFIED = Constants.modResource(
         "%s/chestburster/chestburster_petrified.png".formatted(BASE_ENTITY_URL)
     );

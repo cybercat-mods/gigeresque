@@ -1,30 +1,46 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.mutant.StalkerAnimator;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.client.entity.model.StalkerEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 
-public class StalkerEntityRenderer extends GeoEntityRenderer<StalkerEntity> {
+public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/stalker/stalker.geo.json");
+
+    private static final RenderType NORMAL_RENDER_TYPE = RenderType.entityCutoutNoCull(EntityTextures.STALKER);
+
+    private static final RenderType TRANSPARENT_RENDER_TYPE = RenderType.entityTranslucentCull(EntityTextures.STALKER_TRANSPARENT);
 
     public StalkerEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new StalkerEntityModel());
+        super(
+                AzEntityRendererConfig.<StalkerEntity>builder(
+                                $ -> MODEL,
+                                stalker -> {
+                                    if (!stalker.moveAnalysis.isMoving()) {
+                                        return EntityTextures.STALKER_TRANSPARENT;
+                                    }
+                                    return EntityTextures.STALKER;
+                                }
+                        )
+                        .setAnimatorProvider(StalkerAnimator::new)
+                        .setDeathMaxRotation(0.0F)
+                        .setRenderType(stalker -> !stalker.moveAnalysis.isMoving() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
+                        .build(),
+                context
+        );
     }
 
     @Override
     protected float getShadowRadius(@NotNull StalkerEntity entity) {
-        return animatable.walkAnimation.speedOld < 0.35F && !animatable.swinging ? 0.0f : 1.0f;
-    }
-
-    @Override
-    protected float getDeathMaxRotation(StalkerEntity entityLivingBaseIn) {
-        return 0.0F;
-    }
-
-    @Override
-    public float getMotionAnimThreshold(StalkerEntity animatable) {
-        return 0.005f;
+        return entity.walkAnimation.speedOld < 0.35F && !entity.swinging ? 0.0f : 1.0f;
     }
 }

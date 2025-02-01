@@ -7,6 +7,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
@@ -27,6 +28,8 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -54,10 +57,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -65,13 +64,13 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 /**
  * TODO: Ensure crawling works good
  */
-public class StalkerEntity extends AlienEntity implements SmartBrainOwner<StalkerEntity> {
+public class StalkerEntity extends NewAlienEntity implements SmartBrainOwner<StalkerEntity> {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
-    public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
+    public StalkerEntity(EntityType<? extends NewAlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
@@ -104,31 +103,47 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
         return 3;
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var velocityLength = this.getDeltaMovement().horizontalDistance();
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (velocityLength >= 0.000000001 && !isDead && this.getLastDamageSource() == null && !this.isInWater())
-                if (walkAnimation.speedOld >= 0.35F && event.getAnimatable().isAggressive())
-                    return event.setAndContinue(GigAnimationsDefault.RUNNING);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.MOVING);
-            if (event.isMoving() && !isDead && this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.SWIM);
-            if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !isDead && !this.swinging && !this.isInWater())
-                return event.setAndContinue(RawAnimation.begin().then("hurt", Animation.LoopType.PLAY_ONCE));
-            return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
-        }).triggerableAnim("attack_heavy", GigAnimationsDefault.ATTACK_HEAVY) // attack
-            .triggerableAnim("attack_normal", GigAnimationsDefault.ATTACK_NORMAL) // attack
-            .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-            .triggerableAnim("idle", GigAnimationsDefault.IDLE) // idle
-        );
+    protected void handleAnimations() {
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            return;
+        }
+        if (this.getLastDamageSource() != null && this.hurtDuration > 0 && !this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendHurt);
+        }
+        if (this.moveAnalysis.isMoving()) {
+            this.handleMovementAnimations();
+        } else {
+            this.handleIdleAnimations();
+        }
     }
 
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
+        }
+    }
+
+    protected void handleMovementAnimations() {
+        if (this.isAggressive() && !this.swinging) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendWalk);
+        }
+    }
+
+    protected void handleIdleAnimations() {
+        if (!this.swinging) {
+            if (this.isInWater()) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
+            } else {
+                GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+            }
+        }
     }
 
     @Override
@@ -202,9 +217,14 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     @Override
     public void tick() {
         super.tick();
+        moveAnalysis.update();
         GigEntityUtils.breakBlocks(this);
         if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN))
             this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
+
+        if (!this.level().isClientSide) {
+            this.handleAnimations();
+        }
     }
 
     @Override
