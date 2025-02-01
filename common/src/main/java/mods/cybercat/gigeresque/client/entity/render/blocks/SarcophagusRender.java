@@ -2,10 +2,11 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.animators.StatueAnimator;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageEntity;
-import net.minecraft.resources.ResourceLocation;
 
 public class SarcophagusRender extends AzBlockEntityRenderer<AlienStorageEntity> {
 
@@ -15,9 +16,9 @@ public class SarcophagusRender extends AzBlockEntityRenderer<AlienStorageEntity>
 
     public SarcophagusRender() {
         super(
-                AzBlockEntityRendererConfig.<AlienStorageEntity>builder(MODEL, TEXTURE)
-                        .setAnimatorProvider(StatueAnimator::new)
-                        .build()
+            AzBlockEntityRendererConfig.<AlienStorageEntity>builder(MODEL, TEXTURE)
+                .setAnimatorProvider(StatueAnimator::new)
+                .build()
         );
     }
 

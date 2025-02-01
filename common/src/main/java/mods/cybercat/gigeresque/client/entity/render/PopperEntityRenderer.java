@@ -2,13 +2,13 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.PopperAnimator;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import net.minecraft.resources.ResourceLocation;
 
 public class PopperEntityRenderer extends AzEntityRenderer<PopperEntity> {
 
@@ -16,14 +16,14 @@ public class PopperEntityRenderer extends AzEntityRenderer<PopperEntity> {
 
     public PopperEntityRenderer(EntityRendererProvider.Context context) {
         super(
-                AzEntityRendererConfig.<PopperEntity>builder(
-                                MODEL,
-                                EntityTextures.POPPER
-                        )
-                        .setAnimatorProvider(PopperAnimator::new)
-                        .setDeathMaxRotation(0.0F)
-                        .build(),
-                context
+            AzEntityRendererConfig.<PopperEntity>builder(
+                MODEL,
+                EntityTextures.POPPER
+            )
+                .setAnimatorProvider(PopperAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .build(),
+            context
         );
         this.shadowRadius = 0.5f;
     }

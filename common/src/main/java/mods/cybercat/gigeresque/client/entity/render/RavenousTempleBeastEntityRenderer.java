@@ -2,12 +2,12 @@ package mods.cybercat.gigeresque.client.entity.render;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.entity.animators.templebeast.RavenousTempleBeastAnimator;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.templebeast.RavenousTempleBeastAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 
 public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<RavenousTempleBeastEntity> {
@@ -16,19 +16,19 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
 
     public RavenousTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
         super(
-        AzEntityRendererConfig.<RavenousTempleBeastEntity>builder(
-                        $ -> MODEL,
-                        stalker -> {
-                            if (stalker.isPassedOut()) {
-                                return EntityTextures.RAVENOUSTEMPLEBEAST_STATIS;
-                            }
-                            return EntityTextures.RAVENOUSTEMPLEBEAST;
-                        }
-                )
+            AzEntityRendererConfig.<RavenousTempleBeastEntity>builder(
+                $ -> MODEL,
+                stalker -> {
+                    if (stalker.isPassedOut()) {
+                        return EntityTextures.RAVENOUSTEMPLEBEAST_STATIS;
+                    }
+                    return EntityTextures.RAVENOUSTEMPLEBEAST;
+                }
+            )
                 .setAnimatorProvider(RavenousTempleBeastAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .build(),
-                context
+            context
         );
         this.shadowRadius = 1.0f;
     }

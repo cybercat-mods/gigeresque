@@ -4,14 +4,15 @@ import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.Constants;
 
 public class SittingIdolAnimator extends AzBlockAnimator {
 
     private static final ResourceLocation ANIMATIONS = Constants.modResource(
-            "animations/block/sittingidol/sittingidol.animation.json"
+        "animations/block/sittingidol/sittingidol.animation.json"
     );
 
     public SittingIdolAnimator() {
@@ -21,8 +22,9 @@ public class SittingIdolAnimator extends AzBlockAnimator {
     @Override
     public void registerControllers(AzAnimationControllerContainer animationControllerContainer) {
         animationControllerContainer.add(
-                AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
-                        .build());
+            AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
+                .build()
+        );
     }
 
     @Override

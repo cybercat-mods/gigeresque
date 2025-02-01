@@ -2,11 +2,12 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.block.animators.Petrified1Animator;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect1Entity;
-import net.minecraft.resources.ResourceLocation;
 
 public class PetrifiedObject1Render extends AzBlockEntityRenderer<PetrifiedOjbect1Entity> {
 
@@ -14,9 +15,9 @@ public class PetrifiedObject1Render extends AzBlockEntityRenderer<PetrifiedOjbec
 
     public PetrifiedObject1Render() {
         super(
-                AzBlockEntityRendererConfig.<PetrifiedOjbect1Entity>builder(MODEL, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED)
-                        .setAnimatorProvider(Petrified1Animator::new)
-                        .build()
+            AzBlockEntityRendererConfig.<PetrifiedOjbect1Entity>builder(MODEL, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED)
+                .setAnimatorProvider(Petrified1Animator::new)
+                .build()
         );
     }
 }

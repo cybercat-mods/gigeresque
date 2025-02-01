@@ -2,8 +2,9 @@ package mods.cybercat.gigeresque.client.entity.render.items;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.resources.ResourceLocation;
+
+import mods.cybercat.gigeresque.Constants;
 
 public class SporeItemBlockRender extends AzItemRenderer {
 
@@ -13,8 +14,8 @@ public class SporeItemBlockRender extends AzItemRenderer {
 
     public SporeItemBlockRender() {
         super(
-                AzItemRendererConfig.builder(itemStack -> MODEL, itemStack -> TEXTURE)
-                        .build()
+            AzItemRendererConfig.builder(itemStack -> MODEL, itemStack -> TEXTURE)
+                .build()
         );
     }
 

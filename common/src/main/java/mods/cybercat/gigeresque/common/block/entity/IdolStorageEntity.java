@@ -53,12 +53,12 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity {
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             if (IdolStorageEntity.this.level != null)
                 IdolStorageEntity.this.level.playSound(
-                        null,
-                        pos,
-                        SoundEvents.ITEM_FRAME_BREAK,
-                        SoundSource.BLOCKS,
-                        1.0f,
-                        1.0f
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
                 );
         }
 

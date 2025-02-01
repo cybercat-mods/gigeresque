@@ -90,9 +90,9 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
     public static void tick(Level level, BlockPos pos, BlockState state, JarStorageEntity blockEntity) {
         if (blockEntity.getLevel() != null && !blockEntity.isRemoved()) {
             blockEntity.stateManager.recheckOpeners(
-                    blockEntity.getLevel(),
-                    blockEntity.getBlockPos(),
-                    blockEntity.getBlockState()
+                blockEntity.getLevel(),
+                blockEntity.getBlockPos(),
+                blockEntity.getBlockState()
             );
             if (blockEntity.getLevel().isClientSide()) {
                 if (blockEntity.getChestState() == StorageStates.CLOSING) {
@@ -169,9 +169,9 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
     public void tick() {
         if (!this.isRemoved()) {
             this.stateManager.recheckOpeners(
-                    Objects.requireNonNull(this.getLevel()),
-                    this.getBlockPos(),
-                    this.getBlockState()
+                Objects.requireNonNull(this.getLevel()),
+                this.getBlockPos(),
+                this.getBlockState()
             );
         }
     }

@@ -2,15 +2,16 @@ package mods.cybercat.gigeresque.common.block.petrifiedblocks.entity;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import mods.cybercat.gigeresque.Constants;
 
 public class PetrifiedDispatcher {
 
     private static final AzCommand PETRIFIED_COMMAND = AzCommand.create(
-            Constants.BASE_CONTROLLER,
-            "petrified",
-            AzPlayBehaviors.LOOP
+        Constants.BASE_CONTROLLER,
+        "petrified",
+        AzPlayBehaviors.LOOP
     );
 
     private final BlockEntity blockEntity;

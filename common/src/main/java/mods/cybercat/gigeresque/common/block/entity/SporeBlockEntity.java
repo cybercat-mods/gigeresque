@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;

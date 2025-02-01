@@ -4,16 +4,16 @@ import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect5Entity;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect5Entity;
 
 public class Petrified5Animator extends AzBlockAnimator<PetrifiedOjbect5Entity> {
 
     private static final ResourceLocation ANIMATIONS = Constants.modResource(
-            "animations/block/neomorph_spore_pods/neomorph_spore_pods.animation.json"
+        "animations/block/neomorph_spore_pods/neomorph_spore_pods.animation.json"
     );
 
     public Petrified5Animator() {
@@ -23,8 +23,8 @@ public class Petrified5Animator extends AzBlockAnimator<PetrifiedOjbect5Entity> 
     @Override
     public void registerControllers(AzAnimationControllerContainer<PetrifiedOjbect5Entity> animationControllerContainer) {
         animationControllerContainer.add(
-                AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
-                        .build()
+            AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
+                .build()
         );
     }
 

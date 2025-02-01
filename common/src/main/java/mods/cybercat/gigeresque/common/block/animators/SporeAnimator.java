@@ -4,15 +4,16 @@ import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
 
 public class SporeAnimator extends AzBlockAnimator<SporeBlockEntity> {
 
     private static final ResourceLocation ANIMATIONS = Constants.modResource(
-            "animations/block/neomorph_spore_pods/neomorph_spore_pods.animation.json"
+        "animations/block/neomorph_spore_pods/neomorph_spore_pods.animation.json"
     );
 
     public SporeAnimator() {
@@ -22,8 +23,8 @@ public class SporeAnimator extends AzBlockAnimator<SporeBlockEntity> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<SporeBlockEntity> animationControllerContainer) {
         animationControllerContainer.add(
-                AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
-                        .build()
+            AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
+                .build()
         );
     }
 

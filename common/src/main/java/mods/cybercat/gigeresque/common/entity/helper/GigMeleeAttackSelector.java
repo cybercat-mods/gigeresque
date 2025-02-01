@@ -44,7 +44,7 @@ public record GigMeleeAttackSelector() {
         var basicCheck = entity.isInWater();
         Runnable animKey = switch (entity.getRandom().nextInt(4)) {
             case 1 -> entity.animationDispatcher::sendRightClaw;
-            case 2 -> basicCheck ? entity.animationDispatcher::sendRightClaw: entity.animationDispatcher::sendLeftTail;
+            case 2 -> basicCheck ? entity.animationDispatcher::sendRightClaw : entity.animationDispatcher::sendLeftTail;
             case 3 -> basicCheck ? entity.animationDispatcher::sendLeftClaw : entity.animationDispatcher::sendRightTail;
             default -> entity.animationDispatcher::sendLeftClaw;
         };
@@ -79,7 +79,8 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.animationDispatcher.sendAttack();
+    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.animationDispatcher
+        .sendAttack();
 
     public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR =
         runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp();
@@ -123,6 +124,6 @@ public record GigMeleeAttackSelector() {
         }
     };
 
-    public static final AnimationSelector<SpitterEntity> SPITTER_RANGE_SELECTOR = spitterEntity ->
-            spitterEntity.animationDispatcher.sendAcidSpit();
+    public static final AnimationSelector<SpitterEntity> SPITTER_RANGE_SELECTOR = spitterEntity -> spitterEntity.animationDispatcher
+        .sendAcidSpit();
 }

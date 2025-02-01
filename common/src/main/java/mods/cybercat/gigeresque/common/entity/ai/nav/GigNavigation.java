@@ -29,6 +29,8 @@ public class GigNavigation extends AzureNavigation {
 
     @Override
     protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32) {
-        return this.mob.isInLiquid() ? isClearForMovementBetween(this.mob, posVec31, posVec32, false) : super.canMoveDirectly(posVec31, posVec32);
+        return this.mob.isInLiquid()
+            ? isClearForMovementBetween(this.mob, posVec31, posVec32, false)
+            : super.canMoveDirectly(posVec31, posVec32);
     }
 }

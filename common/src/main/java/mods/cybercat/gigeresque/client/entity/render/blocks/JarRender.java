@@ -2,10 +2,11 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import net.minecraft.resources.ResourceLocation;
+
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.animators.JarAnimator;
 import mods.cybercat.gigeresque.common.block.entity.JarStorageEntity;
-import net.minecraft.resources.ResourceLocation;
 
 public class JarRender extends AzBlockEntityRenderer<JarStorageEntity> {
 
@@ -15,9 +16,9 @@ public class JarRender extends AzBlockEntityRenderer<JarStorageEntity> {
 
     public JarRender() {
         super(
-                AzBlockEntityRendererConfig.<JarStorageEntity>builder(MODEL, TEXTURE)
-                        .setAnimatorProvider(JarAnimator::new)
-                        .build()
+            AzBlockEntityRendererConfig.<JarStorageEntity>builder(MODEL, TEXTURE)
+                .setAnimatorProvider(JarAnimator::new)
+                .build()
         );
     }
 

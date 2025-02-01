@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks.entity;
 
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,6 +15,7 @@ import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedObjectBloc
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 
 public class PetrifiedOjbect1Entity extends BlockEntity {
 

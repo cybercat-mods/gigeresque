@@ -4,17 +4,16 @@ import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.entity.SporeBlockEntity;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect2Entity;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect4Entity;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbect2Entity;
 
 public class Petrified2Animator extends AzBlockAnimator<PetrifiedOjbect2Entity> {
 
     private static final ResourceLocation ANIMATIONS = Constants.modResource(
-            "animations/entity/chestburster/chestburster.animation.json"
+        "animations/entity/chestburster/chestburster.animation.json"
     );
 
     public Petrified2Animator() {
@@ -24,8 +23,8 @@ public class Petrified2Animator extends AzBlockAnimator<PetrifiedOjbect2Entity> 
     @Override
     public void registerControllers(AzAnimationControllerContainer<PetrifiedOjbect2Entity> animationControllerContainer) {
         animationControllerContainer.add(
-                AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
-                        .build()
+            AzAnimationController.builder(this, Constants.BASE_CONTROLLER)
+                .build()
         );
     }
 

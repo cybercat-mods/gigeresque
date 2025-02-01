@@ -4,12 +4,13 @@ import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.controller.keyframe.AzKeyframeCallbacks;
 import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.impl.hellmorphs.BaphomorphEntity;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 
 public class BaphomorphAnimator extends AzEntityAnimator<BaphomorphEntity> {
 

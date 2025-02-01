@@ -55,19 +55,19 @@ public record EntityTextures() {
     );
 
     public static final ResourceLocation HAMMERPEDE = Constants.modResource(
-            "%s/hammerpede/hammerpede.png".formatted(BASE_ENTITY_URL)
+        "%s/hammerpede/hammerpede.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation POPPER = Constants.modResource(
-            "%s/popper/popper.png".formatted(BASE_ENTITY_URL)
+        "%s/popper/popper.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation STALKER = Constants.modResource(
-            "%s/stalker/stalker.png".formatted(BASE_ENTITY_URL)
+        "%s/stalker/stalker.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation STALKER_TRANSPARENT = Constants.modResource(
-            "%s/stalker/stalker_transparent.png".formatted(BASE_ENTITY_URL)
+        "%s/stalker/stalker_transparent.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation CHESTBURSTER_PETRIFIED = Constants.modResource(
@@ -75,15 +75,15 @@ public record EntityTextures() {
     );
 
     public static final ResourceLocation NEOMORPH_ADOLESCENT = Constants.modResource(
-            "%s/neomorph_adolescent/neomorph_adolescent.png".formatted(BASE_ENTITY_URL)
+        "%s/neomorph_adolescent/neomorph_adolescent.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation NEOMORPH = Constants.modResource(
-            "%s/neomorph/neomorph.png".formatted(BASE_ENTITY_URL)
+        "%s/neomorph/neomorph.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation SPITTER = Constants.modResource(
-            "%s/spitter/spitter.png".formatted(BASE_ENTITY_URL)
+        "%s/spitter/spitter.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation NEOBURSTER_PETRIFIED = Constants.modResource(
@@ -113,7 +113,7 @@ public record EntityTextures() {
     public static final ResourceLocation BAPHOMORPH = Constants.modResource("%s/baphomorph/baphomorph.png".formatted(BASE_ENTITY_URL));
 
     public static final ResourceLocation DRACONICTEMPLEBEAST = Constants.modResource(
-            "%s/draconictemplebeast/draconictemplebeast.png".formatted(BASE_ENTITY_URL)
+        "%s/draconictemplebeast/draconictemplebeast.png".formatted(BASE_ENTITY_URL)
     );
 
     public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource(

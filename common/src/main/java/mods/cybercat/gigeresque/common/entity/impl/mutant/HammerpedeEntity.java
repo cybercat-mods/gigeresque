@@ -21,8 +21,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,11 +36,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -105,9 +105,9 @@ public class HammerpedeEntity extends NewAlienEntity implements SmartBrainOwner<
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             return;
         }
-//        if (this.isAggressive()) {
-//            GigCommonMethods.setAnimation(animationDispatcher::sendHostile);
-//        }
+        // if (this.isAggressive()) {
+        // GigCommonMethods.setAnimation(animationDispatcher::sendHostile);
+        // }
         if (this.moveAnalysis.isMoving()) {
             this.handleMovementAnimations();
         } else {

@@ -7,8 +7,6 @@ import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.animators.SittingIdolAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.animators.SittingIdolAnimator;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 
 public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntityRenderer<T> {
@@ -28,29 +28,29 @@ public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntit
 
     public SittingIdolRender() {
         super(
-                AzBlockEntityRendererConfig.<T>builder(MODEL, TEXTURE)
-                        .setAnimatorProvider(SittingIdolAnimator::new)
-                        .addRenderLayer(new AzBlockAndItemLayer<T>() {
+            AzBlockEntityRendererConfig.<T>builder(MODEL, TEXTURE)
+                .setAnimatorProvider(SittingIdolAnimator::new)
+                .addRenderLayer(new AzBlockAndItemLayer<T>() {
 
-                            @Override
-                            public ItemStack itemStackForBone(AzBone bone) {
-                                return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
-                            }
+                    @Override
+                    public ItemStack itemStackForBone(AzBone bone) {
+                        return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
+                    }
 
-                            @Override
-                            protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack) {
-                                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                            }
+                    @Override
+                    protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack) {
+                        return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    }
 
-                            @Override
-                            protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack) {
-                                context.poseStack().mulPose(Axis.XP.rotationDegrees(0));
-                                context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
-                                context.poseStack().mulPose(Axis.ZP.rotationDegrees(0));
-                                super.renderItemForBone(context, bone, itemStack);
-                            }
-                        })
-                        .build()
+                    @Override
+                    protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack) {
+                        context.poseStack().mulPose(Axis.XP.rotationDegrees(0));
+                        context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
+                        context.poseStack().mulPose(Axis.ZP.rotationDegrees(0));
+                        super.renderItemForBone(context, bone, itemStack);
+                    }
+                })
+                .build()
         );
     }
 

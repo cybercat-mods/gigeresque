@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
-import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -23,6 +22,7 @@ import mods.cybercat.gigeresque.client.entity.render.*;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.entities.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.entities.HologramEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;

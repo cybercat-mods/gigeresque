@@ -22,9 +22,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
-import mods.cybercat.gigeresque.common.entity.helper.*;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -45,12 +42,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienProjectileAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -304,9 +304,9 @@ public class SpitterEntity extends NewAlienEntity implements SmartBrainOwner<Spi
                 // Position the projectile in front of the attacker
                 final var attackDirection = attacker.getViewVector(1.0F); // Get view vector
                 acidProjectile.setPos(
-                        attacker.getX() + attackDirection.x * 2,
-                        attacker.getY(0.5), // Adjust vertical position
-                        attacker.getZ() + attackDirection.z * 2
+                    attacker.getX() + attackDirection.x * 2,
+                    attacker.getY(0.5), // Adjust vertical position
+                    attacker.getZ() + attackDirection.z * 2
                 );
 
                 // Calculate the direction vector toward the target (from attacker to target)

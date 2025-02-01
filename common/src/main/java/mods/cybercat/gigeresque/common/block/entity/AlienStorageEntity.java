@@ -39,13 +39,13 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity {
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
             if (AlienStorageEntity.this.level != null)
                 AlienStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
+                );
         }
 
         @Override
