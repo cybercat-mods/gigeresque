@@ -46,6 +46,10 @@ public record EntityTextures() {
 
     public static final ResourceLocation EGG_PETRIFIED = Constants.modResource("%s/egg/egg_petrified.png".formatted(BASE_ENTITY_URL));
 
+    public static final ResourceLocation AQUATIC_ALIEN = Constants.modResource(
+        "%s/aquatic_alien/aquatic_alien.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation AQUATIC_CHESTBURSTER_PETRIFIED = Constants.modResource(
         "%s/aquatic_chestburster/aquatic_chestburster_petrified.png".formatted(BASE_ENTITY_URL)
     );
