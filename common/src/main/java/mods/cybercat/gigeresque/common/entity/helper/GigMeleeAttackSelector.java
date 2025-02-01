@@ -36,15 +36,19 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<?> NORMAL_ANIM_SELECTOR = entity -> {
-        var basicCheck = entity.isInWater();
-        var animKey = switch (entity.getRandom().nextInt(4)) {
-            case 1 -> Constants.RIGHT_CLAW;
-            case 2 -> basicCheck ? Constants.RIGHT_CLAW : Constants.LEFT_TAIL;
-            case 3 -> basicCheck ? Constants.LEFT_CLAW : Constants.RIGHT_TAIL;
-            default -> Constants.LEFT_CLAW;
-        };
+    public static final AnimationSelector<?> NORMAL_ANIM_SELECTOR_OLD = entity -> {
         // entity.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
+    };
+
+    public static final AnimationSelector<NewAlienEntity> NORMAL_ANIM_SELECTOR = entity -> {
+        var basicCheck = entity.isInWater();
+        Runnable animKey = switch (entity.getRandom().nextInt(4)) {
+            case 1 -> entity.animationDispatcher::sendRightClaw;
+            case 2 -> basicCheck ? entity.animationDispatcher::sendRightClaw: entity.animationDispatcher::sendLeftTail;
+            case 3 -> basicCheck ? entity.animationDispatcher::sendLeftClaw : entity.animationDispatcher::sendRightTail;
+            default -> entity.animationDispatcher::sendLeftClaw;
+        };
+        GigCommonMethods.setAnimation(animKey);
     };
 
     public static final AnimationSelector<StalkerEntity> STALKER_ANIM_SELECTOR = stalker -> {

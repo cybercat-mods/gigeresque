@@ -74,6 +74,10 @@ public record EntityTextures() {
         "%s/chestburster/chestburster_petrified.png".formatted(BASE_ENTITY_URL)
     );
 
+    public static final ResourceLocation NEOMORPH_ADOLESCENT = Constants.modResource(
+            "%s/neomorph_adolescent/neomorph_adolescent.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation NEOBURSTER_PETRIFIED = Constants.modResource(
         "%s/neoburster/neoburster_petrified.png".formatted(BASE_ENTITY_URL)
     );
