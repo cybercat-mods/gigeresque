@@ -6,7 +6,7 @@
 			"bones": {
 				"heldItem": {
 					"rotation": {
-						"vector": ["math.sin(query.anim_time * 50) * 150", "math.cos(query.anim_time * 50) * 150", "math.sin(query.anim_time * 50) * 150"]
+						"vector": ["Math.sin(query.anim_time * 50) * 150", "Math.cos(query.anim_time * 50) * 150", "Math.sin(query.anim_time * 50) * 150"]
 					}
 				}
 			}
