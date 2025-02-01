@@ -75,10 +75,7 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.triggerAnim(
-        Constants.ATTACK_CONTROLLER,
-        Constants.ATTACK
-    );
+    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.animationDispatcher.sendAttack();
 
     public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR =
         runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp();
