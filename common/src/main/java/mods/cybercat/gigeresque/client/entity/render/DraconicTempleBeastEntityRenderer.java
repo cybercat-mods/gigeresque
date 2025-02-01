@@ -1,57 +1,39 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.templebeast.DraconicTempleBeastAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-import mods.cybercat.gigeresque.client.entity.model.DraconicTempleBeastEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public class DraconicTempleBeastEntityRenderer extends GeoEntityRenderer<DraconicTempleBeastEntity> {
+public class DraconicTempleBeastEntityRenderer extends AzEntityRenderer<DraconicTempleBeastEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/draconictemplebeast/draconictemplebeast.geo.json");
 
     public DraconicTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new DraconicTempleBeastEntityModel());
+        super(
+            AzEntityRendererConfig.<DraconicTempleBeastEntity>builder(
+                            MODEL,
+                            EntityTextures.DRACONICTEMPLEBEAST
+                    )
+                    .setAnimatorProvider(DraconicTempleBeastAnimator::new)
+                    .setDeathMaxRotation(0.0F)
+                    .build(),
+                    context
+        );
         this.shadowRadius = 1.0f;
     }
 
     @Override
-    public void preRender(
-        PoseStack poseStack,
-        DraconicTempleBeastEntity animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
-        float partialTick,
-        int packedLight,
-        int packedOverlay,
-        int colour
-    ) {
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            colour
-        );
+    public void render(@NotNull DraconicTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.scale(1.23F, 1.23F, 1.23F);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(DraconicTempleBeastEntity entityLivingBaseIn) {
-        return 0.0F;
-    }
-
-    @Override
-    public float getMotionAnimThreshold(DraconicTempleBeastEntity animatable) {
-        return 0.005f;
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

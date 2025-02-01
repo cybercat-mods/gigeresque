@@ -1,40 +1,35 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.templebeast.RavenousTempleBeastAnimator;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.ResourceLocation;
 
-import mods.cybercat.gigeresque.client.entity.model.RavenousTempleBeastEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 
-public class RavenousTempleBeastEntityRenderer extends GeoEntityRenderer<RavenousTempleBeastEntity> {
+public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<RavenousTempleBeastEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/ravenoustemplebeast/ravenoustemplebeast.geo.json");
 
     public RavenousTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new RavenousTempleBeastEntityModel());
+        super(
+        AzEntityRendererConfig.<RavenousTempleBeastEntity>builder(
+                        $ -> MODEL,
+                        stalker -> {
+                            if (stalker.isPassedOut()) {
+                                return EntityTextures.RAVENOUSTEMPLEBEAST_STATIS;
+                            }
+                            return EntityTextures.RAVENOUSTEMPLEBEAST;
+                        }
+                )
+                .setAnimatorProvider(RavenousTempleBeastAnimator::new)
+                .setDeathMaxRotation(0.0F)
+                .build(),
+                context
+        );
         this.shadowRadius = 1.0f;
-    }
-
-    @Override
-    public void render(
-        RavenousTempleBeastEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(RavenousTempleBeastEntity entityLivingBaseIn) {
-        return 0.0F;
-    }
-
-    @Override
-    public float getMotionAnimThreshold(RavenousTempleBeastEntity animatable) {
-        return 0.005f;
     }
 }

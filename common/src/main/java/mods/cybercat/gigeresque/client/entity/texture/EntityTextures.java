@@ -108,6 +108,10 @@ public record EntityTextures() {
 
     public static final ResourceLocation BAPHOMORPH = Constants.modResource("%s/baphomorph/baphomorph.png".formatted(BASE_ENTITY_URL));
 
+    public static final ResourceLocation DRACONICTEMPLEBEAST = Constants.modResource(
+            "%s/draconictemplebeast/draconictemplebeast.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource(
         "%s/ravenoustemplebeast/ravenoustemplebeast.png".formatted(BASE_ENTITY_URL)
     );
