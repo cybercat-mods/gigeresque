@@ -142,6 +142,15 @@ public class AcidSpitProjectile extends Projectile implements ItemSupplier {
             this.setDeltaMovement(adjustedVelocity);
             this.setPos(newX, newY, newZ);
         }
+        if (!this.level().isClientSide) {
+            this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1)).forEach(livingEntity -> {
+                if (livingEntity.getUseItem().is(Items.SHIELD)) {
+                    livingEntity.getUseItem().hurtAndBreak(10, livingEntity, livingEntity.getEquipmentSlotForItem(livingEntity.getUseItem()));
+                } else {
+                    livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.ACID), 4.0f);
+                }
+            });
+        }
     }
 
     @Override
