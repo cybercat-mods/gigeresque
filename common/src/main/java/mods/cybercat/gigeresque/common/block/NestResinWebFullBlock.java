@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -61,10 +62,10 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                     if (world.getBlockState(pos.below()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()))
                         player.setPos(pos.getCenter().x, pos.below().getY(), pos.getCenter().z);
                     player.makeStuckInBlock(state, new Vec3(0.25, 0.0F, 0.25));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 100, true, false), entity);
                     standingTick = 0;
                 }
             } else if (livingEntity instanceof Mob) {
-                standingTick = 0;
                 if (!livingEntity.hasEffect(GigStatusEffects.EGGMORPHING))
                     livingEntity.addEffect(
                         new MobEffectInstance(
@@ -75,6 +76,8 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                         entity
                     );
                 livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.0F, 0.25));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 100, true, false), entity);
+                standingTick = 0;
             } else {
                 standingTick = 0;
             }
