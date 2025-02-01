@@ -1,52 +1,39 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-import mods.cybercat.gigeresque.client.entity.model.NeomorphModel;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public class NeomorphRenderer extends GeoEntityRenderer<NeomorphEntity> {
+public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/neomorph/neomorph.geo.json");
 
     public NeomorphRenderer(EntityRendererProvider.Context context) {
-        super(context, new NeomorphModel());
+        super(
+                AzEntityRendererConfig.<NeomorphEntity>builder(
+                                MODEL,
+                                EntityTextures.NEOMORPH
+                        )
+                        .setAnimatorProvider(NeomorphAnimator::new)
+                        .setDeathMaxRotation(0.0F)
+                        .build(),
+                context
+        );
         this.shadowRadius = 0.5f;
     }
 
     @Override
-    public void preRender(
-        PoseStack poseStack,
-        NeomorphEntity animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
-        float partialTick,
-        int packedLight,
-        int packedOverlay,
-        int color
-    ) {
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            color
-        );
+    public void render(@NotNull NeomorphEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.scale(0.76F, 0.76F, 0.76F);
-    }
-
-    @Override
-    protected float getDeathMaxRotation(NeomorphEntity entityLivingBaseIn) {
-        return 0.0F;
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

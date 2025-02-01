@@ -78,6 +78,10 @@ public record EntityTextures() {
             "%s/neomorph_adolescent/neomorph_adolescent.png".formatted(BASE_ENTITY_URL)
     );
 
+    public static final ResourceLocation NEOMORPH = Constants.modResource(
+            "%s/neomorph/neomorph.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation SPITTER = Constants.modResource(
             "%s/spitter/spitter.png".formatted(BASE_ENTITY_URL)
     );
