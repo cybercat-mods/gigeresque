@@ -48,11 +48,11 @@ public record GigMeleeAttackSelector() {
     };
 
     public static final AnimationSelector<StalkerEntity> STALKER_ANIM_SELECTOR = stalker -> {
-        var animKey = switch (stalker.getRandom().nextInt(4)) {
-            case 1, 3 -> Constants.ATTACK_HEAVY;
-            default -> Constants.ATTACK_NORMAL;
+        Runnable animKey = switch (stalker.getRandom().nextInt(4)) {
+            case 1, 3 -> stalker.animationDispatcher::sendHeavy;
+            default -> stalker.animationDispatcher::sendNormal;
         };
-        // stalker.triggerAnim(Constants.LIVING_CONTROLLER, animKey);
+        GigCommonMethods.setAnimation(animKey);
     };
 
     public static final AnimationSelector<RunnerAlienEntity> RUNNER_ANIM_SELECTOR = runner -> {
