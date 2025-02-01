@@ -7,7 +7,7 @@
     "minecraft:armadillo",
     "minecraft:bogged",
     {
-      "id": "#avpr:aliens",
+      "id": "#avp:aliens",
       "required": false
     },
     {

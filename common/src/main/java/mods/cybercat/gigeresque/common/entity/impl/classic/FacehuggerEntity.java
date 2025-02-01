@@ -242,6 +242,9 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
     public void tick() {
         super.tick();
         moveAnalysis.update();
+        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
         if (this.level().isClientSide)
             this.handleAnimations();
         this.handleAttachmentToHost();
@@ -258,13 +261,12 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             return;
         }
-        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
-        }
-        if (this.moveAnalysis.isMoving()) {
-            this.handleMovementAnimations();
-        } else {
-            this.handleIdleAnimations();
+        if (!this.isVehicle()) {
+            if (this.moveAnalysis.isMoving()) {
+                this.handleMovementAnimations();
+            } else {
+                this.handleIdleAnimations();
+            }
         }
     }
 
