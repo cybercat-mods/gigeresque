@@ -18,6 +18,10 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enablePandoraEffects = true;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enabledCreativeBootAcidProtection = false;
 
     @Configurable

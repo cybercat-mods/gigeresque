@@ -189,7 +189,8 @@ public final class NeoForgeMod {
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
-        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
+        if (CommonMod.config.enablePandoraEffects)
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
         NeoForge.EVENT_BUS.addListener(this::onJoin);
         modEventBus.addListener(this::commonSetup);
     }

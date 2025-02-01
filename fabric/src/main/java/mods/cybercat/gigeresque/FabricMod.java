@@ -93,7 +93,8 @@ public final class FabricMod implements ModInitializer {
         );
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes());
-        ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
+        if (CommonMod.config.enablePandoraEffects)
+            ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
         AzIdentityRegistry.register(GigItems.TRACKER.get());
     }
 
