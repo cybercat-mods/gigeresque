@@ -5,6 +5,7 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
@@ -24,6 +25,8 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -56,14 +59,14 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperEntity> {
+public class PopperEntity extends NewAlienEntity implements SmartBrainOwner<PopperEntity> {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
-    public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
+    public PopperEntity(EntityType<? extends NewAlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         navigation = new GigNav(this, level());
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
@@ -97,28 +100,55 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !isDead && this.entityData.get(STATE) == 0 && this.onGround() && !this.isInWater())
-                if (walkAnimation.speedOld >= 0.35F)
-                    return event.setAndContinue(GigAnimationsDefault.RUN);
-                else
-                    return event.setAndContinue(GigAnimationsDefault.WALK);
-            else if (this.isAggressive() && !this.onGround() && !this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.CHARGE);
-            if (event.isMoving() && !isDead && this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.SWIM);
-            if (isDead)
-                return event.setAndContinue(GigAnimationsDefault.DEATH);
-            else
-                return event.setAndContinue(this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE);
-        }).triggerableAnim("death", GigAnimationsDefault.DEATH));
+    public void tick() {
+        super.tick();
+        moveAnalysis.update();
+
+        if (!this.level().isClientSide) {
+            this.handleAnimations();
+        }
     }
 
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
+    protected void handleAnimations() {
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            return;
+        }
+        if (this.moveAnalysis.isMoving()) {
+            this.handleMovementAnimations();
+        } else {
+            this.handleIdleAnimations();
+        }
+    }
+
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            if (this.entityData.get(STATE) == 0) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendRun);
+            } else {
+                GigCommonMethods.setAnimation(animationDispatcher::sendCharge);
+            }
+        }
+    }
+
+    protected void handleMovementAnimations() {
+        if (this.isAggressive()) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendWalk);
+        }
+    }
+
+    protected void handleIdleAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+        }
     }
 
     @Override

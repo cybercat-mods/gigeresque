@@ -1,20 +1,30 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
-import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.entity.animators.mutant.PopperAnimator;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-import mods.cybercat.gigeresque.client.entity.model.PopperEntityModel;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
+import net.minecraft.resources.ResourceLocation;
 
-public class PopperEntityRenderer extends GeoEntityRenderer<PopperEntity> {
+public class PopperEntityRenderer extends AzEntityRenderer<PopperEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/popper/popper.geo.json");
 
     public PopperEntityRenderer(EntityRendererProvider.Context context) {
-        super(context, new PopperEntityModel());
+        super(
+                AzEntityRendererConfig.<PopperEntity>builder(
+                                MODEL,
+                                EntityTextures.POPPER
+                        )
+                        .setAnimatorProvider(PopperAnimator::new)
+                        .setDeathMaxRotation(0.0F)
+                        .build(),
+                context
+        );
         this.shadowRadius = 0.5f;
-    }
-
-    @Override
-    protected float getDeathMaxRotation(PopperEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 }
