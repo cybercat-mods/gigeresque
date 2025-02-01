@@ -1,12 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
 import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
 import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
@@ -27,8 +22,10 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
@@ -42,35 +39,27 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienProjectileAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigAnimationsDefault;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.projectile.AcidSpitProjectile;
-import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class SpitterEntity extends AlienEntity implements SmartBrainOwner<SpitterEntity> {
+public class SpitterEntity extends NewAlienEntity implements SmartBrainOwner<SpitterEntity> {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
-    public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
+    public SpitterEntity(EntityType<? extends NewAlienEntity> entityType, Level world) {
         super(entityType, world);
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.3F);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
@@ -97,160 +86,6 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
                 CommonMod.config.spitterConfigs.spitterAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, Constants.LIVING_CONTROLLER, 5, event -> {
-            var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-            if (event.isMoving() && !this.isCrawling() && !isDead) {
-                if (this.onGround() && !this.wasEyeInWater) {
-                    if (walkAnimation.speedOld > 0.35F && this.getFirstPassenger() == null)
-                        return event.setAndContinue(GigAnimationsDefault.RUN);
-                    else
-                        return event.setAndContinue(GigAnimationsDefault.WALK);
-                } else if (this.wasEyeInWater && !this.isVehicle())
-                    if (this.isAggressive() && !this.isVehicle()) {
-                        return event.setAndContinue(GigAnimationsDefault.RUSH_SWIM);
-                    } else {
-                        return event.setAndContinue(GigAnimationsDefault.IDLE_WATER);
-                    }
-            } else if ((this.isCrawling() || this.isTunnelCrawling()) && !this.isVehicle() && !this.isInWater())
-                return event.setAndContinue(GigAnimationsDefault.CRAWL);
-            return event.setAndContinue(
-                this.wasEyeInWater ? GigAnimationsDefault.IDLE_WATER : GigAnimationsDefault.IDLE
-            );
-        }).setSoundKeyframeHandler(event -> {
-            if (this.level().isClientSide) {
-                if (event.getKeyframeData().getSound().matches("footstepSoundkey"))
-                    this.level()
-                        .playLocalSound(
-                            this.getX(),
-                            this.getY(),
-                            this.getZ(),
-                            GigSounds.ALIEN_FOOTSTEP.get(),
-                            SoundSource.HOSTILE,
-                            0.5F,
-                            1.0F,
-                            true
-                        );
-                if (event.getKeyframeData().getSound().matches("handstepSoundkey"))
-                    this.level()
-                        .playLocalSound(
-                            this.getX(),
-                            this.getY(),
-                            this.getZ(),
-                            GigSounds.ALIEN_HANDSTEP.get(),
-                            SoundSource.HOSTILE,
-                            0.5F,
-                            1.0F,
-                            true
-                        );
-                if (event.getKeyframeData().getSound().matches("ambientSoundkey"))
-                    this.level()
-                        .playLocalSound(
-                            this.getX(),
-                            this.getY(),
-                            this.getZ(),
-                            GigSounds.ALIEN_AMBIENT.get(),
-                            SoundSource.HOSTILE,
-                            1.0F,
-                            1.0F,
-                            true
-                        );
-                if (event.getKeyframeData().getSound().matches("thudSoundkey"))
-                    this.level()
-                        .playLocalSound(
-                            this.getX(),
-                            this.getY(),
-                            this.getZ(),
-                            GigSounds.ALIEN_DEATH_THUD.get(),
-                            SoundSource.HOSTILE,
-                            1.0F,
-                            1.0F,
-                            true
-                        );
-            }
-        })
-            .triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-            .triggerableAnim("idle", GigAnimationsDefault.IDLE)) // idle
-            .add(new AnimationController<>(this, Constants.ATTACK_CONTROLLER, 0, event -> {
-                if (event.getAnimatable().isPassedOut())
-                    return event.setAndContinue(RawAnimation.begin().thenLoop("stasis_loop"));
-                return PlayState.STOP;
-            }).triggerableAnim("death", GigAnimationsDefault.DEATH) // death
-                .triggerableAnim("acidspit", GigAnimationsDefault.SPIT) // spit
-                .triggerableAnim("acidspray", GigAnimationsDefault.SPRAY) // spray
-                .triggerableAnim("swipe", GigAnimationsDefault.LEFT_CLAW) // swipe
-                .triggerableAnim("swipe_left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                .triggerableAnim("left_claw", GigAnimationsDefault.LEFT_CLAW) // attack
-                .triggerableAnim("right_claw", GigAnimationsDefault.RIGHT_CLAW) // attack
-                .triggerableAnim("left_tail", GigAnimationsDefault.LEFT_TAIL) // attack
-                .triggerableAnim("right_tail", GigAnimationsDefault.RIGHT_TAIL) // attack
-                .setSoundKeyframeHandler(event -> {
-                    if (this.level().isClientSide) {
-                        if (event.getKeyframeData().getSound().matches("clawSoundkey"))
-                            this.level()
-                                .playLocalSound(
-                                    this.getX(),
-                                    this.getY(),
-                                    this.getZ(),
-                                    GigSounds.ALIEN_CLAW.get(),
-                                    SoundSource.HOSTILE,
-                                    0.25F,
-                                    1.0F,
-                                    true
-                                );
-                        if (event.getKeyframeData().getSound().matches("tailSoundkey"))
-                            this.level()
-                                .playLocalSound(
-                                    this.getX(),
-                                    this.getY(),
-                                    this.getZ(),
-                                    GigSounds.ALIEN_TAIL.get(),
-                                    SoundSource.HOSTILE,
-                                    0.25F,
-                                    1.0F,
-                                    true
-                                );
-                        if (event.getKeyframeData().getSound().matches("crunchSoundkey"))
-                            this.level()
-                                .playLocalSound(
-                                    this.getX(),
-                                    this.getY(),
-                                    this.getZ(),
-                                    GigSounds.ALIEN_CRUNCH.get(),
-                                    SoundSource.HOSTILE,
-                                    1.0F,
-                                    1.0F,
-                                    true
-                                );
-                    }
-                }))
-            .add(new AnimationController<>(this, "hissController", 0, event -> {
-                var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-                if (this.isHissing() && !this.isVehicle() && !this.isExecuting() && !isDead)
-                    return event.setAndContinue(GigAnimationsDefault.HISS);
-                return PlayState.STOP;
-            }).setSoundKeyframeHandler(event -> {
-                if (event.getKeyframeData().getSound().matches("hissSoundkey") && this.level().isClientSide)
-                    this.level()
-                        .playLocalSound(
-                            this.getX(),
-                            this.getY(),
-                            this.getZ(),
-                            GigSounds.ALIEN_HISS.get(),
-                            SoundSource.HOSTILE,
-                            1.0F,
-                            1.0F,
-                            true
-                        );
-            }).triggerableAnim("hiss", GigAnimationsDefault.HISS));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
     }
 
     @Override
@@ -360,11 +195,52 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     @Override
     public void tick() {
         super.tick();
+        moveAnalysis.update();
+        if (this.level().isClientSide())
+            this.handleAnimations();
         GigEntityUtils.breakBlocks(this);
         if (!this.isInWater())
             this.setIsCrawling(
                 this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid()
             );
+    }
+
+    protected void handleAnimations() {
+        if (this.isDeadOrDying()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
+            return;
+        }
+        if (this.moveAnalysis.isMoving()) {
+            this.handleMovementAnimations();
+        } else {
+            this.handleIdleAnimations();
+        }
+    }
+
+    protected void handleAggroMovementAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
+        }
+    }
+
+    protected void handleMovementAnimations() {
+        if (this.isAggressive()) {
+            this.handleAggroMovementAnimations();
+        } else if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendWalk);
+        }
+    }
+
+    protected void handleIdleAnimations() {
+        if (this.isInWater()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
+        } else {
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+        }
     }
 
     @Nullable
@@ -423,21 +299,29 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
 
     public void shootAcid(LivingEntity target, LivingEntity attacker) {
         if (attacker.hasLineOfSight(target)) {
-            var acidProjectile = new AcidSpitProjectile(
-                level(),
-                this,
-                new Vec3(
-                    this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2),
-                    this.getTarget().getY(0.5) - (this.getY(0.5)),
-                    this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2)
-                )
-            );
-            acidProjectile.setPos(
-                (attacker.getX() + attacker.getViewVector(1.0F).x),
-                attacker.getY(0.5),
-                attacker.getZ() + attacker.getViewVector(1.0F).z
-            );
-            attacker.level().addFreshEntity(acidProjectile);
+            var acidProjectile = GigEntities.ACID_PROJECTILE.get().create(this.level());
+            if (acidProjectile != null) {
+                // Position the projectile in front of the attacker
+                final var attackDirection = attacker.getViewVector(1.0F); // Get view vector
+                acidProjectile.setPos(
+                        attacker.getX() + attackDirection.x * 2,
+                        attacker.getY(0.5), // Adjust vertical position
+                        attacker.getZ() + attackDirection.z * 2
+                );
+
+                // Calculate the direction vector toward the target (from attacker to target)
+                double dx = target.getX() - acidProjectile.getX();
+                double dy = target.getY(0.5) - acidProjectile.getY(); // Aim for the center of the target
+                double dz = target.getZ() - acidProjectile.getZ();
+
+                // Set the projectile's velocity towards the target
+                float velocity = 1.0F; // Initial speed
+                float inaccuracy = 0.1F; // Lower value = better aim
+                acidProjectile.shoot(dx, dy, dz, velocity, inaccuracy);
+
+                // Spawn the projectile into the world
+                attacker.level().addFreshEntity(acidProjectile);
+            }
         }
     }
 

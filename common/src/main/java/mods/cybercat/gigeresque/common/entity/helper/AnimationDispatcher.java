@@ -38,11 +38,21 @@ public class AnimationDispatcher {
 
     private final AzCommand HATCHED_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched", AzPlayBehaviors.HOLD_ON_LAST_FRAME);
 
+    private final AzCommand ALERT_COMMAND = AzCommand.create(Constants.HOSTILE_CONTROLLER, "alert", AzPlayBehaviors.PLAY_ONCE);
+
+    private final AzCommand PLAY_HOSTILE_COMMAND = AzCommand.create(Constants.HOSTILE_CONTROLLER, "hostile", AzPlayBehaviors.PLAY_ONCE);
+
+    private final AzCommand IDLE_ALERT_COMMAND = AzCommand.create(Constants.HOSTILE_CONTROLLER, "idle_alert", AzPlayBehaviors.PLAY_ONCE);
+
+    private final AzCommand HOSTILE_COMMAND = AzCommand.compose(ALERT_COMMAND, PLAY_HOSTILE_COMMAND, IDLE_ALERT_COMMAND);
+
     private final AzCommand HATCHING_COMMAND = AzCommand.compose(HATCH_COMMAND, HATCHED_COMMAND);
 
     private final AzCommand HATCHED_EMPTY_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "hatched_empty", AzPlayBehaviors.LOOP);
 
     private final AzCommand DEATH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "death", AzPlayBehaviors.HOLD_ON_LAST_FRAME);
+
+    private final AzCommand HURT_COMMAND = AzCommand.create(Constants.HOSTILE_CONTROLLER, "hurt", AzPlayBehaviors.PLAY_ONCE);
 
     private final AzCommand IMPREGNATE_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
@@ -82,7 +92,7 @@ public class AnimationDispatcher {
 
     private final AzCommand SPRAY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spray", AzPlayBehaviors.PLAY_ONCE);
 
-    private final AzCommand CHARGE_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "charge", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand CHARGE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "charge", AzPlayBehaviors.PLAY_ONCE);
 
     private final AzCommand EAT_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "eat", AzPlayBehaviors.PLAY_ONCE);
 
@@ -358,6 +368,10 @@ public class AnimationDispatcher {
         EAT_COMMAND.sendForEntity(animatedEntity);
     }
 
+    public void sendHostile() {
+        HOSTILE_COMMAND.sendForEntity(animatedEntity);
+    }
+
     public void sendHurt() {
         HURT_COMMAND.sendForEntity(animatedEntity);
     }
@@ -370,4 +384,11 @@ public class AnimationDispatcher {
         ATTACK_HEAVY_COMMAND.sendForEntity(animatedEntity);
     }
 
+    public void sendAttack() {
+        ATTACK_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendAcidSpit() {
+        SPIT_COMMAND.sendForEntity(animatedEntity);
+    }
 }

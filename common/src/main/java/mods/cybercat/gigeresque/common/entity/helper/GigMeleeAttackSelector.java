@@ -123,8 +123,6 @@ public record GigMeleeAttackSelector() {
         }
     };
 
-    public static final AnimationSelector<SpitterEntity> SPITTER_RANGE_SELECTOR = spitterEntity -> spitterEntity.triggerAnim(
-        Constants.ATTACK_CONTROLLER,
-        Constants.ACID_SPIT
-    );
+    public static final AnimationSelector<SpitterEntity> SPITTER_RANGE_SELECTOR = spitterEntity ->
+            spitterEntity.animationDispatcher.sendAcidSpit();
 }
