@@ -96,6 +96,7 @@ public record EntityHeadOffsetData(
             Map.entry(EntityType.TRADER_LLAMA, LLAMA),
             Map.entry(EntityType.VILLAGER, VILLAGER),
             Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
+            Map.entry(EntityType.VINDICATOR, VILLAGER),
             Map.entry(
                 EntityType.WITCH,
                 new EntityHeadOffsetData(EntityHeadOffsetData::witchVerticalOffset, EntityHeadOffsetData::villagerFaceOffset)

@@ -52,6 +52,7 @@ public record EntityHeadData(
             Map.entry(EntityType.SNIFFER, adjust(vec3(13, 18, 11), vec3(-6.5, 5, -31), vec3(0, 12.5, -19.5))),
             Map.entry(EntityType.TRADER_LLAMA, LLAMA),
             Map.entry(EntityType.VILLAGER, VILLAGER),
+            Map.entry(EntityType.VINDICATOR, VILLAGER),
             Map.entry(EntityType.WITCH, VILLAGER),
             Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
             Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7)))
