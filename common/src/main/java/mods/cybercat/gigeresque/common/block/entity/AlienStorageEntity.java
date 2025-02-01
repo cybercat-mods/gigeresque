@@ -1,11 +1,5 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -35,7 +29,7 @@ import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 
-public class AlienStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
+public class AlienStorageEntity extends RandomizableContainerBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 
@@ -43,8 +37,8 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
         @Override
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert AlienStorageEntity.this.level != null;
-            AlienStorageEntity.this.level.playSound(
+            if (AlienStorageEntity.this.level != null)
+                AlienStorageEntity.this.level.playSound(
                 null,
                 pos,
                 SoundEvents.ITEM_FRAME_BREAK,
@@ -56,15 +50,15 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
         @Override
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert AlienStorageEntity.this.level != null;
-            AlienStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+            if (AlienStorageEntity.this.level != null)
+                AlienStorageEntity.this.level.playSound(
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
+                );
         }
 
         @Override
@@ -86,12 +80,13 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
         }
     };
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public StorageDispatcher animationDispatcher;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(36, ItemStack.EMPTY);
 
     public AlienStorageEntity(BlockPos pos, BlockState state) {
         super(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(), pos, state);
+        animationDispatcher = new StorageDispatcher(this);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, AlienStorageEntity blockEntity) {
@@ -107,6 +102,13 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
                     blockEntity.getBlockPos(),
                     blockEntity.getBlockState()
                 );
+            if (blockEntity.getLevel().isClientSide()) {
+                if (blockEntity.getChestState() == StorageStates.CLOSING) {
+                    blockEntity.animationDispatcher.sendClose();
+                } else if (blockEntity.getChestState() == StorageStates.OPENED) {
+                    blockEntity.animationDispatcher.sendOpen();
+                }
+            }
         }
     }
 
@@ -192,29 +194,5 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity impleme
 
     public StorageStates getChestState() {
         return this.getBlockState().getValue(AlienStorageEntity.CHEST_STATE);
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
-            if (
-                getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")
-                )
-            )
-                return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-            else if (
-                getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")
-                )
-            )
-                return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
-            return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

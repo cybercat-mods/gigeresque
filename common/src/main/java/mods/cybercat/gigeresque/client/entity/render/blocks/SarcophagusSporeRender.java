@@ -1,14 +1,24 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
-import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
-
-import mods.cybercat.gigeresque.client.entity.model.blocks.SarcophagusSporeModel;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.animators.StatueSporeAnimator;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageSporeEntity;
+import net.minecraft.resources.ResourceLocation;
 
-public class SarcophagusSporeRender extends GeoBlockRenderer<AlienStorageSporeEntity> {
+public class SarcophagusSporeRender extends AzBlockEntityRenderer<AlienStorageSporeEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/block/sarcophagus/sarcophagus.geo.json");
+
+    private static final ResourceLocation TEXTURE = Constants.modResource("textures/block/sarcophagus/sarcophagus.png");
 
     public SarcophagusSporeRender() {
-        super(new SarcophagusSporeModel());
+        super(
+                AzBlockEntityRendererConfig.<AlienStorageSporeEntity>builder(MODEL, TEXTURE)
+                        .setAnimatorProvider(StatueSporeAnimator::new)
+                        .build()
+        );
     }
 
 }

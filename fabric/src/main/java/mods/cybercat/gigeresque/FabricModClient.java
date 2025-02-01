@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
+import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -120,6 +121,7 @@ public class FabricModClient implements ClientModInitializer {
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
         );
         AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
+        AzItemRendererRegistry.register(SporeItemBlockRender::new, GigBlocks.SPORE_BLOCK.get().asItem());
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
     }
 

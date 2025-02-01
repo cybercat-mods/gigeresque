@@ -1,46 +1,23 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
+import mods.cybercat.gigeresque.common.block.animators.PetrifiedAnimator;
 
-import mods.cybercat.gigeresque.client.entity.model.blocks.PetrifiedObjectModel;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjbectEntity;
+import net.minecraft.resources.ResourceLocation;
 
-public class PetrifiedObjectRender extends GeoBlockRenderer<PetrifiedOjbectEntity> {
+public class PetrifiedObjectRender extends AzBlockEntityRenderer<PetrifiedOjbectEntity> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/block/egg_petrified/egg_petrified.geo.json");
 
     public PetrifiedObjectRender() {
-        super(new PetrifiedObjectModel());
-    }
-
-    @Override
-    public void preRender(
-        PoseStack poseStack,
-        PetrifiedOjbectEntity animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
-        float partialTick,
-        int packedLight,
-        int packedOverlay,
-        int color
-    ) {
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            color
+        super(
+                AzBlockEntityRendererConfig.<PetrifiedOjbectEntity>builder(MODEL, EntityTextures.EGG_PETRIFIED)
+                        .setAnimatorProvider(PetrifiedAnimator::new)
+                        .build()
         );
-        if (animatable instanceof PetrifiedOjbectEntity)
-            model.getBone("resin").get().setHidden(true);
     }
 }

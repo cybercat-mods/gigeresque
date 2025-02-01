@@ -1,11 +1,6 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,12 +19,13 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
-public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class SporeBlockEntity extends BlockEntity {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public static SporeEggDispatcher animationDispatcher;
 
     public SporeBlockEntity(BlockPos pos, BlockState state) {
         super(GigEntities.SPORE_ENTITY.get(), pos, state);
+        animationDispatcher = new SporeEggDispatcher(this);
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, SporeBlockEntity blockEntity) {
@@ -65,18 +61,6 @@ public class SporeBlockEntity extends BlockEntity implements GeoBlockEntity {
                     });
 
         }
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(
-            new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle")))
-        );
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 
     public void particleCloud(LivingEntity entity) {

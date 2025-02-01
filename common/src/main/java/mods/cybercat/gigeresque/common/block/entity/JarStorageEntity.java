@@ -1,11 +1,5 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -33,7 +27,7 @@ import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 
-public class JarStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
+public class JarStorageEntity extends RandomizableContainerBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 
@@ -41,28 +35,28 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 
         @Override
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert JarStorageEntity.this.level != null;
-            JarStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+            if (JarStorageEntity.this.level != null)
+                JarStorageEntity.this.level.playSound(
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
+                );
         }
 
         @Override
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert JarStorageEntity.this.level != null;
-            JarStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+            if (JarStorageEntity.this.level != null)
+                JarStorageEntity.this.level.playSound(
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
+                );
         }
 
         @Override
@@ -84,21 +78,30 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
         }
     };
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public StorageDispatcher animationDispatcher;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
 
     public JarStorageEntity(BlockPos pos, BlockState state) {
         super(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(), pos, state);
+        animationDispatcher = new StorageDispatcher(this);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, JarStorageEntity blockEntity) {
-        if (blockEntity.getLevel() != null && !blockEntity.isRemoved())
+        if (blockEntity.getLevel() != null && !blockEntity.isRemoved()) {
             blockEntity.stateManager.recheckOpeners(
-                blockEntity.getLevel(),
-                blockEntity.getBlockPos(),
-                blockEntity.getBlockState()
+                    blockEntity.getLevel(),
+                    blockEntity.getBlockPos(),
+                    blockEntity.getBlockState()
             );
+            if (blockEntity.getLevel().isClientSide()) {
+                if (blockEntity.getChestState() == StorageStates.CLOSING) {
+                    blockEntity.animationDispatcher.sendClose();
+                } else if (blockEntity.getChestState() == StorageStates.OPENED) {
+                    blockEntity.animationDispatcher.sendOpen();
+                }
+            }
+        }
     }
 
     @Override
@@ -164,12 +167,13 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
     }
 
     public void tick() {
-        if (!this.isRemoved())
+        if (!this.isRemoved()) {
             this.stateManager.recheckOpeners(
-                Objects.requireNonNull(this.getLevel()),
-                this.getBlockPos(),
-                this.getBlockState()
+                    Objects.requireNonNull(this.getLevel()),
+                    this.getBlockPos(),
+                    this.getBlockState()
             );
+        }
     }
 
     protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
@@ -183,29 +187,5 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity implement
 
     public StorageStates getChestState() {
         return this.getBlockState().getValue(JarStorageEntity.CHEST_STATE);
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
-            if (
-                getChestState().equals(StorageStates.CLOSING) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened")
-                )
-            )
-                return event.setAndContinue(RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed"));
-            else if (
-                getChestState().equals(StorageStates.OPENED) && !event.isCurrentAnimation(
-                    RawAnimation.begin().thenPlay("closing").thenPlayAndHold("closed")
-                )
-            )
-                return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenPlayAndHold("opened"));
-            return event.setAndContinue(RawAnimation.begin().thenLoop("closed"));
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 }

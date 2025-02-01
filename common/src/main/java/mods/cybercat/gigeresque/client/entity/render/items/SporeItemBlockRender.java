@@ -1,14 +1,21 @@
 package mods.cybercat.gigeresque.client.entity.render.items;
 
-import mod.azure.azurelib.common.api.client.renderer.GeoItemRenderer;
+import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
+import mods.cybercat.gigeresque.Constants;
+import net.minecraft.resources.ResourceLocation;
 
-import mods.cybercat.gigeresque.client.entity.model.items.SporeItemBlockModel;
-import mods.cybercat.gigeresque.common.item.GigBlockItem;
+public class SporeItemBlockRender extends AzItemRenderer {
 
-public class SporeItemBlockRender extends GeoItemRenderer<GigBlockItem> {
+    private static final ResourceLocation MODEL = Constants.modResource("geo/item/neomorph_spore_pods/neomorph_spore_pods.geo.json");
+
+    private static final ResourceLocation TEXTURE = Constants.modResource("textures/block/neomorph_spore_pods/neomorph_spore_pods.png");
 
     public SporeItemBlockRender() {
-        super(new SporeItemBlockModel());
+        super(
+                AzItemRendererConfig.builder(itemStack -> MODEL, itemStack -> TEXTURE)
+                        .build()
+        );
     }
 
 }

@@ -6,6 +6,8 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mods.cybercat.gigeresque.common.block.entity.SporeEggDispatcher;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,36 +24,29 @@ import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 
-public class PetrifiedOjbectEntity extends BlockEntity implements GeoBlockEntity {
+public class PetrifiedOjbectEntity extends BlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public static SporeEggDispatcher animationDispatcher;
 
     public PetrifiedOjbectEntity(BlockPos pos, BlockState state) {
         super(GigEntities.PETRIFIED_OBJECT.get(), pos, state);
+        animationDispatcher = new SporeEggDispatcher(this);
     }
 
     public StorageStates getChestState() {
         return this.getBlockState().getValue(PetrifiedOjbectEntity.CHEST_STATE);
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
-            if (getChestState().equals(StorageStates.OPENED))
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("hatched_empty"));
-            else
-                return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("idle"));
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
-    }
-
     public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedOjbectEntity blockEntity) {
+        if (blockEntity.getLevel() != null && blockEntity.getLevel().isClientSide()) {
+            if (blockEntity.getChestState().equals(StorageStates.OPENED)) {
+                GigCommonMethods.setAnimation(animationDispatcher::sendHatched);
+            } else {
+                GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
+            }
+        }
         if (blockEntity.level != null && (level.getRandom().nextInt(0, 200) == 0)) {
             int i = state.getValue(PetrifiedObjectBlock.HATCH);
             if (i < level.getRandom().nextInt(2, 25) && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {

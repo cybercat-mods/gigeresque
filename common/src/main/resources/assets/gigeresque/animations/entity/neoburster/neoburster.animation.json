@@ -1111,7 +1111,7 @@
 			"bones": {
 				"main": {
 					"position": {
-						"vector": [0, -4, 0]
+						"vector": [0, -2, 2]
 					}
 				},
 				"stomach": {
@@ -1121,7 +1121,7 @@
 				},
 				"chest": {
 					"rotation": {
-						"vector": [37.5, 0, 0]
+						"vector": [7.5, 0, 0]
 					}
 				},
 				"neck": {
@@ -1172,12 +1172,12 @@
 				},
 				"tail07": {
 					"rotation": {
-						"vector": [0, -22.5, 0]
+						"vector": [0, -30, 0]
 					}
 				},
 				"tail08": {
 					"rotation": {
-						"vector": [-15, -30, 0]
+						"vector": [-29.35025, -16.32064, 35.2605]
 					}
 				},
 				"left_arm_reposition": {
@@ -1196,9 +1196,6 @@
 				"left_hand": {
 					"rotation": {
 						"vector": [45, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0.5, -1]
 					}
 				},
 				"right_arm_reposition": {
@@ -1217,9 +1214,6 @@
 				"right_hand": {
 					"rotation": {
 						"vector": [45, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0.5, -1]
 					}
 				},
 				"left_leg_reposition": {
@@ -1251,6 +1245,26 @@
 				"sac": {
 					"scale": {
 						"vector": [0, 0, 0]
+					}
+				},
+				"left_forearm": {
+					"rotation": {
+						"vector": [-74.80243, 49.02747, -4.23713]
+					}
+				},
+				"right_forearm": {
+					"rotation": {
+						"vector": [-87.31829, -23.03002, -10.90555]
+					}
+				},
+				"left_calf": {
+					"rotation": {
+						"vector": [0, 0, 110]
+					}
+				},
+				"right_calf": {
+					"rotation": {
+						"vector": [-25, -20, -120]
 					}
 				}
 			}

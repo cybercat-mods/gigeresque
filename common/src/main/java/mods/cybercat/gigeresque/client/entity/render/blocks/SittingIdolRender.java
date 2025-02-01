@@ -2,69 +2,61 @@ package mods.cybercat.gigeresque.client.entity.render.blocks;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.common.api.client.renderer.GeoBlockRenderer;
-import mod.azure.azurelib.common.api.client.renderer.layer.BlockAndItemGeoLayer;
-import mod.azure.azurelib.common.internal.common.cache.object.GeoBone;
+import mod.azure.azurelib.rewrite.model.AzBone;
+import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
+import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.block.animators.SittingIdolAnimator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import mods.cybercat.gigeresque.client.entity.model.blocks.SittingIdolModel;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
 
-public class SittingIdolRender extends GeoBlockRenderer<IdolStorageEntity> {
+public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntityRenderer<T> {
+
+    private static final ResourceLocation MODEL = Constants.modResource("geo/block/sittingidol/sittingidol.geo.json");
+
+    private static final ResourceLocation TEXTURE = Constants.modResource("textures/block/sittingidol/sittingidol.png");
 
     public SittingIdolRender() {
-        super(new SittingIdolModel());
-        this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+        super(
+                AzBlockEntityRendererConfig.<T>builder(MODEL, TEXTURE)
+                        .setAnimatorProvider(SittingIdolAnimator::new)
+                        .addRenderLayer(new AzBlockAndItemLayer<T>() {
 
-            @Nullable
-            @Override
-            protected ItemStack getStackForBone(GeoBone bone, IdolStorageEntity animatable) {
-                return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.NETHERITE_SCRAP) : null;
-            }
+                            @Override
+                            public ItemStack itemStackForBone(AzBone bone) {
+                                return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
+                            }
 
-            @Override
-            protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, IdolStorageEntity animatable) {
-                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-            }
+                            @Override
+                            protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack) {
+                                return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                            }
 
-            @Override
-            protected void renderStackForBone(
-                PoseStack poseStack,
-                GeoBone bone,
-                ItemStack stack,
-                IdolStorageEntity animatable,
-                MultiBufferSource bufferSource,
-                float partialTick,
-                int packedLight,
-                int packedOverlay
-            ) {
-                poseStack.mulPose(Axis.XP.rotationDegrees(0));
-                poseStack.mulPose(Axis.YP.rotationDegrees(0));
-                poseStack.mulPose(Axis.ZP.rotationDegrees(0));
-                super.renderStackForBone(
-                    poseStack,
-                    bone,
-                    stack,
-                    animatable,
-                    bufferSource,
-                    partialTick,
-                    packedLight,
-                    packedOverlay
-                );
-            }
-        });
+                            @Override
+                            protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack) {
+                                context.poseStack().mulPose(Axis.XP.rotationDegrees(0));
+                                context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
+                                context.poseStack().mulPose(Axis.ZP.rotationDegrees(0));
+                                super.renderItemForBone(context, bone, itemStack);
+                            }
+                        })
+                        .build()
+        );
     }
 
     @Override
     public void render(
-        IdolStorageEntity animatable,
+        T animatable,
         float partialTick,
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource bufferSource,

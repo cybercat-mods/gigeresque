@@ -146,7 +146,7 @@ public class PetrifiedObjectBlock3 extends BaseEntityBlock {
         @NotNull BlockPos pos,
         @NotNull CollisionContext context
     ) {
-        return Block.box(4, 0, 0, 12, 2, 14);
+        return Block.box(4, 0, 0, 12, 6, 14);
     }
 
     @Override

@@ -1,11 +1,5 @@
 package mods.cybercat.gigeresque.common.block.entity;
 
-import mod.azure.azurelib.common.api.common.animatable.GeoBlockEntity;
-import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -36,7 +30,7 @@ import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 
-public class IdolStorageEntity extends RandomizableContainerBlockEntity implements GeoBlockEntity {
+public class IdolStorageEntity extends RandomizableContainerBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 
@@ -44,28 +38,28 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
 
         @Override
         protected void onOpen(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert IdolStorageEntity.this.level != null;
-            IdolStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+            if (IdolStorageEntity.this.level != null)
+                IdolStorageEntity.this.level.playSound(
+                    null,
+                    pos,
+                    SoundEvents.ITEM_FRAME_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0f,
+                    1.0f
+                );
         }
 
         @Override
         protected void onClose(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state) {
-            assert IdolStorageEntity.this.level != null;
-            IdolStorageEntity.this.level.playSound(
-                null,
-                pos,
-                SoundEvents.ITEM_FRAME_BREAK,
-                SoundSource.BLOCKS,
-                1.0f,
-                1.0f
-            );
+            if (IdolStorageEntity.this.level != null)
+                IdolStorageEntity.this.level.playSound(
+                        null,
+                        pos,
+                        SoundEvents.ITEM_FRAME_BREAK,
+                        SoundSource.BLOCKS,
+                        1.0f,
+                        1.0f
+                );
         }
 
         @Override
@@ -86,8 +80,6 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
             return false;
         }
     };
-
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
@@ -201,15 +193,5 @@ public class IdolStorageEntity extends RandomizableContainerBlockEntity implemen
                 world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.OPENED));
             else
                 world.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSING));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
     }
 }

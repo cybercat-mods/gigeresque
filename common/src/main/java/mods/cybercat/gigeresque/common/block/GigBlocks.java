@@ -64,7 +64,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     public static final Supplier<BlockItem> SPORE_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,
         "neomorph_spore_pods",
-        () -> new GigBlockItem(SPORE_BLOCK.get(), new Item.Properties())
+        () -> new BlockItem(SPORE_BLOCK.get(), new Item.Properties())
     );
 
     public static final Supplier<PetrifiedObjectBlock> PETRIFIED_OBJECT_BLOCK = CommonBlockRegistryInterface.registerBlock(
