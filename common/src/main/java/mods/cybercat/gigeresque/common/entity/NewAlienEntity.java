@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -406,7 +407,7 @@ public abstract class NewAlienEntity extends WaterAnimal implements Enemy, Vibra
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return this.isInWater() || this.wasTouchingWater ? new AmphibiousPathNavigation(this, level) : new AzureNavigation(this, level);
+        return new GigNavigation(this, level);
     }
 
     @Override
