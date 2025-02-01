@@ -110,24 +110,10 @@ public class NeomorphEntity extends NewAlienEntity implements SmartBrainOwner<Ne
         if (this.isHissing() && !this.isPassedOut()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendHiss);
         }
-        if (this.isVehicle()) {
-            this.handleVehicleAnimations();
-            return;
-        }
         if (this.moveAnalysis.isMoving()) {
             this.handleMovementAnimations();
         } else {
             this.handleIdleAnimations();
-        }
-    }
-
-    protected void handleVehicleAnimations() {
-        if (this.isExecuting()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendExecutionCarry);
-        } else if (this.moveAnalysis.isMoving()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendWalkCarrying);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendKidnap);
         }
     }
 
@@ -151,11 +137,11 @@ public class NeomorphEntity extends NewAlienEntity implements SmartBrainOwner<Ne
 
     protected void handleIdleAnimations() {
         if (this.isPassedOut()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
+            GigCommonMethods.setAnimation(animationDispatcher::sendStasisLoop);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
+            GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
         }
     }
 
@@ -214,7 +200,7 @@ public class NeomorphEntity extends NewAlienEntity implements SmartBrainOwner<Ne
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.75f),
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.55f),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
                         entity -> entity.getRandom().nextInt(30, 60)

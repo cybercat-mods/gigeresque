@@ -27,7 +27,7 @@ public class AnimationDispatcher {
     private final AzCommand STASIS_LOOP_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "stasis_loop",
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
+        AzPlayBehaviors.LOOP
     );
 
     private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
@@ -390,5 +390,9 @@ public class AnimationDispatcher {
 
     public void sendAcidSpit() {
         SPIT_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendStasisLoop() {
+        STASIS_LOOP_COMMAND.sendForEntity(animatedEntity);
     }
 }

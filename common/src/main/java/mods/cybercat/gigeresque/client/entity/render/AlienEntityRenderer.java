@@ -1,8 +1,12 @@
 package mods.cybercat.gigeresque.client.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
+import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.render.helper.ClassicModelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +40,17 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
             context
         );
         this.shadowRadius = 0.5f;
+    }
+
+    @Override
+    protected AzEntityRendererPipeline<ClassicAlienEntity> createPipeline(AzEntityRendererConfig<ClassicAlienEntity> config) {
+        return new AzEntityRendererPipeline<>(config, this) {
+
+            @Override
+            protected AzModelRenderer<ClassicAlienEntity> createModelRenderer(AzLayerRenderer<ClassicAlienEntity> layerRenderer) {
+                return new ClassicModelRenderer(this, layerRenderer);
+            }
+        };
     }
 
     /*
