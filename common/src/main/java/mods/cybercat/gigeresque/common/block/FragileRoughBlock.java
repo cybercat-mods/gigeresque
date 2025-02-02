@@ -58,7 +58,7 @@ public class FragileRoughBlock extends Block implements Fallable {
         super.stepOn(level, pos, state, entity);
         if (entity instanceof LivingEntity livingEntity) {
             standingTick++;
-            if (standingTick % 10 == 0) {
+            if (livingEntity.isSteppingCarefully() ? standingTick % 40 == 0 : standingTick % 10 == 0) {
                 BlockBreakProgressManager.damage(level, livingEntity.blockPosition().below(), standingTick);
                 level.playSound(livingEntity, pos, SoundEvents.TUFF_BRICKS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
                 standingTick = 0;
