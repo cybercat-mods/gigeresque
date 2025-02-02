@@ -3,13 +3,11 @@ package mods.cybercat.gigeresque.common.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class BlockBreakProgressManager {
 
@@ -17,8 +15,10 @@ public class BlockBreakProgressManager {
 
     public static void tick(Level level) {
         var gameTime = level.getGameTime();
-        if (gameTime % Tick.PER_MINUTE != 0)
+
+        if (gameTime % (20 * 20) != 0) {
             return;
+        }
 
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.entrySet().removeIf(entry -> {
             var lastUpdateTimeMillis = entry.getValue().getKey();
@@ -26,28 +26,35 @@ public class BlockBreakProgressManager {
         });
     }
 
-    public static void damage(Level level, BlockPos blockPos) {
-        if (!level.isClientSide())
-            BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, entry) -> {
-                var blockState = level.getBlockState(blockPos.below());
-                var cachedValue = entry == null ? 0 : entry.getValue();
-                var hardness = blockState.getDestroySpeed(level, blockPos);
-                if (blockState.is(GigTags.WEAK_BLOCKS))
-                    hardness *= 6.0f;
-                else
-                    hardness *= 0.4f;
-                var newValue = cachedValue + hardness;
-                var progress = (int) Mth.clamp(newValue, 0F, 9F);
+    public static void damage(Level level, BlockPos blockPos, float damage) {
+        var immutableBlockPos = blockPos.immutable();
 
-                if (progress >= 9) {
-                    level.destroyBlockProgress(level.getRandom().nextInt(), blockPos, -1);
-                    level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
-                    return null;
-                } else {
-                    level.destroyBlockProgress(level.getRandom().nextInt(), blockPos, progress);
-                }
-                return Map.entry(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newValue);
-            });
+        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(immutableBlockPos, (key, entry) -> {
+            var blockState = level.getBlockState(immutableBlockPos);
+            var block = blockState.getBlock();
+            var currentDestroyProgress = entry == null ? 0 : entry.getValue();
+            var defaultDestroyTimeInSeconds = block.defaultDestroyTime();
+
+            if (defaultDestroyTimeInSeconds < 0) {
+                return null;
+            }
+
+            var destroyTimeInTicks = block.defaultDestroyTime() * 20;
+            var weight = Math.max(destroyTimeInTicks, 1);
+
+            var newDestroyProgress = currentDestroyProgress + (damage / weight);
+            var progress = (int) Mth.clamp(newDestroyProgress, 0F, 9F);
+            var hash = Objects.hash(immutableBlockPos);
+
+            if (progress >= 9) {
+                level.destroyBlockProgress(hash, immutableBlockPos, -1);
+                level.destroyBlock(immutableBlockPos, false);
+                return null;
+            } else {
+                level.destroyBlockProgress(hash, immutableBlockPos, progress);
+            }
+            return Map.entry(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newDestroyProgress);
+        });
     }
 
     private BlockBreakProgressManager() {
