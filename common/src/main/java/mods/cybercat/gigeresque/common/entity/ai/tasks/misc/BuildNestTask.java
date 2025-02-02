@@ -40,7 +40,7 @@ public class BuildNestTask<E extends AlienEntity> extends DelayedBehaviour<E> {
                 .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS) || blockState.is(GigTags.DUNGEON_STAIRS))
         )
             return false;
-        return !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien
+        return !alien.crawlingManager.isCrawling() && !alien.isAggressive() && !alien.isVehicle() && alien.getGrowth() == alien
             .getMaxGrowth() && !alien.level()
                 .canSeeSky(
                     alien.blockPosition()
@@ -57,7 +57,7 @@ public class BuildNestTask<E extends AlienEntity> extends DelayedBehaviour<E> {
             .getBlockStates(new AABB(alien.blockPosition()).inflate(8D))
             .anyMatch(blockState -> blockState.is(GigTags.DUNGEON_BLOCKS));
         if (
-            !dungeonBlockCheck && !alien.isCrawling() && !alien.isTunnelCrawling() && !alien.getInBlockState()
+            !dungeonBlockCheck && !alien.crawlingManager.isCrawling() && !alien.getInBlockState()
                 .is(
                     GigTags.NEST_BLOCKS
                 ) && !alien.level().canSeeSky(alien.blockPosition()) && alien.level()

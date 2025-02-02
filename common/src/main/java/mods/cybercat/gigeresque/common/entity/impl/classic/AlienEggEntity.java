@@ -132,7 +132,8 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.isDeadOrDying())
             return EntityDimensions.scalable(0.7f, 1.0f);
         if (this.isDeadOrDying())

@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -73,11 +72,6 @@ import mods.cybercat.gigeresque.interfacing.AbstractAlien;
  */
 public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, Growable, AbstractAlien {
 
-    public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(
-        AlienEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
     public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.BOOLEAN
@@ -95,14 +89,9 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
 
-    public static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(
-        AlienEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
-    public static final EntityDataAccessor<Boolean> IS_TUNNEL_CRAWLING = SynchedEntityData.defineId(
-        AlienEntity.class,
-        EntityDataSerializers.BOOLEAN
+    private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
+            AlienEntity.class,
+            EntityDataSerializers.BOOLEAN
     );
 
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(
@@ -144,6 +133,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public MoveAnalysis moveAnalysis;
 
+    public final CrawlingManager crawlingManager;
+
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
@@ -163,6 +154,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
+        this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
@@ -208,7 +200,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     @Override
     public float maxUpStep() {
-        return 2.5f;
+        return 1.0f;
     }
 
     @Override
@@ -242,33 +234,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void setFleeingStatus(boolean fleeing) {
         this.entityData.set(FLEEING_FIRE, fleeing);
-    }
-
-    @Override
-    public boolean isUpsideDown() {
-        return this.entityData.get(UPSIDE_DOWN);
-    }
-
-    @Override
-    public boolean isCrawling() {
-        return this.entityData.get(IS_CLIMBING);
-    }
-
-    @Override
-    public void setIsCrawling(boolean shouldCrawl) {
-        this.getEntityData().set(IS_CLIMBING, shouldCrawl);
-        this.refreshDimensions();
-    }
-
-    @Override
-    public boolean isTunnelCrawling() {
-        return this.entityData.get(IS_TUNNEL_CRAWLING);
-    }
-
-    @Override
-    public void setIsTunnelCrawling(boolean shouldTunnelCrawl) {
-        this.getEntityData().set(IS_TUNNEL_CRAWLING, shouldTunnelCrawl);
-        this.refreshDimensions();
     }
 
     @Override
@@ -344,10 +309,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(UPSIDE_DOWN, false);
         builder.define(FLEEING_FIRE, false);
-        builder.define(IS_CLIMBING, false);
-        builder.define(IS_TUNNEL_CRAWLING, false);
         builder.define(STATE, 0);
         builder.define(CLIENT_ANGER_LEVEL, 0);
         builder.define(GROWTH, 0.0f);
@@ -357,13 +319,12 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         builder.define(IS_EXECUTION, false);
         builder.define(IS_HEADBITE, false);
         builder.define(IS_SEARCHING, false);
+        builder.define(IS_CRAWLING, false);
     }
 
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putBoolean("isCrawling", this.isCrawling());
-        compound.putBoolean("isTunnelCrawling", this.isTunnelCrawling());
         Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData)
             .resultOrPartial(
                 LOGGER::error
@@ -376,13 +337,13 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         compound.putBoolean("isSearching", this.isSearching());
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
+        crawlingManager.save(compound);
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("isCrawling"))
-            this.setIsCrawling(compound.getBoolean("isCrawling"));
+        crawlingManager.load(compound);
         if (compound.contains("listener", 10))
             Data.CODEC.parse(
                 new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))
@@ -393,7 +354,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                 .ifPresent(data -> this.vibrationData = data);
         this.setGrowth(compound.getFloat("getStatisTimer"));
         this.setGrowth(compound.getFloat("growth"));
-        this.setIsTunnelCrawling(compound.getBoolean("isTunnelCrawling"));
         this.setIsHissing(compound.getBoolean("isHissing"));
         this.setIsBiting(compound.getBoolean(("isHeadBite")));
         this.setIsSearching(compound.getBoolean("isSearching"));
@@ -433,6 +393,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void tick() {
         super.tick();
+        crawlingManager.tick();
         this.setAirSupply(this.getMaxAirSupply());
         if (this.isAggressive()) {
             this.setPassedOutStatus(false);
@@ -456,62 +417,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                     if (e.is(GigTags.NEST_BLOCKS))
                         this.heal(0.5833f);
                 });
-            if (this.isAggressive() || this.getSpeed() > 0.1) {
-                var isAboveSolid = this.level()
-                    .getBlockState(blockPosition().above())
-                    .isCollisionShapeFullBlock(
-                        level(),
-                        blockPosition().above()
-                    );
-                var isTwoAboveSolid = this.level()
-                    .getBlockState(blockPosition().above(2))
-                    .isCollisionShapeFullBlock(
-                        level(),
-                        blockPosition().above(2)
-                    );
-                var offset = getDirectionVector();
-                var isFacingSolid = this.level()
-                    .getBlockState(
-                        blockPosition().relative(getDirection())
-                    )
-                    .isCollisionShapeFullBlock(
-                        level(),
-                        blockPosition().relative(getDirection())
-                    );
-
-                /*
-                 * Offset is set to the block above the block position (which is at feet level) (since direction is used
-                 * it's the block in front of both cases) -----o -----o o o <- offset -----o <- current -----o
-                 */
-                if (isFacingSolid) {
-                    offset = offset.offset(0, 1, 0);
-                }
-
-                var isOffsetFacingSolid = this.level()
-                    .getBlockState(
-                        blockPosition().offset(offset)
-                    )
-                    .isCollisionShapeFullBlock(
-                        level(),
-                        blockPosition().offset(offset)
-                    );
-                var isOffsetFacingAboveSolid = this.level()
-                    .getBlockState(
-                        blockPosition().offset(offset).above()
-                    )
-                    .isCollisionShapeFullBlock(
-                        level(),
-                        blockPosition().offset(offset).above()
-                    );
-
-                /*
-                 * [- : blocks | o : alien | + : alien in solid block] To handle these variants among other things: o o
-                 * ----+ ----o ----+ o o o ----- ----- ----o
-                 */
-                var shouldTunnelCrawl = isAboveSolid || !isOffsetFacingSolid && isOffsetFacingAboveSolid || isFacingSolid
-                    && isTwoAboveSolid;
-                this.setIsTunnelCrawling(shouldTunnelCrawl);
-            }
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
         if (this.tickCount % 10 == 0)
@@ -759,10 +664,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             (j * h * 0.3f) + Math.sin(k) * l
         );
         target.level().addFreshEntity(itemEntity);
-    }
-
-    protected Vec3i getDirectionVector() {
-        return new Vec3i(getDirection().getStepX(), getDirection().getStepY(), getDirection().getStepZ());
     }
 
     @Override

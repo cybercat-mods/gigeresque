@@ -42,7 +42,7 @@ public class JumpToTargetTask<E extends AlienEntity> extends DelayedBehaviour<E>
         this.target = BrainUtils.getTargetOfEntity(entity);
         var yDiff = Mth.abs(entity.getBlockY() - target.getBlockY());
         return entity.onGround() && entity.distanceTo(target) > MAX_LEAP_DISTANCE && yDiff > 3
-            && entity.getBlockY() != target.getBlockY() && !entity.isCrawling();
+            && entity.getBlockY() != target.getBlockY() && !entity.crawlingManager.isCrawling();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class GigNavigation extends AzureNavigation {
 
     @Override
     protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
-        this.nodeEvaluator = new CrawlPathNodeEvaluator(mob.getBbHeight(), mob.getBbWidth());
+        this.nodeEvaluator = new CrawlPathNodeEvaluator();
         this.nodeEvaluator.setCanPassDoors(true);
         this.nodeEvaluator.setCanFloat(true);
         return new AzurePathFinder(this.nodeEvaluator, maxVisitedNodes);

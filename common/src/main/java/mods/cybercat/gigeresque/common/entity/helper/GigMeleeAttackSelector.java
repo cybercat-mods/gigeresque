@@ -18,30 +18,31 @@ public record GigMeleeAttackSelector() {
 
     /* ANIMATION SELECTORS */
     public static final AnimationSelector<AlienEntity> CLASSIC_ANIM_SELECTOR = classicAlienEntity -> {
-        var basicCheck = classicAlienEntity.isCrawling() || classicAlienEntity.isTunnelCrawling() || classicAlienEntity.isInWater();
-        Runnable animKey = switch (classicAlienEntity.getRandom().nextInt(4)) {
-            case 1 -> basicCheck
-                ? classicAlienEntity.animationDispatcher::sendRightClawBasic
-                : classicAlienEntity.animationDispatcher::sendRightClaw;
-            case 2 -> basicCheck
-                ? classicAlienEntity.animationDispatcher::sendLeftTailBasic
-                : classicAlienEntity.animationDispatcher::sendLeftTail;
-            case 3 -> basicCheck
-                ? classicAlienEntity.animationDispatcher::sendRightTailBasic
-                : classicAlienEntity.animationDispatcher::sendRightTail;
-            default -> basicCheck
-                ? classicAlienEntity.animationDispatcher::sendLeftClawBasic
-                : classicAlienEntity.animationDispatcher::sendLeftClaw;
-        };
-        GigCommonMethods.setAnimation(animKey);
-    };
+        var isCrawling = classicAlienEntity.crawlingManager.isCrawling();
+        var isInWater = classicAlienEntity.isInWater();
+        var dispatcher = classicAlienEntity.animationDispatcher;
 
-    public static final AnimationSelector<?> NORMAL_ANIM_SELECTOR_OLD = entity -> {
-        // entity.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
+        Runnable animKey = switch (classicAlienEntity.getRandom().nextInt(4)) {
+            case 1 -> isCrawling ? dispatcher::sendRightClawCrawling
+                    : isInWater ? dispatcher::sendRightClawBasic
+                    : dispatcher::sendRightClaw;
+            case 2 -> isCrawling ? dispatcher::sendLeftClawCrawling
+                    : isInWater ? dispatcher::sendLeftTailBasic
+                    : dispatcher::sendLeftTail;
+            case 3 -> isCrawling ? dispatcher::sendRightClawCrawling
+                    : isInWater ? dispatcher::sendRightTailBasic
+                    : dispatcher::sendRightTail;
+            default -> isCrawling ? dispatcher::sendLeftClawCrawling
+                    : isInWater ? dispatcher::sendLeftClawBasic
+                    : dispatcher::sendLeftClaw;
+        };
+
+        GigCommonMethods.setAnimation(animKey);
+
     };
 
     public static final AnimationSelector<AlienEntity> NORMAL_ANIM_SELECTOR = entity -> {
-        var basicCheck = entity.isInWater();
+        var basicCheck = entity.crawlingManager.isCrawling() || entity.isInWater();
         Runnable animKey = switch (entity.getRandom().nextInt(4)) {
             case 1 -> entity.animationDispatcher::sendRightClaw;
             case 2 -> basicCheck ? entity.animationDispatcher::sendRightClaw : entity.animationDispatcher::sendLeftTail;
@@ -59,21 +60,12 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<RunnerAlienEntity> RUNNER_ANIM_SELECTOR = runner -> {
-        var animKey = switch (runner.getRandom().nextInt(4)) {
-            case 1 -> Constants.RIGHT_CLAW;
-            case 2 -> Constants.LEFT_TAIL_BASIC;
-            case 3 -> Constants.RIGHT_TAIL_BASIC;
-            default -> Constants.LEFT_CLAW;
-        };
-        // runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
-    };
-
     public static final AnimationSelector<AlienEntity> STANDARD_ANIM_SELECTOR = templeBeastEntity -> {
+        var basicCheck = templeBeastEntity.crawlingManager.isCrawling();
         Runnable animKey = switch (templeBeastEntity.getRandom().nextInt(4)) {
             case 1 -> templeBeastEntity.animationDispatcher::sendRightClaw;
-            case 2 -> templeBeastEntity.animationDispatcher::sendLeftTail;
-            case 3 -> templeBeastEntity.animationDispatcher::sendRightTail;
+            case 2 -> basicCheck ? templeBeastEntity.animationDispatcher::sendLeftClaw : templeBeastEntity.animationDispatcher::sendLeftTail;
+            case 3 -> basicCheck ? templeBeastEntity.animationDispatcher::sendRightClaw : templeBeastEntity.animationDispatcher::sendRightTail;
             default -> templeBeastEntity.animationDispatcher::sendLeftClaw;
         };
         GigCommonMethods.setAnimation(animKey);

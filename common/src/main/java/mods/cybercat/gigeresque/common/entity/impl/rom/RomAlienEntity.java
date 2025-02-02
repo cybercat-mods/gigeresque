@@ -113,12 +113,10 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater)
             return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling() || this.isCrawling())
-            return EntityDimensions.scalable(0.95f, 0.95f);
-        return EntityDimensions.scalable(0.9f, 2.9f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.9f);
     }
 
     @Override
@@ -348,8 +346,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
-                    || !this.isTunnelCrawling() || !this.isVehicle()
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling() || !this.isVehicle()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())

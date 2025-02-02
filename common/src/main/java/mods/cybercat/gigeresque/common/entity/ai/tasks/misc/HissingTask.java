@@ -2,18 +2,16 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-
-public class HissingTask<E extends PathfinderMob & AbstractAlien> extends DelayedBehaviour<E> {
+public class HissingTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     @Nullable
     protected LivingEntity target = null;
@@ -31,7 +29,7 @@ public class HissingTask<E extends PathfinderMob & AbstractAlien> extends Delaye
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         return entity.getDeltaMovement().horizontalDistance() == 0 && !entity.isInWater() && !entity.level().isClientSide && (!entity
             .isSearching() && !entity.isVehicle() && entity.isAlive() && !entity.isPassedOut()) && !entity.isAggressive() && !entity
-                .isTunnelCrawling() && !entity.isCrawling();
+                .crawlingManager.isCrawling();
     }
 
     @Override

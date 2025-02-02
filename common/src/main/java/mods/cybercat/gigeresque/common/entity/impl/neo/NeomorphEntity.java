@@ -90,6 +90,14 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     }
 
     @Override
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        if (this.wasEyeInWater)
+            return EntityDimensions.scalable(3.0f, 1.0f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.55f);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         GigEntityUtils.breakBlocks(this);
@@ -120,6 +128,8 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     protected void handleMovementAnimations() {
         if (this.isAggressive()) {
             this.handleAggroMovementAnimations();
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
@@ -128,7 +138,9 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     }
 
     protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
+        if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendRun);
@@ -138,6 +150,8 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     protected void handleIdleAnimations() {
         if (this.isPassedOut()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendStasisLoop);
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {

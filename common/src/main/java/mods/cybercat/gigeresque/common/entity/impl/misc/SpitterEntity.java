@@ -199,10 +199,6 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         if (this.level().isClientSide())
             this.handleAnimations();
         GigEntityUtils.breakBlocks(this);
-        if (!this.isInWater())
-            this.setIsCrawling(
-                this.horizontalCollision || !this.level().getBlockState(this.blockPosition().below()).isSolid()
-            );
     }
 
     protected void handleAnimations() {
@@ -218,7 +214,9 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     }
 
     protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
+        if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendRun);
@@ -228,6 +226,8 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     protected void handleMovementAnimations() {
         if (this.isAggressive()) {
             this.handleAggroMovementAnimations();
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
@@ -236,7 +236,9 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     }
 
     protected void handleIdleAnimations() {
-        if (this.isInWater()) {
+        if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
@@ -257,12 +259,11 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater)
             return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling())
-            return EntityDimensions.scalable(0.9f, 0.9f);
-        return EntityDimensions.scalable(0.9f, 1.9f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.9f);
     }
 
     @Override
@@ -324,5 +325,4 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             }
         }
     }
-
 }

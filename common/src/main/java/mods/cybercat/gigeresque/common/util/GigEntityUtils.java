@@ -185,7 +185,7 @@ public record GigEntityUtils() {
     }
 
     public static void breakBlocks(AlienEntity alienEntity) {
-        if (alienEntity.isCrawling())
+        if (alienEntity.crawlingManager.isCrawling())
             return;
         if (alienEntity.isDeadOrDying())
             return;

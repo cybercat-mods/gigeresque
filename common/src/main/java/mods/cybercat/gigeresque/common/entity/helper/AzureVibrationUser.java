@@ -130,7 +130,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
-        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.crawlingManager.isCrawling())) {
             alienEntity.wakeupCounter++;
             if (alienEntity.isPassedOut() && alienEntity.wakeupCounter == 1)
                 alienEntity.animationDispatcher.sendStatisLeave();
@@ -149,7 +149,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             }
         }
 
-        if (this.mob instanceof AlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof AlienEntity alienEntity && (alienEntity.crawlingManager.isCrawling())) {
             alienEntity.setPassedOutStatus(false);
             alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
         }

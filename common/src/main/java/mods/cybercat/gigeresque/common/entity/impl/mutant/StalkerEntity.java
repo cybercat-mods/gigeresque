@@ -270,22 +270,6 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     }
 
     @Override
-    public boolean onClimbable() {
-        setIsCrawling(
-            this.horizontalCollision && !this.isNoGravity() && !this.level()
-                .getBlockState(
-                    this.blockPosition().above()
-                )
-                .is(BlockTags.STAIRS) || this.isAggressive()
-        );
-        return !this.level()
-            .getBlockState(this.blockPosition().above())
-            .is(
-                BlockTags.STAIRS
-            ) && !this.isAggressive() && this.fallDistance <= 0.1;
-    }
-
-    @Override
     public boolean isPathFinding() {
         return false;
     }

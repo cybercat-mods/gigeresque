@@ -114,12 +114,11 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater)
             return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling() || this.isCrawling())
-            return EntityDimensions.scalable(0.95f, 0.95f);
-        return EntityDimensions.scalable(0.9f, 2.9f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.9f);
     }
 
     @Override
@@ -170,6 +169,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     protected void handleMovementAnimations() {
         if (this.isAggressive()) {
             this.handleAggroMovementAnimations();
+        }  else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
@@ -178,7 +179,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
+        if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendRun);
@@ -190,6 +193,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
         } else if (this.isSearching()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendAmbient);
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
         } else {
@@ -346,8 +351,8 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
-                    || !this.isTunnelCrawling() || !this.isVehicle()
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
+                        || !this.isVehicle()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())

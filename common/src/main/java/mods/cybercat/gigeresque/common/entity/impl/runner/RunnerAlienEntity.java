@@ -93,12 +93,11 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         if (this.wasEyeInWater)
             return EntityDimensions.scalable(3.0f, 1.0f);
-        if (this.isTunnelCrawling() || this.isCrawling())
-            return EntityDimensions.scalable(0.95f, 0.95f);
-        return EntityDimensions.scalable(1.25f, 1.75f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 1.75f);
     }
 
     @Override
@@ -237,8 +236,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !this.isCrawling()
-                    || !this.isTunnelCrawling()
+                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
@@ -311,7 +309,11 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
+        if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
+        } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(animationDispatcher::sendRun);
@@ -331,6 +333,8 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     protected void handleIdleAnimations() {
         if (this.isPassedOut()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
+        } else if (this.crawlingManager.isCrawling()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
         } else if (this.isInWater()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
         } else {

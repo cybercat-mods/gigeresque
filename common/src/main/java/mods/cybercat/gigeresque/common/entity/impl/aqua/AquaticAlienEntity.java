@@ -105,8 +105,11 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     @Override
-    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        return this.wasEyeInWater ? EntityDimensions.scalable(3.0f, 1.0f) : super.getDefaultDimensions(pose);
+    @NotNull
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        if (this.wasEyeInWater)
+            return EntityDimensions.scalable(3.0f, 1.0f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 1.75f);
     }
 
     @Nullable
