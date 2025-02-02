@@ -53,42 +53,4 @@ public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntit
                 .build()
         );
     }
-
-    @Override
-    public void render(
-        T animatable,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight,
-        int packedOverlay
-    ) {
-        BlockPos entityPos = animatable.getBlockPos();
-        int searchRadius = 2;
-
-        BlockPos targetBlockPos = null;
-        for (int x = -searchRadius; x <= searchRadius; x++) {
-            for (int y = -searchRadius; y <= searchRadius; y++) {
-                for (int z = -searchRadius; z <= searchRadius; z++) {
-                    BlockPos checkPos = entityPos.offset(x, y, z);
-                    var blockState = animatable.getLevel().getBlockState(checkPos);
-                    if (blockState.is(GigBlocks.ALIEN_STORAGE_BLOCK_INVIS2.get())) {
-                        targetBlockPos = checkPos;
-                        break;
-                    }
-                }
-                if (targetBlockPos != null)
-                    break;
-            }
-            if (targetBlockPos != null)
-                break;
-        }
-        if (targetBlockPos != null) {
-            double dx = targetBlockPos.getX() - entityPos.getX();
-            double dz = targetBlockPos.getZ() - entityPos.getZ();
-            float yaw = (float) (Math.atan2(dz, dx) * (180 / Math.PI)) - 90.0F;
-            poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
-        }
-        super.render(animatable, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
-    }
 }
