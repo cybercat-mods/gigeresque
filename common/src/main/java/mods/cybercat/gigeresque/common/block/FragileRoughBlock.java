@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,6 +60,7 @@ public class FragileRoughBlock extends Block implements Fallable {
             standingTick++;
             if (standingTick % 10 == 0) {
                 BlockBreakProgressManager.damage(level, livingEntity.blockPosition().below(), standingTick);
+                level.playSound(livingEntity, pos, SoundEvents.TUFF_BRICKS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
                 standingTick = 0;
             }
         }
