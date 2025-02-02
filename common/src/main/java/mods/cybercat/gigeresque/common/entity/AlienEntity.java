@@ -383,7 +383,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void tick() {
         super.tick();
-        crawlingManager.tick();
         searchingManager.tick();
         stasisManager.tick();
 

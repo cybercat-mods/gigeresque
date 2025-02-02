@@ -124,6 +124,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     public void tick() {
         super.tick();
         moveAnalysis.update();
+        crawlingManager.tick();
         GigEntityUtils.breakBlocks(this);
 
         if (!this.isVehicle())
