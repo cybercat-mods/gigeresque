@@ -27,6 +27,20 @@ public class NeomorphAnimator extends AzEntityAnimator<NeomorphEntity> {
                     AzKeyframeCallbacks.<NeomorphEntity>builder()
                         .setSoundKeyframeHandler(
                             event -> {
+                                if (event.getKeyframeData().getSound().equals("hissSoundkey")) {
+                                    event.getAnimatable()
+                                        .level()
+                                        .playLocalSound(
+                                            event.getAnimatable().getX(),
+                                            event.getAnimatable().getY(),
+                                            event.getAnimatable().getZ(),
+                                            GigSounds.ALIEN_HISS.get(),
+                                            SoundSource.HOSTILE,
+                                            1.0F,
+                                            1.0F,
+                                            true
+                                        );
+                                }
                                 if (event.getKeyframeData().getSound().equals("footstepSoundkey")) {
                                     event.getAnimatable()
                                         .level()
