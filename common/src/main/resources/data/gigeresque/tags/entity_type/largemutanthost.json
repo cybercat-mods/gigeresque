@@ -77,6 +77,14 @@
     {
       "id": "livingthings:ostrich",
       "required": false
+    },
+    {
+      "id": "jarjarbinks:jarjar",
+      "required": false
+    },
+    {
+      "id": "jarjarbinks:darthbinks",
+      "required": false
     }
   ]
 }
