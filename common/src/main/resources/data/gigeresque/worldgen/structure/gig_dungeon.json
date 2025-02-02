@@ -6,7 +6,7 @@
   "step": "strongholds",
   "terrain_adaptation": "encapsulate",
   "start_pool": "gigeresque:gig_dungeon",
-  "size": 20,
+  "size": 15,
   "start_height": {
     "absolute": -18
   },
