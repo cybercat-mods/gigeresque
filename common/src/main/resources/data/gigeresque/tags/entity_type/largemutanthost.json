@@ -33,6 +33,50 @@
     {
       "id": "hwg:spy",
       "required": false
+    },
+    {
+      "id": "mobs_of_mythology:chupacabra",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold_warrior",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:pegasus",
+      "required": false
+    },
+    {
+      "id": "livingthings:lion",
+      "required": false
+    },
+    {
+      "id": "livingthings:ostrich",
+      "required": false
+    },
+    {
+      "id": "livingthings:flamingo",
+      "required": false
+    },
+    {
+      "id": "livingthings:peacock",
+      "required": false
+    },
+    {
+      "id": "livingthings:elephant",
+      "required": false
+    },
+    {
+      "id": "livingthings:giraffe",
+      "required": false
+    },
+    {
+      "id": "livingthings:ostrich",
+      "required": false
     }
   ]
 }

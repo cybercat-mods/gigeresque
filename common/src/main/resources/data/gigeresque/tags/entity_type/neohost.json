@@ -37,6 +37,30 @@
     {
       "id": "hwg:spy",
       "required": false
+    },
+    {
+      "id": "red_panda:red_panda",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:chupacabra",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold_warrior",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:pegasus",
+      "required": false
+    },
+    {
+      "id": "livingthings:monkey",
+      "required": false
     }
   ]
 }

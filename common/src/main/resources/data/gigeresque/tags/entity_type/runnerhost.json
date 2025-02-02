@@ -19,6 +19,50 @@
     "minecraft:wolf",
     "minecraft:camel",
     "minecraft:sniffer",
-    "minecraft:trader_llama"
+    "minecraft:trader_llama",
+    {
+      "id": "red_panda:red_panda",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:chupacabra",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:kobold_warrior",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:pegasus",
+      "required": false
+    },
+    {
+      "id": "livingthings:lion",
+      "required": false
+    },
+    {
+      "id": "livingthings:penguin",
+      "required": false
+    },
+    {
+      "id": "livingthings:ostrich",
+      "required": false
+    },
+    {
+      "id": "livingthings:flamingo",
+      "required": false
+    },
+    {
+      "id": "livingthings:koala",
+      "required": false
+    },
+    {
+      "id": "livingthings:peacock",
+      "required": false
+    }
   ]
 }

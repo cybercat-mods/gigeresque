@@ -7,6 +7,26 @@
     "minecraft:frog",
     "minecraft:tadpole",
     "minecraft:axolotl",
-    "minecraft:parrot"
+    "minecraft:parrot",
+    {
+      "id": "red_panda:red_panda",
+      "required": false
+    },
+    {
+      "id": "livingthings:penguin",
+      "required": false
+    },
+    {
+      "id": "livingthings:koala",
+      "required": false
+    },
+    {
+      "id": "livingthings:raccoon",
+      "required": false
+    },
+    {
+      "id": "livingthings:owl",
+      "required": false
+    }
   ]
 }

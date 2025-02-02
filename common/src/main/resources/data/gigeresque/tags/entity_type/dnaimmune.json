@@ -58,6 +58,22 @@
     {
       "id": "stellaris:cheese_boss",
       "required": false
+    },
+    {
+      "id": "mobs_of_mythology:sporeling",
+      "required": false
+    },
+    {
+      "id": "livingthings:nether_knight",
+      "required": false
+    },
+    {
+      "id": "livingthings:baby_ender_dragon",
+      "required": false
+    },
+    {
+      "id": "livingthings:snail",
+      "required": false
     }
   ]
 }

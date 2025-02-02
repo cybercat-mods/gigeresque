@@ -37,6 +37,90 @@
     {
       "id": "#avp:aliens",
       "required": false
+    },
+    {
+      "id": "hwg:technodemon_lesser_1",
+      "required": false
+    },
+    {
+      "id": "hwg:technodemon_greater_1",
+      "required": false
+    },
+    {
+      "id": "stellaris:cheese_boss",
+      "required": false
+    },
+    {
+      "id": "stellaris:star_crawler",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:automaton",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:drake",
+      "required": false
+    },
+    {
+      "id": "mobs_of_mythology:basilisk",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:spider_pig",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:skull_spirit",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_zombie_villager",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_zombie",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_snow_golem",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_skeleton",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_enderman",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:mutant_creeper",
+      "required": false
+    },
+    {
+      "id": "mutantmonsters:creeper_minion",
+      "required": false
+    },
+    {
+      "id": "bosses_of_mass_destruction:lich",
+    "required": false
+    },
+    {
+      "id": "bosses_of_mass_destruction:obsidilith",
+    "required": false
+    },
+    {
+      "id": "bosses_of_mass_destruction:gauntlet",
+    "required": false
+    },
+    {
+      "id": "bosses_of_mass_destruction:void_blossom",
+    "required": false
+    },
+    {
+      "id": "livingthings:nether_knight",
+      "required": false
     }
   ]
 }
