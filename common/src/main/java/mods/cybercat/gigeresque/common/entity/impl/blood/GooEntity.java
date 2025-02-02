@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
@@ -30,7 +31,12 @@ public class GooEntity extends Entity {
 
     public GooEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
-        this.setNoGravity(false);
+        this.setDeltaMovement(Vec3.ZERO);
+    }
+
+    @Override
+    protected double getDefaultGravity() {
+        return 0.04;
     }
 
     @Override
@@ -39,22 +45,9 @@ public class GooEntity extends Entity {
         // Ensures it's always at the center of the block
         if (tickCount == 1)
             this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
-        this.applyGravity();
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
+        this.applyCustomGravity();
         if (this.level().isClientSide()) {
-            for (int i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                this.level()
-                    .addAlwaysVisibleParticle(
-                        GigParticles.GOO.get(),
-                        this.blockPosition().getX() + this.random.nextDouble(),
-                        this.blockPosition().getY() + 0.01,
-                        this.blockPosition().getZ() + this.random.nextDouble(),
-                        0.0,
-                        0.0,
-                        0.0
-                    );
-            }
+            this.applyParticle();
         }
         if (!this.level().isClientSide()) {
             // Kill this after it's tickCount is higher
@@ -70,10 +63,8 @@ public class GooEntity extends Entity {
                 doParticleSounds(this.random);
             }
             // Do things
-            this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
-                if (entity instanceof LivingEntity livingEntity) {
-                    this.damageLivingEntities(livingEntity, this.random);
-                }
+            this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1)).forEach(livingEntity -> {
+                this.damageLivingEntities(livingEntity, this.random);
             });
             if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
                 this.remove(RemovalReason.KILLED);
@@ -82,6 +73,27 @@ public class GooEntity extends Entity {
                     e.remove(RemovalReason.KILLED);
             });
         }
+    }
+
+    private void applyParticle() {
+        for (var i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
+            this.level()
+                    .addAlwaysVisibleParticle(
+                            GigParticles.GOO.get(),
+                            this.blockPosition().getX() + this.random.nextDouble(),
+                            this.blockPosition().getY() + 0.01,
+                            this.blockPosition().getZ() + this.random.nextDouble(),
+                            0.0,
+                            0.0,
+                            0.0
+                    );
+        }
+    }
+
+    private void applyCustomGravity() {
+        this.applyGravity();
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.38));
     }
 
     private void doParticleSounds(RandomSource randomSource) {
