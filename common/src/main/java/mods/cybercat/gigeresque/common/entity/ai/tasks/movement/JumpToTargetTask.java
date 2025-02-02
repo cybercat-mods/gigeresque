@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
-public class JumpToTargetTask<E extends NewAlienEntity> extends DelayedBehaviour<E> {
+public class JumpToTargetTask<E extends AlienEntity> extends DelayedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),

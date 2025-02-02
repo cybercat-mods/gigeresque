@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -24,7 +24,7 @@ import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class AlienEggEntity extends NewAlienEntity {
+public class AlienEggEntity extends AlienEntity {
 
     private static final EntityDataAccessor<Boolean> HAS_FACEHUGGER = SynchedEntityData.defineId(
         AlienEggEntity.class,

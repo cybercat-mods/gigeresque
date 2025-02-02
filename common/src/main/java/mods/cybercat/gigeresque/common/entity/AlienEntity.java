@@ -2,8 +2,7 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.WaterAnimal;
@@ -60,10 +58,8 @@ import java.util.function.Predicate;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
+import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -75,7 +71,7 @@ import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, GeoEntity, Growable, AbstractAlien {
+public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> UPSIDE_DOWN = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -143,6 +139,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         AlienEntity.class,
         EntityDataSerializers.BOOLEAN
     );
+
+    public AnimationDispatcher animationDispatcher;
+
+    public MoveAnalysis moveAnalysis;
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -214,8 +214,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     protected void tickDeath() {
         ++this.deathTime;
-        this.triggerAnim(Constants.LIVING_CONTROLLER, "death");
-        this.triggerAnim(Constants.ATTACK_CONTROLLER, "death");
         if (this.deathTime == 150) {
             this.remove(RemovalReason.KILLED);
             super.tickDeath();
@@ -407,7 +405,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return this.isInWater() || this.wasTouchingWater ? new AmphibiousPathNavigation(this, level) : new AzureNavigation(this, level);
+        return new GigNavigation(this, level);
     }
 
     @Override
@@ -443,7 +441,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         if (this.isPassedOut()) {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
             if (this.isAggressive()) {
-                this.triggerAnim(Constants.ATTACK_CONTROLLER, "wakeup");
+                this.animationDispatcher.sendStatisLeave();
                 this.setPassedOutStatus(false);
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
             }
@@ -654,11 +652,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             }
         }
         return super.hurt(source, amount * multiplier);
-    }
-
-    @Override
-    public boolean onClimbable() {
-        return this.fallDistance <= 0.1;
     }
 
     @Override

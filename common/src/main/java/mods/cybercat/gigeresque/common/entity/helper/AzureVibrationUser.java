@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
@@ -18,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
@@ -131,7 +130,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
-        if (this.mob instanceof NewAlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.isCrawling() && !alienEntity.isTunnelCrawling())) {
             alienEntity.wakeupCounter++;
             if (alienEntity.isPassedOut() && alienEntity.wakeupCounter == 1)
                 alienEntity.animationDispatcher.sendStatisLeave();
@@ -150,7 +149,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             }
         }
 
-        if (this.mob instanceof NewAlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
+        if (this.mob instanceof AlienEntity alienEntity && (alienEntity.isCrawling() || alienEntity.isTunnelCrawling())) {
             alienEntity.setPassedOutStatus(false);
             alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
         }

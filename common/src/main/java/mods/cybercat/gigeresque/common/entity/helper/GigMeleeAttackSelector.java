@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.world.phys.Vec3;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
@@ -17,7 +17,7 @@ import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 public record GigMeleeAttackSelector() {
 
     /* ANIMATION SELECTORS */
-    public static final AnimationSelector<NewAlienEntity> CLASSIC_ANIM_SELECTOR = classicAlienEntity -> {
+    public static final AnimationSelector<AlienEntity> CLASSIC_ANIM_SELECTOR = classicAlienEntity -> {
         var basicCheck = classicAlienEntity.isCrawling() || classicAlienEntity.isTunnelCrawling() || classicAlienEntity.isInWater();
         Runnable animKey = switch (classicAlienEntity.getRandom().nextInt(4)) {
             case 1 -> basicCheck
@@ -40,7 +40,7 @@ public record GigMeleeAttackSelector() {
         // entity.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<NewAlienEntity> NORMAL_ANIM_SELECTOR = entity -> {
+    public static final AnimationSelector<AlienEntity> NORMAL_ANIM_SELECTOR = entity -> {
         var basicCheck = entity.isInWater();
         Runnable animKey = switch (entity.getRandom().nextInt(4)) {
             case 1 -> entity.animationDispatcher::sendRightClaw;
@@ -69,7 +69,7 @@ public record GigMeleeAttackSelector() {
         // runner.triggerAnim(Constants.ATTACK_CONTROLLER, animKey);
     };
 
-    public static final AnimationSelector<NewAlienEntity> STANDARD_ANIM_SELECTOR = templeBeastEntity -> {
+    public static final AnimationSelector<AlienEntity> STANDARD_ANIM_SELECTOR = templeBeastEntity -> {
         Runnable animKey = switch (templeBeastEntity.getRandom().nextInt(4)) {
             case 1 -> templeBeastEntity.animationDispatcher::sendRightClaw;
             case 2 -> templeBeastEntity.animationDispatcher::sendLeftTail;

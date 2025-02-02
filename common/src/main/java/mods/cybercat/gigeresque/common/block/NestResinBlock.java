@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.block;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,8 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class NestResinBlock extends AbstractNestBlock {
 

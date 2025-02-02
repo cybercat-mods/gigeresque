@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -56,9 +56,9 @@ import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class RunnerAlienEntity extends NewAlienEntity implements SmartBrainOwner<RunnerAlienEntity> {
+public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<RunnerAlienEntity> {
 
-    public RunnerAlienEntity(EntityType<? extends NewAlienEntity> type, Level world) {
+    public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);

@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Objects;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 
-public class EggmorpthTargetTask<E extends NewAlienEntity> extends ExtendedBehaviour<E> {
+public class EggmorpthTargetTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(GigMemoryTypes.NEARBY_NEST_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)

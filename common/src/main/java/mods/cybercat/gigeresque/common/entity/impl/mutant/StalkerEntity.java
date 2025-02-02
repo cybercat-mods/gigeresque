@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -41,7 +42,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -56,9 +56,9 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 /**
  * TODO: Ensure crawling works good
  */
-public class StalkerEntity extends NewAlienEntity implements SmartBrainOwner<StalkerEntity> {
+public class StalkerEntity extends AlienEntity implements SmartBrainOwner<StalkerEntity> {
 
-    public StalkerEntity(EntityType<? extends NewAlienEntity> entityType, Level world) {
+    public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
         this.animationDispatcher = new AnimationDispatcher(this);

@@ -46,7 +46,7 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -59,11 +59,11 @@ import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class AquaticAlienEntity extends NewAlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
+public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
 
     public int killCounter;
 
-    public AquaticAlienEntity(EntityType<? extends NewAlienEntity> type, Level world) {
+    public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);

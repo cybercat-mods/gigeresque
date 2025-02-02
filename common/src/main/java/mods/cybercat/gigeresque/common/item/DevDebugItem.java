@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class DevDebugItem extends Item {
 
@@ -23,7 +23,7 @@ public class DevDebugItem extends Item {
         @NotNull LivingEntity interactionTarget,
         @NotNull InteractionHand usedHand
     ) {
-        if (interactionTarget instanceof NewAlienEntity alienEntity) {
+        if (interactionTarget instanceof AlienEntity alienEntity) {
             if (!alienEntity.isPassedOut()) {
                 alienEntity.setPassedOutStatus(true);
                 return InteractionResult.sidedSuccess(player.level().isClientSide);

@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -50,9 +50,9 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class HammerpedeEntity extends NewAlienEntity implements SmartBrainOwner<HammerpedeEntity> {
+public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<HammerpedeEntity> {
 
-    public HammerpedeEntity(EntityType<? extends NewAlienEntity> entityType, Level world) {
+    public HammerpedeEntity(EntityType<? extends AlienEntity> entityType, Level world) {
         super(entityType, world);
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         navigation = new GigNav(this, level());

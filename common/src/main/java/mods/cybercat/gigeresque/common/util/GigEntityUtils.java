@@ -16,9 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.NewAlienEntity;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -186,84 +185,6 @@ public record GigEntityUtils() {
     }
 
     public static void breakBlocks(AlienEntity alienEntity) {
-        if (alienEntity.isCrawling())
-            return;
-        if (alienEntity.isDeadOrDying())
-            return;
-        if (alienEntity.isPassedOut())
-            return;
-        if (alienEntity.isInWater())
-            return;
-        if (alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (!alienEntity.level().isClientSide)
-                alienEntity.breakingCounter++;
-            if (alienEntity.breakingCounter > 10) {
-                for (
-                    var testPos : BlockPos.betweenClosed(
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()),
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2)
-                    )
-                ) {
-                    var state = alienEntity.level().getBlockState(testPos);
-                    if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(BlockTags.FLOWERS))
-                        continue;
-                    if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
-                        if (!alienEntity.level().isClientSide)
-                            alienEntity.level().destroyBlock(testPos, true, null, 512);
-                        if (!alienEntity.isVehicle())
-                            alienEntity.triggerAnim("attackController", "swipe");
-                        if (alienEntity.isVehicle())
-                            alienEntity.triggerAnim("attackController", "swipe_left_tail");
-                        alienEntity.breakingCounter = -90;
-                        if (alienEntity.level().isClientSide()) {
-                            for (var i = 2; i < 10; i++) {
-                                alienEntity.level()
-                                    .addAlwaysVisibleParticle(
-                                        GigParticles.ACID.get(),
-                                        alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
-                                            .nextBoolean() ? -1 : 1),
-                                        alienEntity.getEyeY() - ((alienEntity.getEyeY() - alienEntity.blockPosition().getY()) / 2.0),
-                                        alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
-                                            .nextBoolean() ? -1 : 1),
-                                        0.0,
-                                        -0.15,
-                                        0.0
-                                    );
-                            }
-                            alienEntity.level()
-                                .playLocalSound(
-                                    testPos.getX(),
-                                    testPos.getY(),
-                                    testPos.getZ(),
-                                    SoundEvents.LAVA_EXTINGUISH,
-                                    SoundSource.BLOCKS,
-                                    0.2f + alienEntity.getRandom().nextFloat() * 0.2f,
-                                    0.9f + alienEntity.getRandom().nextFloat() * 0.15f,
-                                    false
-                                );
-                        }
-                    } else if (
-                        !state.is(GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth()
-                            * 0.50))
-                    ) {
-                        if (!alienEntity.level().isClientSide) {
-                            var acid = GigEntities.ACID.get().create(alienEntity.level());
-                            if (acid != null) {
-                                acid.setPos(testPos.above().getX(), testPos.above().getY(), testPos.above().getZ());
-                                alienEntity.level().addFreshEntity(acid);
-                            }
-                        }
-                        alienEntity.hurt(GigDamageSources.of(alienEntity.level(), GigDamageSources.ACID), 5);
-                        alienEntity.breakingCounter = -90;
-                    }
-                }
-            }
-            if (alienEntity.breakingCounter >= 25)
-                alienEntity.breakingCounter = 0;
-        }
-    }
-
-    public static void breakBlocks(NewAlienEntity alienEntity) {
         if (alienEntity.isCrawling())
             return;
         if (alienEntity.isDeadOrDying())

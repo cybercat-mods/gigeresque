@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
 import mod.azure.azurelib.common.api.client.helper.ClientUtils;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 
 @Mixin(Player.class)
