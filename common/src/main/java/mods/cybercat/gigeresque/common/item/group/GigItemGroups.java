@@ -37,6 +37,9 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                 entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG.get());
                 entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get());
                 entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG.get());
+                /**
+                 * TODO: Move out when dungeon parts are ready.
+                 */
                 if (CommonMod.config.enableDevEntites) {
                     entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
                     entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
