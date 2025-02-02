@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.blood;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -33,18 +30,11 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 
 public class AcidEntity extends Entity {
 
-    public static final EntityDataAccessor<Boolean> USEEFFECTS = SynchedEntityData.defineId(
-        AcidEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
+    private int acidTicks = 0;
 
     public AcidEntity(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
         this.setDeltaMovement(Vec3.ZERO);
-    }
-
-    public AcidEntity(Level level, boolean useParticlesSounds) {
-        super(GigEntities.ACID.get(), level);
     }
 
     @Override
@@ -60,23 +50,26 @@ public class AcidEntity extends Entity {
             this.moveTo(this.blockPosition().offset(0, 0, 0), this.getYRot(), this.getXRot());
         this.applyCustomGravity();
         var canGrief = this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
-        if (this.level().isClientSide() && this.getUseEffects())
+        if (this.level().isClientSide())
             this.applyParticle();
         if (!this.level().isClientSide()) {
             // Kill this after it's tickCount is higher
             if (this.tickCount >= this.random.nextIntBetweenInclusive(400, 800))
                 this.kill();
             // Ensures it always plays a sound when first placed
-            if (this.tickCount == 1 && this.getUseEffects())
+            if (this.tickCount == 1)
                 doParticleSounds(this.random);
             // Plays a sound every 2 seconds or so
-            if (this.tickCount % 40 == 0 && this.getUseEffects())
+            if (this.tickCount % 40 == 0)
                 doParticleSounds(this.random);
             // Do things
             var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
-            if (this.tickCount % 20 == 0 && canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT))
-                this.doBlockBreaking(this.random);
-            if (this.tickCount % 40 == 0 && this.getUseEffects()) {
+            acidTicks++;
+            if (this.tickCount % 5 == 0 && canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
+                this.doBlockBreaking(this.random, acidTicks * 2);
+                acidTicks = 0;
+            }
+            if (this.tickCount % 40 == 0) {
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
@@ -119,21 +112,19 @@ public class AcidEntity extends Entity {
         this.setDeltaMovement(this.getDeltaMovement().scale(0.38));
     }
 
-    private void doBlockBreaking(RandomSource randomSource) {
-        BlockBreakProgressManager.damage(level(), this.blockPosition().below());
-        if (this.getUseEffects()) {
-            this.level()
-                .playSound(
-                    null,
-                    this.blockPosition().getX(),
-                    this.blockPosition().getY(),
-                    this.blockPosition().getZ(),
-                    SoundEvents.LAVA_EXTINGUISH,
-                    SoundSource.BLOCKS,
-                    0.2f + randomSource.nextFloat() * 0.2f,
-                    0.9f + randomSource.nextFloat() * 0.15f
-                );
-        }
+    private void doBlockBreaking(RandomSource randomSource, int acidTicks) {
+        BlockBreakProgressManager.damage(level(), this.blockPosition().below(), acidTicks);
+        this.level()
+            .playSound(
+                null,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ(),
+                SoundEvents.LAVA_EXTINGUISH,
+                SoundSource.BLOCKS,
+                0.2f + randomSource.nextFloat() * 0.2f,
+                0.9f + randomSource.nextFloat() * 0.15f
+            );
     }
 
     private void doParticleSounds(RandomSource randomSource) {
@@ -177,27 +168,13 @@ public class AcidEntity extends Entity {
     }
 
     @Override
-    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        builder.define(USEEFFECTS, true);
-    }
+    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        entityData.set(USEEFFECTS, compound.getBoolean("UseEffects"));
-    }
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        compound.putBoolean("UseEffects", this.getUseEffects());
-    }
-
-    public boolean getUseEffects() {
-        return entityData.get(USEEFFECTS);
-    }
-
-    public void setUseEffects(boolean useEffects) {
-        entityData.set(USEEFFECTS, useEffects);
-    }
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
     public boolean dampensVibrations() {
