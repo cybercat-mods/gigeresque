@@ -34,7 +34,7 @@ public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntit
 
                     @Override
                     public ItemStack itemStackForBone(AzBone bone) {
-                        return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
+                        return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(GigBlocks.BEACON_BLOCK.get().asItem()) : null;
                     }
 
                     @Override
@@ -44,9 +44,10 @@ public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntit
 
                     @Override
                     protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack) {
-                        context.poseStack().mulPose(Axis.XP.rotationDegrees(0));
-                        context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
-                        context.poseStack().mulPose(Axis.ZP.rotationDegrees(0));
+                        float rotationAngle = (System.currentTimeMillis() % 3600L) / 10.0F;
+                        context.poseStack().mulPose(Axis.XP.rotationDegrees(rotationAngle));
+                        context.poseStack().mulPose(Axis.YP.rotationDegrees(rotationAngle));
+                        context.poseStack().mulPose(Axis.ZP.rotationDegrees(rotationAngle));
                         super.renderItemForBone(context, bone, itemStack);
                     }
                 })
