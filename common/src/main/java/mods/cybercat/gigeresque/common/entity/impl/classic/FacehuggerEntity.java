@@ -111,7 +111,7 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
     @Override
     protected void tickDeath() {
         ++this.deathTime;
-        if (this.deathTime == 20) {
+        if (this.deathTime == 60) {
             this.remove(RemovalReason.KILLED);
             super.tickDeath();
             this.dropExperience(this);
@@ -252,7 +252,6 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
             this.kill();
             this.removeAllGoals(goals -> true);
             this.getBrain().removeAllBehaviors();
-            return;
         }
     }
 
@@ -434,22 +433,6 @@ public class FacehuggerEntity extends NewAlienEntity implements SmartBrainOwner<
                     )
                 ),
             new FacehuggerPounceTask<>(6)
-        );
-    }
-
-    public void sendFacehuggerWalkingAnimations(FacehuggerEntity facehuggerEntity) {
-        GigCommonMethods.setAnimation(
-            facehuggerEntity.isInWater()
-                ? facehuggerEntity.animationDispatcher::sendSwim
-                : facehuggerEntity.animationDispatcher::sendCrawl
-        );
-    }
-
-    public void sendFacehuggerIdleAnimations(FacehuggerEntity facehuggerEntity) {
-        GigCommonMethods.setAnimation(
-            facehuggerEntity.isInWater()
-                ? facehuggerEntity.animationDispatcher::sendIdleWater
-                : facehuggerEntity.animationDispatcher::sendIdleLand
         );
     }
 }
