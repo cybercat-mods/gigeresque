@@ -19,7 +19,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
         "items",
         () -> GigServices.COMMON_REGISTRY.newCreativeTabBuilder()
             .title(Component.translatable("itemGroup." + CommonMod.MOD_ID + ".items"))
-            .icon(() -> new ItemStack(GigItems.ALIEN_SPAWN_EGG.get()))
+            .icon(() -> new ItemStack(GigBlocks.PETRIFIED_OBJECT_3_BLOCK.get()))
             .displayItems((enabledFeatures, entries) -> {
                 entries.accept(GigItems.BLACK_FLUID_BUCKET.get());
                 entries.accept(GigItems.SURGERY_KIT.get());
@@ -63,7 +63,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
         "blocks",
         () -> GigServices.COMMON_REGISTRY.newCreativeTabBuilder()
             .title(Component.translatable("itemGroup." + CommonMod.MOD_ID + ".blocks"))
-            .icon(() -> new ItemStack(GigBlocks.NEST_RESIN_WEB.get()))
+            .icon(() -> new ItemStack(GigBlocks.PETRIFIED_OBJECT_4_BLOCK.get()))
             .displayItems((enabledFeatures, entries) -> {
                 entries.accept(GigBlocks.DUNGEON_VENT_BLOCK.get());
                 entries.accept(GigBlocks.SURFACE_VENT_BLOCK.get());
