@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.common.entity.helper;
+package mods.cybercat.gigeresque.common.entity.helper.managers;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +53,8 @@ public class CrawlingManager {
         }
         if (entity.tickCount % 20 == 0)
             entity.getEntityData().set(isCrawlingEDA, isTight);
-        entity.refreshDimensions();
+        if (entity.tickCount % 10 == 0)
+            entity.refreshDimensions();
     }
 
     private boolean isTightSpace(BlockPos blockPos) {

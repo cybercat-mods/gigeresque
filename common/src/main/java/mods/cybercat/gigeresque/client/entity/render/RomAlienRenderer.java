@@ -22,7 +22,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
             AzEntityRendererConfig.<RomAlienEntity>builder($ -> MODEL, xeno -> {
                 var progress = Math.max(0, Math.min(1 - (xeno.getGrowth() / xeno.getMaxGrowth()), 1));
 
-                if (xeno.isPassedOut()) {
+                if (xeno.stasisManager.isStasis()) {
                     return EntityTextures.ROM_ALIEN_STATIS;
                 }
                 if (progress > 0) {

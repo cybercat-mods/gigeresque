@@ -42,7 +42,6 @@ import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
@@ -101,8 +100,6 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     public void tick() {
         super.tick();
         GigEntityUtils.breakBlocks(this);
-        if (this.isPassedOut() && this.getNavigation() instanceof GigNav gigNav)
-            gigNav.hardStop();
         moveAnalysis.update();
 
         if (this.level().isClientSide()) {
@@ -115,7 +112,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             return;
         }
-        if (this.isHissing() && !this.isPassedOut()) {
+        if (this.isHissing() && !this.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendHiss);
         }
         if (this.moveAnalysis.isMoving()) {
@@ -148,7 +145,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
     }
 
     protected void handleIdleAnimations() {
-        if (this.isPassedOut()) {
+        if (this.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendStasisLoop);
         } else if (this.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
@@ -214,7 +211,7 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.55f),
+                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.55f).stopIf(entity -> this.searchingManager.isSearching()),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
                         entity -> entity.getRandom().nextInt(30, 60)

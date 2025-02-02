@@ -322,14 +322,14 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             new FleeFireTask<>(1.0F),
             new AlienPanic(1.0f),
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 ),
             // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut())
+            new MoveToWalkTarget<>().startCondition(entity -> !this.stasisManager.isStasis())
                 .stopIf(
-                    entity -> this.isPassedOut()
+                    entity -> this.stasisManager.isStasis()
                 )
         );
     }
@@ -354,14 +354,14 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
                 )
                     .stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()
+                        entity -> this.stasisManager.isStasis() || this.isExecuting()
                     ),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
             ).stopIf(
-                entity -> this.isPassedOut() || this.isExecuting()
+                entity -> this.stasisManager.isStasis() || this.isExecuting()
             ),
             // Random
             new OneRandomBehaviour<>(

@@ -24,12 +24,12 @@ public class DevDebugItem extends Item {
         @NotNull InteractionHand usedHand
     ) {
         if (interactionTarget instanceof AlienEntity alienEntity) {
-            if (!alienEntity.isPassedOut()) {
-                alienEntity.setPassedOutStatus(true);
+            if (!alienEntity.stasisManager.isStasis()) {
+                alienEntity.stasisManager.setStasis(true);
                 return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
-            if (alienEntity.isPassedOut()) {
-                alienEntity.setPassedOutStatus(false);
+            if (alienEntity.stasisManager.isStasis()) {
+                alienEntity.stasisManager.setStasis(false);
                 return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }

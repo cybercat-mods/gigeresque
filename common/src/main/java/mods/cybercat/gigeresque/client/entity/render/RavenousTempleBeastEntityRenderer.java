@@ -19,7 +19,7 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
             AzEntityRendererConfig.<RavenousTempleBeastEntity>builder(
                 $ -> MODEL,
                 stalker -> {
-                    if (stalker.isPassedOut()) {
+                    if (stalker.stasisManager.isStasis()) {
                         return EntityTextures.RAVENOUSTEMPLEBEAST_STATIS;
                     }
                     return EntityTextures.RAVENOUSTEMPLEBEAST;

@@ -130,27 +130,30 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @SuppressWarnings("deprecation")
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
-        if (this.mob instanceof AlienEntity alienEntity && (!alienEntity.crawlingManager.isCrawling())) {
+        if (this.mob instanceof AlienEntity alienEntity && !alienEntity.crawlingManager.isCrawling()) {
             alienEntity.wakeupCounter++;
-            if (alienEntity.isPassedOut() && alienEntity.wakeupCounter == 1)
+            if (alienEntity.stasisManager.isStasis() && alienEntity.wakeupCounter == 1) {
                 alienEntity.animationDispatcher.sendStatisLeave();
+                alienEntity.searchingManager.setSearching(true);
+            }
             if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
-                alienEntity.setPassedOutStatus(false);
+                alienEntity.stasisManager.setStasis(false);
             if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
-                    alienEntity.setPassedOutStatus(false);
+                    alienEntity.stasisManager.setStasis(false);
                 alienEntity.animationDispatcher.sendAmbient();
             }
             if (alienEntity.wakeupCounter >= 3) {
-                alienEntity.setPassedOutStatus(false);
+                alienEntity.stasisManager.setStasis(false);
                 alienEntity.setAggressive(true);
                 alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
+                alienEntity.searchingManager.setSearching(true);
                 alienEntity.wakeupCounter = 0;
             }
         }
 
         if (this.mob instanceof AlienEntity alienEntity && (alienEntity.crawlingManager.isCrawling())) {
-            alienEntity.setPassedOutStatus(false);
+            alienEntity.stasisManager.setStasis(false);
             alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
         }
 

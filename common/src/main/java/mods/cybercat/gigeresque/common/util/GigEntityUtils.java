@@ -189,7 +189,7 @@ public record GigEntityUtils() {
             return;
         if (alienEntity.isDeadOrDying())
             return;
-        if (alienEntity.isPassedOut())
+        if (alienEntity.stasisManager.isStasis())
             return;
         if (alienEntity.isInWater())
             return;

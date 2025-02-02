@@ -21,7 +21,7 @@ public class MoonlightHorrorTempleBeastEntityRenderer extends AzEntityRenderer<M
             AzEntityRendererConfig.<MoonlightHorrorTempleBeastEntity>builder(
                 $ -> MODEL,
                 stalker -> {
-                    if (stalker.isPassedOut()) {
+                    if (stalker.stasisManager.isStasis()) {
                         return EntityTextures.MOONLIGHTHORRORTEMPLEBEAST_STATIS;
                     }
                     return EntityTextures.MOONLIGHTHORRORTEMPLEBEAST;

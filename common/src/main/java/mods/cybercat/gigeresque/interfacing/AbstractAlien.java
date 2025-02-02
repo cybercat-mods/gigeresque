@@ -20,10 +20,6 @@ public interface AbstractAlien {
 
     void setIsBiting(boolean isBiting);
 
-    boolean isSearching();
-
-    void setIsSearching(boolean isHissing);
-
     boolean isHissing();
 
     void setIsHissing(boolean isHissing);
@@ -31,8 +27,4 @@ public interface AbstractAlien {
     float getGrowth();
 
     void setGrowth(float growth);
-
-    boolean isPassedOut();
-
-    void setPassedOutStatus(boolean passout);
 }

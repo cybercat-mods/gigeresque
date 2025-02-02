@@ -25,7 +25,7 @@ public class NeomorphModelRenderer extends AzEntityModelRenderer<NeomorphEntity>
         float partialTick,
         float nativeScale
     ) {
-        if (!animatable.isPassedOut())
+        if (!animatable.stasisManager.isStasis())
             super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
     }
 }

@@ -154,8 +154,6 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         super.tick();
         this.moveAnalysis.update();
         GigEntityUtils.breakBlocks(this);
-        if (this.isPassedOut())
-            this.getNavigation().stop();
 
         if (this.level().isClientSide) {
             this.handleAnimations();
@@ -220,13 +218,13 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
             // Flee Fire
             new FleeFireTask<>(3.5F),
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching() || !this.isExecuting()
                 ),
             // Move to target
             new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting())
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting())
         );
     }
 
@@ -236,17 +234,17 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Kill Lights
             new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Find Darkness
             new FindDarknessTask<>(),
@@ -254,17 +252,17 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
             new FirstApplicableBehaviour<RunnerAlienEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.isPassedOut())
+                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing() || this.stasisManager.isStasis())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
-            ).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+            ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
@@ -272,10 +270,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
                     .setRadius(20)
                     .speedModifier(0.7f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
                     ),
                 // Idle
                 new EnterStasisTask<>(6000)
@@ -288,10 +286,10 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.25f)
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting()),
-            new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
+            new JumpToTargetTask<>(20).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR).stopIf(
-                entity -> this.isPassedOut() || this.isExecuting()
+                entity -> this.stasisManager.isStasis() || this.isExecuting()
             )
         );
     }
@@ -331,7 +329,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     }
 
     protected void handleIdleAnimations() {
-        if (this.isPassedOut()) {
+        if (this.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
         } else if (this.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);

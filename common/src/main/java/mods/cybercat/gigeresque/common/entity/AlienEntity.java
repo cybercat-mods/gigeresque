@@ -3,6 +3,9 @@ package mods.cybercat.gigeresque.common.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -23,7 +26,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
@@ -82,7 +84,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         EntityDataSerializers.INT
     );
 
-    public static final EntityDataAccessor<Boolean> PASSED_OUT = SynchedEntityData.defineId(
+    public static final EntityDataAccessor<Boolean> IS_STASIS = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.BOOLEAN
     );
@@ -129,12 +131,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         EntityDataSerializers.BOOLEAN
     );
 
-    public AnimationDispatcher animationDispatcher;
-
-    public MoveAnalysis moveAnalysis;
-
-    public final CrawlingManager crawlingManager;
-
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
@@ -151,10 +147,22 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public BlockPos savedNestWebCross;
 
+    public SearchingManager searchingManager;
+
+    public AnimationDispatcher animationDispatcher;
+
+    public MoveAnalysis moveAnalysis;
+
+    public final CrawlingManager crawlingManager;
+
+    public final StasisManager stasisManager;
+
     protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
+        this.searchingManager = new SearchingManager(this, IS_SEARCHING);
+        this.stasisManager = new StasisManager(this, IS_STASIS);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
@@ -267,16 +275,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     @Override
-    public boolean isSearching() {
-        return entityData.get(IS_SEARCHING);
-    }
-
-    @Override
-    public void setIsSearching(boolean isHissing) {
-        entityData.set(IS_SEARCHING, isHissing);
-    }
-
-    @Override
     public boolean isHissing() {
         return entityData.get(IS_HISSING);
     }
@@ -297,27 +295,18 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     }
 
     @Override
-    public boolean isPassedOut() {
-        return this.entityData.get(PASSED_OUT);
-    }
-
-    @Override
-    public void setPassedOutStatus(boolean passout) {
-        this.entityData.set(PASSED_OUT, passout);
-    }
-
-    @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(FLEEING_FIRE, false);
         builder.define(STATE, 0);
         builder.define(CLIENT_ANGER_LEVEL, 0);
         builder.define(GROWTH, 0.0f);
-        builder.define(PASSED_OUT, false);
         builder.define(WAKING_UP, false);
         builder.define(IS_HISSING, false);
         builder.define(IS_EXECUTION, false);
         builder.define(IS_HEADBITE, false);
+        //MOVED
+        builder.define(IS_STASIS, false);
         builder.define(IS_SEARCHING, false);
         builder.define(IS_CRAWLING, false);
     }
@@ -331,19 +320,22 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
             )
             .ifPresent(tag -> compound.put("listener", tag));
         compound.putFloat("growth", this.getGrowth());
-        compound.putBoolean("isStasis", this.isPassedOut());
         compound.putBoolean("wakingup", this.isWakingUp());
         compound.putBoolean("isHissing", this.isHissing());
-        compound.putBoolean("isSearching", this.isSearching());
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
+        stasisManager.save(compound);
+        searchingManager.save(compound);
         crawlingManager.save(compound);
+
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         crawlingManager.load(compound);
+        searchingManager.load(compound);
+        stasisManager.load(compound);
         if (compound.contains("listener", 10))
             Data.CODEC.parse(
                 new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))
@@ -356,10 +348,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         this.setGrowth(compound.getFloat("growth"));
         this.setIsHissing(compound.getBoolean("isHissing"));
         this.setIsBiting(compound.getBoolean(("isHeadBite")));
-        this.setIsSearching(compound.getBoolean("isSearching"));
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
-        this.setPassedOutStatus(compound.getBoolean("isStasis"));
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
     }
 
@@ -394,19 +384,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     public void tick() {
         super.tick();
         crawlingManager.tick();
+        searchingManager.tick();
+        stasisManager.tick();
+
         this.setAirSupply(this.getMaxAirSupply());
-        if (this.isAggressive()) {
-            this.setPassedOutStatus(false);
-        }
-        // Waking up logic
-        if (this.isPassedOut()) {
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
-            if (this.isAggressive()) {
-                this.animationDispatcher.sendStatisLeave();
-                this.setPassedOutStatus(false);
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
-            }
-        }
         if (level() instanceof ServerLevel serverLevel) {
             if (this.isAlive())
                 this.grow(this, 1 * getGrowthMultiplier());
@@ -419,8 +400,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                 });
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
-        if (this.tickCount % 10 == 0)
-            this.refreshDimensions();
     }
 
     @Override

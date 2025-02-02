@@ -184,14 +184,14 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
             // Flee Fire
             new FleeFireTask<>(3.5F),
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 ),
             // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut())
+            new MoveToWalkTarget<>().startCondition(entity -> !this.stasisManager.isStasis())
                 .stopIf(
-                    entity -> this.isPassedOut()
+                    entity -> this.stasisManager.isStasis()
                 )
         );
     }
@@ -202,10 +202,10 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
         return BrainActivityGroup.idleTasks(
             // Kill Lights
             new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Do first
             new FirstApplicableBehaviour<DraconicTempleBeastEntity>(
@@ -218,14 +218,14 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
                 )
                     .stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()
+                        entity -> this.stasisManager.isStasis() || this.isExecuting()
                     ),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
             ).stopIf(
-                entity -> this.isPassedOut() || this.isExecuting()
+                entity -> this.stasisManager.isStasis() || this.isExecuting()
             ),
             // Random
             new OneRandomBehaviour<>(
@@ -234,10 +234,10 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
                     .setRadius(20)
                     .speedModifier(0.8f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
                     ),
                 // Idle
                 new Idle<>().startCondition(entity -> !this.isAggressive())
@@ -252,7 +252,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     public BrainActivityGroup<DraconicTempleBeastEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new JumpToTargetTask<>(20),
             new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)
         );

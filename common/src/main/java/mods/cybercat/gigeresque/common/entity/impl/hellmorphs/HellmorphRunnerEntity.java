@@ -174,14 +174,14 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
     public BrainActivityGroup<HellmorphRunnerEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 ),
             // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.isPassedOut())
+            new MoveToWalkTarget<>().startCondition(entity -> !this.stasisManager.isStasis())
                 .stopIf(
-                    entity -> this.isPassedOut()
+                    entity -> this.stasisManager.isStasis()
                 )
         );
     }
@@ -192,10 +192,10 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
         return BrainActivityGroup.idleTasks(
             // Kill Lights
             new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Find Darkness
             new FindDarknessTask<>(),
@@ -210,14 +210,14 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
                 )
                     .stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()
+                        entity -> this.stasisManager.isStasis() || this.isExecuting()
                     ),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
             ).stopIf(
-                entity -> this.isPassedOut() || this.isExecuting()
+                entity -> this.stasisManager.isStasis() || this.isExecuting()
             ),
             // Random
             new OneRandomBehaviour<>(
@@ -226,10 +226,10 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
                     .setRadius(20)
                     .speedModifier(0.7f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
                     ),
                 // Idle
                 new Idle<>().startCondition(entity -> !this.isAggressive())
@@ -244,7 +244,7 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
     public BrainActivityGroup<HellmorphRunnerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new JumpToTargetTask<>(20),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );

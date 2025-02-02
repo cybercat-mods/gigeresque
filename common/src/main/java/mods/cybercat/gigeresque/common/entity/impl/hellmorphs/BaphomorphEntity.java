@@ -168,16 +168,16 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     public BrainActivityGroup<BaphomorphEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 ),
             // Hisses
             new HissingTask<>(800).startCondition(entity -> !this.isAggressive())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Move to target
             new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting())
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting())
         );
     }
 
@@ -187,26 +187,26 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
         return BrainActivityGroup.idleTasks(
             // Kill Lights
             new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Do first
             new FirstApplicableBehaviour<BaphomorphEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isVehicle() || this.isFleeing() || this.isPassedOut())
+                    target -> (this.isVehicle() || this.isFleeing() || this.stasisManager.isStasis())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
-            ).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+            ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
@@ -214,10 +214,10 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                     .setRadius(20)
                     .speedModifier(0.7f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
                     ),
                 new Idle<>().startCondition(entity -> !this.isAggressive() || !this.isVehicle())
             ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0 || this.isVehicle())
@@ -227,8 +227,8 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     @Override
     public BrainActivityGroup<BaphomorphEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );
     }

@@ -192,7 +192,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                     .speedModifier(
                         0.95f
                     )
-                    .stopIf(entity -> this.isPassedOut()),
+                    .stopIf(entity -> this.stasisManager.isStasis()),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
                         entity -> entity.getRandom().nextInt(30, 60)

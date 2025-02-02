@@ -47,7 +47,6 @@ import java.util.SplittableRandom;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.GigNav;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
@@ -125,14 +124,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     public void tick() {
         super.tick();
         moveAnalysis.update();
-
         GigEntityUtils.breakBlocks(this);
+
         if (!this.isVehicle())
             this.setIsExecuting(false);
-        if (this.isExecuting())
-            this.setPassedOutStatus(false);
-        if (this.isPassedOut() && this.getNavigation() instanceof GigNav gigNav)
-            gigNav.hardStop();
         if (this.level().isClientSide())
             this.handleAnimations();
     }
@@ -142,7 +137,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             return;
         }
-        if (this.isHissing() && !this.isPassedOut()) {
+        if (this.isHissing() && !this.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendHiss);
         }
         if (this.isVehicle()) {
@@ -189,9 +184,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     protected void handleIdleAnimations() {
-        if (this.isPassedOut()) {
+        if (this.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
-        } else if (this.isSearching()) {
+        } else if (this.searchingManager.isSearching()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendAmbient);
         } else if (this.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
@@ -321,27 +316,27 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 entity -> entity.setFleeingStatus(true)
             )
                 .whenStopping(entity -> entity.setFleeingStatus(false))
-                .startCondition(classicAlienEntity -> !this.isPassedOut())
-                .stopIf(classicAlienEntity -> this.isPassedOut()),
+                .startCondition(classicAlienEntity -> !this.stasisManager.isStasis())
+                .stopIf(classicAlienEntity -> this.stasisManager.isStasis()),
             // Take target to nest
-            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && !this.isPassedOut())
-                .stopIf(entity -> !this.isVehicle() || this.isPassedOut()),
+            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && !this.stasisManager.isStasis())
+                .stopIf(entity -> !this.isVehicle() || this.stasisManager.isStasis()),
             // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive())
+            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive())
                 .startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching() || !this.isExecuting()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching() || !this.isExecuting()
                 ),
             // Hisses
             new HissingTask<>(800).startCondition(entity -> !this.isAggressive())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Searches
             new SearchTask<>(6000).startCondition(entity -> !this.isAggressive())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Headbite
             new AlienHeadBiteTask<>(this.isBiting() ? 44 : 760),
             // Move to target
             new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
-                .stopIf(entity -> this.isPassedOut() || this.isExecuting())
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.searchingManager.isSearching())
         );
     }
 
@@ -351,18 +346,18 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
                         || !this.isVehicle()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
                 ),
             // Kill Lights
             new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.isPassedOut() || !this.isExecuting() || !this.isFleeing()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
             )
                 .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isPassedOut() || this.isFleeing())
+                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing() || this.searchingManager.isSearching())
                 ),
             // Find Darkness
             new FindDarknessTask<ClassicAlienEntity>().stopIf(Mob::isAggressive),
@@ -370,17 +365,17 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             new FirstApplicableBehaviour<ClassicAlienEntity>(
                 // Targeting
                 new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isVehicle() || this.isFleeing() || this.isPassedOut())
+                    target -> (this.isVehicle() || this.isFleeing() || this.stasisManager.isStasis())
                 ),
                 // Look at players
                 new SetPlayerLookTarget<>().predicate(
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
+                ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
-            ).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isAggressive()),
+            ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
@@ -388,10 +383,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     .setRadius(20)
                     .speedModifier(0.6f)
                     .startCondition(
-                        entity -> !this.isPassedOut() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.isPassedOut() || this.isAggressive() || this.isVehicle()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle() || this.searchingManager.isSearching()
                     ),
                 new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive() || !this.isVehicle())
             ).stopIf(entity -> this.moveAnalysis.isMoving() || this.isAggressive() || this.isVehicle())
@@ -401,9 +396,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.isPassedOut() || this.isExecuting() || this.isVehicle())
+            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isVehicle())
         );
     }
 

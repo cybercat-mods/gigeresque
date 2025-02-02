@@ -97,14 +97,14 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
                     target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
                 )
                     .stopIf(
-                        entity -> this.isPassedOut() || this.isExecuting()
+                        entity -> this.stasisManager.isStasis() || this.isExecuting()
                     ),
                 // Look around randomly
                 new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.isPassedOut() || !this.isSearching()
+                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
                 )
             ).stopIf(
-                entity -> this.isPassedOut() || this.isExecuting()
+                entity -> this.stasisManager.isStasis() || this.isExecuting()
             ),
             // Random
             new OneRandomBehaviour<>(

@@ -26,7 +26,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
             AzEntityRendererConfig.<ClassicAlienEntity>builder($ -> MODEL, xeno -> {
                 var progress = Math.max(0, Math.min(1 - (xeno.getGrowth() / xeno.getMaxGrowth()), 1));
 
-                if (xeno.isPassedOut()) {
+                if (xeno.stasisManager.isStasis()) {
                     return EntityTextures.ALIEN_STATIS;
                 }
                 if (progress > 0) {
