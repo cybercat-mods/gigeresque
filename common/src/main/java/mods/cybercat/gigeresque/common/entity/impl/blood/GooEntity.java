@@ -78,15 +78,15 @@ public class GooEntity extends Entity {
     private void applyParticle() {
         for (var i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
             this.level()
-                    .addAlwaysVisibleParticle(
-                            GigParticles.GOO.get(),
-                            this.blockPosition().getX() + this.random.nextDouble(),
-                            this.blockPosition().getY() + 0.01,
-                            this.blockPosition().getZ() + this.random.nextDouble(),
-                            0.0,
-                            0.0,
-                            0.0
-                    );
+                .addAlwaysVisibleParticle(
+                    GigParticles.GOO.get(),
+                    this.blockPosition().getX() + this.random.nextDouble(),
+                    this.blockPosition().getY() + 0.01,
+                    this.blockPosition().getZ() + this.random.nextDouble(),
+                    0.0,
+                    0.0,
+                    0.0
+                );
         }
     }
 

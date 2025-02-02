@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.world.phys.Vec3;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
