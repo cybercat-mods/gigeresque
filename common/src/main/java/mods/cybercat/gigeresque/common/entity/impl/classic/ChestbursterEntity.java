@@ -396,7 +396,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         return Constants.TPD / 2.0f;
     }
 
-    /*
+    /**
      * TODO: replace runnerburster with rom Cocoon when not runner
      */
     @Override

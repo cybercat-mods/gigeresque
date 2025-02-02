@@ -80,7 +80,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
-    /*
+    /**
      * TODO: replace classic configs with rom ones
      */
     public static AttributeSupplier.Builder createAttributes() {

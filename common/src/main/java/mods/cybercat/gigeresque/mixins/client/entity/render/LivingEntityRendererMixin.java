@@ -23,37 +23,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     @Shadow
     protected abstract boolean addLayer(RenderLayer<T, M> feature);
 
-    // @Shadow
-    // protected abstract float getFlipDegrees(T animatable);
-
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(EntityRendererProvider.Context ctx, M model, float shadowRadius, CallbackInfo ci) {
         this.addLayer(new EggmorphFeatureRenderer<>((RenderLayerParent<T, M>) this));
     }
-
-    /*
-     * TODO: Finish via renders
-     */
-    // @Inject(method = "setupRotations", at = @At("TAIL"))
-    // private void gigeresque$vanillaLayingMixin(
-    // T entity,
-    // PoseStack poseStack,
-    // float bob,
-    // float yBodyRot,
-    // float partialTick,
-    // float scale,
-    // CallbackInfo ci
-    // ) {
-    // if (
-    // getFlipDegrees(entity) == 90 &&
-    // entity.hasPassenger(
-    // FacehuggerEntity.class::isInstance
-    // )
-    // ) {
-    // poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - yBodyRot));
-    // poseStack.mulPose(Axis.YP.rotationDegrees(yBodyRot));
-    // poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-    // poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-    // }
-    // }
 }

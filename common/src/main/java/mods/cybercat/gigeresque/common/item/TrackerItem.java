@@ -19,9 +19,6 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.animator.TrackerAnimationDispatcher;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
-/**
- * TODO: Get name TODO: Get Model TODO: Animate Model to time with Hologram
- */
 public class TrackerItem extends Item {
 
     private TrackerAnimationDispatcher animationDispatcher;

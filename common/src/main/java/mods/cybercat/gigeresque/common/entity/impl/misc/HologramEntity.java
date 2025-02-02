@@ -14,9 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 
-/**
- * TODO: Animate Model to time with tracker item timing
- */
 public class HologramEntity extends Entity {
 
     public static final EntityDataAccessor<Integer> DISTANCE_STATE = SynchedEntityData.defineId(

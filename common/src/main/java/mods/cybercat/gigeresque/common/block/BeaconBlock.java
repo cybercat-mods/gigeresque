@@ -17,9 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
-/**
- * TODO: Get Model TODO: Add check to not trigger on creative/spec players
- */
 public class BeaconBlock extends Block {
 
     private long lastEffectTime = 0;

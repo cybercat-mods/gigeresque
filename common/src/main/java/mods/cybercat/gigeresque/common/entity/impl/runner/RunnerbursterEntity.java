@@ -70,7 +70,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         }
     }
 
-    /*
+    /**
      * TODO: Remove classic alien when Rom stages ready ready
      */
     @Override
@@ -80,6 +80,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
             alien = GigEntities.RUNNER_ALIEN.get().create(level());
         else
             alien = GigEntities.ALIEN.get().create(level());
+        // alien = GigEntities.ROM_ALIEN.get().create(level());
 
         return alien;
     }
