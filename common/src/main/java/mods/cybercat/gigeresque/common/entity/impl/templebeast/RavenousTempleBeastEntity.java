@@ -247,7 +247,7 @@ public class RavenousTempleBeastEntity extends NewAlienEntity implements SmartBr
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
             new JumpToTargetTask<>(20),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
+            new AlienMeleeAttack<>(13, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );
     }
 }

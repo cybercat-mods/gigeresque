@@ -214,7 +214,7 @@ public class NeomorphEntity extends NewAlienEntity implements SmartBrainOwner<Ne
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15F),
-            new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR).whenStopping(
+            new AlienMeleeAttack<>(10, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR).whenStopping(
                 e -> this.addEffect(
                     new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false)
                 )

@@ -229,7 +229,7 @@ public class BaphomorphEntity extends NewAlienEntity implements SmartBrainOwner<
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.isPassedOut()),
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f).stopIf(entity -> this.isPassedOut() || this.isVehicle()),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
+            new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );
     }
 

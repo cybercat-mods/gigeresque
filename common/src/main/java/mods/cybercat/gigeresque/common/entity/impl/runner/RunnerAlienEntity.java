@@ -292,7 +292,7 @@ public class RunnerAlienEntity extends NewAlienEntity implements SmartBrainOwner
             new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.25f)
                 .stopIf(entity -> this.isPassedOut() || this.isExecuting()),
             new JumpToTargetTask<>(20).stopIf(entity -> this.isPassedOut() || this.isExecuting()),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR).stopIf(
+            new AlienMeleeAttack<>(12, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR).stopIf(
                 entity -> this.isPassedOut() || this.isExecuting()
             )
         );
