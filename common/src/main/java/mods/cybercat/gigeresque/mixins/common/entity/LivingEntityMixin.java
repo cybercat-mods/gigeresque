@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
+import mods.cybercat.gigeresque.common.status.effect.impl.*;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,10 +27,6 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.status.effect.impl.DNAStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.EggMorphingStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.ImpregnationStatusEffect;
-import mods.cybercat.gigeresque.common.status.effect.impl.SporeStatusEffect;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -203,5 +200,6 @@ public abstract class LivingEntityMixin extends Entity {
         SporeStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
         ImpregnationStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
         EggMorphingStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
+        TraumaStatusEffect.effectRemoval(Constants.<LivingEntity>self(this), mobEffectInstance);
     }
 }
