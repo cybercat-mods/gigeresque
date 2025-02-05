@@ -57,7 +57,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "neomorph_spore_pods",
         () -> new SporeBlock(
-            Properties.of().sound(SoundType.NYLIUM).noOcclusion().strength(15, 15)
+            Properties.of().sound(SoundType.NYLIUM).noOcclusion().strength(0.5F, 0.5F)
         )
     );
 
