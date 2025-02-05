@@ -328,12 +328,12 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     @Override
-    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return (isAttachedToHost() || isInfertile()) ? SoundEvents.EMPTY : GigSounds.HUGGER_HURT.get();
     }
 
     @Override
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return (isAttachedToHost() || isInfertile()) ? SoundEvents.EMPTY : GigSounds.HUGGER_DEATH.get();
     }
 

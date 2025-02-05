@@ -171,12 +171,12 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
-    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.HUGGER_HURT.get();
     }
 
     @Override
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return GigSounds.HUGGER_DEATH.get();
     }
 

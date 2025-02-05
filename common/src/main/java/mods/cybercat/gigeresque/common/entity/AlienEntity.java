@@ -38,7 +38,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
@@ -51,7 +50,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
@@ -68,7 +66,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
@@ -89,8 +86,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         AlienEntity.class,
         EntityDataSerializers.BOOLEAN
     );
-
-    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
 
     private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -158,8 +153,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public final StasisManager stasisManager;
 
-    public AnimationSelector<AlienEntity> animationSelector;
-
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
@@ -171,7 +164,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.5F, 1.0F, true);
     }
 
     @Override
@@ -183,18 +176,18 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     public static boolean checkMonsterSpawnRules(
-        EntityType<? extends Monster> type,
-        ServerLevelAccessor level,
-        MobSpawnType spawnType,
-        BlockPos pos,
-        RandomSource random
+            @NotNull EntityType<? extends Monster> type,
+            ServerLevelAccessor level,
+            @NotNull MobSpawnType spawnType,
+            @NotNull BlockPos pos,
+            @NotNull RandomSource random
     ) {
         return level.getDifficulty() != Difficulty.PEACEFUL
             && (MobSpawnType.ignoresLightRequirements(spawnType) || isDarkEnoughToSpawn(level, pos, random))
             && checkMobSpawnRules(type, level, spawnType, pos, random);
     }
 
-    public static boolean isDarkEnoughToSpawn(ServerLevelAccessor level, BlockPos pos, RandomSource random) {
+    public static boolean isDarkEnoughToSpawn(ServerLevelAccessor level, @NotNull BlockPos pos, RandomSource random) {
         if (level.getBrightness(LightLayer.SKY, pos) > random.nextInt(32)) {
             return false;
         } else {
@@ -228,8 +221,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             this.dropExperience(this);
         }
     }
-
-    protected void handleAirSupply(int airSupply) {}
 
     @Override
     public int getMaxAirSupply() {
@@ -471,12 +462,12 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
      * SOUNDS
      */
     @Override
-    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.ALIEN_HURT.get();
     }
 
     @Override
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return GigSounds.ALIEN_DEATH.get();
     }
 

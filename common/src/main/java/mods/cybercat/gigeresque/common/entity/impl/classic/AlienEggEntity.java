@@ -142,12 +142,12 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    public SoundEvent getHurtSound(@NotNull DamageSource source) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.EGG_NOTICE.get();
     }
 
     @Override
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return SoundEvents.EMPTY;
     }
 
