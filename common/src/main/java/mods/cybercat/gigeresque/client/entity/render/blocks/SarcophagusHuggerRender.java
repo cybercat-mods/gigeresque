@@ -18,6 +18,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.animators.StatueHuggerAnimator;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SarcophagusHuggerRender<T extends AlienStorageHuggerEntity> extends AzBlockEntityRenderer<T> {
 
@@ -32,17 +33,17 @@ public class SarcophagusHuggerRender<T extends AlienStorageHuggerEntity> extends
                 .addRenderLayer(new AzBlockAndItemLayer<T>() {
 
                     @Override
-                    public ItemStack itemStackForBone(AzBone bone) {
+                    public ItemStack itemStackForBone(AzBone bone, T animatable) {
                         return bone.getName().equalsIgnoreCase("heldItem") ? new ItemStack(Items.AIR) : null;
                     }
 
                     @Override
-                    protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack) {
+                    protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack, T animatable) {
                         return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
                     }
 
                     @Override
-                    protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack) {
+                    protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack, T animatable) {
                         context.poseStack().mulPose(Axis.XP.rotationDegrees(-90));
                         context.poseStack().mulPose(Axis.YP.rotationDegrees(180));
                         context.poseStack().mulPose(Axis.ZP.rotationDegrees(0));
@@ -69,7 +70,7 @@ public class SarcophagusHuggerRender<T extends AlienStorageHuggerEntity> extends
                                     context.multiBufferSource(),
                                     context.packedLight()
                                 );
-                        super.renderItemForBone(context, bone, itemStack);
+                        super.renderItemForBone(context, bone, itemStack, animatable);
                     }
                 })
                 .build()
