@@ -58,7 +58,6 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
         super(entityType, level);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     @Override
@@ -252,7 +251,8 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     public BrainActivityGroup<DraconicTempleBeastEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f)
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new JumpToTargetTask<>(20),
             new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)
         );

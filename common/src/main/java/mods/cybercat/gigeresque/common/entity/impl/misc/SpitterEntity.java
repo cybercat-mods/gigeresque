@@ -61,7 +61,6 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.3F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

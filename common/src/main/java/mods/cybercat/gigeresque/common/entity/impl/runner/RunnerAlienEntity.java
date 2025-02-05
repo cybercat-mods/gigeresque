@@ -63,7 +63,6 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -234,7 +233,8 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
+                    || !crawlingManager.isCrawling()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())

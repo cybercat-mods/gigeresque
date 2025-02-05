@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.util;
 
+import mods.cybercat.gigeresque.CommonMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -7,8 +8,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -260,5 +266,31 @@ public record GigEntityUtils() {
             if (alienEntity.breakingCounter >= 25)
                 alienEntity.breakingCounter = 0;
         }
+    }
+
+    public static void handleLivingEntityInteractions(AlienEntity self, Entity target, LivingEntity livingEntity) {
+        if (target instanceof Player playerEntity) {
+            handlePlayerInteraction(playerEntity);
+        } else if (livingEntity instanceof Mob mobEntity) {
+            handleMobInteraction(self, mobEntity);
+        }
+
+        livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+        float damage = self.getRandom().nextInt(4) > 2
+                ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
+                : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage;
+        livingEntity.hurt(GigDamageSources.of(self.level(), GigDamageSources.XENO), damage);
+
+        self.heal(1.0833f);
+    }
+
+    public static void handlePlayerInteraction(Player playerEntity) {
+        playerEntity.drop(playerEntity.getInventory().getSelected(), false);
+        playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
+    }
+
+    public static void handleMobInteraction(AlienEntity self, Mob mobEntity) {
+        self.drop(mobEntity, mobEntity.getMainHandItem());
+        mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
     }
 }

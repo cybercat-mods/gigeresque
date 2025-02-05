@@ -9,6 +9,7 @@ import net.minecraft.world.entity.PathfinderMob;
  * Credit to Boston/AVP
  */
 public class CrawlingManager {
+
     private static final String CRAWLING_TAG_KEY = "crawling";
 
     private final PathfinderMob entity;
@@ -22,6 +23,10 @@ public class CrawlingManager {
 
     public void tick() {
         if (entity.level().isClientSide) {
+            return;
+        }
+
+        if (entity.isInWater()) {
             return;
         }
 

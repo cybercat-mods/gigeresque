@@ -23,6 +23,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySe
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -77,7 +78,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     /*
@@ -115,9 +115,10 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     @NotNull
     public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.wasEyeInWater)
+        if (this.isInWater())
             return EntityDimensions.scalable(3.0f, 1.0f);
-        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.9f);
+        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : this.level().getBlockState(this.blockPosition().below()).is(
+                BlockTags.STAIRS) ? 1.0F : 2.9f);
     }
 
     @Override

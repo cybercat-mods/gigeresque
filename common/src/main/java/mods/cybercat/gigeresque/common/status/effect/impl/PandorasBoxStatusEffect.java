@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
@@ -118,7 +119,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
                 GigEntities.CHESTBURSTER.get(),
                 GigEntities.FACEHUGGER.get()
             );
-            EntityType<? extends WaterAnimal> selectedEntity = null;
+            EntityType<? extends Monster> selectedEntity = null;
             for (var i = 0; i < entities.size(); i++) {
                 if (player.getRandom().nextInt(100) < (i + 1) * 100 / entities.size()) {
                     selectedEntity = entities.get(i);

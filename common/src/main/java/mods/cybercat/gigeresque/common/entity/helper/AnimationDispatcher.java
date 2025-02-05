@@ -129,15 +129,15 @@ public class AnimationDispatcher {
     );
 
     private final AzCommand LEFT_CLAW_CRAWLING_COMMAND = AzCommand.create(
-            Constants.ATTACK_CONTROLLER,
-            "crawl_left_claw",
-            AzPlayBehaviors.PLAY_ONCE
+        Constants.ATTACK_CONTROLLER,
+        "crawl_left_claw",
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private final AzCommand RIGHT_CLAW_CRAWLING_COMMAND = AzCommand.create(
-            Constants.ATTACK_CONTROLLER,
-            "crawl_right_claw",
-            AzPlayBehaviors.PLAY_ONCE
+        Constants.ATTACK_CONTROLLER,
+        "crawl_right_claw",
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private final AzCommand LEFT_TAIL_BASIC_COMMAND = AzCommand.create(

@@ -84,7 +84,6 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.05F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -242,13 +241,14 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     public void tick() {
         super.tick();
         moveAnalysis.update();
-        if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
+        if (this.isPassenger() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
         if (this.level().isClientSide)
             this.handleAnimations();
         this.handleAttachmentToHost();
         if (isInfertile()) {
+            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             this.kill();
             this.removeAllGoals(goals -> true);
             this.getBrain().removeAllBehaviors();

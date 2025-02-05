@@ -1,10 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.helper.managers;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 public class SearchingManager {
+
     private static final String SEARCHING_TAG_KEY = "searching";
 
     private final AlienEntity entity;
@@ -16,15 +18,14 @@ public class SearchingManager {
         this.isSearchingEDA = isSearchingEDA;
     }
 
-
     public void tick() {
         if (entity.level().isClientSide) {
             return;
         }
 
-        if (isSearching() && !entity.moveAnalysis.isMoving() && entity.wakeupCounter >= 3) {
-            setSearching(false);
-        }
+//        if (isSearching() && !entity.moveAnalysis.isMoving() && entity.wakeupCounter >= 3) {
+//            setSearching(false);
+//        }
     }
 
     public void setSearching(boolean searching) {

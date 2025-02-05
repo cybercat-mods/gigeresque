@@ -1,13 +1,15 @@
 package mods.cybercat.gigeresque.common.entity.helper.managers;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
+
 public class StasisManager {
+
     private static final String STASIS_TAG_KEY = "isStasis";
 
     private final AlienEntity entity;
@@ -27,16 +29,12 @@ public class StasisManager {
         if (entity.isAggressive() || entity.isExecuting()) {
             setStasis(false);
         }
-        if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
-            gigNav.hardStop();
+//        if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
+//            gigNav.stop();
 
-        if (isStasis()) {
-            entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, false, false));
-            if (entity.isAggressive()) {
-                entity.animationDispatcher.sendStatisLeave();
-                setStasis(false);
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 160, 100, false, false));
-            }
+        if (isStasis() && entity.isAggressive()) {
+            entity.animationDispatcher.sendStatisLeave();
+            setStasis(false);
         }
     }
 

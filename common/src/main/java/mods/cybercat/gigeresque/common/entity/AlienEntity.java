@@ -2,10 +2,9 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
+import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
-import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
-import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -30,11 +29,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -61,6 +62,9 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 import mods.cybercat.gigeresque.common.entity.helper.*;
+import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -72,7 +76,7 @@ import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, Growable, AbstractAlien {
+public abstract class AlienEntity extends Monster implements Enemy, VibrationSystem, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -92,8 +96,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
 
     private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
-            AlienEntity.class,
-            EntityDataSerializers.BOOLEAN
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     public static final EntityDataAccessor<Boolean> WAKING_UP = SynchedEntityData.defineId(
@@ -157,7 +161,9 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public final StasisManager stasisManager;
 
-    protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
+    public AnimationSelector<AlienEntity> animationSelector;
+
+    protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
@@ -166,16 +172,21 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
-        this.lookControl = new SmoothSwimmingLookControl(this, 10);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.lookControl = new SmoothSwimmingLookControl(this, 10);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 1.0F, true);
+    }
+
+    @Override
+    public boolean onClimbable() {
+        return this.fallDistance <= 0.1;
     }
 
     @Override
     protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     public static boolean checkMonsterSpawnRules(
-        EntityType<? extends WaterAnimal> type,
+        EntityType<? extends Monster> type,
         ServerLevelAccessor level,
         MobSpawnType spawnType,
         BlockPos pos,
@@ -208,7 +219,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     @Override
     public float maxUpStep() {
-        return 1.0f;
+        return 1.5f;
     }
 
     @Override
@@ -221,7 +232,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         }
     }
 
-    @Override
     protected void handleAirSupply(int airSupply) {}
 
     @Override
@@ -305,7 +315,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         builder.define(IS_HISSING, false);
         builder.define(IS_EXECUTION, false);
         builder.define(IS_HEADBITE, false);
-        //MOVED
+        // MOVED
         builder.define(IS_STASIS, false);
         builder.define(IS_SEARCHING, false);
         builder.define(IS_CRAWLING, false);
@@ -327,7 +337,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         stasisManager.save(compound);
         searchingManager.save(compound);
         crawlingManager.save(compound);
-
     }
 
     @Override
@@ -399,6 +408,8 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
                 });
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
+        if (this.tickCount % 10 == 0)
+            this.refreshDimensions();
     }
 
     @Override
@@ -599,9 +610,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         if (livingEntity.isDeadOrDying())
             return false;
         if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
-            return false;
-        var list2 = livingEntity.level().getBlockStatesIfLoaded(livingEntity.getBoundingBox().inflate(2.0, 2.0, 2.0));
-        if (list2.anyMatch(NEST))
             return false;
         if (
             livingEntity.getVehicle() != null && livingEntity.getVehicle()

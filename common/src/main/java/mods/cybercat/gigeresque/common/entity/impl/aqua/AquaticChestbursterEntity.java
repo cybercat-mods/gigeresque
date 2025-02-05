@@ -17,7 +17,6 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
 
     public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
         super(type, world);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     @Override

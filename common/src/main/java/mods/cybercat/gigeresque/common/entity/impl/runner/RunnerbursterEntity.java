@@ -28,8 +28,6 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         super(type, level);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -91,7 +89,8 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
             new InvalidateAttackTarget<>().invalidateIf(
                 (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.0f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.0f)
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR)
         );
     }

@@ -76,7 +76,6 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     /**
@@ -341,7 +340,8 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         return BrainActivityGroup.idleTasks(
             // Build Nest
             new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing() || !crawlingManager.isCrawling() || !this.isVehicle()
+                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
+                    || !crawlingManager.isCrawling() || !this.isVehicle()
             )
                 .stopIf(
                     target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
@@ -380,7 +380,8 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                         entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
                     )
                     .stopIf(
-                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle() || this.searchingManager.isSearching()
+                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
+                            || this.searchingManager.isSearching()
                     ),
                 new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive() || !this.isVehicle())
             ).stopIf(entity -> entity.getDeltaMovement().horizontalDistance() > 0 || this.isVehicle())
@@ -390,8 +391,11 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
     @Override
     public BrainActivityGroup<RomAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new InvalidateAttackTarget<>().invalidateIf(
+                (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
+            ),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f)
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isVehicle())
         );
     }

@@ -38,8 +38,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
         super(type, level);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
+        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -133,7 +132,8 @@ public class NeobursterEntity extends RunnerbursterEntity {
     public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.4f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.4f)
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR)
         );
     }

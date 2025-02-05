@@ -61,7 +61,6 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -211,7 +210,10 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.55f).stopIf(entity -> this.searchingManager.isSearching()),
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(0.55f)
+                    .stopIf(entity -> this.searchingManager.isSearching()),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
                         entity -> entity.getRandom().nextInt(30, 60)

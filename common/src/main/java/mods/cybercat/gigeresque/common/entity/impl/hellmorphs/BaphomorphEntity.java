@@ -53,7 +53,6 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
         super(entityType, level);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     @Override
@@ -227,8 +226,11 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     @Override
     public BrainActivityGroup<BaphomorphEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f).stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
+            new InvalidateAttackTarget<>().invalidateIf(
+                (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
+            ),
+            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f)
+                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );
     }

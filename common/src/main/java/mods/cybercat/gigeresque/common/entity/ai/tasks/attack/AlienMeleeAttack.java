@@ -66,7 +66,6 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien> extends C
 
     @Override
     protected void start(E entity) {
-        assert this.target != null;
         BehaviorUtils.lookAtEntity(entity, this.target);
     }
 
@@ -87,7 +86,7 @@ public class AlienMeleeAttack<E extends PathfinderMob & AbstractAlien> extends C
         if (this.target == null)
             return;
 
-        if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+        if (!entity.getSensing().hasLineOfSight(this.target))
             return;
 
         if (entity instanceof StalkerEntity) {

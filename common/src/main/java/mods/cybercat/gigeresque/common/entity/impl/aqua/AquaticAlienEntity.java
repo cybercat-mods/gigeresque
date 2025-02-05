@@ -67,7 +67,6 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 0.75F, true);
     }
 
     @Override

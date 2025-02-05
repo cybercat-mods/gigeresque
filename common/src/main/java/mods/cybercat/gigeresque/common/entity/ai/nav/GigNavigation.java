@@ -18,19 +18,7 @@ public class GigNavigation extends AzureNavigation {
     protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
         this.nodeEvaluator = new CrawlPathNodeEvaluator();
         this.nodeEvaluator.setCanPassDoors(true);
-        this.nodeEvaluator.setCanFloat(true);
+        this.nodeEvaluator.setCanFloat(false);
         return new AzurePathFinder(this.nodeEvaluator, maxVisitedNodes);
-    }
-
-    @Override
-    protected boolean canUpdatePath() {
-        return true;
-    }
-
-    @Override
-    protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32) {
-        return this.mob.isInLiquid()
-            ? isClearForMovementBetween(this.mob, posVec31, posVec32, false)
-            : super.canMoveDirectly(posVec31, posVec32);
     }
 }

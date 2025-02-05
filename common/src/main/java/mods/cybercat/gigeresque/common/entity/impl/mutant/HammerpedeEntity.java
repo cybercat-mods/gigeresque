@@ -56,7 +56,6 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.15F, 1.0F, true);
     }
 
     @Override

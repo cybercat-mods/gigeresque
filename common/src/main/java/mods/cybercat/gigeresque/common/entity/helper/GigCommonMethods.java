@@ -71,7 +71,6 @@ public record GigCommonMethods() {
     public static void handleNestProgress(AlienEggEntity alienEggEntity) {
         if (alienEggEntity.getEggState() == EggStates.HATCHED.ordinal() && alienEggEntity.isAlive()) {
             alienEggEntity.setTicksUntilNest(alienEggEntity.ticksUntilNest++);
-
             if (alienEggEntity.getTicksUntilNest() >= 6000f) {
                 if (alienEggEntity.level().isClientSide)
                     GigCommonMethods.spawnParticlesForNesting(alienEggEntity);
@@ -105,7 +104,7 @@ public record GigCommonMethods() {
                 alienEggEntity.hatchProgress++;
             }
 
-            if (alienEggEntity.hatchProgress == 40L) {
+            if (alienEggEntity.hatchProgress == 2L) {
                 alienEggEntity.level()
                     .playSound(alienEggEntity, alienEggEntity.blockPosition(), GigSounds.EGG_OPEN.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
             }

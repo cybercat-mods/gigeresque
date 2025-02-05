@@ -26,13 +26,13 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class AzureVibrationUser implements VibrationSystem.User {
 
-    private final Mob mob;
+    private final AlienEntity mob;
 
     private final float moveSpeed;
 
     private final PositionSource positionSource;
 
-    public AzureVibrationUser(Mob entity, float speed) {
+    public AzureVibrationUser(AlienEntity entity, float speed) {
         this.positionSource = new EntityPositionSource(entity, entity.getEyeHeight());
         this.mob = entity;
         this.moveSpeed = speed;
@@ -109,7 +109,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         )
             return false;
         var entity = context.sourceEntity();
-        return !(entity instanceof LivingEntity) || (this.mob instanceof AlienEntity alienEntity && alienEntity.canTargetEntity(entity));
+        return !(entity instanceof LivingEntity) || mob.canTargetEntity(entity);
     }
 
     @Override
@@ -134,10 +134,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
             alienEntity.wakeupCounter++;
             if (alienEntity.stasisManager.isStasis() && alienEntity.wakeupCounter == 1) {
                 alienEntity.animationDispatcher.sendStatisLeave();
-                alienEntity.searchingManager.setSearching(true);
             }
-            if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
-                alienEntity.stasisManager.setStasis(false);
             if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                     alienEntity.stasisManager.setStasis(false);
@@ -147,7 +144,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 alienEntity.stasisManager.setStasis(false);
                 alienEntity.setAggressive(true);
                 alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
-                alienEntity.searchingManager.setSearching(true);
                 alienEntity.wakeupCounter = 0;
             }
         }
