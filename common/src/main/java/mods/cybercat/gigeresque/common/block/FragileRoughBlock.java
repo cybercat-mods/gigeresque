@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -56,7 +57,7 @@ public class FragileRoughBlock extends Block implements Fallable {
         if (Constants.isCreativeSpecPlayer.test(entity))
             return;
         super.stepOn(level, pos, state, entity);
-        if (entity instanceof LivingEntity livingEntity) {
+        if (entity instanceof LivingEntity livingEntity && level instanceof ServerLevel) {
             standingTick++;
             if (livingEntity.isSteppingCarefully() ? standingTick % 40 == 0 : standingTick % 10 == 0) {
                 BlockBreakProgressManager.damage(level, livingEntity.blockPosition().below(), standingTick);
