@@ -171,30 +171,18 @@ public class AlienEggEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.isNoAi())
+        if (this.isNoAi()) {
             return;
+        }
 
-        GigCommonMethods.handleNestProgress(this);
-        GigCommonMethods.handleHatchingProgress(this);
-        GigCommonMethods.handleFacehuggerSpawn(this);
-
-        /*
-         * ANIMATIONS
-         */
-        if (this.level().isClientSide) {
-            Runnable animationRunner;
-
-            if (this.isDeadOrDying()) {
-                animationRunner = animationDispatcher::sendDeath;
-            } else if (this.getEggState() == EggStates.HATCHING.ordinal()) {
-                animationRunner = animationDispatcher::sendHatching;
-            } else if (this.getEggState() == EggStates.HATCHED.ordinal()) {
-                animationRunner = animationDispatcher::sendHatchEmpty;
-            } else {
-                animationRunner = animationDispatcher::sendIdle;
-            }
-
-            animationRunner.run();
+        if (!this.level().isClientSide) {
+            GigCommonMethods.handleNestProgress(this);
+            GigCommonMethods.handleHatchingProgress(this);
+            GigCommonMethods.handleFacehuggerSpawn(this);
+            if (this.getEggState() == EggStates.HATCHED.ordinal())
+                hatchCheckTimer++;
+            GigCommonMethods.handleAoEEntityHatchCheck(this);
+            GigCommonMethods.handleAoEBlockHatchCheck(this);
         }
     }
 
@@ -249,22 +237,14 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
-        hatchCheckTimer++;
-
-        GigCommonMethods.handleAoEEntityHatchCheck(this);
-        GigCommonMethods.handleAoEBlockHatchCheck(this);
-    }
-
-    @Override
     public boolean requiresCustomPersistence() {
-        return (this.getEggState() != EggStates.HATCHED.ordinal() || this.hasFacehugger());
+        return this.getEggState() != EggStates.HATCHED.ordinal() || this.hasFacehugger();
     }
 
     @Override
     public void checkDespawn() {
-        if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger())
+        if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger()) {
             super.checkDespawn();
+        }
     }
 }
