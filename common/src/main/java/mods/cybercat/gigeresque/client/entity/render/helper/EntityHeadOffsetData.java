@@ -104,6 +104,10 @@ public record EntityHeadOffsetData(
             Map.entry(
                 EntityType.WOLF,
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
+            ),
+            Map.entry(
+                    EntityType.DOLPHIN,
+                    new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
             )
         )
     );
@@ -246,5 +250,13 @@ public record EntityHeadOffsetData(
 
     private static double wolfFaceOffset(EntityHeadData data, Entity parasite) {
         return data.size().z * 1.9 + parasite.getBbHeight();
+    }
+
+    private static double dolphinVerticalOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z - data.size().z - 0.7;
+    }
+
+    private static double dolphinFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z * 2 + data.size().z + 0.1;
     }
 }

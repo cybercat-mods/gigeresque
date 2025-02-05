@@ -55,7 +55,8 @@ public record EntityHeadData(
             Map.entry(EntityType.VINDICATOR, VILLAGER),
             Map.entry(EntityType.WITCH, VILLAGER),
             Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
-            Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7)))
+            Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7))),
+            Map.entry(EntityType.DOLPHIN, adjust(vec3(2, 2, 4), vec3(-1, 0, -13), vec3(0, 0, -3)))
         )
     );
 
