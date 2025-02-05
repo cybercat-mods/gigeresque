@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import mod.azure.azurelib.sblforked.registry.SBLMemoryTypes;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -57,7 +58,7 @@ public class KillCropsTask<E extends PathfinderMob & AbstractAlien> extends Exte
             var blockPos = cropBlock.stream().findFirst().get().getFirst();
 
             // Check if the block is within the entity's view direction and reachable via pathfinding
-            if (isBlockInViewAndReachable(entity, blockPos)) {
+            if (entity.blockPosition().above() == blockPos) {
                 entity.swing(InteractionHand.MAIN_HAND);
                 entity.level().destroyBlock(blockPos, true, null, 512);
             } else {
