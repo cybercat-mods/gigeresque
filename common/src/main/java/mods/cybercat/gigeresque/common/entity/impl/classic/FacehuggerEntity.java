@@ -256,7 +256,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     protected void handleAnimations() {
-        if (this.isDeadOrDying()) {
+        if (this.isDeadOrDying() || this.isInfertile()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             return;
         }
