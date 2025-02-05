@@ -37,22 +37,15 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                 entries.accept(GigItems.MUTANT_POPPER_SPAWN_EGG.get());
                 entries.accept(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get());
                 entries.accept(GigItems.MUTANT_STALKER_SPAWN_EGG.get());
-                /**
-                 * TODO: Move out when dungeon parts are ready.
-                 */
-                if (CommonMod.config.enableDevEntites) {
-                    entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
-                    entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
-                    entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
-                    entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
-                    entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
-                    entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
-                }
-                if (Services.PLATFORM.isDevelopmentEnvironment() || GigServices.COMMON_REGISTRY.isModLoaded("hwg")) {
-                    entries.accept(GigItems.HELL_BURSTER_SPAWN_EGG.get());
-                    entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
-                    entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
-                }
+                entries.accept(GigItems.NEOBURSTER_SPAWN_EGG.get());
+                entries.accept(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get());
+                entries.accept(GigItems.NEOMORPH_SPAWN_EGG.get());
+                entries.accept(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get());
+                entries.accept(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get());
+                entries.accept(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get());
+                entries.accept(GigItems.HELL_BURSTER_SPAWN_EGG.get());
+                entries.accept(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get());
+                entries.accept(GigItems.BAPHOMORPH_SPAWN_EGG.get());
                 entries.accept(GigItems.SPITTER_SPAWN_EGG.get());
             })
             .build()
