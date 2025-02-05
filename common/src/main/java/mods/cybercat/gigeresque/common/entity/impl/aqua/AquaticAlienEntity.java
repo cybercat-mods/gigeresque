@@ -51,6 +51,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -165,6 +166,9 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     @Override
     public BrainActivityGroup<AquaticAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             new LookAtTarget<>(),
             new FleeFireTask<>(0.5F),
             new HissingTask<>(800),

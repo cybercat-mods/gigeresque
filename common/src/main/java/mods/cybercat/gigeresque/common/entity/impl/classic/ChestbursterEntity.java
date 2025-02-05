@@ -50,6 +50,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -314,6 +315,9 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     @Override
     public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Flee Fire
             new FleeFireTask<>(1.0F),
             new AlienPanic(1.0f),

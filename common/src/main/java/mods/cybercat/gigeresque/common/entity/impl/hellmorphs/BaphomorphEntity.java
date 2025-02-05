@@ -40,6 +40,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -165,6 +166,9 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     @Override
     public BrainActivityGroup<BaphomorphEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(

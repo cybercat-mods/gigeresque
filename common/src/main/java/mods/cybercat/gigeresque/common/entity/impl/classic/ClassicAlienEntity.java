@@ -59,6 +59,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -319,6 +320,9 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     @Override
     public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Flee Fire
             new FleeFireTask<ClassicAlienEntity>(1.1F).whenStarting(
                 entity -> entity.setFleeingStatus(true)

@@ -42,6 +42,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
@@ -179,6 +180,9 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     @Override
     public BrainActivityGroup<DraconicTempleBeastEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Flee Fire
             new FleeFireTask<>(3.5F),
             // Looks at target

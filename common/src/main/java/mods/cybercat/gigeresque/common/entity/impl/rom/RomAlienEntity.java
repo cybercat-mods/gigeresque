@@ -57,6 +57,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
@@ -303,6 +304,9 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
     @Override
     public BrainActivityGroup<RomAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Flee Fire
             new FleeFireTask<RomAlienEntity>(1.1F).whenStarting(
                 entity -> entity.setFleeingStatus(true)

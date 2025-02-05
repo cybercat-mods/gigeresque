@@ -44,6 +44,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.LeapAtTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.*;
@@ -167,7 +168,14 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
 
     @Override
     public BrainActivityGroup<StalkerEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(1.3F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
+            new LookAtTarget<>(),
+            new FleeFireTask<>(1.3F),
+            new MoveToWalkTarget<>()
+        );
     }
 
     @SuppressWarnings("unchecked")

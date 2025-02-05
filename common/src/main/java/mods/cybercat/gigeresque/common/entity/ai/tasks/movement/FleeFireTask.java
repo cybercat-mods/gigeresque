@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.sblforked.api.core.behaviour.ExtendedBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -14,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 
-public class FleeFireTask<E extends PathfinderMob & AbstractAlien> extends ExtendedBehaviour<E> {
+public class FleeFireTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(GigMemoryTypes.NEARBY_REPELLENT_BLOCKS.get(), MemoryStatus.VALUE_PRESENT)
@@ -36,23 +35,30 @@ public class FleeFireTask<E extends PathfinderMob & AbstractAlien> extends Exten
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, PathfinderMob pathfinderMob) {
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, AlienEntity pathfinderMob) {
         return !pathfinderMob.isAggressive() && !pathfinderMob.level().dimensionType().respawnAnchorWorks() && !pathfinderMob.isVehicle();
     }
 
     @Override
-    protected void start(@NotNull ServerLevel level, PathfinderMob entity, long gameTime) {
+    protected void start(@NotNull ServerLevel level, AlienEntity entity, long gameTime) {
         entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
         entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+        entity.setFleeingStatus(true);
     }
 
     @Override
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull PathfinderMob entity, long gameTime) {
+    protected void stop(ServerLevel level, E entity, long gameTime) {
+        super.stop(level, entity, gameTime);
+        entity.setFleeingStatus(false);
+    }
+
+    @Override
+    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull AlienEntity entity, long gameTime) {
         return true;
     }
 
     @Override
-    protected void tick(@NotNull ServerLevel level, PathfinderMob owner, long gameTime) {
+    protected void tick(@NotNull ServerLevel level, AlienEntity owner, long gameTime) {
         if (owner.level().dimensionType().piglinSafe())
             return;
         var mobPos = owner.blockPosition();

@@ -49,6 +49,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.*;
@@ -213,6 +214,9 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     @Override
     public BrainActivityGroup<RunnerAlienEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            // Flee fight at half or less health
+            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
             // Flee Fire
             new FleeFireTask<>(3.5F),
             // Looks at target
