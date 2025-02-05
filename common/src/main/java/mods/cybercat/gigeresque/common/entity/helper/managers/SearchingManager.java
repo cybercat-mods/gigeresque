@@ -23,9 +23,9 @@ public class SearchingManager {
             return;
         }
 
-         if (isSearching() && !entity.moveAnalysis.isMoving() && entity.wakeupCounter >= 3) {
-         setSearching(false);
-         }
+        if (isSearching() && !entity.moveAnalysis.isMoving() && entity.wakeupCounter >= 3) {
+            setSearching(false);
+        }
     }
 
     public void setSearching(boolean searching) {
