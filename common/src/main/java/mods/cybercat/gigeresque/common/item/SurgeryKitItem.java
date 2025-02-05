@@ -47,7 +47,8 @@ public class SurgeryKitItem extends Item {
             tryRemoveParasite(itemStack, livingEntity);
             player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
-            livingEntity.getActiveEffects().clear();
+            if (player.hasEffect(GigStatusEffects.IMPREGNATION))
+                player.removeEffect(GigStatusEffects.IMPREGNATION);
             if (currentDurability < maxDurability && livingEntity.getRandom().nextInt(0, 100) < killChance)
                 livingEntity.hurt(GigDamageSources.of(livingEntity.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);
             if (player instanceof ServerPlayer serverPlayer) {
@@ -68,7 +69,8 @@ public class SurgeryKitItem extends Item {
             var maxDurability = itemStack.getMaxDamage();
             var killChance = calculateKillChance(currentDurability, maxDurability);
             tryRemoveParasite(user.getItemInHand(hand), user);
-            user.getActiveEffects().clear();
+            if (user.hasEffect(GigStatusEffects.IMPREGNATION))
+                user.removeEffect(GigStatusEffects.IMPREGNATION);
             if (currentDurability < maxDurability && user.getRandom().nextInt(0, 100) < killChance)
                 user.hurt(GigDamageSources.of(user.level(), GigDamageSources.FAILED_SURGERY), Float.MAX_VALUE);
             if (user instanceof ServerPlayer serverPlayer) {
