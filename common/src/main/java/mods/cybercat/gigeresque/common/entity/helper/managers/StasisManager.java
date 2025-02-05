@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper.managers;
 
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
@@ -26,8 +27,8 @@ public class StasisManager {
         if (entity.isAggressive() || entity.isExecuting()) {
             setStasis(false);
         }
-        // if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
-        // gigNav.stop();
+         if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
+            gigNav.stop();
 
         if (isStasis() && entity.isAggressive()) {
             entity.animationDispatcher.sendStatisLeave();
