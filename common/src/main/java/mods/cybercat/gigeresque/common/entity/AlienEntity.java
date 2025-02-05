@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -163,7 +162,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.lookControl = new SmoothSwimmingLookControl(this, 10);
         this.moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.5F, 1.0F, true);
     }
 
@@ -176,11 +174,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     public static boolean checkMonsterSpawnRules(
-            @NotNull EntityType<? extends Monster> type,
-            ServerLevelAccessor level,
-            @NotNull MobSpawnType spawnType,
-            @NotNull BlockPos pos,
-            @NotNull RandomSource random
+        @NotNull EntityType<? extends Monster> type,
+        ServerLevelAccessor level,
+        @NotNull MobSpawnType spawnType,
+        @NotNull BlockPos pos,
+        @NotNull RandomSource random
     ) {
         return level.getDifficulty() != Difficulty.PEACEFUL
             && (MobSpawnType.ignoresLightRequirements(spawnType) || isDarkEnoughToSpawn(level, pos, random))
