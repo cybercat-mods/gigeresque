@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.item.group;
 
-import mod.azure.azurelib.common.platform.Services;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;

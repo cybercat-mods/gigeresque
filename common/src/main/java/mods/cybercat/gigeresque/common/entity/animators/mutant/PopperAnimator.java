@@ -23,9 +23,9 @@ public class PopperAnimator extends AzEntityAnimator<PopperEntity> {
                 .build()
         );
         animationControllerContainer.add(
-                AzAnimationController.builder(this, Constants.ATTACK_CONTROLLER)
-                        .setTransitionLength(0)
-                        .build()
+            AzAnimationController.builder(this, Constants.ATTACK_CONTROLLER)
+                .setTransitionLength(0)
+                .build()
         );
     }
 

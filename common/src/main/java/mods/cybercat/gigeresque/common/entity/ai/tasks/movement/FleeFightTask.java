@@ -34,7 +34,7 @@ public class FleeFightTask<E extends AlienEntity> extends ExtendedBehaviour<E> {
 
     @Override
     protected boolean checkExtraStartConditions(@NotNull ServerLevel serverLevel, AlienEntity pathfinderMob) {
-        return !pathfinderMob.isAggressive() && !pathfinderMob.level().dimensionType().respawnAnchorWorks() && !pathfinderMob.isVehicle();
+        return !pathfinderMob.isVehicle();
     }
 
     @Override
