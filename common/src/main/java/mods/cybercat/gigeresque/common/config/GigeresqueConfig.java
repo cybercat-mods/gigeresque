@@ -112,7 +112,7 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1200)
+    @Configurable.DecimalRange(min = 1200, max = 8000)
     public float impregnationTickTimer = 1200.0f;
 
     @Configurable
