@@ -106,8 +106,8 @@ public record EntityHeadOffsetData(
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
             ),
             Map.entry(
-                    EntityType.DOLPHIN,
-                    new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
+                EntityType.DOLPHIN,
+                new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
             )
         )
     );

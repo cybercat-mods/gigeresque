@@ -2,11 +2,8 @@ package mods.cybercat.gigeresque.common.entity.helper.managers;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 
 public class StasisManager {
 
@@ -29,8 +26,8 @@ public class StasisManager {
         if (entity.isAggressive() || entity.isExecuting()) {
             setStasis(false);
         }
-//        if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
-//            gigNav.stop();
+        // if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
+        // gigNav.stop();
 
         if (isStasis() && entity.isAggressive()) {
             entity.animationDispatcher.sendStatisLeave();

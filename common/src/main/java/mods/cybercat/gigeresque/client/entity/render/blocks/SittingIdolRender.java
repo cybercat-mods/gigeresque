@@ -11,12 +11,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.animators.SittingIdolAnimator;
 import mods.cybercat.gigeresque.common.block.entity.IdolStorageEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntityRenderer<T> {
 
@@ -54,7 +54,14 @@ public class SittingIdolRender<T extends IdolStorageEntity> extends AzBlockEntit
     }
 
     @Override
-    public void render(@NotNull T entity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource source, int packedLight, int packedOverlay) {
+    public void render(
+        @NotNull T entity,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource source,
+        int packedLight,
+        int packedOverlay
+    ) {
         poseStack.scale(0.95F, 0.95F, 0.95F);
         super.render(entity, partialTick, poseStack, source, packedLight, packedOverlay);
     }

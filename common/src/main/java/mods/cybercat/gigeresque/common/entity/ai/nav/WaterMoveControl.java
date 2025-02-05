@@ -1,9 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.ai.nav;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 /**
  * Credit to Boston/AVP
@@ -42,7 +43,7 @@ public class WaterMoveControl extends MoveControl {
             float j = Mth.lerp(0.125F, xenomorph.getSpeed(), i);
             xenomorph.setSpeed(j);
             xenomorph.setDeltaMovement(
-                    xenomorph.getDeltaMovement().add((double) j * d * 0.005, (double) j * e * 0.1, (double) j * f * 0.005)
+                xenomorph.getDeltaMovement().add((double) j * d * 0.005, (double) j * e * 0.1, (double) j * f * 0.005)
             );
         } else {
             if (!xenomorph.onGround()) {

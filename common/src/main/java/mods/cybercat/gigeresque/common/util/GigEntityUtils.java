@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mods.cybercat.gigeresque.CommonMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -277,8 +277,8 @@ public record GigEntityUtils() {
 
         livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
         float damage = self.getRandom().nextInt(4) > 2
-                ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
-                : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage;
+            ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
+            : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage;
         livingEntity.hurt(GigDamageSources.of(self.level(), GigDamageSources.XENO), damage);
 
         self.heal(1.0833f);

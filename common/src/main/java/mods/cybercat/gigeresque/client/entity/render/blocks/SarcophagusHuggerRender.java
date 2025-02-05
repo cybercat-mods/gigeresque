@@ -18,7 +18,6 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.animators.StatueHuggerAnimator;
 import mods.cybercat.gigeresque.common.block.entity.AlienStorageHuggerEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class SarcophagusHuggerRender<T extends AlienStorageHuggerEntity> extends AzBlockEntityRenderer<T> {
 
