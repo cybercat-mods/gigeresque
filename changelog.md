@@ -75,17 +75,36 @@ v0.8.0
 - Make petrified objects emit stone noises when walked on/hit.
 - Acid spitting redone for Spitters, uses projectile that be dodge now and increased damage.
 - Spores no longer replace leaves, spore blossoms, and glow lichen. 
-
-TODO for update:
-- Implement new Neoburster animations. (In-progress via commission)
-- Implement new Neomorph Adolescent animations. (In-progress via commission)
-- Implement new Neomorph animations fixes. (In-progress via commission)
-- Implement new Aquatic Alien animations. (In-progress via commission)
-- Implement Hell Morph animations. (In-progress via commission)
-- Implement Ravenous Templebeast animations. (In-progress via commission)
-- Implement Moonlight Horror Templebeast animations. (In-progress via commission)
-- Implement Draconic Templebeast animations. (In-progress via commission)
-- Add in crawling library and test with Nyf (In-progress via commission from Nyf)
-- Finish Dungeon Tracker item with model/animations. (Waiting on the model to be done)
-- Finish Hologram with Tracker usage. (Sync hologram summon animation with animation of tracker)
-- Aqua Xeno fish kills turn into a mass that spawns floating eggs that will grow and then hatch facehuggers. (Waiting on texture/Extra bits added to Aqua model?)
+- Fixes Facehugger head placement for odd angles.
+- Fixes Facehugger only hunting via sound cues.
+- Fixes Surgery Kit killing on full durability.
+- Implemented new Neoburster model/animations.
+- Added Dungeon Tracker item with model/animations.
+- Implemented new Aquatic Alien animations.
+- Add a pandora config for the babies that can't handle spawns.
+- Fixes Animations on Stalker.
+- Fixes Animations on Runners
+- Updates Runners run animation.
+- Updates Swimming animations on Aquas.
+- Updates Hammerpede for proper animations.
+- Implemented new Neomorph Adolescent animations.
+- Implemented new Neomorph animations fixes.
+- Implemented Hell Morph animations.
+- Implemented Ravenous Templebeast animations.
+- Implemented Moonlight Horror Templebeast animations.
+- Implemented Draconic Templebeast animations.
+- Fixed black blood from mutants not having gravity.
+- Stasis animation added for Neomorph.
+- Updated Creative Tab icons.
+- Updated Sitting Idol Blocks holding item.
+- Reduced max size of dungeons from 20 to 15.
+- Implemented better Tunnel crawling logic for Classic Xeno.
+- Reworked damage formula for damage from large amounts.
+- Fixed crop breaking happening at long ranges.
+- Fixed light breaking happening at long ranges.
+- Surgery Kits now only remove the impregnation effect, not all effects.
+- Fixed spore blocks mining timing.
+- Set a max of 9000 ticks for impregnation time.
+- Trauma now properly restores health back to full when finished.
+- Moved eggs out of dev config now that animations are in and basic logic is in place.
+- Acid now eats faster.
