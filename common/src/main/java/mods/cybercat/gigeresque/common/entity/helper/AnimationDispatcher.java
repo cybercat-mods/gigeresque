@@ -101,12 +101,12 @@ public class AnimationDispatcher {
     private final AzCommand CHOMP_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "chomp", AzPlayBehaviors.PLAY_ONCE);
 
     private final AzCommand ATTACK_NORMAL_COMMAND = AzCommand.create(
-        Constants.BASE_CONTROLLER,
+        Constants.ATTACK_CONTROLLER,
         "attack_normal",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    private final AzCommand ATTACK_HEAVY_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "attack_heavy", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand ATTACK_HEAVY_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack_heavy", AzPlayBehaviors.PLAY_ONCE);
 
     private final AzCommand LEFT_CLAW_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "left_claw", AzPlayBehaviors.PLAY_ONCE);
 
