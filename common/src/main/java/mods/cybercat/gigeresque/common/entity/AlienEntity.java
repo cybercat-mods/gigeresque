@@ -507,8 +507,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
-        if (amount >= 50 && source != this.damageSources().genericKill())
-            return super.hurt(source, amount * 0.10f);
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 
@@ -530,6 +528,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                     }
                 }
             }
+        }
+        if (source != this.damageSources().genericKill()) {
+            var safeAmount = Math.max(amount, 1);
+            var adjustedAmount = safeAmount > 50 ? safeAmount / (float) Math.log10(safeAmount) : safeAmount;
+            return super.hurt(source, adjustedAmount);
         }
         return super.hurt(source, amount * multiplier);
     }
