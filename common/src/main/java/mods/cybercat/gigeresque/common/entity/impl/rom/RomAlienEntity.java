@@ -139,7 +139,6 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
         }
         if (this.isVehicle()) {
             this.handleVehicleAnimations();
-            return;
         }
         if (this.moveAnalysis.isMoving()) {
             this.handleMovementAnimations();
@@ -293,7 +292,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                     (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
                 ),
             // Nest Sensor
-            new NearbyNestBlocksSensor<RomAlienEntity>().setRadius(30)
+            new NearbyNestBlocksSensor<RomAlienEntity>().setRadius(16)
                 .setPredicate(
                     (block, entity) -> block.is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
                 ),

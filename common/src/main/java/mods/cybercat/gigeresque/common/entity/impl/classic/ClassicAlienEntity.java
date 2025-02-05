@@ -144,7 +144,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         }
         if (this.isVehicle()) {
             this.handleVehicleAnimations();
-            return;
         }
         if (this.moveAnalysis.isMoving()) {
             this.handleMovementAnimations();
@@ -301,7 +300,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
                 ),
             // Nest Sensor
-            new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(30)
+            new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(16)
                 .setPredicate(
                     (block, entity) -> block.is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
                 ),
