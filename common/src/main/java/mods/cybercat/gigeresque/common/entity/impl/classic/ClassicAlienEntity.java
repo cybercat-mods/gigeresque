@@ -394,6 +394,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     .speedModifier(0.6f)
                     .startCondition(
                         entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
+                            && !this.moveAnalysis.isMoving()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()

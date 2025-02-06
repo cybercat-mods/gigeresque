@@ -220,6 +220,10 @@ public class NeomorphEntity extends AlienEntity implements SmartBrainOwner<Neomo
                 new SetRandomWalkTarget<>().dontAvoidWater()
                     .setRadius(20)
                     .speedModifier(0.55f)
+                    .startCondition(
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() && !this.moveAnalysis
+                            .isMoving()
+                    )
                     .stopIf(entity -> this.searchingManager.isSearching()),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(

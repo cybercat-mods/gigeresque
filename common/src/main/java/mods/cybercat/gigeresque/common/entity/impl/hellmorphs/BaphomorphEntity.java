@@ -216,7 +216,8 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
                     .setRadius(20)
                     .speedModifier(0.7f)
                     .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() && !this.moveAnalysis
+                            .isMoving()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()

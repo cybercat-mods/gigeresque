@@ -229,7 +229,8 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity implements Sma
                     .setRadius(20)
                     .speedModifier(0.8f)
                     .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() && !this.moveAnalysis
+                            .isMoving()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()

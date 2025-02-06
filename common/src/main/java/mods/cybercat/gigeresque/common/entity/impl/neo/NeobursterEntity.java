@@ -112,9 +112,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
                 new SetRandomWalkTarget<>().dontAvoidWater()
                     .setRadius(20)
                     .speedModifier(0.7f)
-                    .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
-                    )
+                    .startCondition(entity -> !this.moveAnalysis.isMoving())
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
                     ),

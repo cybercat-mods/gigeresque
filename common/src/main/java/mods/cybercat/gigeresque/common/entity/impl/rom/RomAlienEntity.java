@@ -379,7 +379,8 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
                     .setRadius(20)
                     .speedModifier(0.6f)
                     .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() && !this.moveAnalysis
+                            .isMoving()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()

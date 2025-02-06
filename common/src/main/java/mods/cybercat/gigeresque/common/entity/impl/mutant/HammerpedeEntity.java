@@ -190,7 +190,10 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.65f),
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(0.65f)
+                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
                 new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))
             )
         );

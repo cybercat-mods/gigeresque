@@ -366,7 +366,10 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.67f),
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(0.67f)
+                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
                 // Idle
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(

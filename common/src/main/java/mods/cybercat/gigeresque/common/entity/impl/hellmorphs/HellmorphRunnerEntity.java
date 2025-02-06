@@ -228,7 +228,8 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
                     .setRadius(20)
                     .speedModifier(0.7f)
                     .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive()
+                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() && !this.moveAnalysis
+                            .isMoving()
                     )
                     .stopIf(
                         entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()

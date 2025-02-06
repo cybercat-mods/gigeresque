@@ -107,7 +107,10 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.7f)
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(0.7f)
+                    .startCondition(entity -> !this.moveAnalysis.isMoving())
             ),
             // Idle
             new Idle<>().startCondition(entity -> !this.isAggressive())

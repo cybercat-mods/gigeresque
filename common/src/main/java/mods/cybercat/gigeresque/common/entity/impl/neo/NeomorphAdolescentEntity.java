@@ -165,7 +165,10 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
                 new SetRandomLookTarget<>()
             ),
             new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(0.7f),
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(0.7f)
+                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
                         entity -> entity.getRandom().nextInt(30, 60)

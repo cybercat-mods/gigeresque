@@ -169,7 +169,10 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             // Random
             new OneRandomBehaviour<>(
                 // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater().setRadius(20).speedModifier(1.15f),
+                new SetRandomWalkTarget<>().dontAvoidWater()
+                    .setRadius(20)
+                    .speedModifier(1.15f)
+                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
                 // Idle
                 new Idle<>().startCondition(entity -> !this.isAggressive())
                     .runFor(
