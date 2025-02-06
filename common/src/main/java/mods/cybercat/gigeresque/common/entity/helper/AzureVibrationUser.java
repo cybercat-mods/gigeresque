@@ -22,6 +22,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class AzureVibrationUser implements VibrationSystem.User {
 
@@ -143,6 +144,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                     alienEntity.stasisManager.setStasis(false);
                 alienEntity.animationDispatcher.sendAmbient();
+                alienEntity.getNavigation().stop();
             }
             if (alienEntity.wakeupCounter >= 3) {
                 alienEntity.stasisManager.setStasis(false);
