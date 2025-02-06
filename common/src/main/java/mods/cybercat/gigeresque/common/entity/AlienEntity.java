@@ -537,11 +537,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         return super.hurt(source, amount * multiplier);
     }
 
-    @Override
-    public boolean isPushable() {
-        return false;
-    }
-
     /*
      * GROWTH
      */
