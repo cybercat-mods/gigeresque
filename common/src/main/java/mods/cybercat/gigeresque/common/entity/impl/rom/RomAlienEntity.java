@@ -21,6 +21,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -396,7 +397,7 @@ public class RomAlienEntity extends AlienEntity implements SmartBrainOwner<RomAl
             new InvalidateAttackTarget<>().invalidateIf(
                 (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.5f).closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isVehicle())
         );

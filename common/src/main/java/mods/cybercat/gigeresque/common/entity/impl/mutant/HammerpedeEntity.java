@@ -21,6 +21,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -200,7 +201,7 @@ public class HammerpedeEntity extends AlienEntity implements SmartBrainOwner<Ham
     public BrainActivityGroup<HammerpedeEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.05F).closeEnoughDist((mob, livingEntity) -> 0),
             new AlienMeleeAttack<>(7, GigMeleeAttackSelector.HAMMER_ANIM_SELECTOR).attackInterval(entity -> 80)
         );
     }

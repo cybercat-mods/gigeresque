@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -185,7 +186,7 @@ public class SpitterEntity extends AlienEntity implements SmartBrainOwner<Spitte
             // Invalidate Target
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
             // Walk to Target
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5F),
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.5F).closeEnoughDist((mob, livingEntity) -> 0),
             // Xeno Acid Spit
             new AlienProjectileAttack<>(18, GigMeleeAttackSelector.SPITTER_RANGE_SELECTOR),
             // Xeno attacking

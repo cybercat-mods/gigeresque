@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -423,7 +424,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
                     target
                 ) || target.getType().is(EntityTypeTags.UNDEAD) || this.isFleeing()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.2F).closeEnoughDist((mob, livingEntity) -> 0)
                 .whenStarting(
                     entity -> GigCommonMethods.setAnimation(
                         this.isInWater()

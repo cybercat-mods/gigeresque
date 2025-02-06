@@ -21,6 +21,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -201,7 +202,7 @@ public class PopperEntity extends AlienEntity implements SmartBrainOwner<PopperE
     public BrainActivityGroup<PopperEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.2F),
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.2F).closeEnoughDist((mob, livingEntity) -> 0),
             new AttackExplodeTask<>(17)
         );
     }

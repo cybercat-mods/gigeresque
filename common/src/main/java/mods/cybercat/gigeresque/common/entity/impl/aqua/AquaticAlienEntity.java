@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
@@ -206,7 +207,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.1F),
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.1F).closeEnoughDist((mob, livingEntity) -> 0),
             new AlienMeleeAttack<>(10, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)
         );
     }

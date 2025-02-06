@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -232,7 +233,7 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
             new InvalidateAttackTarget<>().invalidateIf(
                 (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05f)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.05f).closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)
         );

@@ -21,6 +21,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -57,10 +58,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.EggmorpthTargetTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -414,7 +411,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
             new InvalidateAttackTarget<>().invalidateIf(
                 (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
             ),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.15f).closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isVehicle())
         );

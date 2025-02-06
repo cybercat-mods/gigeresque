@@ -30,7 +30,8 @@ public class CrawlingManager {
             return;
         }
 
-        tryToCrawl();
+        if (!entity.isInWater())
+            tryToCrawl();
     }
 
     public boolean isCrawling() {

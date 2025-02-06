@@ -22,6 +22,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -254,7 +255,7 @@ public class DraconicTempleBeastEntity extends AlienEntity implements SmartBrain
     public BrainActivityGroup<DraconicTempleBeastEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.15f)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.15f).closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new JumpToTargetTask<>(20),
             new AlienMeleeAttack<>(13, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)

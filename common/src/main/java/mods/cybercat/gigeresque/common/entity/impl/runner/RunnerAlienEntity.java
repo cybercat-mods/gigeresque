@@ -21,6 +21,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
@@ -48,10 +49,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -288,7 +285,7 @@ public class RunnerAlienEntity extends AlienEntity implements SmartBrainOwner<Ru
     public BrainActivityGroup<RunnerAlienEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.25f)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.25f).closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
             new JumpToTargetTask<>(20).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR).stopIf(
