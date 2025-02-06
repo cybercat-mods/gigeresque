@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -35,6 +36,11 @@ public interface Growable {
             world.addFreshEntity(newEntity);
             if (entity.hasCustomName())
                 newEntity.setCustomName(entity.getCustomName());
+            if (entity instanceof LivingEntity livingEntity && newEntity instanceof LivingEntity newLivingEntity) {
+                for (var effect : livingEntity.getActiveEffects()) {
+                    newLivingEntity.addEffect(new MobEffectInstance(effect));
+                }
+            }
             entity.remove(Entity.RemovalReason.DISCARDED);
         }
     }
