@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.client.entity.render.entities;
+package mods.cybercat.gigeresque.client.entity.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;

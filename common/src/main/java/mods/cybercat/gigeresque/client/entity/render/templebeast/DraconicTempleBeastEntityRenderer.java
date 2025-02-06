@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.client.entity.render;
+package mods.cybercat.gigeresque.client.entity.render.templebeast;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
@@ -10,38 +10,37 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAdolescentAnimator;
-import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphAdolescentEntity;
+import mods.cybercat.gigeresque.common.entity.animators.templebeast.DraconicTempleBeastAnimator;
+import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBeastEntity;
 
-public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolescentEntity> {
+public class DraconicTempleBeastEntityRenderer extends AzEntityRenderer<DraconicTempleBeastEntity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/neomorph_adolescent/neomorph_adolescent.geo.json");
+    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/draconictemplebeast/draconictemplebeast.geo.json");
 
-    public NeomorphAdolescentRenderer(EntityRendererProvider.Context context) {
+    public DraconicTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<NeomorphAdolescentEntity>builder(
+            AzEntityRendererConfig.<DraconicTempleBeastEntity>builder(
                 MODEL,
-                EntityTextures.NEOMORPH_ADOLESCENT
+                EntityTextures.DRACONICTEMPLEBEAST
             )
-                .setAnimatorProvider(NeomorphAdolescentAnimator::new)
+                .setAnimatorProvider(DraconicTempleBeastAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
+        this.shadowRadius = 1.0f;
     }
 
     @Override
     public void render(
-        @NotNull NeomorphAdolescentEntity entity,
+        @NotNull DraconicTempleBeastEntity entity,
         float entityYaw,
         float partialTick,
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
+        poseStack.scale(1.23F, 1.23F, 1.23F);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

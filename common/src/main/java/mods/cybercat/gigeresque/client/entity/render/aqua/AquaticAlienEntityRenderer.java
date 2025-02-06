@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.client.entity.render;
+package mods.cybercat.gigeresque.client.entity.render.aqua;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;

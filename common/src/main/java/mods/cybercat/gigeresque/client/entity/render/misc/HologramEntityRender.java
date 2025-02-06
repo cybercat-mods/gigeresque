@@ -1,4 +1,4 @@
-package mods.cybercat.gigeresque.client.entity.render.entities;
+package mods.cybercat.gigeresque.client.entity.render.misc;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
