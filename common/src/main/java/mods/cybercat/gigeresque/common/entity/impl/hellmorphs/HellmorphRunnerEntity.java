@@ -11,7 +11,6 @@ import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
@@ -22,7 +21,6 @@ import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSens
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -43,6 +41,7 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FindDarknessTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.JumpToTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -247,7 +246,8 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
     public BrainActivityGroup<HellmorphRunnerEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
             new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.15f).closeEnoughDist((mob, livingEntity) -> 0)
+            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.15f)
+                .closeEnoughDist((mob, livingEntity) -> 0)
                 .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
             new JumpToTargetTask<>(20),
             new AlienMeleeAttack<>(12, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR)

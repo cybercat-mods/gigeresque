@@ -1,7 +1,8 @@
 package mods.cybercat.gigeresque.client.entity.model;
 
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.resources.ResourceLocation;
+
+import mods.cybercat.gigeresque.Constants;
 
 public record EntityModels() {
 
@@ -9,7 +10,9 @@ public record EntityModels() {
 
     private static final String BASE_ENTITY_URL = "%s/entity".formatted(BASE_URL);
 
-    public static final ResourceLocation ENGINEER_HOLOGRAM = Constants.modResource("%s/engineer_hologram/engineer_hologram.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation ENGINEER_HOLOGRAM = Constants.modResource(
+        "%s/engineer_hologram/engineer_hologram.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
     public static final ResourceLocation SPITTER = Constants.modResource("%s/spitter/spitter.geo.json".formatted(BASE_ENTITY_URL));
 
@@ -25,27 +28,45 @@ public record EntityModels() {
 
     public static final ResourceLocation NEOBURSTER = Constants.modResource("%s/neoburster/neoburster.geo.json".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation NEOMORPH_ADOLESCENT = Constants.modResource("%s/neomorph_adolescent/neomorph_adolescent.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation NEOMORPH_ADOLESCENT = Constants.modResource(
+        "%s/neomorph_adolescent/neomorph_adolescent.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
     public static final ResourceLocation NEOMORPH = Constants.modResource("%s/neomorph/neomorph.geo.json".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation RUNNER_ALIEN = Constants.modResource("%s/runner_alien/runner_alien.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation RUNNER_ALIEN = Constants.modResource(
+        "%s/runner_alien/runner_alien.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation RUNNERBURSTER = Constants.modResource("%s/runnerburster/runnerburster.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation RUNNERBURSTER = Constants.modResource(
+        "%s/runnerburster/runnerburster.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation DRACONICTEMPLEBEAST = Constants.modResource("%s/draconictemplebeast/draconictemplebeast.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation DRACONICTEMPLEBEAST = Constants.modResource(
+        "%s/draconictemplebeast/draconictemplebeast.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation MOONLIGHTHORRORTEMPLEBEAST = Constants.modResource("%s/moonlighthorrortemplebeast/moonlighthorrortemplebeast.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation MOONLIGHTHORRORTEMPLEBEAST = Constants.modResource(
+        "%s/moonlighthorrortemplebeast/moonlighthorrortemplebeast.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource("%s/ravenoustemplebeast/ravenoustemplebeast.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation RAVENOUSTEMPLEBEAST = Constants.modResource(
+        "%s/ravenoustemplebeast/ravenoustemplebeast.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation AQUATIC_ALIEN = Constants.modResource("%s/aquatic_alien/aquatic_alien.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation AQUATIC_ALIEN = Constants.modResource(
+        "%s/aquatic_alien/aquatic_alien.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation AQUATICBURSTER = Constants.modResource("%s/aquatic_chestburster/aquatic_chestburster.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation AQUATICBURSTER = Constants.modResource(
+        "%s/aquatic_chestburster/aquatic_chestburster.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
     public static final ResourceLocation ALIEN = Constants.modResource("%s/alien/alien.geo.json".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation CHESTBURSTER = Constants.modResource("%s/chestburster/chestburster.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation CHESTBURSTER = Constants.modResource(
+        "%s/chestburster/chestburster.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
     public static final ResourceLocation EGG = Constants.modResource("%s/egg/egg.geo.json".formatted(BASE_ENTITY_URL));
 
@@ -53,7 +74,11 @@ public record EntityModels() {
 
     public static final ResourceLocation BAPHOMORPH = Constants.modResource("%s/baphomorph/baphomorph.geo.json".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation HELLBURSTER = Constants.modResource("%s/hell_burster/hell_burster.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation HELLBURSTER = Constants.modResource(
+        "%s/hell_burster/hell_burster.geo.json".formatted(BASE_ENTITY_URL)
+    );
 
-    public static final ResourceLocation HELLMORPH_RUNNER = Constants.modResource("%s/hellmorph_runner/hellmorph_runner.geo.json".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation HELLMORPH_RUNNER = Constants.modResource(
+        "%s/hellmorph_runner/hellmorph_runner.geo.json".formatted(BASE_ENTITY_URL)
+    );
 }

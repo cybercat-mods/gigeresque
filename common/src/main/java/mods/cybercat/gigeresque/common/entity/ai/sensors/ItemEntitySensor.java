@@ -5,21 +5,19 @@ import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.PredicateSensor;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mod.azure.azurelib.sblforked.util.EntityRetrievalUtil;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.Comparator;
 import java.util.List;
 
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<ItemEntity, E> {
 

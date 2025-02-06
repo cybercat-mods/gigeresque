@@ -17,13 +17,14 @@ import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 
 public class RunToAttackTargetTask<E extends Mob> extends ExtendedBehaviour<E> {
+
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS;
-    
+
     protected BiFunction<E, LivingEntity, Float> speedMod = (owner, target) -> 1.0F;
+
     protected ToIntBiFunction<E, LivingEntity> closeEnoughWhen = (owner, target) -> 0;
 
-    public RunToAttackTargetTask() {
-    }
+    public RunToAttackTargetTask() {}
 
     public RunToAttackTargetTask<E> speedMod(BiFunction<E, LivingEntity, Float> speedModifier) {
         this.speedMod = speedModifier;
@@ -43,11 +44,23 @@ public class RunToAttackTargetTask<E extends Mob> extends ExtendedBehaviour<E> {
         Brain<?> brain = entity.getBrain();
         LivingEntity target = BrainUtils.getTargetOfEntity(entity);
         BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-        BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedMod.apply(entity, target), this.closeEnoughWhen.applyAsInt(entity, target)));
-
+        BrainUtils.setMemory(
+            brain,
+            MemoryModuleType.WALK_TARGET,
+            new WalkTarget(
+                new EntityTracker(target, false),
+                this.speedMod.apply(entity, target),
+                this.closeEnoughWhen.applyAsInt(entity, target)
+            )
+        );
     }
 
     static {
-        MEMORY_REQUIREMENTS = ObjectArrayList.of(new Pair[]{Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)});
+        MEMORY_REQUIREMENTS = ObjectArrayList.of(
+            new Pair[] {
+                Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED),
+                Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
+                Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT) }
+        );
     }
 }

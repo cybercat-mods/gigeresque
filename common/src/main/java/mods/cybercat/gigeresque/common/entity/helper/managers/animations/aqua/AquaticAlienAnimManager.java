@@ -4,7 +4,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 
 public class AquaticAlienAnimManager {
-    
+
     public static void handleAnimations(AquaticAlienEntity aquaticAlienEntity) {
         if (aquaticAlienEntity.isDeadOrDying()) {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendDeath);

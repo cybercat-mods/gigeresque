@@ -2,11 +2,11 @@ package mods.cybercat.gigeresque.client.entity.render.mutant;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.StalkerAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
