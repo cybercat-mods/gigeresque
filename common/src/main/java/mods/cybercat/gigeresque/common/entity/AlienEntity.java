@@ -563,63 +563,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         return this.vibrationUser;
     }
 
-    /*
-     * Enabled force condition propagation Lifted jumps to return sites
-     */
-    @Contract(value = "null->false")
-    public boolean canTargetEntity(@Nullable Entity entity) {
-        if (!(entity instanceof LivingEntity livingEntity))
-            return false;
-        if (this.level() != entity.level())
-            return false;
-        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))
-            return false;
-        if (livingEntity.hasEffect(GigStatusEffects.IMPREGNATION))
-            return false;
-        if (this.isVehicle())
-            return false;
-        if (this.isAlliedTo(entity))
-            return false;
-        if (!livingEntity.getType().is(GigTags.ALL_HOSTS))
-            return false;
-        if (livingEntity.getType().is(EntityTypeTags.UNDEAD))
-            return false;
-        if (livingEntity.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
-            return false;
-        if (livingEntity.getType() == EntityType.ARMOR_STAND)
-            return false;
-        if (livingEntity.getType() == EntityType.WARDEN)
-            return false;
-        if (livingEntity instanceof Bat)
-            return false;
-        if (GigEntityUtils.isFacehuggerAttached(livingEntity))
-            return false;
-        if (livingEntity.isInvulnerable())
-            return false;
-        if (livingEntity.isDeadOrDying())
-            return false;
-        if (!this.level().getWorldBorder().isWithinBounds(livingEntity.getBoundingBox()))
-            return false;
-        if (
-            livingEntity.getVehicle() != null && livingEntity.getVehicle()
-                .getSelfAndPassengers()
-                .anyMatch(
-                    AlienEntity.class::isInstance
-                )
-        )
-            return false;
-        if (livingEntity.getType().is(GigTags.GIG_ALIENS))
-            return false;
-        if (this.isAggressive())
-            return false;
-        return this.level()
-            .getBlockState(this.blockPosition().below())
-            .isCollisionShapeFullBlock(
-                level(),
-                this.blockPosition().below()
-            );
-    }
-
     public void drop(LivingEntity target, ItemStack itemStack) {
         if (itemStack.isEmpty())
             return;

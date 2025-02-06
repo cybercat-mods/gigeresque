@@ -6,11 +6,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -18,6 +17,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.BiPredicate;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
@@ -293,4 +294,71 @@ public record GigEntityUtils() {
         self.drop(mobEntity, mobEntity.getMainHandItem());
         mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
     }
+
+    public static final BiPredicate<AlienEntity, LivingEntity> TARGET_PREDICATE = (xenomorph, potentialTarget) -> {
+        if (xenomorph == null || potentialTarget == null)
+            return false;
+
+        if (xenomorph.level() != potentialTarget.level())
+            return false;
+
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(potentialTarget))
+            return false;
+
+        if (potentialTarget.hasEffect(GigStatusEffects.IMPREGNATION))
+            return false;
+
+        if (xenomorph.isVehicle())
+            return false;
+
+        if (xenomorph.isAlliedTo(potentialTarget))
+            return false;
+
+        if (!potentialTarget.getType().is(GigTags.ALL_HOSTS))
+            return false;
+
+        if (potentialTarget.getType().is(EntityTypeTags.UNDEAD))
+            return false;
+
+        if (potentialTarget.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS)
+            return false;
+
+        if (
+            potentialTarget.getType() == EntityType.ARMOR_STAND
+                || potentialTarget.getType() == EntityType.WARDEN
+                || potentialTarget instanceof Bat
+        )
+            return false;
+
+        if (GigEntityUtils.isFacehuggerAttached(potentialTarget))
+            return false;
+
+        if (potentialTarget.isInvulnerable() || potentialTarget.isDeadOrDying())
+            return false;
+
+        if (!xenomorph.level().getWorldBorder().isWithinBounds(potentialTarget.getBoundingBox()))
+            return false;
+
+        if (
+            potentialTarget.getVehicle() != null
+                && potentialTarget.getVehicle()
+                    .getSelfAndPassengers()
+                    .anyMatch(AlienEntity.class::isInstance)
+        )
+            return false;
+
+        if (potentialTarget.getType().is(GigTags.GIG_ALIENS))
+            return false;
+
+        if (xenomorph.isAggressive())
+            return false;
+
+        return xenomorph.level()
+            .getBlockState(xenomorph.blockPosition().below())
+            .isCollisionShapeFullBlock(
+                xenomorph.level(),
+                xenomorph.blockPosition().below()
+            );
+    };
+
 }

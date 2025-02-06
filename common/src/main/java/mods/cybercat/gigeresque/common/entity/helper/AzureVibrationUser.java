@@ -108,7 +108,9 @@ public class AzureVibrationUser implements VibrationSystem.User {
         )
             return false;
         var entity = context.sourceEntity();
-        return !(entity instanceof LivingEntity) || mob.canTargetEntity(entity);
+        if (entity instanceof LivingEntity livingEntity)
+            return GigEntityUtils.TARGET_PREDICATE.test(mob, livingEntity);
+        return true;
     }
 
     @Override
