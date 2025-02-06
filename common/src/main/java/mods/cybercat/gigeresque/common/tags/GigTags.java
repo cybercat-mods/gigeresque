@@ -142,6 +142,8 @@ public record GigTags() {
     /* ITEMS */
     public static final TagKey<Item> ACID_IMMUNE_ITEMS = TagKey.create(Registries.ITEM, Constants.modResource("acidimmuneitems"));
 
+    public static final TagKey<Item> BURSTER_FOODS = TagKey.create(Registries.ITEM, Constants.modResource("burster_foods"));
+
     /* STATUS EFFECTS */
     public static final TagKey<MobEffect> GIG_STATUS_EFFECTS = TagKey.create(
         Registries.MOB_EFFECT,

@@ -5,6 +5,7 @@ import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
 import mod.azure.azurelib.sblforked.api.core.sensor.PredicateSensor;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
 import mod.azure.azurelib.sblforked.util.EntityRetrievalUtil;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,9 +29,7 @@ public class ItemEntitySensor<E extends LivingEntity> extends PredicateSensor<It
         setScanRate(entity -> 15);
         setPredicate((item, entity) -> {
             ItemStack itemStack = item.getItem();
-            return (itemStack.is(ItemTags.MEAT) || itemStack.is(Items.WHEAT) || itemStack.is(Items.WHEAT_SEEDS) || itemStack.is(
-                Items.BEETROOT_SEEDS
-            ) || itemStack.is(Items.MELON_SEEDS) || itemStack.is(Items.PUMPKIN_SEEDS)) && item.isAlive() && !item.hasPickUpDelay();
+            return itemStack.is(GigTags.BURSTER_FOODS) && item.isAlive() && !item.hasPickUpDelay();
         });
     }
 
