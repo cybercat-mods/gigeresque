@@ -54,7 +54,6 @@ import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -290,48 +289,6 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                 this.level().addFreshEntity(aquaEgg);
             }
             this.killCounter = 0;
-        }
-
-        if (this.level().isClientSide) {
-            this.handleAnimations();
-        }
-    }
-
-    protected void handleAnimations() {
-        if (this.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
-            return;
-        }
-        if (this.moveAnalysis.isMoving()) {
-            this.handleMovementAnimations();
-        } else {
-            this.handleIdleAnimations();
-        }
-    }
-
-    protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawlRush);
-        }
-    }
-
-    protected void handleMovementAnimations() {
-        if (this.isAggressive()) {
-            this.handleAggroMovementAnimations();
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
-        }
-    }
-
-    protected void handleIdleAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand2);
         }
     }
 }
