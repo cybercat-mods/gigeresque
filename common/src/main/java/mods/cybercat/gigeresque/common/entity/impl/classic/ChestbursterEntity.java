@@ -339,7 +339,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
             // Build Nest
-            new EatFoodTask<>(40),
+            new EatFoodTask<>(10),
             // Kill Lights
             new KillLightsTask<>(),
             new KillCropsTask<>(),
