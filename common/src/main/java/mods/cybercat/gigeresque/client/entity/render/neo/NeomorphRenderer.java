@@ -6,12 +6,11 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.render.helper.NeomorphModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAnimator;
@@ -19,12 +18,10 @@ import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 
 public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/neomorph/neomorph.geo.json");
-
     public NeomorphRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<NeomorphEntity>builder(
-                MODEL,
+                EntityModels.NEOMORPH,
                 EntityTextures.NEOMORPH
             )
                 .setAnimatorProvider(NeomorphAnimator::new)

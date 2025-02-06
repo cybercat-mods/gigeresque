@@ -2,22 +2,19 @@ package mods.cybercat.gigeresque.client.entity.render.mutant;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.HammerpedeAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
 
 public class HammerpedeEntityRenderer extends AzEntityRenderer<HammerpedeEntity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/hammerpede/hammerpede.geo.json");
-
     public HammerpedeEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<HammerpedeEntity>builder(
-                MODEL,
+                EntityModels.HAMMERPEDE,
                 EntityTextures.HAMMERPEDE
             )
                 .setAnimatorProvider(HammerpedeAnimator::new)

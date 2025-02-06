@@ -5,23 +5,19 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.render.helper.FacehuggerModelRenderer;
 import mods.cybercat.gigeresque.common.entity.animators.classic.FacehuggerAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 
 public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/facehugger/facehugger.geo.json");
-
-    private static final ResourceLocation TEX = Constants.modResource("textures/entity/facehugger/facehugger.png");
-
     public FacehuggerEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<FacehuggerEntity>builder(MODEL, TEX)
+            AzEntityRendererConfig.<FacehuggerEntity>builder(EntityModels.FACEHUGGER, EntityTextures.FACEHUGGER)
                 .setAnimatorProvider(FacehuggerAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .build(),

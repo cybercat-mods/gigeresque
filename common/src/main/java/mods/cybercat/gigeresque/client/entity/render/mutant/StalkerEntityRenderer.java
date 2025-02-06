@@ -2,19 +2,16 @@ package mods.cybercat.gigeresque.client.entity.render.mutant;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.StalkerAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 
 public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
-
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/stalker/stalker.geo.json");
 
     private static final RenderType NORMAL_RENDER_TYPE = RenderType.entityCutoutNoCull(EntityTextures.STALKER);
 
@@ -23,7 +20,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
     public StalkerEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<StalkerEntity>builder(
-                $ -> MODEL,
+                $ -> EntityModels.STALKER,
                 stalker -> {
                     if (!stalker.moveAnalysis.isMoving()) {
                         return EntityTextures.STALKER_TRANSPARENT;

@@ -18,6 +18,8 @@ public record EntityTextures() {
 
     private static final String BASE_BLOCK_URL = "%s/block".formatted(BASE_URL);
 
+    public static final ResourceLocation ENGINEER_HOLOGRAM = Constants.modResource("%s/engineer_hologram/engineer_hologram.png".formatted(BASE_ENTITY_URL));
+
     public static final ResourceLocation ALIEN = Constants.modResource("%s/alien/alien.png".formatted(BASE_ENTITY_URL));
 
     public static final ResourceLocation ROM_ALIEN = Constants.modResource("%s/rom_alien/rom_alien.png".formatted(BASE_ENTITY_URL));
@@ -90,6 +92,10 @@ public record EntityTextures() {
         "%s/neoburster/neoburster_petrified.png".formatted(BASE_ENTITY_URL)
     );
 
+    public static final ResourceLocation NEOBURSTER = Constants.modResource(
+            "%s/neoburster/neoburster.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation RUNNERBURSTER_PETRIFIED = Constants.modResource(
         "%s/runnerburster/runner_burster_petrified.png".formatted(BASE_ENTITY_URL)
     );
@@ -131,4 +137,18 @@ public record EntityTextures() {
     public static final ResourceLocation MOONLIGHTHORRORTEMPLEBEAST_STATIS = Constants.modResource(
         "%s/moonlighthorrortemplebeast/moonlighthorrortemplebeast_stasis.png".formatted(BASE_ENTITY_URL)
     );
+
+    public static final ResourceLocation RUNNERBURSTER = Constants.modResource(
+            "%s/runnerburster/runnerburster.png".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation AQUATICBURSTER = Constants.modResource(
+            "%s/aquatic_chestburster/aquatic_chestburster.png".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation HELLBURSTER = Constants.modResource("%s/hell_burster/hell_burster.png".formatted(BASE_ENTITY_URL));
+
+    public static final ResourceLocation FACEHUGGER = Constants.modResource("%s/facehugger/facehugger.png".formatted(BASE_ENTITY_URL));
+
+    public static final ResourceLocation CHESTBURSTER = Constants.modResource("%s/chestburster/chestburster.png".formatted(BASE_ENTITY_URL));
 }
