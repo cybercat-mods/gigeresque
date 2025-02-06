@@ -238,4 +238,8 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
         );
     }
 
+    @Override
+    public boolean fireImmune() {
+        return true;
+    }
 }

@@ -116,4 +116,9 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
                 )
         );
     }
+
+    @Override
+    public boolean fireImmune() {
+        return true;
+    }
 }

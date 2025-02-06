@@ -253,4 +253,9 @@ public class HellmorphRunnerEntity extends AlienEntity implements SmartBrainOwne
         );
     }
 
+    @Override
+    public boolean fireImmune() {
+        return true;
+    }
+
 }
