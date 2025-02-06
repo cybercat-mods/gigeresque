@@ -4,8 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.sblforked.api.core.behaviour.DelayedBehaviour;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.CustomDelayedMeleeBehaviour;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -17,7 +20,7 @@ import java.util.List;
 import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 
-public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<E> {
+public class EatFoodTask<E extends ChestbursterEntity> extends CustomDelayedMeleeBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
         Pair.of(GigMemoryTypes.FOOD_ITEMS.get(), MemoryStatus.VALUE_PRESENT)
@@ -27,7 +30,7 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
     protected LivingEntity target = null;
 
     public EatFoodTask(int delayTicks) {
-        super(delayTicks);
+        super(delayTicks, GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR);
     }
 
     @Override
@@ -60,9 +63,9 @@ public class EatFoodTask<E extends ChestbursterEntity> extends DelayedBehaviour<
             if (entity.distanceToSqr(foodItem.stream().findFirst().get()) < 1) {
                 entity.getNavigation().stop();
                 entity.setEatingStatus(true);
-                entity.animationDispatcher.sendChomp();
                 item.getItem().finishUsingItem(entity.level(), entity);
                 item.getItem().shrink(1);
+                entity.swing(InteractionHand.MAIN_HAND);
                 entity.grow(entity, 2400.0f);
             } else {
                 this.startMovingToTarget(entity, blockPos);

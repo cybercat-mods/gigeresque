@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import net.minecraft.world.phys.Vec3;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -87,7 +88,7 @@ public record GigMeleeAttackSelector() {
     public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR =
         runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp();
 
-    public static final AnimationSelector<NeobursterEntity> NBUSTER_ANIM_SELECTOR = neobursterEntity -> {
+    public static final AnimationSelector<ChestbursterEntity> NBUSTER_ANIM_SELECTOR = neobursterEntity -> {
         Runnable animKey = switch (neobursterEntity.getRandom().nextInt(4)) {
             case 1 -> neobursterEntity.animationDispatcher::sendRightClaw;
             case 2 -> neobursterEntity.animationDispatcher::sendLeftTail;
