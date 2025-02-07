@@ -217,7 +217,7 @@ public record GigEntityUtils() {
                         if (!alienEntity.isVehicle())
                             alienEntity.animationDispatcher.sendLeftClaw();
                         if (alienEntity.isVehicle())
-                            alienEntity.animationDispatcher.sendLeftTailBasic();
+                            alienEntity.animationDispatcher.sendLeftTail();
                         if (!alienEntity.level().isClientSide)
                             alienEntity.level().destroyBlock(testPos, true, null, 512);
                         alienEntity.breakingCounter = -90;
