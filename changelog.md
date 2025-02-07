@@ -1,110 +1,19 @@
-v0.8.0
+v0.8.1
 
-- Block-breaking mechanics have been rewritten to improve reliability.
-- Chestbursters and DNA now properly kill the player, even with armor equipped.
-- Gigeresque damage sources bypass armor, applying direct damage.
-- Chestbursters will no longer follow entities incorrectly after bursting.
-- Corrected the spin behavior so that held entities appropriately aligned.
-- Dungeon containers will now generate loot correctly and are no longer empty.
-- Bursters will now properly flee when they are in danger.
-- Aliens will use claw attacks instead of tail attacks in water.
-- When infected by DNA, random damage is now applied to all armor pieces.
-- Chest armor takes additional random damage when exposed to impregnation or spores.
-- All adverse Gigeresque status effects are immune to milk-based removal.
-- Updated dungeon-finding descriptions in the game’s language files.
-- Improved fire-fleeing behavior for facehuggers.
-- Fixed Aqua Xeno speed both in water and on land, ensuring smoother movement.
-- Aqua Xenos will no longer hop unnaturally when on land.
-- Runner Xenos speed is now fully optimized.
-- Rewrote the panic system for better functionality and smoother execution.
-- Spawns triggered by breaking the seal only appear behind the player.
-- Spawns will no longer occur near nests or inside dungeons.
-- Nesting will no longer happen within dungeons.
-- Attack ranges have been rebalanced, leading to more frequent damage output.
-- Fixes Pandora's box effect causing TPS lag. 
-- Rework how loot is dropped from suspicious sand
-- Rework how Black Fluid replaces blocks
-- Fixes acid and goo blood stuttering movement when falling.
-- More petrified objects have been found.
-- Fixed Transparency of Stalkers when stalking.
-- Stalkers shadows are now removed when stalking.
-- Spitters spit will randomly place acid near the target as well.
-- Added new dungeon blocks.
-- Dungeon blocks will now emit a mist effect at -50 and lower. 
-- Changed the lang name of Sinous to Sinuous.
-- Fixes eggs not opening when hit.
-- Updates dungeon loot tables with new items.
-- Adjusted Aqua spawn egg colors.
-- Fixes black fluid replacing flowing fluid.
-- All dev entities are now properly added to needed tags.
-- Fixes Advancement not triggering for Surgery Kit properly on mobs.
-- Fixes Advancement not triggering for first spawn from breaking the seal.
-- Fixes Advancement not triggering properly on getting facehugged.
-- Add new advancements for trying to use a bottle/bucket acid/goo blood and trying to use a bucket on a Xeno.
-- Move Spitters out of Dev config.
-- Demon Xenos only show in creative menu if HWG is installed.
-- Rework how resin web works, that allow you to walk through it slowly but if you are in too long, you will be trapped.
-- Xenos that are in stasis won't trigger on LoS now.
-- Sound triggering is not triggered if you are more then 5 blocks from the mob and sneaking, any closer will always trigger.
-- Fixes Xenos hands/legs moving when in stasis.
-- Added Swim Animations to Runnerbuster.
-- Added Swim Animations to Stalker.
-- Added Swim Animations to Hammerpede.
-- Added Swim Animations to Popper.
-- Increased max size of dungeons from 15 pieces to 20.
-- Spitters now spawn at 50% size (only spawns from naturally generating ones, spawn eggs are at 100%) and will grow in size over time.
-- Added Dev debug item, just only use is for Gigeresque dungeon builders. Will have no use in game outside of that.
-- Fixed spawn eggs causing Neo Adolescent to instantly become an Adult Neo.
-- Updated Neo Adolescent to new model.
-- Neomorph Adolescent now grows into a larger size before becoming the Adult Neomorph.
-- Added new dungeon block.
-- Updated block and entity names to new system, no longer using normal Xenomorph names.
-- Update Dungeon pieces with Beacon blocks instead of Sea Lanterns.
-- Fixes rotation on stasis (this one has been a PITA).
-- Add block breaking progress to Acid.
-- Allow lower time on facehugging.
-- Adds Hell Burster stage
-- HWG installed will allow Hell morphs to beappear if it's techno demons are facehugged.
-- Spores will not spawn if the tile beneath is not solid.
-- Fixes Sitting Idle back clipping into any blocks behind it.
-- Neoburster now grows into a larger size before becoming the Neomorph Adolescent.
-- Egg morphing tweaked (saves cord of placed nests to alien to go back to later)
-- Implement Baphomorph animations.
-- Update mod icon.
-- Make petrified objects break slower.
-- Make petrified objects emit stone noises when walked on/hit.
-- Acid spitting redone for Spitters, uses projectile that be dodge now and increased damage.
-- Spores no longer replace leaves, spore blossoms, and glow lichen. 
-- Fixes Facehugger head placement for odd angles.
-- Fixes Facehugger only hunting via sound cues.
-- Fixes Surgery Kit killing on full durability.
-- Implemented new Neoburster model/animations.
-- Added Dungeon Tracker item with model/animations.
-- Implemented new Aquatic Alien animations.
-- Add a pandora config for the babies that can't handle spawns.
-- Fixes Animations on Stalker.
-- Fixes Animations on Runners
-- Updates Runners run animation.
-- Updates Swimming animations on Aquas.
-- Updates Hammerpede for proper animations.
-- Implemented new Neomorph Adolescent animations.
-- Implemented new Neomorph animations fixes.
-- Implemented Hell Morph animations.
-- Implemented Ravenous Templebeast animations.
-- Implemented Moonlight Horror Templebeast animations.
-- Implemented Draconic Templebeast animations.
-- Fixed black blood from mutants not having gravity.
-- Stasis animation added for Neomorph.
-- Updated Creative Tab icons.
-- Updated Sitting Idol Blocks holding item.
-- Reduced max size of dungeons from 20 to 15.
-- Implemented better Tunnel crawling logic for Classic Xeno.
-- Reworked damage formula for damage from large amounts.
-- Fixed crop breaking happening at long ranges.
-- Fixed light breaking happening at long ranges.
-- Surgery Kits now only remove the impregnation effect, not all effects.
-- Fixed spore blocks mining timing.
-- Set a max of 9000 ticks for impregnation time.
-- Trauma now properly restores health back to full when finished.
-- Moved eggs out of dev config now that animations are in and basic logic is in place.
-- Acid now eats faster.
+- Infernal xenos are now fire-proof
+- Bursters food choices are now moved to dedicated gigeresque:burster_foods tag.
+- Bursters food block choices are now moved to dedicated gigeresque:burster_blocks tag.
+- Bursters now place glass breaking sound when consuming potions.
+- Decreased eating food timer on bursters.
+- Effects are now carried over when an alien moves along the life cycle.
+- Xenos no longer stop to attack.
+- Basic swim animations for Spitter implemented.
+- Xenos no longer stop when going to a sound.
+- Fixes growth spawn placement on things like farm land.
+- Fixes crop block breaking.
+- Fixes light breaking.
+- Spores now acid-resistant.
+- Bursters now eat potions.
+- Tweak Fleeing at half or less health.
+- Pitch shift down TB sounds.
+- Tweak runner animations to better mix attacks with movement/idle.
