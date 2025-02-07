@@ -36,7 +36,7 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
                 .setDeathMaxRotation(0.0F)
                 .setRenderType(
                     alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
-                        .getEggState() == EggStates.HATCHED.ordinal()
+                        .getEggState() == EggStates.HATCHED.ordinal() && alienEggEntity.isAlive()
                             ? EGG_ACTIVE_RENDER_TYPE
                             : EGG_RENDER_TYPE
                 )
