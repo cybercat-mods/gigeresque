@@ -56,6 +56,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
@@ -389,6 +390,10 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     @Override
     public BrainActivityGroup<FacehuggerEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
+            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
+                .whenStarting(entity -> entity.setFleeingStatus(true))
+                .whenStopping(entity -> entity.setFleeingStatus(false)),
             new FleeFireTask<>(2.2F).whenStarting(
                 entity -> entity.setFleeingStatus(true)
             ).whenStopping(entity -> entity.setFleeingStatus(false)),

@@ -39,6 +39,7 @@ import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSenso
 import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
+import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
 import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
 import mods.cybercat.gigeresque.common.entity.helper.*;
@@ -149,7 +150,15 @@ public class NeomorphAdolescentEntity extends AlienEntity implements SmartBrainO
 
     @Override
     public BrainActivityGroup<NeomorphAdolescentEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new FleeFireTask<>(3.5F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(
+            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
+                .whenStarting(entity -> entity.setFleeingStatus(true))
+                .whenStopping(entity -> entity.setFleeingStatus(false)),
+            new LookAtTarget<>(),
+            new FleeFireTask<>(3.5F),
+            new MoveToWalkTarget<>()
+        );
     }
 
     @SuppressWarnings("unchecked")

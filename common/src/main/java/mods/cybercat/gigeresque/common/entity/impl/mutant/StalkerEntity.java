@@ -170,8 +170,10 @@ public class StalkerEntity extends AlienEntity implements SmartBrainOwner<Stalke
     public BrainActivityGroup<StalkerEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Flee fight at half or less health
-            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
+            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
+                .whenStarting(entity -> entity.setFleeingStatus(true))
+                .whenStopping(entity -> entity.setFleeingStatus(false)),
             new LookAtTarget<>(),
             new FleeFireTask<>(1.3F),
             new MoveToWalkTarget<>()

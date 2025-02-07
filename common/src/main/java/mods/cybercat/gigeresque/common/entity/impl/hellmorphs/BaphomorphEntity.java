@@ -167,8 +167,10 @@ public class BaphomorphEntity extends AlienEntity implements SmartBrainOwner<Bap
     public BrainActivityGroup<BaphomorphEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Flee fight at half or less health
-            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
+            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
+                .whenStarting(entity -> entity.setFleeingStatus(true))
+                .whenStopping(entity -> entity.setFleeingStatus(false)),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
                 .startCondition(

@@ -311,8 +311,10 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
             // Flee fight at half or less health
-            new FleeFightTask<>(1.0F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2)),
+            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
+                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
+                .whenStarting(entity -> entity.setFleeingStatus(true))
+                .whenStopping(entity -> entity.setFleeingStatus(false)),
             // Flee Fire
             new FleeFireTask<>(1.0F),
             new AlienPanic(1.0f),
