@@ -5,4 +5,21 @@ plugins {
     id 'net.neoforged.moddev' version "${neo_moddev}" apply(false)
     id 'me.modmuss50.mod-publish-plugin' version "${modmuss50_mod_publish_version}" apply(false)
     id 'com.diffplug.spotless' version "${spotless_version}" apply(false)
+    id 'org.moddedmc.wiki.toolkit' version '0.2.5'
+}
+
+wiki {
+    if (file('key.properties').exists()) {
+        def releaseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        releaseProp.load(secretPropsFile.newInputStream())
+        wikiAccessToken = releaseProp.getProperty("wikiKey")
+    }
+    docs {
+        // The name of the object (examplemod) should match the registered wiki project ID (if it exists).
+        gigeresque {
+            // The path to the folder containing the documentation metadata file (sinytra-wiki.json)
+            root = file('docs/gigeresque')
+        }
+    }
 }
