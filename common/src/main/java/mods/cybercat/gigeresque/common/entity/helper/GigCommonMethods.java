@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -242,53 +243,6 @@ public record GigCommonMethods() {
     public static void handlePlayerInteraction(AlienEggEntity alienEggEntity) {
         if (alienEggEntity.getLastHurtMob() != null) {
             alienEggEntity.setEggState(EggStates.HATCHING.ordinal());
-        }
-    }
-
-    public static void handleHatchingCheck(AlienEggEntity alienEggEntity) {
-        if (alienEggEntity.hatchCheckTimer < 20)
-            return;
-
-        alienEggEntity.hatchCheckTimer = 0; // Reset the timer
-
-        processNearbyEntities(alienEggEntity, CommonMod.config.eggConfigs.alieneggHatchRange, 0.2f);
-
-        processNearbyEntities(alienEggEntity, 3, 0.8f);
-    }
-
-    public static void processNearbyEntities(AlienEggEntity alienEggEntity, double range, float chance) {
-        alienEggEntity.level().getEntitiesOfClass(LivingEntity.class, alienEggEntity.getBoundingBox().inflate(range)).forEach(target -> {
-            if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {
-                boolean isPlayerVulnerable = !(target instanceof Player player && (player.isCreative() || player.isSpectator()));
-
-                if (isPlayerVulnerable && alienEggEntity.level().random.nextFloat() < chance) {
-                    alienEggEntity.setEggState(EggStates.HATCHING.ordinal());
-                }
-            }
-        });
-    }
-
-    public static void checkNearbyBlocks(AlienEggEntity alienEggEntity) {
-        if (alienEggEntity.getLastHurtMob() != null)
-            return;
-
-        boolean hasNonAirBlocks = false;
-        boolean hasSolidBlocks = false;
-
-        // Check blocks in all 6 directions
-        for (Direction direction : Direction.values()) {
-            BlockPos testPos = alienEggEntity.blockPosition().relative(direction);
-            var blockState = alienEggEntity.level().getBlockState(testPos);
-
-            if (!blockState.isAir())
-                hasNonAirBlocks = true;
-            if (blockState.isCollisionShapeFullBlock(alienEggEntity.level(), testPos))
-                hasSolidBlocks = true;
-
-            if (hasNonAirBlocks || hasSolidBlocks) {
-                alienEggEntity.setEggState(EggStates.IDLE.ordinal());
-                return;
-            }
         }
     }
 

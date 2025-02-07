@@ -53,7 +53,6 @@ public class AlienEggEntity extends AlienEntity {
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
         super(type, world);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
     }
@@ -179,7 +178,7 @@ public class AlienEggEntity extends AlienEntity {
             GigCommonMethods.handleNestProgress(this);
             GigCommonMethods.handleHatchingProgress(this);
             GigCommonMethods.handleFacehuggerSpawn(this);
-            if (this.getEggState() == EggStates.HATCHED.ordinal())
+            if (this.getEggState() == EggStates.IDLE.ordinal())
                 hatchCheckTimer++;
             GigCommonMethods.handleAoEEntityHatchCheck(this);
             GigCommonMethods.handleAoEBlockHatchCheck(this);
