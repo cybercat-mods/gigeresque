@@ -182,11 +182,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     }
 
     @Override
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    @Override
     public void tick() {
         super.tick();
         moveAnalysis.update();
