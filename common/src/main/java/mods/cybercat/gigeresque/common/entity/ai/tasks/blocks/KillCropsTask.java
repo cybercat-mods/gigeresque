@@ -57,7 +57,7 @@ public class KillCropsTask<E extends PathfinderMob & AbstractAlien> extends Exte
             var blockPos = cropBlock.stream().findFirst().get().getFirst();
 
             // Check if the block is within the entity's view direction and reachable via pathfinding
-            if (entity.blockPosition().above() == blockPos) {
+            if (this.isBlockInViewAndReachable(entity, blockPos)) {
                 entity.swing(InteractionHand.MAIN_HAND);
                 entity.level().destroyBlock(blockPos, true, null, 512);
             } else {
@@ -67,20 +67,20 @@ public class KillCropsTask<E extends PathfinderMob & AbstractAlien> extends Exte
     }
 
     private boolean isBlockInViewAndReachable(E entity, BlockPos blockPos) {
-        var blockCenter = Vec3.atCenterOf(blockPos);
-        var entityPos = entity.position();
-        // Calculate the squared distance between the entity and the block
-        var distanceSquared = blockCenter.distanceToSqr(entityPos);
+        // Get the block position of the entity's current position
+        var entityBlockPos = entity.blockPosition();
 
-        // Check if the distance is less than or equal to one block
-        if (distanceSquared <= 1.0) {
-            // Don't start moving towards the target if already within one block distance
-            return false;
+        // Check if the entity is exactly at the target block position
+        if (entityBlockPos.equals(blockPos)) {
+            return true;
         }
 
-        // Check if the block is reachable via pathfinding
-        var path = entity.getNavigation().createPath(blockPos, 0);
-        return path != null && !path.isDone();
+        if (entityBlockPos.above().equals(blockPos)) {
+            return true;
+        }
+
+        // Otherwise, return false since the entity is not at the position
+        return false;
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
