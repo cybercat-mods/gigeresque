@@ -37,7 +37,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_FOOTSTEP.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -51,7 +51,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_HANDSTEP.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -65,7 +65,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_AMBIENT.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -79,7 +79,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_DEATH_THUD.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -93,7 +93,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_HEADBITE.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -107,7 +107,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_CRUNCH.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -134,7 +134,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_CLAW.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -148,7 +148,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_TAIL.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -162,7 +162,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_CRUNCH.get(),
                                             SoundSource.HOSTILE,
                                             0.5F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
@@ -189,7 +189,7 @@ public class MoonlightTempleBeastAnimator extends AzEntityAnimator<MoonlightHorr
                                             GigSounds.ALIEN_HISS.get(),
                                             SoundSource.HOSTILE,
                                             1.0F,
-                                            1.0F,
+                                            0.5F,
                                             true
                                         );
                                 }
