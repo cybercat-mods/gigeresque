@@ -30,7 +30,7 @@ public interface Growable {
             var newEntity = growInto();
             if (newEntity == null)
                 return;
-            newEntity.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+            newEntity.setPos(entity.getX(), entity.getY(), entity.getZ());
             if (newEntity instanceof RunnerbursterEntity runnerBurster)
                 runnerBurster.setBirthStatus(false);
             world.addFreshEntity(newEntity);
