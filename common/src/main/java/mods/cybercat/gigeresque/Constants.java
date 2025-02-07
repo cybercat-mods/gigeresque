@@ -67,57 +67,6 @@ public record Constants() {
 
     public static final String HISS_CONTROLLER = "hiss_controller";
 
-    public static final String LEFT_CLAW = "left_claw";
-
-    public static final String RIGHT_CLAW = "right_claw";
-
-    public static final String LEFT_TAIL = "left_tail";
-
-    public static final String RIGHT_TAIL = "right_tail";
-
-    public static final String RIGHT_CLAW_BASIC = "right_claw_basic";
-
-    public static final String LEFT_TAIL_BASIC = "left_tail_basic";
-
-    public static final String RIGHT_TAIL_BASIC = "right_tail_basic";
-
-    public static final String LEFT_CLAW_BASIC = "left_claw_basic";
-
-    public static final String EAT = "eat";
-
-    public static final String ACID_SPIT = "acidspit";
-
-    public static final String ATTACK_HEAVY = "attack_heavy";
-
-    public static final String ATTACK = "attack";
-
-    public static final String ATTACK_NORMAL = "attack_normal";
-
-    public static final ResourceLocation DESERT_PYRAMID = ResourceLocation.fromNamespaceAndPath(
-        "minecraft",
-        "archaeology/desert_pyramid"
-    );
-
-    public static final ResourceLocation DESERT_WELL = ResourceLocation.fromNamespaceAndPath(
-        "minecraft",
-        "archaeology/desert_well"
-    );
-
-    public static final ResourceLocation OCEAN_RUIN_COLD = ResourceLocation.fromNamespaceAndPath(
-        "minecraft",
-        "archaeology/ocean_ruin_cold"
-    );
-
-    public static final ResourceLocation OCEAN_RUIN_WARM = ResourceLocation.fromNamespaceAndPath(
-        "minecraft",
-        "archaeology/ocean_ruin_warm"
-    );
-
-    public static final ResourceLocation TRAIL_RUINS_RARE = ResourceLocation.fromNamespaceAndPath(
-        "minecraft",
-        "archaeology/trail_ruins_rare"
-    );
-
     public static <T> T self(Object object) {
         return (T) object;
     }
