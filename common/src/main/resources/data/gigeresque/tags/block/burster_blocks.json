@@ -1,0 +1,15 @@
+{
+  "values": [
+    "minecraft:sniffer_egg",
+    "minecraft:turtle_egg",
+    "minecraft:frogspawn",
+    "minecraft:pumpkin",
+    "minecraft:carved_pumpkin",
+    "minecraft:hay_block",
+    "minecraft:honeycomb_block",
+    "minecraft:honey_block",
+    "minecraft:melon",
+    "minecraft:dried_kelp_block",
+    "#minecraft:crops"
+  ]
+}

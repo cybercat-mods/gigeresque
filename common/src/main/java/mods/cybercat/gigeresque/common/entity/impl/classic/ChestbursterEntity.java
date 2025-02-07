@@ -290,7 +290,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
                 ),
             new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
                 .setPredicate(
-                    (block, entity) -> block.is(BlockTags.CROPS)
+                    (block, entity) -> block.is(GigTags.BURSTER_BLOCKS)
                 ),
             new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
                 .setPredicate(

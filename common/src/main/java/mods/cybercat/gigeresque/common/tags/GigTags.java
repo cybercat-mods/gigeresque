@@ -17,6 +17,8 @@ public record GigTags() {
     /* BLOCKS */
     public static final TagKey<Block> ALIEN_REPELLENTS = TagKey.create(Registries.BLOCK, Constants.modResource("alien_repellents"));
 
+    public static final TagKey<Block> BURSTER_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("burster_blocks"));
+
     public static final TagKey<Block> DESTRUCTIBLE_LIGHT = TagKey.create(Registries.BLOCK, Constants.modResource("destructible_light"));
 
     public static final TagKey<Block> ACID_RESISTANT = TagKey.create(Registries.BLOCK, Constants.modResource("acid_resistant"));
