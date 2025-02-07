@@ -215,9 +215,9 @@ public record GigEntityUtils() {
                         continue;
                     if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
                         if (!alienEntity.isVehicle())
-                            GigCommonMethods.setAnimation(alienEntity.animationDispatcher::sendLeftClaw);
+                            alienEntity.animationDispatcher.sendLeftClaw();
                         if (alienEntity.isVehicle())
-                            GigCommonMethods.setAnimation(alienEntity.animationDispatcher::sendLeftTailBasic);
+                            alienEntity.animationDispatcher.sendLeftTailBasic();
                         if (!alienEntity.level().isClientSide)
                             alienEntity.level().destroyBlock(testPos, true, null, 512);
                         alienEntity.breakingCounter = -90;
