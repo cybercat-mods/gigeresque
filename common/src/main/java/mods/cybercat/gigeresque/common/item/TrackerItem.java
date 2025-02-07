@@ -48,7 +48,7 @@ public class TrackerItem extends Item {
                 int distanceCategory;
                 if (horizontalDistance <= 50)
                     distanceCategory = 3; // Close (within 50 blocks)
-                else if (horizontalDistance <= 75)
+                else if (horizontalDistance <= 500)
                     distanceCategory = 2; // Mid-range (50 - 75 blocks)
                 else
                     distanceCategory = 1; // Far (greater than 75 blocks)
