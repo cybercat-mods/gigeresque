@@ -1,8 +1,12 @@
 package mods.cybercat.gigeresque.client.entity.render.classic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
+import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.model.EggModelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -61,5 +65,16 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);
         }
+    }
+
+    @Override
+    protected AzEntityRendererPipeline<AlienEggEntity> createPipeline(AzEntityRendererConfig<AlienEggEntity> config) {
+        return new AzEntityRendererPipeline<>(config, this) {
+
+            @Override
+            protected AzModelRenderer<AlienEggEntity> createModelRenderer(AzLayerRenderer<AlienEggEntity> layerRenderer) {
+                return new EggModelRenderer(this, layerRenderer);
+            }
+        };
     }
 }
