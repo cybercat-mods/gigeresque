@@ -1,10 +1,12 @@
-package mods.cybercat.gigeresque.client.entity.render.helper;
+package mods.cybercat.gigeresque.client.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadData;
+import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadOffsetData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 

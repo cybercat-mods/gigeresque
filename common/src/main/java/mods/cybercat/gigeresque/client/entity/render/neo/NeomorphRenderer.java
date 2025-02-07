@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.helper.NeomorphModelRenderer;
+import mods.cybercat.gigeresque.client.entity.model.NeomorphModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;

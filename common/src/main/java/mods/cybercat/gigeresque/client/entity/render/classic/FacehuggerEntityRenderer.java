@@ -8,7 +8,7 @@ import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.helper.FacehuggerModelRenderer;
+import mods.cybercat.gigeresque.client.entity.model.FacehuggerModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.classic.FacehuggerAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
