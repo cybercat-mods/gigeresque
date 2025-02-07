@@ -7,6 +7,7 @@ import mod.azure.azurelib.sblforked.util.BrainUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -58,8 +59,30 @@ public class KillLightsTask<E extends PathfinderMob & AbstractAlien> extends Ext
         if (lightSourceLocation != null && lightSourceLocation.stream().findFirst().isPresent()) {
             var blockPos = lightSourceLocation.stream().findFirst().get().getFirst();
 
-            this.startMovingToTarget(entity, blockPos);
+            if (this.isBlockInViewAndReachable(entity, blockPos)) {
+                entity.swing(InteractionHand.MAIN_HAND);
+                entity.level().destroyBlock(blockPos, true, null, 512);
+            } else {
+                this.startMovingToTarget(entity, blockPos);
+            }
         }
+    }
+
+    private boolean isBlockInViewAndReachable(E entity, BlockPos blockPos) {
+        // Get the block position of the entity's current position
+        var entityBlockPos = entity.blockPosition();
+
+        // Check if the entity is exactly at the target block position
+        if (entityBlockPos.equals(blockPos)) {
+            return true;
+        }
+
+        if (entityBlockPos.above().equals(blockPos)) {
+            return true;
+        }
+
+        // Otherwise, return false since the entity is not at the position
+        return false;
     }
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
