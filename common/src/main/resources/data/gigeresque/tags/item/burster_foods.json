@@ -28,7 +28,8 @@
     "minecraft:potion",
     "minecraft:splash_potion",
     "minecraft:lingering_potion",
-    "#c:eggs",
+    "minecraft:honey_bottle",
+    "minecraft:egg",
     "#c:foods"
   ]
 }
