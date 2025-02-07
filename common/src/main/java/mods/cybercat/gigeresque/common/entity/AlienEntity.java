@@ -480,8 +480,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     }
 
     @Override
-    public boolean canBeCollidedWith() {
-        return this.isAlive();
+    public boolean isPushable() {
+        return false;
     }
 
     public void grabTarget(Entity entity) {
