@@ -36,8 +36,13 @@ public class TrackerItem extends Item {
             var blockpos = serverlevel.findNearestMapStructure(GigTags.GIG_EXPLORER_MAPS, player.blockPosition(), 100, false);
             if (blockpos != null && !player.getCooldowns().isOnCooldown(this)) {
                 animationDispatcher.sendOpeningAnimation(player, itemstack);
-                var dx = player.getX() - blockpos.getX();
-                var dz = player.getZ() - blockpos.getZ();
+                var viewVector = player.getViewVector(1.0F);
+                var spawnX = player.getX() + viewVector.x * 5;
+                var spawnZ = player.getZ() + viewVector.z * 5;
+                var dx = blockpos.getX() + 0.5 - spawnX; // Center of the block
+                var dz = blockpos.getZ() + 0.5 - spawnZ; // Center of the block
+                var rotation = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90);
+
                 var horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
                 int distanceCategory;
@@ -47,9 +52,6 @@ public class TrackerItem extends Item {
                     distanceCategory = 2; // Mid-range (50 - 75 blocks)
                 else
                     distanceCategory = 1; // Far (greater than 75 blocks)
-                var viewVector = player.getViewVector(1.0F);
-                var spawnX = player.getX() + viewVector.x * 5;
-                var spawnZ = player.getZ() + viewVector.z * 5;
                 var hologramEntity = GigEntities.ENGINEER_HOLOGRAM.get().create(level);
                 if (hologramEntity != null) {
                     if (Services.PLATFORM.isDevelopmentEnvironment())
@@ -57,7 +59,7 @@ public class TrackerItem extends Item {
                     hologramEntity.setPos(spawnX, player.getY(), spawnZ);
                     hologramEntity.setDistanceState(distanceCategory);
                     hologramEntity.setDistanceFromStructure((int) horizontalDistance);
-                    hologramEntity.setYRot((float) Math.toDegrees(Math.atan2(blockpos.getZ() - spawnZ, blockpos.getX() - spawnX)) - 90);
+                    hologramEntity.setYRot(rotation);
                     hologramEntity.setOnGround(true);
                     level.addFreshEntity(hologramEntity);
                 }
