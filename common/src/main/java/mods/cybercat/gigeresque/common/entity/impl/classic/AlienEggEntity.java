@@ -204,6 +204,11 @@ public class AlienEggEntity extends AlienEntity {
         return false;
     }
 
+    @Override
+    public boolean canBeCollidedWith() {
+        return this.isAlive();
+    }
+
     /**
      * Prevents fluids from moving the egg.
      */
