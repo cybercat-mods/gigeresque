@@ -148,6 +148,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         }
         if (this.isVehicle()) {
             this.handleVehicleAnimations();
+            return;
         }
         if (this.moveAnalysis.isMoving()) {
             this.handleMovementAnimations();
