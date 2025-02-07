@@ -1,7 +1,6 @@
 {
     "id": "gigeresque",
     "platforms": {
-        "modrinth": "gigeresque",
-        "curseforge": "gigeresque"
+        "modrinth": "gigeresque"
     }
 }
