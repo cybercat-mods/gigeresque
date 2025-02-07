@@ -144,6 +144,8 @@ public record GigTags() {
 
     public static final TagKey<Item> BURSTER_FOODS = TagKey.create(Registries.ITEM, Constants.modResource("burster_foods"));
 
+    public static final TagKey<Item> POTIONS = TagKey.create(Registries.ITEM, Constants.modResource("potions"));
+
     /* STATUS EFFECTS */
     public static final TagKey<MobEffect> GIG_STATUS_EFFECTS = TagKey.create(
         Registries.MOB_EFFECT,

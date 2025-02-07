@@ -3,13 +3,17 @@ package mods.cybercat.gigeresque.common.entity.ai.tasks.misc;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.sblforked.util.BrainUtils;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.world.item.PotionItem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -59,9 +63,11 @@ public class EatFoodTask<E extends ChestbursterEntity> extends CustomDelayedMele
             var blockPos = foodItem.stream().findFirst().get().blockPosition();
             var item = foodItem.stream().findFirst().get();
             // Check if the block is within the entity's view direction and reachable via pathfinding
-            if (entity.distanceToSqr(foodItem.stream().findFirst().get()) < 1) {
-                entity.getNavigation().stop();
+            if (this.isBlockInViewAndReachable(entity, blockPos)) {
                 entity.setEatingStatus(true);
+                if (item.getItem().is(GigTags.POTIONS)) {
+                    entity.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                }
                 item.getItem().finishUsingItem(entity.level(), entity);
                 item.getItem().shrink(1);
                 entity.swing(InteractionHand.MAIN_HAND);
@@ -74,5 +80,19 @@ public class EatFoodTask<E extends ChestbursterEntity> extends CustomDelayedMele
 
     private void startMovingToTarget(E alien, BlockPos targetPos) {
         BrainUtils.setMemory(alien, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, 0.9F, 0));
+    }
+
+    private boolean isBlockInViewAndReachable(E entity, BlockPos blockPos) {
+        var entityBlockPos = entity.blockPosition();
+
+        if (entityBlockPos.equals(blockPos)) {
+            return true;
+        }
+
+        if (entityBlockPos.above().equals(blockPos)) {
+            return true;
+        }
+
+        return false;
     }
 }

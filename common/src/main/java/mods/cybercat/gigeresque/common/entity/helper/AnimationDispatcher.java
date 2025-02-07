@@ -98,7 +98,7 @@ public class AnimationDispatcher {
 
     private final AzCommand ATTACK_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "attack", AzPlayBehaviors.PLAY_ONCE);
 
-    private final AzCommand CHOMP_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "chomp", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand CHOMP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "chomp", AzPlayBehaviors.PLAY_ONCE);
 
     private final AzCommand ATTACK_NORMAL_COMMAND = AzCommand.create(
         Constants.ATTACK_CONTROLLER,

@@ -1,6 +1,11 @@
 {
   "values": [
+    "minecraft:wheat",
     "minecraft:chorus_fruit",
+    "minecraft:nether_wart",
+    "minecraft:potion",
+    "minecraft:splash_potion",
+    "minecraft:lingering_potion",
     "#c:foods"
   ]
 }
