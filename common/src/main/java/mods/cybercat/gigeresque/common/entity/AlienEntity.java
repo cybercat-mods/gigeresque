@@ -382,13 +382,14 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         if (level() instanceof ServerLevel serverLevel) {
             if (this.isAlive() && this.tickCount % Constants.TPS == 0)
                 this.grow(this, this.growthCounter++ * getGrowthMultiplier());
-            if (this.isVehicle())
-                this.setAggressive(false);
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
                 this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
                     if (e.is(GigTags.NEST_BLOCKS))
                         this.heal(0.5833f);
                 });
+            if (this.isExecuting()) {
+                this.navigation.stop();
+            }
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
         if (this.tickCount % 10 == 0)
