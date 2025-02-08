@@ -45,14 +45,19 @@ public class SporeStatusEffect extends MobEffect {
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
         var neoBurster = GigEntities.NEOBURSTER.get().create(entity.level());
-            neoBurster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
         if (entity.getType().is(GigTags.NEOHOST) && neoBurster != null) {
+            setBursterProperties(entity, neoBurster);
             spawnEffects(entity.level(), entity);
             entity.level().addFreshEntity(neoBurster);
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Float.MAX_VALUE);
         }
+    }
+
+    private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
+        burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
+        burster.setPos(entity.getX(), entity.getY(), entity.getZ());
     }
 
     private static void spawnEffects(Level world, LivingEntity entity) {

@@ -170,7 +170,7 @@ public record GigEntityUtils() {
     }
 
     private static void moveToAndSpawn(@NotNull LivingEntity entity, Entity summon) {
-        summon.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+        summon.setPos(entity.getX(), entity.getY(), entity.getZ());
         spawnEffects(entity.level(), entity);
         entity.level().addFreshEntity(summon);
     }

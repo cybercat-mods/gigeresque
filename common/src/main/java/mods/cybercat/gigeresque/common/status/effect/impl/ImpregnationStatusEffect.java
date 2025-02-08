@@ -101,6 +101,6 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (entity.hasCustomName())
             burster.setCustomName(entity.getCustomName());
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
-        burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+        burster.setPos(entity.getX(), entity.getY(), entity.getZ());
     }
 }
