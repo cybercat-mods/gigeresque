@@ -63,7 +63,8 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
         int packedLightIn
     ) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        if (scaleFactor < 1.0F)
+            stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 }
