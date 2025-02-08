@@ -19,6 +19,12 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
             AzEntityRendererConfig.<NeobursterEntity>builder(EntityModels.NEOBURSTER, EntityTextures.NEOBURSTER)
                 .setAnimatorProvider(NeobursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setPrerenderEntry(rendererPipelineContext -> {
+                    if (rendererPipelineContext.bakedModel().getBone("sac").isPresent()) {
+                        rendererPipelineContext.bakedModel().getBone("sac").get().setHidden(true);
+                    }
+                    return rendererPipelineContext;
+                })
                 .build(),
             context
         );
