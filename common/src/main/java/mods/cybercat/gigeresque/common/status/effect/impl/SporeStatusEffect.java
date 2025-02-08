@@ -56,6 +56,8 @@ public class SporeStatusEffect extends MobEffect {
     }
 
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
+        if (entity.hasCustomName())
+            burster.setCustomName(entity.getCustomName());
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.setPos(entity.getX(), entity.getY(), entity.getZ());
     }
