@@ -134,73 +134,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
 
         if (!this.isVehicle())
             this.setIsExecuting(false);
-        if (this.level().isClientSide())
-            this.handleAnimations();
-    }
-
-    protected void handleAnimations() {
-        if (this.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
-            return;
-        }
-        if (this.isHissing() && !this.stasisManager.isStasis()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendHiss);
-        }
-        if (this.isVehicle()) {
-            this.handleVehicleAnimations();
-            return;
-        }
-        if (this.moveAnalysis.isMoving()) {
-            this.handleMovementAnimations();
-        } else {
-            this.handleIdleAnimations();
-        }
-    }
-
-    protected void handleVehicleAnimations() {
-        if (this.isExecuting()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendExecutionCarry);
-        } else if (this.moveAnalysis.isMoving()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendWalkCarrying);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendKidnap);
-        }
-    }
-
-    protected void handleMovementAnimations() {
-        if (this.isAggressive()) {
-            this.handleAggroMovementAnimations();
-        } else if (this.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendWalk);
-        }
-    }
-
-    protected void handleAggroMovementAnimations() {
-        if (this.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
-        }
-    }
-
-    protected void handleIdleAnimations() {
-        if (this.stasisManager.isStasis()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendStatisEnter);
-        } else if (this.searchingManager.isSearching()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendAmbient);
-        } else if (this.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -330,8 +263,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                 .startCondition(classicAlienEntity -> !this.stasisManager.isStasis())
                 .stopIf(classicAlienEntity -> this.stasisManager.isStasis()),
             // Take target to nest
-            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && !this.stasisManager.isStasis())
-                .stopIf(entity -> !this.isVehicle() || this.stasisManager.isStasis()),
+            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && !this.stasisManager.isStasis()),
             // Looks at target
             new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive())
                 .startCondition(

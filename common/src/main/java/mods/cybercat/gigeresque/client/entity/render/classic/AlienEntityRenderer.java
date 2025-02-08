@@ -6,6 +6,7 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.classic.ClassicAlienAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -65,6 +66,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         if (scaleFactor < 1.0F)
             stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        ClassicAlienAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 }

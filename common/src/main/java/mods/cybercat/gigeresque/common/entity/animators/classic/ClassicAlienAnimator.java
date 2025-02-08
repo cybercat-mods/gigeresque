@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 
@@ -205,70 +204,5 @@ public class ClassicAlienAnimator extends AzEntityAnimator<ClassicAlienEntity> {
     @Override
     public @NotNull ResourceLocation getAnimationLocation(ClassicAlienEntity animatable) {
         return ANIMATIONS;
-    }
-
-    public static void handleAnimations(ClassicAlienEntity animatable) {
-        if (animatable.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendDeath);
-            return;
-        }
-        if (animatable.isHissing() && !animatable.stasisManager.isStasis()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendHiss);
-        }
-        if (animatable.isVehicle()) {
-            handleVehicleAnimations(animatable);
-            return;
-        }
-        if (animatable.moveAnalysis.isMoving()) {
-            handleMovementAnimations(animatable);
-        } else {
-            handleIdleAnimations(animatable);
-        }
-    }
-
-    public static void handleVehicleAnimations(ClassicAlienEntity animatable) {
-        if (animatable.isExecuting()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendExecutionCarry);
-        } else if (animatable.moveAnalysis.isMoving()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendWalkCarrying);
-        } else {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendKidnap);
-        }
-    }
-
-    public static void handleMovementAnimations(ClassicAlienEntity animatable) {
-        if (animatable.isAggressive()) {
-            handleAggroMovementAnimations(animatable);
-        } else if (animatable.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendCrawl);
-        } else if (animatable.isInWater()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendWalk);
-        }
-    }
-
-    public static void handleAggroMovementAnimations(ClassicAlienEntity animatable) {
-        if (animatable.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendCrawl);
-        } else if (animatable.isInWater()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendRun);
-        }
-    }
-
-    public static void handleIdleAnimations(ClassicAlienEntity animatable) {
-        if (animatable.stasisManager.isStasis()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendStatisEnter);
-        } else if (animatable.searchingManager.isSearching()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendAmbient);
-        } else if (animatable.crawlingManager.isCrawling()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendCrawl);
-        } else if (animatable.isInWater()) {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animatable.animationDispatcher::sendIdleLand);
-        }
     }
 }
