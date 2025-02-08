@@ -212,7 +212,7 @@ public record GigEntityUtils() {
             if (alienEntity.breakingCounter > 10) {
                 for (
                     var testPos : BlockPos.betweenClosed(
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()),
+                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(1),
                         alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2)
                     )
                 ) {
