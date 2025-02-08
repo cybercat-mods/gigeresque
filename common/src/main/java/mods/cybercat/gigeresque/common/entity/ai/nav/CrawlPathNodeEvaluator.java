@@ -14,7 +14,7 @@ public class CrawlPathNodeEvaluator extends WalkNodeEvaluator {
     @Override
     public void prepare(@NotNull PathNavigationRegion level, @NotNull Mob mob) {
         super.prepare(level, mob);
-        if (!mob.isInWater())
+        if (!mob.isInWater() || !mob.isVehicle())
             this.entityHeight = Mth.floor((mob.getBbHeight() / 4) + 1.0F);
     }
 }
