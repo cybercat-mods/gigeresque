@@ -93,7 +93,7 @@ public class ImpregnationStatusEffect extends MobEffect {
                 );
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
-            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Integer.MAX_VALUE);
+            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Float.MAX_VALUE);
         }
     }
 

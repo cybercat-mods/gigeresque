@@ -51,7 +51,7 @@ public class SporeStatusEffect extends MobEffect {
             entity.level().addFreshEntity(neoBurster);
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
-            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Integer.MAX_VALUE);
+            entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Float.MAX_VALUE);
         }
     }
 
