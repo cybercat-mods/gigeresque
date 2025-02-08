@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.neo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolesc
     public NeomorphAdolescentRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<NeomorphAdolescentEntity>builder(
-                EntityTextures.NEOMORPH_ADOLESCENT,
+                EntityModels.NEOMORPH_ADOLESCENT,
                 EntityTextures.NEOMORPH_ADOLESCENT
             )
                 .setAnimatorProvider(NeomorphAdolescentAnimator::new)
