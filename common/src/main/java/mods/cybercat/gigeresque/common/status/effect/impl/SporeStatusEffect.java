@@ -1,11 +1,13 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -58,6 +60,11 @@ public class SporeStatusEffect extends MobEffect {
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
         if (entity.hasCustomName())
             burster.setCustomName(entity.getCustomName());
+        if (entity instanceof LivingEntity livingEntity) {
+            for (var effect : livingEntity.getActiveEffects()) {
+                burster.addEffect(new MobEffectInstance(effect));
+            }
+        }
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.setPos(entity.getX(), entity.getY(), entity.getZ());
     }

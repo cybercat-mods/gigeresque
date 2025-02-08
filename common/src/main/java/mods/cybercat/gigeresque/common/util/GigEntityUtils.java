@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
@@ -134,7 +135,7 @@ public record GigEntityUtils() {
 
     public static void spawnMutant(LivingEntity entity) {
         var randomPhase2 = entity.getRandom().nextInt(0, 2);
-        Entity summon;
+        LivingEntity summon;
         if (GigEntityUtils.isTargetSmallMutantHost(entity)) {
             if (randomPhase2 == 1)
                 summon = GigEntities.MUTANT_HAMMERPEDE.get().create(entity.level());
@@ -169,7 +170,12 @@ public record GigEntityUtils() {
         return defaultBurster;
     }
 
-    private static void moveToAndSpawn(@NotNull LivingEntity entity, Entity summon) {
+    private static void moveToAndSpawn(@NotNull LivingEntity entity, LivingEntity summon) {
+        if (entity instanceof LivingEntity livingEntity) {
+            for (var effect : livingEntity.getActiveEffects()) {
+                summon.addEffect(new MobEffectInstance(effect));
+            }
+        }
         summon.setPos(entity.getX(), entity.getY(), entity.getZ());
         spawnEffects(entity.level(), entity);
         entity.level().addFreshEntity(summon);
