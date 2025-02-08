@@ -131,6 +131,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public int breakingCounter = 0;
 
+    public float growthCounter = 0;
+
     protected User vibrationUser;
 
     private Data vibrationData;
@@ -282,6 +284,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public void setGrowth(float growth) {
+        this.growthCounter = growth;
         entityData.set(GROWTH, growth);
     }
 
@@ -334,7 +337,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                     LOGGER::error
                 )
                 .ifPresent(data -> this.vibrationData = data);
-        this.setGrowth(compound.getFloat("getStatisTimer"));
         this.setGrowth(compound.getFloat("growth"));
         this.setIsHissing(compound.getBoolean("isHissing"));
         this.setIsBiting(compound.getBoolean(("isHeadBite")));
@@ -378,8 +380,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel) {
-            if (this.isAlive())
-                this.grow(this, 1 * getGrowthMultiplier());
+            if (this.isAlive() && this.tickCount % Constants.TPS == 0)
+                this.grow(this, this.growthCounter++ * getGrowthMultiplier());
             if (this.isVehicle())
                 this.setAggressive(false);
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
