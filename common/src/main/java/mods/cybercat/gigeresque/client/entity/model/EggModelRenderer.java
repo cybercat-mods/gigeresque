@@ -25,7 +25,6 @@ public class EggModelRenderer extends AzEntityModelRenderer<AlienEggEntity> {
         float partialTick,
         float nativeScale
     ) {
-        if (!animatable.stasisManager.isStasis())
-            super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
+        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
     }
 }
