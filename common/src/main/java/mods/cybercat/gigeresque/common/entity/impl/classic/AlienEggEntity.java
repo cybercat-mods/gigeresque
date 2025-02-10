@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -17,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;

@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -22,6 +20,8 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -73,7 +73,6 @@ public class NeomorphEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        GigEntityUtils.breakBlocks(this);
         moveAnalysis.update();
     }
 
@@ -90,7 +89,7 @@ public class NeomorphEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
-        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); //TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
         this.goalSelector.addGoal(11, new KillLightsGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));

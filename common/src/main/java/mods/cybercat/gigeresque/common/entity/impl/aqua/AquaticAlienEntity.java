@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
@@ -20,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +26,8 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -105,7 +104,7 @@ public class AquaticAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.25F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
-        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); //TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
         this.goalSelector.addGoal(10, new KillLightsGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));

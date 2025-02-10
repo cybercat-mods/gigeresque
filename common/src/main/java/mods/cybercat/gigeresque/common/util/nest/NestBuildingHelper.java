@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.util.nest;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -18,7 +17,7 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public record NestBuildingHelper() {
 
-    public static void tryBuildNestAround(Level level, BlockPos pos, PathfinderMob alienEntity) {
+    public static void tryBuildNestAround(Level level, BlockPos pos, AlienEntity alienEntity) {
         for (var x = -1; x <= 1; x++) {
             for (var z = -1; z <= 1; z++) {
                 for (var y = -1; y <= 3; y++) {

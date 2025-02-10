@@ -6,7 +6,6 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import mods.cybercat.gigeresque.common.entity.helper.managers.animations.neo.NeomorphAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +14,7 @@ import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.model.NeomorphModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.neo.NeomorphAnimManager;
 import mods.cybercat.gigeresque.common.entity.impl.neo.NeomorphEntity;
 
 public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {

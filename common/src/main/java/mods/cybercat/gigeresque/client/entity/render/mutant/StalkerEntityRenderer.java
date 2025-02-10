@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render.mutant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.common.entity.helper.managers.animations.mutant.StalkerAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.StalkerAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.mutant.StalkerAnimManager;
 import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
 
 public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
@@ -45,7 +45,14 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
     }
 
     @Override
-    public void render(@NotNull StalkerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+    public void render(
+        @NotNull StalkerEntity entity,
+        float entityYaw,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight
+    ) {
         StalkerAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }

@@ -4,7 +4,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 
 public class RunnerAnimManager {
-    
+
     public static void handleAnimations(RunnerAlienEntity runnerAlienEntity) {
         if (runnerAlienEntity.isDeadOrDying()) {
             GigCommonMethods.setAnimation(runnerAlienEntity.animationDispatcher::sendDeath);

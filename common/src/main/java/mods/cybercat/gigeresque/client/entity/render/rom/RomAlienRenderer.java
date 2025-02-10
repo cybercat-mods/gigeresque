@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.render.rom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mods.cybercat.gigeresque.common.entity.helper.managers.animations.rom.RomAlienAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +12,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.rom.RomAlienAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.rom.RomAlienAnimManager;
 import mods.cybercat.gigeresque.common.entity.impl.rom.RomAlienEntity;
 
 public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {

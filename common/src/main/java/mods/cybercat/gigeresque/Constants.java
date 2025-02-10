@@ -52,7 +52,7 @@ public record Constants() {
     ) && livingEntity.hasEffect(GigStatusEffects.IMPREGNATION);
 
     public static Predicate<Entity> hasSporeEffect = entity -> entity instanceof LivingEntity livingEntity && GigEntityUtils.convertToNeo(
-            livingEntity
+        livingEntity
     ) && livingEntity.hasEffect(GigStatusEffects.SPORE);
 
     public static Predicate<Entity> shouldApplyImpEffects = entity -> entity instanceof LivingEntity livingEntity && hasImpEffect.test(

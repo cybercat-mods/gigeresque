@@ -8,15 +8,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
@@ -112,98 +109,33 @@ public class PandorasBoxStatusEffect extends MobEffect {
         var offsetX = -lookAngle.x * distance; // negative to get behind
         var offsetZ = -lookAngle.z * distance; // negative to get behind
 
-        if (!player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES)) {
-            var entities = List.of(
-                GigEntities.RUNNERBURSTER.get(),
-                GigEntities.CHESTBURSTER.get(),
-                GigEntities.FACEHUGGER.get()
-            );
-            EntityType<? extends Monster> selectedEntity = null;
-            for (var i = 0; i < entities.size(); i++) {
-                if (player.getRandom().nextInt(100) < (i + 1) * 100 / entities.size()) {
-                    selectedEntity = entities.get(i);
-                    break;
-                }
-            }
-            if (selectedEntity != null)
-                for (var k = 1; k < 4; ++k) {
-                    var faceHugger = selectedEntity.create(player.level());
-                    if (faceHugger != null) {
-                        faceHugger.setPos(
-                            player.getX() + offsetX,
-                            player.getY() + 0.5D,
-                            player.getZ() + offsetZ
-                        );
-                        faceHugger.setOnGround(true);
-                        if (Services.PLATFORM.isDevelopmentEnvironment())
-                            faceHugger.setGlowingTag(true);
-
-                        var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
-                        if (
-                            player.level().isLoaded(spawnPos) && (faceHugger.level()
-                                .getBlockState(
-                                    spawnPos
-                                )
-                                .isAir() || faceHugger.level()
-                                    .getBlockState(
-                                        spawnPos
-                                    )
-                                    .is(Blocks.WATER)) && !player.level()
-                                        .getBiome(player.blockPosition())
-                                        .is(
-                                            GigTags.AQUASPAWN_BIOMES
-                                        )
-                        ) {
-                            player.level().addFreshEntity(faceHugger);
-                            if (Services.PLATFORM.isDevelopmentEnvironment())
-                                AzureLib.LOGGER.info("Spawned Mob");
-                            if (player instanceof ServerPlayer serverPlayer) {
-                                var advancement = serverPlayer.server.getAdvancements()
-                                    .get(
-                                        Constants.modResource("firstspawnfromeffect")
-                                    );
-                                if (
-                                    advancement != null && !serverPlayer.getAdvancements()
-                                        .getOrStartProgress(
-                                            advancement
-                                        )
-                                        .isDone()
-                                )
-                                    for (
-                                        var s : serverPlayer.getAdvancements()
-                                            .getOrStartProgress(
-                                                advancement
-                                            )
-                                            .getRemainingCriteria()
-                                    )
-                                        serverPlayer.getAdvancements().award(advancement, s);
-                            }
-
-                            for (var x = -1; x <= 1; x++)
-                                for (var z = -1; z <= 1; z++) {
-                                    var resinPos = spawnPos.offset(x, 0, z);
-                                    if (
-                                        !player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player
-                                            .level()
-                                            .isLoaded(resinPos)
-                                    )
-                                        NestBuildingHelper.tryBuildNestAround(player.level(), resinPos, faceHugger);
-                                }
-                        }
-                    }
-                }
-        } else {
-            var aquaticAlien = GigEntities.AQUATIC_CHESTBURSTER.get().create(player.level());
-            if (aquaticAlien != null) {
-                aquaticAlien.setPos(player.getX() + offsetX, player.getY() - 9.5D, player.getZ() + offsetZ);
+        var isWaterBiome = player.level().getBiome(player.blockPosition()).is(GigTags.AQUASPAWN_BIOMES);
+        for (var k = 1; k < 4; ++k) {
+            var faceHugger = isWaterBiome
+                ? GigEntities.AQUA_EGG.get().create(player.level())
+                : GigEntities.EGG.get().create(player.level());
+            if (faceHugger != null) {
+                faceHugger.setPos(
+                    player.getX() + offsetX,
+                    player.getY() + 0.5D,
+                    player.getZ() + offsetZ
+                );
+                faceHugger.setOnGround(true);
                 if (Services.PLATFORM.isDevelopmentEnvironment())
-                    aquaticAlien.setGlowingTag(true);
+                    faceHugger.setGlowingTag(true);
 
-                var spawnPos = BlockPos.containing(aquaticAlien.getX(), aquaticAlien.getY(), aquaticAlien.getZ());
-                if (player.level().isLoaded(spawnPos)) {
+                var spawnPos = BlockPos.containing(faceHugger.getX(), faceHugger.getY(), faceHugger.getZ());
+                if (
+                    player.level().isLoaded(spawnPos) && (faceHugger.level()
+                        .getBlockState(
+                            spawnPos
+                        )
+                        .isAir() || faceHugger.level().getBlockState(spawnPos).is(Blocks.WATER)) && player.level()
+                            .getBrightness(LightLayer.SKY, spawnPos) < 5
+                ) {
+                    player.level().addFreshEntity(faceHugger);
                     if (Services.PLATFORM.isDevelopmentEnvironment())
                         AzureLib.LOGGER.info("Spawned Mob");
-                    player.level().addFreshEntity(aquaticAlien);
                     if (player instanceof ServerPlayer serverPlayer) {
                         var advancement = serverPlayer.server.getAdvancements()
                             .get(
@@ -230,10 +162,15 @@ public class PandorasBoxStatusEffect extends MobEffect {
                         for (var z = -1; z <= 1; z++) {
                             var resinPos = spawnPos.offset(x, 0, z);
                             if (
-                                !player.level().getBlockState(resinPos).isAir() && player.level().isEmptyBlock(resinPos) && player.level()
-                                    .isLoaded(resinPos)
-                            )
-                                NestBuildingHelper.tryBuildNestAround(player.level(), resinPos, aquaticAlien);
+                                !player.level().getBlockState(resinPos).isAir() && player.level()
+                                    .isEmptyBlock(
+                                        resinPos
+                                    ) && player
+                                        .level()
+                                        .isLoaded(resinPos) && faceHugger instanceof AlienEntity alienEntity
+                            ) {
+                                NestBuildingHelper.tryBuildNestAround(player.level(), resinPos, alienEntity);
+                            }
                         }
                     }
                 }

@@ -21,6 +21,8 @@ public class AquaEggEntity extends Entity implements Growable {
 
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(AquaEggEntity.class, EntityDataSerializers.FLOAT);
 
+    public float growthCounter = 0;
+
     public AquaEggEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.setYRot(this.random.nextFloat() * 360.0F);
@@ -29,8 +31,8 @@ public class AquaEggEntity extends Entity implements Growable {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && this.isAlive()) {
-            grow(this, 1 * getGrowthMultiplier());
+        if (!level().isClientSide && this.isAlive() && this.tickCount % Constants.TPS == 0) {
+            this.grow(this, this.growthCounter++ * getGrowthMultiplier());
         }
         GigCommonMethods.handleFloatingPhysics(this);
         GigCommonMethods.handleCollisionPhysics(this);
@@ -79,6 +81,7 @@ public class AquaEggEntity extends Entity implements Growable {
 
     @Override
     public void setGrowth(float growth) {
+        this.growthCounter = growth;
         entityData.set(GROWTH, growth);
     }
 

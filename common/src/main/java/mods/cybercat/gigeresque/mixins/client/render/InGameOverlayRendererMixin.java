@@ -65,31 +65,32 @@ public class InGameOverlayRendererMixin {
         }
     }
 
-    private static void renderOverlay(Minecraft client, PoseStack matrices, float progress, ResourceLocation resourceLocation) {
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.defaultBlendFunc();
+    private static void renderOverlay(Minecraft minecraft, PoseStack poseStack, float progress, ResourceLocation resourceLocation) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
-        BlockPos blockpos = BlockPos.containing(client.player.getX(), client.player.getEyeY(), client.player.getZ());
+        BlockPos blockpos = BlockPos.containing(minecraft.player.getX(), minecraft.player.getEyeY(), minecraft.player.getZ());
         float f = LightTexture.getBrightness(
-            client.player.level().dimensionType(),
-            client.player.level().getMaxLocalRawBrightness(blockpos)
+            minecraft.player.level().dimensionType(),
+            minecraft.player.level().getMaxLocalRawBrightness(blockpos)
         );
         RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(f, f, f, progress);
-        float f7 = -client.player.getYRot() / 64.0F;
-        float f8 = client.player.getXRot() / 64.0F;
-        Matrix4f matrix4f = matrices.last().pose();
+        RenderSystem.setShaderColor(f, f, f, 0.8F);
+        float f1 = 4.0F;
+        float f2 = -1.0F;
+        float f3 = 1.0F;
+        float f4 = -1.0F;
+        float f5 = 1.0F;
+        float f6 = -0.5F;
+        float f7 = -minecraft.player.getYRot() / 64.0F;
+        float f8 = minecraft.player.getXRot() / 64.0F;
+        Matrix4f matrix4f = poseStack.last().pose();
         BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.addVertex(matrix4f, -1.0F, -1.0F, -0.5F).setUv(4.0F + f7, 4.0F + f8);
         bufferbuilder.addVertex(matrix4f, 1.0F, -1.0F, -0.5F).setUv(0.0F + f7, 4.0F + f8);
         bufferbuilder.addVertex(matrix4f, 1.0F, 1.0F, -0.5F).setUv(0.0F + f7, 0.0F + f8);
         bufferbuilder.addVertex(matrix4f, -1.0F, 1.0F, -0.5F).setUv(4.0F + f7, 0.0F + f8);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, progress);
         RenderSystem.disableBlend();
     }
 }

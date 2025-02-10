@@ -1,9 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.movement;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -19,6 +15,11 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 
 /**
  * Credit to Boston/AVP
@@ -122,7 +123,7 @@ public class DigToTargetGoal extends Goal {
         mob.getLookControl().setLookAt(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
 
         var attackAttribute = mob.getAttribute(Attributes.ATTACK_DAMAGE);
-        var damage = attackAttribute == null ? 10F : ((float) attackAttribute.getValue()) * 5F;
+        var damage = attackAttribute == null ? 10F : ((float) attackAttribute.getValue()) * 2F;
 
         if (mob.tickCount % 4 == 0 && mob.level().getBlockState(pos).is(GigTags.WEAK_BLOCKS)) {
             this.mob.animationSelector.select(this.mob);
@@ -191,9 +192,9 @@ public class DigToTargetGoal extends Goal {
                     BlockState state = mob.level().getBlockState(rayTraceResult.getBlockPos());
 
                     if (
-                            state.hasBlockEntity()
-                                    || state.getDestroySpeed(mob.level(), rayTraceResult.getBlockPos()) == -1
-                                    || state.getBlock().defaultDestroyTime() >= Blocks.IRON_BLOCK.defaultDestroyTime()
+                        state.hasBlockEntity()
+                            || state.getDestroySpeed(mob.level(), rayTraceResult.getBlockPos()) == -1
+                            || state.getBlock().defaultDestroyTime() >= Blocks.IRON_BLOCK.defaultDestroyTime()
                     ) {
                         continue;
                     }

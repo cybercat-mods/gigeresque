@@ -1,11 +1,8 @@
 package mods.cybercat.gigeresque.common.util;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
@@ -14,15 +11,12 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiPredicate;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -213,11 +207,12 @@ public record GigEntityUtils() {
                 }
             } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))
                 return GigEntities.AQUATIC_CHESTBURSTER.get().create(entity.level());
-        } else if (GigEntityUtils.convertToNeo(entity))
+        }
+        if (GigEntityUtils.convertToNeo(entity))
             return GigEntities.NEOBURSTER.get().create(entity.level());
-        else if (GigEntityUtils.convertToSpitter(entity))
+        if (entity.hasEffect(GigStatusEffects.DNA))
             return GigEntities.SPITTER.get().create(entity.level());
-        else if (entity.getType().is(GigTags.HWG_ENTITIES))
+        if (entity.getType().is(GigTags.HWG_ENTITIES))
             return GigEntities.HELL_BURSTER.get().create(entity.level());
         return defaultBurster;
     }
@@ -247,84 +242,6 @@ public record GigEntityUtils() {
                     entity.getRandom().nextGaussian() * 0.02,
                     0.15000000596046448
                 );
-    }
-
-    public static void breakBlocks(AlienEntity alienEntity) {
-        if (alienEntity.crawlingManager.isCrawling())
-            return;
-        if (alienEntity.isDeadOrDying())
-            return;
-        if (alienEntity.stasisManager.isStasis())
-            return;
-        if (alienEntity.isInWater())
-            return;
-        if (alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (!alienEntity.level().isClientSide)
-                alienEntity.breakingCounter++;
-            if (alienEntity.breakingCounter > 10) {
-                for (
-                    var testPos : BlockPos.betweenClosed(
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(1),
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(1)
-                    )
-                ) {
-                    var state = alienEntity.level().getBlockState(testPos);
-                    if (state.is(Blocks.SHORT_GRASS) || state.is(Blocks.TALL_GRASS) || state.is(BlockTags.FLOWERS))
-                        continue;
-                    if (state.is(GigTags.WEAK_BLOCKS) && !state.isAir()) {
-                        if (!alienEntity.isVehicle())
-                            alienEntity.animationDispatcher.sendLeftClaw();
-                        if (alienEntity.isVehicle())
-                            alienEntity.animationDispatcher.sendLeftTail();
-                        if (!alienEntity.level().isClientSide)
-                            alienEntity.level().destroyBlock(testPos, true, null, 512);
-                        alienEntity.breakingCounter = -90;
-                        if (alienEntity.level().isClientSide()) {
-                            for (var i = 2; i < 10; i++) {
-                                alienEntity.level()
-                                    .addAlwaysVisibleParticle(
-                                        GigParticles.ACID.get(),
-                                        alienEntity.getX() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
-                                            .nextBoolean() ? -1 : 1),
-                                        alienEntity.getEyeY() - ((alienEntity.getEyeY() - alienEntity.blockPosition().getY()) / 2.0),
-                                        alienEntity.getZ() + ((alienEntity.getRandom().nextDouble() / 2.0) - 0.5) * (alienEntity.getRandom()
-                                            .nextBoolean() ? -1 : 1),
-                                        0.0,
-                                        -0.15,
-                                        0.0
-                                    );
-                            }
-                            alienEntity.level()
-                                .playLocalSound(
-                                    testPos.getX(),
-                                    testPos.getY(),
-                                    testPos.getZ(),
-                                    SoundEvents.LAVA_EXTINGUISH,
-                                    SoundSource.BLOCKS,
-                                    0.2f + alienEntity.getRandom().nextFloat() * 0.2f,
-                                    0.9f + alienEntity.getRandom().nextFloat() * 0.15f,
-                                    false
-                                );
-                        }
-                    } else if (
-                        !state.is(GigTags.ACID_RESISTANT) && !state.isAir() && (alienEntity.getHealth() >= (alienEntity.getMaxHealth()
-                            * 0.50))
-                    ) {
-                        if (!alienEntity.level().isClientSide) {
-                            var acid = GigEntities.ACID.get().create(alienEntity.level());
-                            if (acid != null) {
-                                acid.setPos(testPos.above().getX(), testPos.above().getY(), testPos.above().getZ());
-                                alienEntity.level().addFreshEntity(acid);
-                            }
-                        }
-                        alienEntity.hurt(GigDamageSources.of(alienEntity.level(), GigDamageSources.ACID), 5);
-                        alienEntity.breakingCounter = -90;
-                    }
-                }
-            }
-            if (alienEntity.breakingCounter >= 25)
-                alienEntity.breakingCounter = 0;
-        }
     }
 
     public static void handleLivingEntityInteractions(AlienEntity self, Entity target, LivingEntity livingEntity) {

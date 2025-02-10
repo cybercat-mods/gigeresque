@@ -1,10 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +21,8 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -76,7 +75,7 @@ public class StalkerEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
-        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); //TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
         this.goalSelector.addGoal(11, new KillLightsGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
@@ -99,9 +98,6 @@ public class StalkerEntity extends AlienEntity {
     public void tick() {
         super.tick();
         moveAnalysis.update();
-        GigEntityUtils.breakBlocks(this);
-        if (this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN))
-            this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
     }
 
     @Override

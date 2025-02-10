@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -112,15 +112,15 @@ public abstract class LivingEntityMixin extends Entity {
                     }
                 }
             }
-             if (
-                 Constants.hasEggEffect.test(this) && !this.level()
-                 .getBlockState(this.blockPosition())
-                 .is(
-                 GigBlocks.NEST_RESIN_WEB_CROSS.get()
-                 )
-             ) {
+            if (
+                Constants.hasEggEffect.test(this) && !this.level()
+                    .getBlockState(this.blockPosition())
+                    .is(
+                        GigBlocks.NEST_RESIN_WEB_CROSS.get()
+                    )
+            ) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
-             }
+            }
             if (Constants.isCreativeSpecPlayer.test(this)) {
                 if (Constants.hasEggEffect.test(this)) {
                     this.removeEffect(GigStatusEffects.EGGMORPHING);

@@ -26,9 +26,9 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -66,7 +66,7 @@ import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends Monster implements Enemy, VibrationSystem, Growable, AbstractAlien {
+public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -124,8 +124,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     );
 
     public static final EntityDataAccessor<Integer> STASIS_TICK = SynchedEntityData.defineId(
-            AlienEntity.class,
-            EntityDataSerializers.INT
+        AlienEntity.class,
+        EntityDataSerializers.INT
     );
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -158,7 +158,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public AnimationSelector<AlienEntity> animationSelector;
 
-    protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
+    protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
@@ -179,7 +179,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     public static boolean checkMonsterSpawnRules(
-        @NotNull EntityType<? extends Monster> type,
+        @NotNull EntityType<? extends WaterAnimal> type,
         ServerLevelAccessor level,
         @NotNull MobSpawnType spawnType,
         @NotNull BlockPos pos,
@@ -384,6 +384,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     @Override
     public void tick() {
         super.tick();
+        this.setAirSupply(this.getMaxAirSupply());
         searchingManager.tick();
         stasisManager.tick();
         if (this.isInWater()) {

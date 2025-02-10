@@ -6,16 +6,16 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import mods.cybercat.gigeresque.common.entity.helper.managers.animations.classic.FacehuggerAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.classic.FacehuggerAnimator;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.classic.FacehuggerAnimManager;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity> {
 
@@ -42,7 +42,14 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
     }
 
     @Override
-    public void render(@NotNull FacehuggerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+    public void render(
+        @NotNull FacehuggerEntity entity,
+        float entityYaw,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight
+    ) {
         FacehuggerAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
