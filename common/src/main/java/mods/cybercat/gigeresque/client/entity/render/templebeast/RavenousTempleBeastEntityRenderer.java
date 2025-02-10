@@ -43,7 +43,7 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        RavenousTempleBeastAnimManager.handleAggroMovementAnimations(entity);
+        RavenousTempleBeastAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }
