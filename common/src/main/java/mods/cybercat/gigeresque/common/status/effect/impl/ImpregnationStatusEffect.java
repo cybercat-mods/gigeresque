@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -33,8 +32,7 @@ public class ImpregnationStatusEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        super.applyEffectTick(livingEntity, amplifier);
+    public void onEffectAdded(LivingEntity livingEntity, int amplifier) {
         if (GigEntityUtils.isTargetHostable(livingEntity) && this == GigStatusEffects.IMPREGNATION) {
             this.handleStatusEffects(
                 livingEntity,
@@ -43,10 +41,8 @@ public class ImpregnationStatusEffect extends MobEffect {
                 MobEffects.WEAKNESS,
                 MobEffects.DIG_SLOWDOWN
             );
-            if (livingEntity.level().isClientSide())
-                this.applyParticle(livingEntity);
         }
-        return super.applyEffectTick(livingEntity, amplifier);
+        super.onEffectAdded(livingEntity, amplifier);
     }
 
     @SafeVarargs
@@ -54,17 +50,6 @@ public class ImpregnationStatusEffect extends MobEffect {
         for (Holder<MobEffect> effect : statusEffects)
             if (!livingEntity.hasEffect(effect))
                 livingEntity.addEffect(new MobEffectInstance(effect, ticks, 3, true, true));
-    }
-
-    private void applyParticle(@NotNull LivingEntity livingEntity) {
-        var random = livingEntity.getRandom();
-        if (livingEntity.isAlive() && livingEntity.level().isClientSide) {
-            var yOffset = livingEntity.getEyeY() - ((livingEntity.getEyeY() - livingEntity.blockPosition().getY()) / 2.0);
-            var customX = livingEntity.getX() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
-            var customZ = livingEntity.getZ() + ((random.nextDouble() / 2.0) - 0.5) * (random.nextBoolean() ? -1 : 1);
-            for (var i = 0; i < 1 + (int) (livingEntity.getMaxHealth() - livingEntity.getHealth()); i++)
-                livingEntity.level().addAlwaysVisibleParticle(GigParticles.BLOOD.get(), customX, yOffset, customZ, 0.0, -0.15, 0.0);
-        }
     }
 
     public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
@@ -82,15 +67,7 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (burster != null) {
             setBursterProperties(entity, burster);
             entity.level().addFreshEntity(burster);
-            entity.level()
-                .playSound(
-                    entity,
-                    entity.blockPosition(),
-                    GigSounds.CHESTBURSTING.get(),
-                    SoundSource.NEUTRAL,
-                    2.0f,
-                    1.0f
-                );
+            entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL, 2.0f, 1.0f);
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.CHESTBURSTING), Float.MAX_VALUE);

@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;

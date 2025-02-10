@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.neo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.neo.NeobursterAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +43,7 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
     ) {
         var scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
+        NeobursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

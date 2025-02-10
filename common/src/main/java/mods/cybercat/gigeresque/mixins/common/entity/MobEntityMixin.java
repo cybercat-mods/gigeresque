@@ -29,8 +29,6 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(method = { "playAmbientSound" }, at = { @At("HEAD") }, cancellable = true)
     public void playAmbientSound(CallbackInfo callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING))
-            callbackInfo.cancel();
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.cancel();
     }
@@ -43,15 +41,5 @@ public abstract class MobEntityMixin extends LivingEntity {
             callbackInfo.setReturnValue(true);
         if (this.hasEffect(GigStatusEffects.DNA))
             callbackInfo.setReturnValue(true);
-    }
-
-    @Inject(method = { "tick" }, at = { @At("HEAD") })
-    void tick(CallbackInfo callbackInfo) {
-        if (this.hasEffect(GigStatusEffects.IMPREGNATION))
-            this.persistenceRequired = true;
-        if (this.hasEffect(GigStatusEffects.EGGMORPHING))
-            this.persistenceRequired = true;
-        if (this.hasEffect(GigStatusEffects.DNA))
-            this.persistenceRequired = true;
     }
 }

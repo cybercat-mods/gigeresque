@@ -6,6 +6,7 @@ import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.neo.NeomorphAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,7 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
         int packedLight
     ) {
         poseStack.scale(0.76F, 0.76F, 0.76F);
+        NeomorphAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

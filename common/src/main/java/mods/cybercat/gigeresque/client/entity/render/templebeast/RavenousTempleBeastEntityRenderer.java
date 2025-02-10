@@ -1,13 +1,17 @@
 package mods.cybercat.gigeresque.client.entity.render.templebeast;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.templebeast.RavenousTempleBeastAnimManager;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.templebeast.RavenousTempleBeastAnimator;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<RavenousTempleBeastEntity> {
 
@@ -28,5 +32,11 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
             context
         );
         this.shadowRadius = 1.0f;
+    }
+
+    @Override
+    public void render(@NotNull RavenousTempleBeastEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+        RavenousTempleBeastAnimManager.handleAggroMovementAnimations(entity);
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

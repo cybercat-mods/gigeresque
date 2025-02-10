@@ -10,13 +10,20 @@ public class StasisManager {
 
     private static final String STASIS_TAG_KEY = "isStasis";
 
+    private static final String STASIS_TICK_KEY = "statisTicks";
+
     private final AlienEntity entity;
+
+    private int stasisTicks = 0;
 
     private final EntityDataAccessor<Boolean> isStasisEDA;
 
-    public StasisManager(AlienEntity entity, EntityDataAccessor<Boolean> isStasisEDA) {
+    private final EntityDataAccessor<Integer> statisTickCounterEDA;
+
+    public StasisManager(AlienEntity entity, EntityDataAccessor<Boolean> isStasisEDA, EntityDataAccessor<Integer> statisTickCounterEDA) {
         this.entity = entity;
         this.isStasisEDA = isStasisEDA;
+        this.statisTickCounterEDA = statisTickCounterEDA;
     }
 
     public void tick() {
@@ -25,6 +32,7 @@ public class StasisManager {
         }
 
         if (entity.isAggressive() || entity.isExecuting()) {
+            stasisTicks = 0;
             setStasis(false);
         }
         if (entity.stasisManager.isStasis() && entity.getNavigation() instanceof GigNavigation gigNav)
@@ -32,7 +40,16 @@ public class StasisManager {
 
         if (isStasis() && entity.isAggressive()) {
             entity.animationDispatcher.sendStatisLeave();
+            stasisTicks = 0;
             setStasis(false);
+        }
+        if (!isStasis() && !entity.isAggressive() && !entity.isExecuting() && !entity.isVehicle()) {
+            setStasisTickCounter(stasisTicks++);
+        }
+
+        if (!isStasis() && !entity.isAggressive() && !entity.isExecuting() && !entity.isVehicle() && stasisTicks > 6000) {
+            setStasis(true);
+            stasisTicks = 0;
         }
     }
 
@@ -44,11 +61,21 @@ public class StasisManager {
         return entity.getEntityData().get(isStasisEDA);
     }
 
+    public int getStasisTickCounter() {
+        return entity.getEntityData().get(statisTickCounterEDA);
+    }
+
+    public void setStasisTickCounter(int counter) {
+        entity.getEntityData().set(statisTickCounterEDA, counter);
+    }
+
     public void load(CompoundTag compoundTag) {
         entity.getEntityData().set(isStasisEDA, compoundTag.getBoolean(STASIS_TAG_KEY));
+        entity.getEntityData().set(statisTickCounterEDA, compoundTag.getInt(STASIS_TICK_KEY));
     }
 
     public void save(CompoundTag compoundTag) {
         compoundTag.putBoolean(STASIS_TAG_KEY, entity.getEntityData().get(isStasisEDA));
+        compoundTag.putInt(STASIS_TICK_KEY, entity.getEntityData().get(statisTickCounterEDA));
     }
 }

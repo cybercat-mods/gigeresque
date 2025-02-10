@@ -7,8 +7,6 @@ import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.config.GigeresqueConfig;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.GigMemoryTypes;
-import mods.cybercat.gigeresque.common.entity.ai.GigSensors;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
@@ -30,8 +28,6 @@ public record CommonMod() {
         GigItems.initialize();
         GigSounds.initialize();
         GigStatusEffects.initialize();
-        GigMemoryTypes.initialize();
-        GigSensors.initialize();
         GigParticles.initialize();
     }
 }

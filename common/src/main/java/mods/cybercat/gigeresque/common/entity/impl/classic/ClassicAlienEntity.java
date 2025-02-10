@@ -1,25 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
-import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -28,9 +11,11 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,40 +25,32 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.SplittableRandom;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyNestBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienHeadBiteTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.ClassicXenoMeleeAttackTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.BuildNestTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EnterStasisTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.SearchTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedClassicAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.HeadBiteGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.nest.BuildNestGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.nest.EggmorphGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 /**
  * TODO: Ensure crawling works good
  */
-public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<ClassicAlienEntity> {
+public class ClassicAlienEntity extends AlienEntity {
 
     public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
+        this.animationSelector = GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR;
     }
 
     /*
@@ -121,7 +98,7 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     .getBlockState(this.blockPosition().below())
                     .is(
                         BlockTags.STAIRS
-                    ) ? 1.0F : 2.9f
+                    ) ? 1.0F : 1.9f
         );
     }
 
@@ -130,7 +107,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
         super.tick();
         moveAnalysis.update();
         crawlingManager.tick();
-        GigEntityUtils.breakBlocks(this);
 
         if (!this.isVehicle())
             this.setIsExecuting(false);
@@ -192,8 +168,6 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
                     ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
                     : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage
             );
-            this.heal(1.0833f);
-            return super.doHurtTarget(target);
         }
         if (target instanceof Creeper creeper)
             creeper.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO), creeper.getMaxHealth());
@@ -202,154 +176,30 @@ public class ClassicAlienEntity extends AlienEntity implements SmartBrainOwner<C
     }
 
     @Override
-    public boolean isPathFinding() {
-        return false;
-    }
-
-    @Override
-    protected Brain.@NotNull Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        tickBrain(this);
-        super.customServerAiStep();
-    }
-
-    @Override
-    public List<ExtendedSensor<ClassicAlienEntity>> getSensors() {
-        return ObjectArrayList.of(
-            // Player Sensor
-            new NearbyPlayersSensor<>(),
-            // Living Sensor
-            new NearbyLivingEntitySensor<ClassicAlienEntity>().setRadius(32)
-                .setPredicate(GigEntityUtils::entityTest),
-            // Block Sensor
-            new NearbyBlocksSensor<ClassicAlienEntity>().setRadius(7),
-            // Fire Sensor
-            new NearbyRepellentsSensor<ClassicAlienEntity>().setRadius(15)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS)
-                ),
-            // Lights Sensor
-            new NearbyLightsBlocksSensor<ClassicAlienEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
-                ),
-            // Nest Sensor
-            new NearbyNestBlocksSensor<ClassicAlienEntity>().setRadius(16)
-                .setPredicate(
-                    (block, entity) -> block.is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
-                ),
-            new UnreachableTargetSensor<>(),
-            new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<ClassicAlienEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-            // Flee fight at half or less health
-            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
-                .whenStarting(entity -> entity.setFleeingStatus(true))
-                .whenStopping(entity -> entity.setFleeingStatus(false)),
-            // Flee Fire
-            new FleeFireTask<ClassicAlienEntity>(1.1F).whenStarting(
-                entity -> entity.setFleeingStatus(true)
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new DelayedClassicAttackGoal(this, 1.25F, 5));
+        this.goalSelector.addGoal(2, new HeadBiteGoal(this));
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); //TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(3, new EggmorphGoal(this));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(11, new KillLightsGoal(this));
+        this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(7, new BuildNestGoal(this));
+        this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                this,
+                LivingEntity.class,
+                false,
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
             )
-                .whenStopping(entity -> entity.setFleeingStatus(false))
-                .startCondition(classicAlienEntity -> !this.stasisManager.isStasis())
-                .stopIf(classicAlienEntity -> this.stasisManager.isStasis()),
-            // Take target to nest
-            new EggmorpthTargetTask<>().startCondition(entity -> this.isVehicle() && !this.stasisManager.isStasis()),
-            // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive())
-                .startCondition(
-                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching() || !this.isExecuting()
-                ),
-            // Hisses
-            new HissingTask<>(800).startCondition(entity -> !this.isAggressive())
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
-            // Searches
-            new SearchTask<>(6000).startCondition(entity -> !this.isAggressive())
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
-            // Headbite
-            new AlienHeadBiteTask<>(this.isBiting() ? 44 : 760),
-            // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.isExecuting())
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.searchingManager.isSearching())
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public BrainActivityGroup<ClassicAlienEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-            // Build Nest
-            new BuildNestTask<>(90).startCondition(
-                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
-                    || !crawlingManager.isCrawling()
-                    || !this.isVehicle()
-            )
-                .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing())
-                ),
-            // Kill Lights
-            new KillLightsTask<>().startCondition(
-                entity -> !this.isAggressive() || !this.stasisManager.isStasis() || !this.isExecuting() || !this.isFleeing()
-            )
-                .stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.stasisManager.isStasis() || this.isFleeing()
-                        || this.searchingManager.isSearching())
-                ),
-            // Find Darkness
-            new FindDarknessTask<ClassicAlienEntity>().stopIf(Mob::isAggressive),
-            // Do first
-            new FirstApplicableBehaviour<ClassicAlienEntity>(
-                // Targeting
-                new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isVehicle() || this.isFleeing() || this.stasisManager.isStasis())
-                ),
-                // Look at players
-                new SetPlayerLookTarget<>().predicate(
-                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting()),
-                // Look around randomly
-                new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
-                )
-            ).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isAggressive()),
-            // Random
-            new OneRandomBehaviour<>(
-                // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater()
-                    .setRadius(20)
-                    .speedModifier(0.6f)
-                    .startCondition(
-                        entity -> !this.stasisManager.isStasis() || !this.isExecuting() || !this.isAggressive() || !this.isVehicle()
-                            && !this.moveAnalysis.isMoving()
-                    )
-                    .stopIf(
-                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
-                            || this.searchingManager.isSearching()
-                    ),
-                new EnterStasisTask<>(6000).startCondition(entity -> !this.isAggressive() || !this.isVehicle())
-            ).stopIf(entity -> this.moveAnalysis.isMoving() || this.isAggressive() || this.isVehicle())
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<ClassicAlienEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf(
-                (entity, target) -> GigEntityUtils.removeTarget(target) || this.stasisManager.isStasis()
-            ),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.15f)
-                .closeEnoughDist((mob, livingEntity) -> 0)
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
-            new ClassicXenoMeleeAttackTask<>(5).stopIf(entity -> this.stasisManager.isStasis() || this.isExecuting() || this.isVehicle())
         );
     }
 

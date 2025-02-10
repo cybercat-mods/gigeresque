@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.hellmorphs;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.hellmorphs.HellbursterAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,7 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
     ) {
         float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
+        HellbursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

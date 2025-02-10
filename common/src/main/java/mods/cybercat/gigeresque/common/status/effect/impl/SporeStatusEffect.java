@@ -1,9 +1,12 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,13 +14,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 
@@ -32,13 +34,6 @@ public class SporeStatusEffect extends MobEffect {
         return true;
     }
 
-    @Override
-    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
-        if (entity.hasEffect(GigStatusEffects.SPORE))
-            entity.heal(0);
-        return super.applyEffectTick(entity, amplifier);
-    }
-
     public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
         if (Constants.isCreativeSpecPlayer.test(entity))
             return;
@@ -46,14 +41,17 @@ public class SporeStatusEffect extends MobEffect {
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
-        var neoBurster = GigEntities.NEOBURSTER.get().create(entity.level());
-        if (entity.getType().is(GigTags.NEOHOST) && neoBurster != null) {
-            setBursterProperties(entity, neoBurster);
-            spawnEffects(entity.level(), entity);
-            entity.level().addFreshEntity(neoBurster);
+        var burster = GigEntities.NEOBURSTER.get().create(entity.level());
+        if (burster != null) {
+            setBursterProperties(entity, burster);
+            entity.level().addFreshEntity(burster);
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Float.MAX_VALUE);
+            if (entity instanceof Player player) {
+                player.addEffect(new MobEffectInstance(MobEffects.HARM, 100, 100));
+                player.kill();
+            }
         }
     }
 
@@ -62,7 +60,8 @@ public class SporeStatusEffect extends MobEffect {
             burster.setCustomName(entity.getCustomName());
         if (entity instanceof LivingEntity livingEntity) {
             for (var effect : livingEntity.getActiveEffects()) {
-                burster.addEffect(new MobEffectInstance(effect));
+                if (!effect.is(GigStatusEffects.IMPREGNATION))
+                    burster.addEffect(new MobEffectInstance(effect));
             }
         }
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);

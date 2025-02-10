@@ -1,33 +1,29 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodBlockGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -38,6 +34,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
+        this.animationSelector = GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -77,63 +74,26 @@ public class NeobursterEntity extends RunnerbursterEntity {
         return GigEntities.NEOMORPH_ADOLESCENT.get().create(level());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-            // Build Nest
-            new EatFoodTask<>(10),
-            // Kill Lights
-            new KillLightsTask<>(),
-            new KillCropsTask<>(),
-            // Do first
-            new FirstApplicableBehaviour<RunnerAlienEntity>(
-                // Targeting
-                new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())
-                ),
-                // Look at players
-                new SetPlayerLookTarget<>().predicate(
-                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                )
-                    .stopIf(
-                        entity -> this.stasisManager.isStasis() || this.isExecuting()
-                    ),
-                // Look around randomly
-                new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
-                )
-            ).stopIf(
-                entity -> this.stasisManager.isStasis() || this.isExecuting()
-            ),
-            // Random
-            new OneRandomBehaviour<>(
-                // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater()
-                    .setRadius(20)
-                    .speedModifier(0.7f)
-                    .startCondition(entity -> !this.moveAnalysis.isMoving())
-                    .stopIf(
-                        entity -> this.isExecuting() || this.stasisManager.isStasis() || this.isAggressive() || this.isVehicle()
-                    ),
-                // Idle
-                new Idle<>().startCondition(entity -> !this.isAggressive())
-                    .runFor(
-                        entity -> entity.getRandom().nextInt(30, 60)
-                    )
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EatFoodItemGoal(this, 0.9F, 5));
+        this.goalSelector.addGoal(1, new EatFoodBlockGoal(this));
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                this,
+                LivingEntity.class,
+                false,
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
             )
         );
     }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.4f)
-                .closeEnoughDist((mob, livingEntity) -> 0)
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR)
-        );
-    }
-
 }

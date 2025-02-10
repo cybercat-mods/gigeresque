@@ -26,7 +26,6 @@ import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -70,14 +69,35 @@ public record GigEntityUtils() {
     }
 
     public static boolean faceHuggerTest(LivingEntity target) {
-        return !(target.getType().is(GigTags.GIG_ALIENS) || target instanceof AmbientCreature) && !target.getType()
-            .is(
-                GigTags.FACEHUGGER_BLACKLIST
-            ) && !target.hasEffect(GigStatusEffects.IMPREGNATION) && !target.hasEffect(
-                GigStatusEffects.EGGMORPHING
-            ) && !GigEntityUtils.passengerCheck(
-                target
-            ) && !GigEntityUtils.removeFaceHuggerTarget(target) && GigEntityUtils.isTargetHostable(target);
+        if (target.getType().is(GigTags.GIG_ALIENS)) {
+            return false;
+        }
+
+        if (target instanceof AmbientCreature) {
+            return false;
+        }
+
+        if (GigEntityUtils.passengerCheck(target)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.IMPREGNATION)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            return false;
+        }
+
+        if (GigEntityUtils.isFacehuggerAttached(target)) {
+            return false;
+        }
+
+        if (target.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+            return false;
+        }
+
+        return GigEntityUtils.isTargetHostable(target);
     }
 
     public static boolean entityTest(LivingEntity target, LivingEntity self) {
@@ -90,23 +110,55 @@ public record GigEntityUtils() {
     }
 
     public static boolean removeTarget(LivingEntity target) {
-        return (((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
-            .is(
-                GigTags.XENO_ATTACK_BLACKLIST
-            )) || GigEntityUtils.passengerCheck(target) || GigEntityUtils.hostEggCheck(
-                target
-            ) || GigEntityUtils.isFacehuggerAttached(target) || GigEntityUtils.feetCheck(
-                target
-            ) && !target.isAlive()) || target.hasEffect(GigStatusEffects.IMPREGNATION));
+        if (target.getType().is(GigTags.GIG_ALIENS)) {
+            return false;
+        }
+
+        if (target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) {
+            return false;
+        }
+
+        if (GigEntityUtils.passengerCheck(target)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.IMPREGNATION)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            return false;
+        }
+
+        if (GigEntityUtils.isFacehuggerAttached(target)) {
+            return false;
+        }
+
+        return target.isAlive();
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
-        return ((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
-            .is(
-                GigTags.SMALL_XENO_ATTACK_BLACKLIST
-            )) || GigEntityUtils.mainCheck(target) || GigEntityUtils.mainCheck2(
-                target
-            ) || !GigEntityUtils.isTargetHostable(target) || !target.isAlive());
+        if (target.getType().is(GigTags.GIG_ALIENS)) {
+            return false;
+        }
+
+        if (GigEntityUtils.passengerCheck(target)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.IMPREGNATION)) {
+            return false;
+        }
+
+        if (target.hasEffect(GigStatusEffects.EGGMORPHING)) {
+            return false;
+        }
+
+        if (GigEntityUtils.isFacehuggerAttached(target)) {
+            return false;
+        }
+
+        return GigEntityUtils.isTargetHostable(target) && target.isAlive();
     }
 
     public static boolean mainCheck(LivingEntity target) {
@@ -213,7 +265,7 @@ public record GigEntityUtils() {
                 for (
                     var testPos : BlockPos.betweenClosed(
                         alienEntity.blockPosition().relative(alienEntity.getDirection()).above(1),
-                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(2)
+                        alienEntity.blockPosition().relative(alienEntity.getDirection()).above(1)
                     )
                 ) {
                     var state = alienEntity.level().getBlockState(testPos);

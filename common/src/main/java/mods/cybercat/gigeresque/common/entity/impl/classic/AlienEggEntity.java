@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -50,6 +50,8 @@ public class AlienEggEntity extends AlienEntity {
     public long ticksOpen = 0L;
 
     public int hatchCheckTimer = 0;
+
+    public int hatchedOpenTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
         super(type, world);
@@ -182,6 +184,13 @@ public class AlienEggEntity extends AlienEntity {
                 hatchCheckTimer++;
             GigCommonMethods.handleAoEEntityHatchCheck(this);
             GigCommonMethods.handleAoEBlockHatchCheck(this);
+            if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger()) {
+                this.hatchedOpenTimer++;
+                if (this.hatchedOpenTimer >= 1200) {
+                    this.level().setBlockAndUpdate(this.blockPosition(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                    this.kill();
+                }
+            }
         }
     }
 

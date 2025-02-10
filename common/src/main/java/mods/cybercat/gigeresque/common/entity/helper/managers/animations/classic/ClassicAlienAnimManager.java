@@ -4,7 +4,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 
 public class ClassicAlienAnimManager {
-    
+
     public static void handleAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isDeadOrDying()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendDeath);
@@ -24,16 +24,6 @@ public class ClassicAlienAnimManager {
         }
     }
 
-    public static void handleVehicleAnimations(ClassicAlienEntity classicAlienEntity) {
-        if (classicAlienEntity.isExecuting()) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendExecutionCarry);
-        } else if (classicAlienEntity.moveAnalysis.isMoving()) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
-        } else {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendKidnap);
-        }
-    }
-
     public static void handleMovementAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isVehicle()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
@@ -43,6 +33,8 @@ public class ClassicAlienAnimManager {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isInWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
+        } else if (classicAlienEntity.isFleeing()) {
+            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendRun);
         } else {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalk);
         }
@@ -55,6 +47,8 @@ public class ClassicAlienAnimManager {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isInWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
+        } else if (classicAlienEntity.isFleeing()) {
+            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendRun);
         } else {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendRun);
         }

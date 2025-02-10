@@ -3,13 +3,7 @@ package mods.cybercat.gigeresque.common.entity.helper;
 import net.minecraft.world.phys.Vec3;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.entity.impl.misc.SpitterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.HammerpedeEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import mods.cybercat.gigeresque.common.entity.impl.mutant.StalkerEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public record GigMeleeAttackSelector() {
@@ -58,7 +52,7 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<StalkerEntity> STALKER_ANIM_SELECTOR = stalker -> {
+    public static final AnimationSelector<AlienEntity> STALKER_ANIM_SELECTOR = stalker -> {
         Runnable animKey = switch (stalker.getRandom().nextInt(4)) {
             case 1, 3 -> stalker.animationDispatcher::sendHeavy;
             default -> stalker.animationDispatcher::sendNormal;
@@ -81,13 +75,13 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<HammerpedeEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.animationDispatcher
+    public static final AnimationSelector<AlienEntity> HAMMER_ANIM_SELECTOR = hammerpedeEntity -> hammerpedeEntity.animationDispatcher
         .sendAttack();
 
-    public static final AnimationSelector<RunnerbursterEntity> RBUSTER_ANIM_SELECTOR =
-        runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp();
+    public static final AnimationSelector<AlienEntity> RBUSTER_ANIM_SELECTOR =
+        runnerbursterEntity -> runnerbursterEntity.animationDispatcher.sendChomp2();
 
-    public static final AnimationSelector<ChestbursterEntity> NBUSTER_ANIM_SELECTOR = neobursterEntity -> {
+    public static final AnimationSelector<AlienEntity> NBUSTER_ANIM_SELECTOR = neobursterEntity -> {
         Runnable animKey = switch (neobursterEntity.getRandom().nextInt(4)) {
             case 1 -> neobursterEntity.animationDispatcher::sendRightClaw;
             case 2 -> neobursterEntity.animationDispatcher::sendLeftTail;
@@ -97,7 +91,7 @@ public record GigMeleeAttackSelector() {
         GigCommonMethods.setAnimation(animKey);
     };
 
-    public static final AnimationSelector<FacehuggerEntity> HUGGER_SELECTOR = facehuggerEntity -> {
+    public static final AnimationSelector<AlienEntity> HUGGER_SELECTOR = facehuggerEntity -> {
         if (facehuggerEntity.getTarget() != null) {
             var vec3d2 = new Vec3(
                 facehuggerEntity.getTarget().getX() - facehuggerEntity.getX(),
@@ -114,7 +108,7 @@ public record GigMeleeAttackSelector() {
         }
     };
 
-    public static final AnimationSelector<PopperEntity> POPPER_SELECTOR = popperEntity -> {
+    public static final AnimationSelector<AlienEntity> POPPER_SELECTOR = popperEntity -> {
         if (popperEntity.getTarget() != null) {
             var vec3d2 = new Vec3(
                 popperEntity.getTarget().getX() - popperEntity.getX(),

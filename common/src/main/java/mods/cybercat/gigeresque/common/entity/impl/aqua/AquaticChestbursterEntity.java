@@ -8,7 +8,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 
@@ -31,14 +30,5 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
     @Override
     public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         return this.wasEyeInWater ? super.getDefaultDimensions(pose).scale(1.0f, 0.5f) : super.getDefaultDimensions(pose);
-    }
-
-    @Override
-    protected void handleIdleAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
-        }
     }
 }

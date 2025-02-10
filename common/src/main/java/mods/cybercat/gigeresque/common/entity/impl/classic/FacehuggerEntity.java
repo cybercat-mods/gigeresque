@@ -1,26 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
-import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -31,46 +11,42 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FacehuggerPounceTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.FacehugGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 /**
  * TODO: Ensure crawling works good
  */
-public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<FacehuggerEntity> {
+public class FacehuggerEntity extends AlienEntity {
 
     private static final EntityDataAccessor<Boolean> IS_INFERTILE = SynchedEntityData.defineId(
         FacehuggerEntity.class,
@@ -84,6 +60,7 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
+        this.animationSelector = GigMeleeAttackSelector.HUGGER_SELECTOR;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -244,54 +221,12 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
         if (this.isPassenger() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
-        if (this.level().isClientSide)
-            this.handleAnimations();
         this.handleAttachmentToHost();
         if (isInfertile()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
             this.kill();
             this.removeAllGoals(goals -> true);
             this.getBrain().removeAllBehaviors();
-        }
-    }
-
-    protected void handleAnimations() {
-        if (this.isDeadOrDying() || this.isInfertile()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
-            return;
-        }
-        if (!this.isVehicle()) {
-            if (this.moveAnalysis.isMoving()) {
-                this.handleMovementAnimations();
-            } else {
-                this.handleIdleAnimations();
-            }
-        }
-    }
-
-    protected void handleMovementAnimations() {
-        if (this.isAggressive()) {
-            this.handleAggroMovementAnimations();
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawl);
-        }
-    }
-
-    protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRushSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendCrawlRush);
-        }
-    }
-
-    protected void handleIdleAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleWater);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendIdleLand);
         }
     }
 
@@ -354,93 +289,23 @@ public class FacehuggerEntity extends AlienEntity implements SmartBrainOwner<Fac
     }
 
     @Override
-    protected Brain.@NotNull Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        tickBrain(this);
-        super.customServerAiStep();
-    }
-
-    @Override
-    public List<ExtendedSensor<FacehuggerEntity>> getSensors() {
-        return ObjectArrayList.of(
-            new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<FacehuggerEntity>().setPredicate(
-                (target, self) -> GigEntityUtils.entityTest(
-                    target,
-                    self
-                ) || !(target instanceof Creeper || target instanceof IronGolem) && !target.getType()
-                    .is(
-                        EntityTypeTags.UNDEAD
-                    )
-            ),
-            new NearbyBlocksSensor<FacehuggerEntity>().setRadius(7),
-            new NearbyRepellentsSensor<FacehuggerEntity>().setRadius(15)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
-                ),
-            new UnreachableTargetSensor<>(),
-            new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<FacehuggerEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
-                .whenStarting(entity -> entity.setFleeingStatus(true))
-                .whenStopping(entity -> entity.setFleeingStatus(false)),
-            new FleeFireTask<>(2.2F).whenStarting(
-                entity -> entity.setFleeingStatus(true)
-            ).whenStopping(entity -> entity.setFleeingStatus(false)),
-            new LookAtTarget<>(),
-            new MoveToWalkTarget<>().stopIf(entity -> this.isFleeing())
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public BrainActivityGroup<FacehuggerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-            new FirstApplicableBehaviour<FacehuggerEntity>(
-                new TargetOrRetaliate<>().stopIf(entity -> this.isFleeing()),
-                new SetPlayerLookTarget<>().predicate(
-                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ),
-                new SetRandomLookTarget<>()
-            ),
-            new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater()
-                    .setRadius(20)
-                    .speedModifier(0.75f)
-                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
-                new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.96));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(1, new FacehugGoal(this, 1.6F, 6));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                this,
+                LivingEntity.class,
+                false,
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeFaceHuggerTarget(target)
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<FacehuggerEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf(
-                (entity, target) -> GigEntityUtils.removeFaceHuggerTarget(
-                    target
-                ) || target.getType().is(EntityTypeTags.UNDEAD) || this.isFleeing()
-            ),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.2F)
-                .closeEnoughDist((mob, livingEntity) -> 0)
-                .whenStarting(
-                    entity -> GigCommonMethods.setAnimation(
-                        this.isInWater()
-                            ? animationDispatcher::sendRushSwim
-                            : animationDispatcher::sendCrawlRush
-                    )
-                ),
-            new FacehuggerPounceTask<>(6)
         );
     }
 }

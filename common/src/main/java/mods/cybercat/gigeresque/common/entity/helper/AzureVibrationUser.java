@@ -136,18 +136,19 @@ public class AzureVibrationUser implements VibrationSystem.User {
             alienEntity.wakeupCounter++;
             if (alienEntity.stasisManager.isStasis() && alienEntity.wakeupCounter == 1) {
                 alienEntity.animationDispatcher.sendStatisLeave();
-                alienEntity.searchingManager.setSearching(true);
             }
             if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                 alienEntity.stasisManager.setStasis(false);
             if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                     alienEntity.stasisManager.setStasis(false);
-                alienEntity.animationDispatcher.sendAmbient();
                 alienEntity.getNavigation().stop();
             }
             if (alienEntity.wakeupCounter >= 3) {
                 alienEntity.stasisManager.setStasis(false);
+                if (entity2 instanceof LivingEntity livingEntity && GigEntityUtils.TARGET_PREDICATE.test(alienEntity, livingEntity)) {
+                    this.mob.setTarget(livingEntity);
+                }
                 alienEntity.setAggressive(true);
                 alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
                 alienEntity.wakeupCounter = 0;

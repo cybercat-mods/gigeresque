@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.runner;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.runner.RunnerbursterAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -35,9 +36,8 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
         int packedLight
     ) {
         float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
-        poseStack.pushPose();
+        RunnerbursterAnimManager.handleAnimations(entity);
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
-        poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

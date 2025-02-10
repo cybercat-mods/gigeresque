@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.helper.managers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.PathfinderMob;
 
 /**
@@ -47,6 +48,10 @@ public class CrawlingManager {
             return;
         }
 
+        if (entity.isVehicle()) {
+            return;
+        }
+
         var path = navigation.getPath();
 
         var isTight = isTightSpace(blockPosition);
@@ -67,7 +72,9 @@ public class CrawlingManager {
         var level = entity.level();
         var above = blockPos.above();
         var aboveState = level.getBlockState(above);
-        return !aboveState.isAir() && aboveState.entityCanStandOn(entity.level(), blockPos, entity);
+        return (!aboveState.isAir() && aboveState.entityCanStandOn(entity.level(), blockPos, entity)) || level.getBlockState(
+            blockPos.below()
+        ).is(BlockTags.STAIRS);
     }
 
     public void load(CompoundTag compoundTag) {

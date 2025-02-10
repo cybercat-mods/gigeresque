@@ -13,18 +13,27 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class EggMorphingStatusEffect extends MobEffect {
 
     public EggMorphingStatusEffect() {
-        super(MobEffectCategory.HARMFUL, Color.BLACK.getColor());
+        super(MobEffectCategory.NEUTRAL, Color.BLACK.getColor());
     }
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
+    }
+
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+        super.applyEffectTick(entity, amplifier);
+        if (GigEntityUtils.isTargetHostable(entity) && this == GigStatusEffects.EGGMORPHING)
+            entity.heal(0);
+        return super.applyEffectTick(entity, amplifier);
     }
 
     public static void effectRemoval(@NotNull LivingEntity entity, MobEffectInstance mobEffectInstance) {

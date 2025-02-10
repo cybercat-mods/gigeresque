@@ -1,22 +1,30 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodBlockGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -27,6 +35,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         super(type, level);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
+        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -83,35 +92,26 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     }
 
     @Override
-    public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf(
-                (entity, target) -> GigEntityUtils.removeTarget(target) || target.getBbHeight() >= 0.8
-            ),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.0f)
-                .closeEnoughDist((mob, livingEntity) -> 0)
-                .stopIf(entity -> this.stasisManager.isStasis() || this.isVehicle()),
-            new AlienMeleeAttack<>(5, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR)
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EatFoodItemGoal(this, 0.9F, 5));
+        this.goalSelector.addGoal(1, new EatFoodBlockGoal(this));
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                this,
+                LivingEntity.class,
+                false,
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
+                    || target.getBbHeight() >= 0.8
+            )
         );
-    }
-
-    @Override
-    protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
-        }
-    }
-
-    @Override
-    protected void handleMovementAnimations() {
-        if (this.isAggressive()) {
-            this.handleAggroMovementAnimations();
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRun);
-        }
     }
 }

@@ -93,7 +93,7 @@ public class SurgeryKitItem extends Item {
             entity.removeEffect(MobEffects.HUNGER);
             entity.removeEffect(MobEffects.WEAKNESS);
             entity.removeEffect(MobEffects.DIG_SLOWDOWN);
-            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, 75, 0, false, false, true));
+            entity.addEffect(new MobEffectInstance(GigStatusEffects.TRAUMA, 300, 0, false, false, true));
             var burster = GigEntityUtils.spawnBurster(entity);
             if (burster != null) {
                 setBursterProperties(entity, burster);

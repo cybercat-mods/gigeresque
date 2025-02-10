@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.rom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.rom.RomAlienAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
     ) {
         var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        RomAlienAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 }

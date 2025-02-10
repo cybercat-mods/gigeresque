@@ -1,7 +1,10 @@
 package mods.cybercat.gigeresque.client.entity.render.mutant;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.mutant.StalkerAnimManager;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +25,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
             AzEntityRendererConfig.<StalkerEntity>builder(
                 $ -> EntityModels.STALKER,
                 stalker -> {
-                    if (!stalker.moveAnalysis.isMoving()) {
+                    if (stalker.isAggressive()) {
                         return EntityTextures.STALKER_TRANSPARENT;
                     }
                     return EntityTextures.STALKER;
@@ -30,7 +33,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
             )
                 .setAnimatorProvider(StalkerAnimator::new)
                 .setDeathMaxRotation(0.0F)
-                .setRenderType(stalker -> !stalker.moveAnalysis.isMoving() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
+                .setRenderType(stalker -> stalker.isAggressive() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
                 .build(),
             context
         );
@@ -39,5 +42,11 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
     @Override
     protected float getShadowRadius(@NotNull StalkerEntity entity) {
         return entity.walkAnimation.speedOld < 0.35F && !entity.swinging ? 0.0f : 1.0f;
+    }
+
+    @Override
+    public void render(@NotNull StalkerEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+        StalkerAnimManager.handleAnimations(entity);
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

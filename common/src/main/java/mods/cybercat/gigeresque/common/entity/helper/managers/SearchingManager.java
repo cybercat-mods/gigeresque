@@ -26,6 +26,10 @@ public class SearchingManager {
         if (isSearching() && !entity.moveAnalysis.isMoving() && entity.wakeupCounter >= 3) {
             setSearching(false);
         }
+
+        if (entity.isAggressive()) {
+            setSearching(false);
+        }
     }
 
     public void setSearching(boolean searching) {

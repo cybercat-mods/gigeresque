@@ -1,64 +1,39 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
-import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.attack.AlienMeleeAttack;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.HissingTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.RunToAttackTargetTask;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<AquaticAlienEntity> {
+public class AquaticAlienEntity extends AlienEntity {
 
     public int killCounter;
 
@@ -66,6 +41,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
+        this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
     }
 
     @Override
@@ -87,7 +63,7 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
             .add(Attributes.KNOCKBACK_RESISTANCE, 9.0)
             .add(
                 Attributes.FOLLOW_RANGE,
-                32.0
+                32
             )
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
@@ -124,93 +100,27 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
     }
 
     @Override
-    public boolean isPathFinding() {
-        return false;
-    }
-
-    @Override
-    protected Brain.@NotNull Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        tickBrain(this);
-        super.customServerAiStep();
-    }
-
-    @Override
-    public List<ExtendedSensor<AquaticAlienEntity>> getSensors() {
-        return ObjectArrayList.of(
-            new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<AquaticAlienEntity>().setRadius(30)
-                .setPredicate(
-                    GigEntityUtils::entityTest
-                ),
-            new NearbyBlocksSensor<AquaticAlienEntity>().setRadius(7),
-            new NearbyRepellentsSensor<AquaticAlienEntity>().setRadius(15)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
-                ),
-            new NearbyLightsBlocksSensor<AquaticAlienEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
-                ),
-            new HurtBySensor<>(),
-            new UnreachableTargetSensor<>(),
-            new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<AquaticAlienEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-            // Flee fight at half or less health
-            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
-                .whenStarting(entity -> entity.setFleeingStatus(true))
-                .whenStopping(entity -> entity.setFleeingStatus(false)),
-            new LookAtTarget<>(),
-            new FleeFireTask<>(0.5F),
-            new HissingTask<>(800),
-            new MoveToWalkTarget<>()
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public BrainActivityGroup<AquaticAlienEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-            new KillLightsTask<>(),
-            new FirstApplicableBehaviour<AquaticAlienEntity>(
-                new TargetOrRetaliate<>(),
-                new SetPlayerLookTarget<>().predicate(
-                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                ),
-                new SetRandomLookTarget<>()
-            ),
-            new OneRandomBehaviour<>(
-                new SetRandomWalkTarget<>().dontAvoidWater()
-                    .setRadius(20)
-                    .speedModifier(
-                        0.95f
-                    )
-                    .startCondition(entity -> !this.moveAnalysis.isMoving())
-                    .stopIf(entity -> this.stasisManager.isStasis()),
-                new Idle<>().startCondition(entity -> !this.isAggressive())
-                    .runFor(
-                        entity -> entity.getRandom().nextInt(30, 60)
-                    )
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.25F, 5));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); //TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(10, new KillLightsGoal(this));
+        this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                this,
+                LivingEntity.class,
+                false,
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
             )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<AquaticAlienEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target)),
-            new RunToAttackTargetTask<>().speedMod((owner, target) -> 1.1F).closeEnoughDist((mob, livingEntity) -> 0),
-            new AlienMeleeAttack<>(10, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR)
         );
     }
 
@@ -238,7 +148,6 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
                 this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f
             );
             this.heal(1.0833f);
-            return super.doHurtTarget(target);
         }
         if (target instanceof Creeper creeper)
             creeper.hurt(damageSources().mobAttack(this), creeper.getMaxHealth());
@@ -251,32 +160,6 @@ public class AquaticAlienEntity extends AlienEntity implements SmartBrainOwner<A
         if (entity.getType().is(EntityTypeTags.AQUATIC))
             this.killCounter++;
         return super.killedEntity(level, entity);
-    }
-
-    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return this.getBbWidth() * ((this.level()
-            .getFluidState(this.blockPosition())
-            .is(
-                Fluids.WATER
-            ) && this.level()
-                .getFluidState(
-                    this.blockPosition()
-                )
-                .getAmount() >= 8) ? 1.0f : 3.0f) * (this.getBbWidth() * ((this.level()
-                    .getFluidState(
-                        this.blockPosition()
-                    )
-                    .is(Fluids.WATER) && this.level()
-                        .getFluidState(
-                            this.blockPosition()
-                        )
-                        .getAmount() >= 8) ? 1.0f : 3.0f)) + livingEntity.getBbWidth();
-    }
-
-    @Override
-    public boolean isWithinMeleeAttackRange(@NotNull LivingEntity livingEntity) {
-        double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-        return d <= this.getMeleeAttackRangeSqr(livingEntity);
     }
 
     @Override

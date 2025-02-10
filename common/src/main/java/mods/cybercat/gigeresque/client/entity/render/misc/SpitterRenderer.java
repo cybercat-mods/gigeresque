@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
+import mods.cybercat.gigeresque.common.entity.helper.managers.animations.misc.SpitterAnimManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,7 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
         int packedLight
     ) {
         var scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
+        SpitterAnimManager.handleAnimations(entity);
         poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }

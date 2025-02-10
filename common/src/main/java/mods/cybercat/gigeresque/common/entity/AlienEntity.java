@@ -23,7 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -50,6 +50,7 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.nav.WaterMoveControl;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
@@ -60,6 +61,7 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
@@ -121,6 +123,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         EntityDataSerializers.BOOLEAN
     );
 
+    public static final EntityDataAccessor<Integer> STASIS_TICK = SynchedEntityData.defineId(
+            AlienEntity.class,
+            EntityDataSerializers.INT
+    );
+
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
@@ -149,17 +156,18 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public final StasisManager stasisManager;
 
+    public AnimationSelector<AlienEntity> animationSelector;
+
     protected AlienEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
         this.searchingManager = new SearchingManager(this, IS_SEARCHING);
-        this.stasisManager = new StasisManager(this, IS_STASIS);
+        this.stasisManager = new StasisManager(this, IS_STASIS, STASIS_TICK);
         this.vibrationUser = new AzureVibrationUser(this, 2.5F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.5F, 1.0F, true);
     }
 
     @Override
@@ -303,6 +311,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(IS_STASIS, false);
         builder.define(IS_SEARCHING, false);
         builder.define(IS_CRAWLING, false);
+        builder.define(STASIS_TICK, 0);
     }
 
     @Override
@@ -377,6 +386,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         super.tick();
         searchingManager.tick();
         stasisManager.tick();
+        if (this.isInWater()) {
+            this.moveControl = new WaterMoveControl(this);
+        } else {
+            this.moveControl = new MoveControl(this);
+        }
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel) {
@@ -575,6 +589,34 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             (j * h * 0.3f) + Math.sin(k) * l
         );
         target.level().addFreshEntity(itemEntity);
+    }
+
+    public void shootAcid(LivingEntity target, LivingEntity attacker) {
+        if (attacker.hasLineOfSight(target)) {
+            var acidProjectile = GigEntities.ACID_PROJECTILE.get().create(this.level());
+            if (acidProjectile != null) {
+                // Position the projectile in front of the attacker
+                final var attackDirection = attacker.getViewVector(1.0F); // Get view vector
+                acidProjectile.setPos(
+                    attacker.getX() + attackDirection.x * 2,
+                    attacker.getY(0.5), // Adjust vertical position
+                    attacker.getZ() + attackDirection.z * 2
+                );
+
+                // Calculate the direction vector toward the target (from attacker to target)
+                double dx = target.getX() - acidProjectile.getX();
+                double dy = target.getY(0.5) - acidProjectile.getY(); // Aim for the center of the target
+                double dz = target.getZ() - acidProjectile.getZ();
+
+                // Set the projectile's velocity towards the target
+                float velocity = 1.0F; // Initial speed
+                float inaccuracy = 0.1F; // Lower value = better aim
+                acidProjectile.shoot(dx, dy, dz, velocity, inaccuracy);
+
+                // Spawn the projectile into the world
+                attacker.level().addFreshEntity(acidProjectile);
+            }
+        }
     }
 
     @Override

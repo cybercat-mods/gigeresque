@@ -1,26 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mod.azure.azurelib.sblforked.api.SmartBrainOwner;
-import mod.azure.azurelib.sblforked.api.core.BrainActivityGroup;
-import mod.azure.azurelib.sblforked.api.core.SmartBrainProvider;
-import mod.azure.azurelib.sblforked.api.core.behaviour.FirstApplicableBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.OneRandomBehaviour;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.look.LookAtTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.misc.Idle;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.move.MoveToWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.path.SetRandomWalkTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.SetRandomLookTarget;
-import mod.azure.azurelib.sblforked.api.core.behaviour.custom.target.TargetOrRetaliate;
-import mod.azure.azurelib.sblforked.api.core.sensor.ExtendedSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.NearbyBlocksSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.custom.UnreachableTargetSensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.HurtBySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import mod.azure.azurelib.sblforked.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,61 +9,36 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.ItemEntitySensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyLightsBlocksSensor;
-import mods.cybercat.gigeresque.common.entity.ai.sensors.NearbyRepellentsSensor;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillCropsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.blocks.KillLightsTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.AlienPanic;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.misc.EatFoodTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFightTask;
-import mods.cybercat.gigeresque.common.entity.ai.tasks.movement.FleeFireTask;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerAlienEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class ChestbursterEntity extends AlienEntity implements Growable, SmartBrainOwner<ChestbursterEntity> {
+public class ChestbursterEntity extends AlienEntity {
 
     public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(
         ChestbursterEntity.class,
         EntityDataSerializers.BOOLEAN
     );
 
-    public static final EntityDataAccessor<Boolean> EAT = SynchedEntityData.defineId(
-        ChestbursterEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
-    private static final EntityDataAccessor<Float> BLOOD = SynchedEntityData.defineId(
-        ChestbursterEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
     private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(
         ChestbursterEntity.class,
         EntityDataSerializers.FLOAT
     );
-
-    public int bloodRendering = 0;
-
-    public int eatingCounter = 0;
 
     protected String hostId = null;
 
@@ -114,14 +69,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
-    public float getBlood() {
-        return entityData.get(BLOOD);
-    }
-
-    public void setBlood(float growth) {
-        entityData.set(BLOOD, growth);
-    }
-
     @Override
     public int getAcidDiameter() {
         return 1;
@@ -143,14 +90,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         this.entityData.set(BIRTHED, birth);
     }
 
-    public boolean isEating() {
-        return this.entityData.get(EAT);
-    }
-
-    public void setEatingStatus(boolean birth) {
-        this.entityData.set(EAT, birth);
-    }
-
     @Override
     public float getGrowth() {
         return entityData.get(GROWTH);
@@ -165,9 +104,7 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(GROWTH, 0.0f);
-        builder.define(BLOOD, 0.0f);
         builder.define(BIRTHED, false);
-        builder.define(EAT, false);
     }
 
     @Override
@@ -185,11 +122,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         super.tick();
         moveAnalysis.update();
 
-        if (!level().isClientSide && this.isAlive()) {
-            setBlood(bloodRendering++);
-            grow(this, 1 * getGrowthMultiplier());
-        }
-        this.handleEatingFunctions();
         if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
             this.setBirthStatus(false);
         if (this.isDeadOrDying()) {
@@ -198,51 +130,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
-        if (!this.isEating() && this.level().isClientSide())
-            this.handleAnimations();
-    }
-
-    protected void handleEatingFunctions() {
-        if (this.isEating())
-            eatingCounter++;
-        if (eatingCounter >= 20) {
-            this.setEatingStatus(false);
-            eatingCounter = 0;
-        }
-    }
-
-    protected void handleAnimations() {
-        if (this.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendDeath);
-            return;
-        }
-        if (this.moveAnalysis.isMoving()) {
-            this.handleMovementAnimations();
-        } else {
-            this.handleIdleAnimations();
-        }
-    }
-
-    protected void handleAggroMovementAnimations() {
-        if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendRushSlither);
-        }
-    }
-
-    protected void handleMovementAnimations() {
-        if (this.isAggressive()) {
-            this.handleAggroMovementAnimations();
-        } else if (this.isInWater()) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSwim);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendSlither);
-        }
-    }
-
-    protected void handleIdleAnimations() {
-        GigCommonMethods.setAnimation(animationDispatcher::sendIdle);
     }
 
     @Override
@@ -251,7 +138,6 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
         nbt.putFloat("growth", getGrowth());
         if (hostId != null)
             nbt.putString("hostId", hostId);
-        nbt.putBoolean("is_eating", isEating());
         nbt.putBoolean("is_birthed", isBirthed());
     }
 
@@ -262,124 +148,22 @@ public class ChestbursterEntity extends AlienEntity implements Growable, SmartBr
             setGrowth(nbt.getFloat("growth"));
         if (nbt.contains("hostId"))
             hostId = nbt.getString("hostId");
-        if (nbt.contains("is_eating"))
-            setEatingStatus(nbt.getBoolean("is_eating"));
         if (nbt.contains("is_birthed"))
             setBirthStatus(nbt.getBoolean("is_birthed"));
     }
 
     @Override
-    protected Brain.@NotNull Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        tickBrain(this);
-        super.customServerAiStep();
-    }
-
-    @Override
-    public List<ExtendedSensor<ChestbursterEntity>> getSensors() {
-        return ObjectArrayList.of(
-            new NearbyPlayersSensor<>(),
-            new NearbyLivingEntitySensor<ChestbursterEntity>().setRadius(15)
-                .setPredicate(
-                    GigEntityUtils::entityTest
-                ),
-            new NearbyBlocksSensor<ChestbursterEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.BURSTER_BLOCKS)
-                ),
-            new NearbyRepellentsSensor<ChestbursterEntity>().setRadius(15)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.ALIEN_REPELLENTS) || block.is(Blocks.LAVA)
-                ),
-            new NearbyLightsBlocksSensor<ChestbursterEntity>().setRadius(7)
-                .setPredicate(
-                    (block, entity) -> block.is(GigTags.DESTRUCTIBLE_LIGHT)
-                ),
-            new HurtBySensor<>(),
-            new ItemEntitySensor<>(),
-            new UnreachableTargetSensor<>(),
-            new HurtBySensor<>()
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-            // Flee fight at half or less health
-            new FleeFightTask<>(1.1F).startCondition(entity -> this.getHealth() <= (this.getMaxHealth() / 2))
-                .stopIf(entity -> this.getHealth() > (this.getMaxHealth() / 2))
-                .whenStarting(entity -> entity.setFleeingStatus(true))
-                .whenStopping(entity -> entity.setFleeingStatus(false)),
-            // Flee Fire
-            new FleeFireTask<>(1.0F),
-            new AlienPanic(1.0f),
-            // Looks at target
-            new LookAtTarget<>().stopIf(entity -> this.stasisManager.isStasis())
-                .startCondition(
-                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
-                ),
-            // Move to target
-            new MoveToWalkTarget<>().startCondition(entity -> !this.stasisManager.isStasis())
-                .stopIf(
-                    entity -> this.stasisManager.isStasis()
-                )
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-            // Build Nest
-            new EatFoodTask<>(10),
-            // Kill Lights
-            new KillLightsTask<>(),
-            new KillCropsTask<>(),
-            // Do first
-            new FirstApplicableBehaviour<RunnerAlienEntity>(
-                // Targeting
-                new TargetOrRetaliate<>().stopIf(
-                    target -> (this.isAggressive() || this.isVehicle() || this.isFleeing())
-                ),
-                // Look at players
-                new SetPlayerLookTarget<>().predicate(
-                    target -> target.isAlive() && (!target.isCreative() || !target.isSpectator())
-                )
-                    .stopIf(
-                        entity -> this.stasisManager.isStasis() || this.isExecuting()
-                    ),
-                // Look around randomly
-                new SetRandomLookTarget<>().startCondition(
-                    entity -> !this.stasisManager.isStasis() || !this.searchingManager.isSearching()
-                )
-            ).stopIf(
-                entity -> this.stasisManager.isStasis() || this.isExecuting()
-            ),
-            // Random
-            new OneRandomBehaviour<>(
-                // Randomly walk around
-                new SetRandomWalkTarget<>().dontAvoidWater()
-                    .setRadius(20)
-                    .speedModifier(0.67f)
-                    .startCondition(entity -> !this.moveAnalysis.isMoving()),
-                // Idle
-                new Idle<>().startCondition(entity -> !this.isAggressive())
-                    .runFor(
-                        entity -> entity.getRandom().nextInt(30, 60)
-                    )
-            )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<ChestbursterEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-            new InvalidateAttackTarget<>().invalidateIf((entity, target) -> GigEntityUtils.removeTarget(target))
-        );
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EatFoodItemGoal(this, 0.9F, 5));
+        this.goalSelector.addGoal(1, new EatFoodBlockGoal(this));
+        this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
+        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this));
+        this.goalSelector.addGoal(5, new FleeFireGoal(this));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
     }
 
     /*
