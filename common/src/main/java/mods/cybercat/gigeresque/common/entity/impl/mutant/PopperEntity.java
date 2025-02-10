@@ -111,7 +111,7 @@ public class PopperEntity extends AlienEntity {
     }
 
     public void explode() {
-        var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY() + 1, this.getZ());
+        var areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(30);
         areaEffectCloudEntity.setRadiusPerTick(
