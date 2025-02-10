@@ -13,8 +13,7 @@ body:
       label: Mod Version
       description: What version of the mod are you running?
       options:
-        - 0.7.5
-        - 0.8.0
+        - 0.8.3
       default: 0
     validations:
       required: true
