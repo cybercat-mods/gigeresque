@@ -129,19 +129,6 @@ public class RunnerAlienEntity extends AlienEntity {
         this.moveAnalysis.update();
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean onClimbable() {
-        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
-        if (this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = true;
-        }
-        if (!this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = false;
-        }
-        return this.inTwoBlockSpace;
-    }
-
     @Override
     public boolean isPathFinding() {
         return false;
