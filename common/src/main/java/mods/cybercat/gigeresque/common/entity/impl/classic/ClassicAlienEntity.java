@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -110,19 +109,6 @@ public class ClassicAlienEntity extends AlienEntity {
 
         if (!this.isVehicle())
             this.setIsExecuting(false);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean onClimbable() {
-        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
-        if (this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = true;
-        }
-        if (!this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = false;
-        }
-        return this.inTwoBlockSpace && !this.isInWater();
     }
 
     @Override
