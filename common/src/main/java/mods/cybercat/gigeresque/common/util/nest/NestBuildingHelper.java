@@ -68,14 +68,12 @@ public record NestBuildingHelper() {
                                 blockPos,
                                 level.getRandom().nextInt(0, 50) > 30 ? webBlock : resinBlock
                             );
-                            if (alienEntity instanceof AlienEntity alienEntity2)
-                                alienEntity2.savedNestWebCross = blockPos;
+                            alienEntity.savedNestWebCross = blockPos;
                         }
 
                         if (nestBlockData.isCorner() && !level.getBlockState(blockPos).is(GigTags.DUNGEON_BLOCKS)) {
                             level.setBlockAndUpdate(blockPos, webBlock);
-                            if (alienEntity instanceof AlienEntity alienEntity2)
-                                alienEntity2.savedNestWebCross = blockPos;
+                            alienEntity.savedNestWebCross = blockPos;
                         }
 
                         if (
@@ -83,8 +81,7 @@ public record NestBuildingHelper() {
                                 .is(GigTags.DUNGEON_BLOCKS)
                         ) {
                             level.setBlockAndUpdate(blockPos, nestResinWebState);
-                            if (alienEntity instanceof AlienEntity alienEntity2)
-                                alienEntity2.savedNestWebCross = blockPos;
+                            alienEntity.savedNestWebCross = blockPos;
                         }
                     }
                 }
