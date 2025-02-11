@@ -21,7 +21,17 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
 
     public AlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<ClassicAlienEntity>builder(EntityModels.ALIEN, EntityTextures.ALIEN)
+            AzEntityRendererConfig.<ClassicAlienEntity>builder($ -> EntityModels.ALIEN, xeno -> {
+                        var progress = Math.max(0, Math.min(1 - (xeno.getGrowth() / xeno.getMaxGrowth()), 1));
+
+                        if (xeno.stasisManager.isStasis()) {
+                            return EntityTextures.ALIEN_STATIS;
+                        }
+                        if (progress > 0) {
+                            return EntityTextures.ALIEN_YOUNG;
+                        }
+                        return EntityTextures.ALIEN;
+                    })
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .build(),

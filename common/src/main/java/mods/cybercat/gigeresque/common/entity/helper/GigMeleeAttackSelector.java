@@ -92,7 +92,7 @@ public record GigMeleeAttackSelector() {
     };
 
     public static final AnimationSelector<AlienEntity> HUGGER_SELECTOR = facehuggerEntity -> {
-        if (facehuggerEntity.getTarget() != null) {
+        if (facehuggerEntity.getTarget() != null && !facehuggerEntity.isInWater()) {
             var vec3d2 = new Vec3(
                 facehuggerEntity.getTarget().getX() - facehuggerEntity.getX(),
                 0.0,
@@ -115,7 +115,7 @@ public record GigMeleeAttackSelector() {
                 0.0,
                 popperEntity.getTarget().getZ() - popperEntity.getZ()
             );
-            vec3d2 = vec3d2.normalize().scale(0.2).add(popperEntity.getDeltaMovement().scale(0.2));
+            vec3d2 = vec3d2.normalize().scale(0.1).add(popperEntity.getDeltaMovement().scale(0.1));
             popperEntity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
         }
     };

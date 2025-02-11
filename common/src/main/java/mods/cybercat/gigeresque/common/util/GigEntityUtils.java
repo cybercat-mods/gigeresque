@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.common.util;
 
+import mod.azure.azurelib.sblforked.util.RandomUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -12,8 +14,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import mods.cybercat.gigeresque.CommonMod;
@@ -335,5 +340,28 @@ public record GigEntityUtils() {
                 xenomorph.blockPosition().below()
             );
     };
+
+    public static void placeInNest(@NotNull ServerLevel level, AlienEntity entity, Entity passenger) {
+        var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, entity.level());
+        for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2))) {
+            if (
+                level.getBlockState(test).isAir() && level.getBlockState(
+                    test.below()
+                ).isSolid() && level.getEntitiesOfClass(
+                    LivingEntity.class,
+                    new AABB(test)
+                ).stream().noneMatch(Objects::isNull) && passenger != null
+            ) {
+                passenger.setPos(Vec3.atBottomCenterOf(testPos));
+                passenger.removeVehicle();
+                passenger.ejectPassengers();
+                entity.animationDispatcher.sendLeftClaw();
+                level.setBlockAndUpdate(testPos, GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
+                entity.ejectPassengers();
+                entity.removeVehicle();
+            }
+        }
+    }
 
 }

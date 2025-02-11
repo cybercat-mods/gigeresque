@@ -24,7 +24,5 @@ public class EggModelRenderer extends AzEntityModelRenderer<AlienEggEntity> {
         float rotationYaw,
         float partialTick,
         float nativeScale
-    ) {
-        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
-    }
+    ) {}
 }

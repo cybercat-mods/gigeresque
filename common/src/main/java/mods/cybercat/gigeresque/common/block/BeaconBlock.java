@@ -36,23 +36,23 @@ public class BeaconBlock extends Block {
 
     @Override
     protected void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
-        super.randomTick(state, level, pos, random);
-        var currentTime = level.getGameTime();
-        var cooldown = 600 + random.nextInt(600);
-
-        if (currentTime - lastEffectTime >= cooldown) {
-            var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(30));
-            for (var player : nearbyPlayers) {
-                if (
-                    player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(MobEffects.DARKNESS)
-                        && Constants.isNotCreativeSpecPlayer.test(player)
-                ) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
-                    if (level.isClientSide())
-                        level.playLocalSound(pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1.0F, 1.0F, true);
+        if (!level.isClientSide()) {
+            lastEffectTime++;
+            if (lastEffectTime > 20) {
+                var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(30));
+                for (var player : nearbyPlayers) {
+                    if (
+                        !player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(
+                            MobEffects.DARKNESS
+                        )
+                            && Constants.isNotCreativeSpecPlayer.test(player)
+                    ) {
+                        player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
+                        level.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1F, 1F);
+                    }
                 }
+                lastEffectTime = 0;
             }
-            lastEffectTime = currentTime;
         }
     }
 

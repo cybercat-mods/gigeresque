@@ -40,8 +40,15 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     @Override
     public int getListenerRadius() {
-        return CommonMod.config.xenoMaxSoundRange;
+        var mobY = this.mob.getY();
+        final var maxY = 320;
+        final var minY = -64;
+        var maxRadius = CommonMod.config.xenoMaxSoundRange;
+        var factor = Math.clamp((mobY - minY) / (maxY - minY), 0.25, 1.0);
+
+        return (int) (maxRadius * factor);
     }
+
 
     @Override
     public @NotNull PositionSource getPositionSource() {
@@ -142,7 +149,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
             if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
                 if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
                     alienEntity.stasisManager.setStasis(false);
-                alienEntity.getNavigation().stop();
             }
             if (alienEntity.wakeupCounter >= 3) {
                 alienEntity.stasisManager.setStasis(false);

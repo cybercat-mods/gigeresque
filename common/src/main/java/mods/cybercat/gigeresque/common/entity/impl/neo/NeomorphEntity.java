@@ -5,7 +5,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -18,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.goals.RotateTowardsEntityGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.KillLightsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
@@ -34,7 +34,7 @@ public class NeomorphEntity extends AlienEntity {
         super(entityType, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
-        this.vibrationUser = new AzureVibrationUser(this, 1.9F);
+        this.vibrationUser = new AzureVibrationUser(this, 1.5F);
         this.animationSelector = GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR;
     }
 
@@ -53,13 +53,18 @@ public class NeomorphEntity extends AlienEntity {
                 Attributes.KNOCKBACK_RESISTANCE,
                 0.0
             )
-            .add(Attributes.FOLLOW_RANGE, 16.0)
+            .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
                 CommonMod.config.neomorphConfigs.neomorphAttackDamage + 5
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
+    }
+
+    @Override
+    public int getAcidDiameter() {
+        return 0;
     }
 
     @Override
@@ -87,15 +92,15 @@ public class NeomorphEntity extends AlienEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.25F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
         this.goalSelector.addGoal(11, new KillLightsGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
+        this.goalSelector.addGoal(9, new RotateTowardsEntityGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(10, new RotateTowardsEntityGoal(this, LivingEntity.class, 15.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
         this.targetSelector.addGoal(
             2,

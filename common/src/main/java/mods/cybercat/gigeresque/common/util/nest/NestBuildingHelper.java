@@ -68,6 +68,9 @@ public record NestBuildingHelper() {
                                 blockPos,
                                 level.getRandom().nextInt(0, 50) > 30 ? webBlock : resinBlock
                             );
+                            if (!alienEntity.hasHomeBlock()) {
+                                alienEntity.setHomeBlock(blockPos);
+                            }
                             alienEntity.savedNestWebCross = blockPos;
                         }
 

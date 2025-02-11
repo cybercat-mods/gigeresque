@@ -110,7 +110,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
                 LivingEntity.class,
                 false,
                 target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
-                    || target.getBbHeight() >= 0.8
+                    && target.getBbHeight() < 0.8
             )
         );
     }

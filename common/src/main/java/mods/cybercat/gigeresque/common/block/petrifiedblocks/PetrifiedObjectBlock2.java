@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,17 +15,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -43,13 +44,17 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
 
     public static final IntegerProperty HATCH = BlockStateProperties.AGE_25;
 
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
     public static final EnumProperty<StorageStates> STORAGE_STATE = StorageProperties.STORAGE_STATE;
 
     public static final MapCodec<PetrifiedObjectBlock2> CODEC = simpleCodec(PetrifiedObjectBlock2::new);
 
     public PetrifiedObjectBlock2(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED));
+        this.registerDefaultState(
+            this.stateDefinition.any().setValue(HATCH, 0).setValue(STORAGE_STATE, StorageStates.CLOSED).setValue(FACING, Direction.SOUTH)
+        );
     }
 
     @Override
@@ -130,7 +135,7 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HATCH, STORAGE_STATE);
+        builder.add(HATCH, STORAGE_STATE, FACING);
     }
 
     @Nullable
@@ -156,5 +161,23 @@ public class PetrifiedObjectBlock2 extends BaseEntityBlock {
         @NotNull BlockEntityType<T> type
     ) {
         return createTickerHelper(type, GigEntities.PETRIFIED_OBJECT_2.get(), PetrifiedOjbect2Entity::tick);
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rot) {
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        if (context.getClickedFace() == Direction.UP || context.getClickedFace() == Direction.DOWN) {
+            return this.defaultBlockState().setValue(FACING, Direction.SOUTH);
+        }
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite().getOpposite());
     }
 }

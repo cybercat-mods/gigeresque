@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.rom;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;

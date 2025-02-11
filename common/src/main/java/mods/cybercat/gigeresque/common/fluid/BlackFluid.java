@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -31,7 +32,7 @@ public abstract class BlackFluid extends FlowingFluid {
 
     @Override
     public @NotNull Item getBucket() {
-        return GigItems.BLACK_FLUID_BUCKET.get();
+        return Items.BUCKET;
     }
 
     @Override

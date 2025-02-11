@@ -119,7 +119,7 @@ public class FacehuggerEntity extends AlienEntity {
     }
 
     public boolean isAttachedToHost() {
-        return this.getVehicle() instanceof LivingEntity;
+        return this.getVehicle() instanceof LivingEntity && this.getVehicle().isAlive();
     }
 
     @Override
@@ -218,8 +218,11 @@ public class FacehuggerEntity extends AlienEntity {
     public void tick() {
         super.tick();
         moveAnalysis.update();
-        if (this.isPassenger() && !this.isDeadOrDying()) {
+        if (this.isAttachedToHost() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
+        if (this.getVehicle() != null && !this.getVehicle().isAlive()) {
+            this.stopRiding();
         }
         this.handleAttachmentToHost();
         if (isInfertile()) {

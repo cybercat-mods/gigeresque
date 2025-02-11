@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,12 +31,28 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canUse() {
-        return !this.mob.isVehicle() && super.canUse();
+        if (this.mob.isVehicle()) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+            return false;
+        }
+
+        return super.canUse();
     }
 
     @Override
     public boolean canContinueToUse() {
-        return !this.mob.isVehicle() && super.canContinueToUse();
+        if (this.mob.isVehicle()) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+            return false;
+        }
+
+        return super.canContinueToUse();
     }
 
     @Override
@@ -43,6 +60,16 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
         super.start();
         this.delayBeforeAttack = 0;
         this.triggeredAttackAnimation = false;
+    }
+
+    @Override
+    public void stop() {
+        LivingEntity livingentity = this.mob.getTarget();
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+            this.mob.setTarget(null);
+        }
+
+        this.mob.setAggressive(false);
     }
 
     @Override
@@ -63,11 +90,10 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
                 }
             } else {
                 if (isTargetValidForExecution(target)) {
-                    if (shouldNestBehavior(nearbyBlocks, randomPhase) && GigEntityUtils.isTargetHostable(target)) {
+                    if (shouldNestBehavior(nearbyBlocks, randomPhase) && GigEntityUtils.isTargetHostable(target) && !mob.isInWater()) {
                         mob.grabTarget(target);
-                    } else if (shouldBiteBehavior(target, randomPhase)) {
+                    } else if (shouldBiteBehavior(target, randomPhase) && !mob.isInWater()) {
                         mob.grabTarget(target);
-                        mob.setIsBiting(true);
                     } else if (!mob.isVehicle()) {
                         this.mob.swing(InteractionHand.MAIN_HAND);
                         this.mob.doHurtTarget(target);

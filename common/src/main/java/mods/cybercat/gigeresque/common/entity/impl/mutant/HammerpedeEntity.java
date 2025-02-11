@@ -1,6 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +16,8 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
@@ -94,6 +99,27 @@ public class HammerpedeEntity extends AlienEntity {
                 target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
             )
         );
+    }
+
+    @Override
+    public void die(@NotNull DamageSource source) {
+        if (!this.level().isClientSide && this.random.nextInt(5) == 0) {
+            BlockPos.betweenClosedStream(this.getBoundingBox().inflate(10)).forEach(pos -> {
+                var blockState = this.level().getBlockState(pos);
+                if (blockState.is(GigTags.SPORE_REPLACE)) {
+                    this.level().setBlockAndUpdate(pos, GigBlocks.SPORE_BLOCK.get().defaultBlockState());
+                }
+            });
+        }
+        if (!this.level().isClientSide && this.random.nextInt(10) == 0) {
+            BlockPos.betweenClosedStream(this.getBoundingBox().inflate(10)).forEach(pos -> {
+                var blockState = this.level().getBlockState(pos);
+                if (blockState.is(Blocks.WATER)) {
+                    this.level().setBlockAndUpdate(pos, GigBlocks.BLACK_FLUID.get().defaultBlockState());
+                }
+            });
+        }
+        super.die(source);
     }
 
     @Override

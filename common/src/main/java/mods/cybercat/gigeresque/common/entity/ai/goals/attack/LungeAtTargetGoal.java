@@ -94,7 +94,6 @@ public class LungeAtTargetGoal extends Goal {
 
         if (windUpTimeInTicks > 0) {
             windUpTimeInTicks--;
-            mob.getNavigation().stop();
             return;
         }
 

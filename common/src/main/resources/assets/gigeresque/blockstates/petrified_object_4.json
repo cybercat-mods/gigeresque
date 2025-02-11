@@ -1,82 +1,680 @@
 {
   "variants": {
-    "age=0": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
     },
-    "age=1": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
     },
-    "age=2": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
     },
-    "age=3": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
     },
-    "age=4": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
     },
-    "age=5": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=0,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
     },
-    "age=6": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
     },
-    "age=7": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
     },
-    "age=8": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
     },
-    "age=9": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
     },
-    "age=10": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
     },
-    "age=11": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=1,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
     },
-    "age=12": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
     },
-    "age=13": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
     },
-    "age=14": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
     },
-    "age=15": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
     },
-    "age=16": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
     },
-    "age=17": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=2,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
     },
-    "age=18": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
     },
-    "age=19": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
     },
-    "age=20": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
     },
-    "age=21": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
     },
-    "age=22": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
     },
-    "age=23": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=3,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
     },
-    "age=24": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=4,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
     },
-    "age=25": {
-      "model": "gigeresque:block/petrified_object_4"
+    "age=4,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=4,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=4,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=4,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=4,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=5,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=5,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=5,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=5,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=5,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=5,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=6,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=6,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=6,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=6,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=6,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=6,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=7,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=7,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=7,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=7,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=7,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=7,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=8,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=8,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=8,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=8,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=8,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=8,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=9,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=9,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=9,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=9,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=9,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=9,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=10,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=10,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=10,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=10,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=10,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=10,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=11,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=11,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=11,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=11,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=11,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=11,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=12,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=12,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=12,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=12,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=12,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=12,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=13,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=13,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=13,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=13,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=13,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=13,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=14,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=14,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=14,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=14,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=14,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=14,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=15,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=15,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=15,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=15,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=15,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=15,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=16,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=16,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=16,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=16,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=16,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=16,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=17,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=17,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=17,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=17,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=17,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=17,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=18,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=18,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=18,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=18,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=18,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=18,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=19,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=19,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=19,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=19,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=19,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=19,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=20,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=20,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=20,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=20,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=20,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=20,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=21,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=21,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=21,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=21,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=21,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=21,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=22,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=22,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=22,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=22,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=22,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=22,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=23,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=23,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=23,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=23,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=23,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=23,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=24,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=24,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=24,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=24,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=24,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=24,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
+    },
+    "age=25,facing=north": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 0
+    },
+    "age=25,facing=south": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 180
+    },
+    "age=25,facing=east": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 90
+    },
+    "age=25,facing=west": {
+      "model": "gigeresque:block/petrified_object_4",
+      "y": 270
+    },
+    "age=25,facing=up": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": -90,
+      "y": 0
+    },
+    "age=25,facing=down": {
+      "model": "gigeresque:block/petrified_object_4",
+      "x": 90,
+      "y": 0
     }
   }
 }

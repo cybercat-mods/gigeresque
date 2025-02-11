@@ -20,7 +20,7 @@ public class WaterMoveControl extends MoveControl {
         var livingEntity = xenomorph.getTarget();
         if (xenomorph.isUnderWater()) {
             if (livingEntity != null && livingEntity.getY() > xenomorph.getY()) {
-                xenomorph.setDeltaMovement(xenomorph.getDeltaMovement().add(0.0, 0.002, 0.0));
+                xenomorph.setDeltaMovement(xenomorph.getDeltaMovement().add(0.0, 0.02, 0.0));
             }
 
             if (operation != Operation.MOVE_TO || xenomorph.getNavigation().isDone()) {
@@ -37,10 +37,10 @@ public class WaterMoveControl extends MoveControl {
             xenomorph.setYRot(rotlerp(xenomorph.getYRot(), h, 90.0F));
             xenomorph.yBodyRot = xenomorph.getYRot();
             float i = (float) (speedModifier * xenomorph.getAttributeValue(Attributes.MOVEMENT_SPEED));
-            float j = Mth.lerp(0.125F, xenomorph.getSpeed(), i);
+            float j = Mth.lerp(0.525F, xenomorph.getSpeed(), i);
             xenomorph.setSpeed(j);
             xenomorph.setDeltaMovement(
-                xenomorph.getDeltaMovement().add((double) j * d * 0.005, (double) j * e * 0.1, (double) j * f * 0.005)
+                xenomorph.getDeltaMovement().add(j * d * 0.005, j * e * 0.1, j * f * 0.005)
             );
         } else {
             if (!xenomorph.onGround()) {

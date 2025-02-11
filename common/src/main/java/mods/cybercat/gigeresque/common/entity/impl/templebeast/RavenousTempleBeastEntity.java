@@ -114,7 +114,7 @@ public class RavenousTempleBeastEntity extends AlienEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.15F, 5));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.15F, 7));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(11, new KillLightsGoal(this));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));

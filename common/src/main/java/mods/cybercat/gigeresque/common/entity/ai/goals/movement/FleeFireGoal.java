@@ -18,11 +18,12 @@ public class FleeFireGoal extends Goal {
     @Override
     public void start() {
         this.mob.setAggressive(false);
-        this.mob.setFleeingStatus(true);
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+        this.mob.setFleeingStatus(false);
+    }
 
     @Override
     public boolean canUse() {
@@ -55,6 +56,7 @@ public class FleeFireGoal extends Goal {
         }
 
         if (isLavaNearby && this.mob.getNavigation().isDone()) {
+            this.mob.setFleeingStatus(true);
             var panicPos = this.mob.position().add(runAwayDirection.normalize().scale(20.0));
             var mobPosition = this.mob.position();
             var targetPos = mobPosition.add(panicPos);

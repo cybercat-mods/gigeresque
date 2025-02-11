@@ -201,6 +201,16 @@
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "gigeresque:aliendungeon_leaked_tube_room",
+        "processors": "gigeresque:randomize_blocks",
+        "override_liquid_settings": "ignore_waterlogging",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
     }
   ]
 }

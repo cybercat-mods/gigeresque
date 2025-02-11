@@ -4,6 +4,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
@@ -17,6 +18,32 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
     public DelayedAttackGoal(AlienEntity mob, double speedModifier, int delayTicksBeforeAttack) {
         super(mob, speedModifier, true);
         this.delayTicksBeforeAttack = delayTicksBeforeAttack;
+    }
+
+    @Override
+    public boolean canUse() {
+        if (this.mob.isVehicle()) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+            return false;
+        }
+
+        return super.canUse();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        if (this.mob.isVehicle()) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+            return false;
+        }
+
+        return super.canContinueToUse();
     }
 
     @Override

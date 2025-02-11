@@ -38,14 +38,11 @@ public class KillLightsGoal extends Goal {
     }
 
     @Override
-    public void start() {
-        this.mob.getNavigation().stop();
-    }
+    public void start() {}
 
     @Override
     public void stop() {
         this.targetBlock = Optional.empty();
-        this.mob.getNavigation().stop();
     }
 
     @Override

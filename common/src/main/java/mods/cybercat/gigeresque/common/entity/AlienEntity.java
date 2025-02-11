@@ -6,6 +6,7 @@ import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -26,9 +27,9 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -49,8 +50,7 @@ import java.util.function.BiConsumer;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
-import mods.cybercat.gigeresque.common.entity.ai.nav.WaterMoveControl;
+import mods.cybercat.gigeresque.common.entity.ai.nav.AlienNavigationManager;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
@@ -66,7 +66,12 @@ import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends WaterAnimal implements Enemy, VibrationSystem, Growable, AbstractAlien {
+public abstract class AlienEntity extends Monster implements Enemy, VibrationSystem, Growable, AbstractAlien {
+
+    public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BLOCK_POS
+    );
 
     public static final EntityDataAccessor<Boolean> FLEEING_FIRE = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -136,8 +141,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public boolean inTwoBlockSpace = false;
 
-    public int breakingCounter = 0;
-
     public float growthCounter = 0;
 
     protected User vibrationUser;
@@ -158,28 +161,23 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
 
     public AnimationSelector<AlienEntity> animationSelector;
 
-    protected AlienEntity(EntityType<? extends WaterAnimal> entityType, Level world) {
-        super(entityType, world);
+    private final AlienNavigationManager navigationManager;
+
+    protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
+        super(entityType, level);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
         this.searchingManager = new SearchingManager(this, IS_SEARCHING);
         this.stasisManager = new StasisManager(this, IS_STASIS, STASIS_TICK);
-        this.vibrationUser = new AzureVibrationUser(this, 2.5F);
+        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
+        this.navigationManager = new AlienNavigationManager(this, moveControl);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
-    @Override
-    public boolean onClimbable() {
-        return this.fallDistance <= 0.1;
-    }
-
-    @Override
-    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
-
     public static boolean checkMonsterSpawnRules(
-        @NotNull EntityType<? extends WaterAnimal> type,
+        @NotNull EntityType<? extends Monster> type,
         ServerLevelAccessor level,
         @NotNull MobSpawnType spawnType,
         @NotNull BlockPos pos,
@@ -296,6 +294,18 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         entityData.set(GROWTH, growth);
     }
 
+    public BlockPos getHomeBlock() {
+        return this.entityData.get(HOME_BLOCKPOS);
+    }
+
+    public void setHomeBlock(BlockPos pos) {
+        this.entityData.set(HOME_BLOCKPOS, pos);
+    }
+
+    public boolean hasHomeBlock() {
+        return !getHomeBlock().equals(BlockPos.ZERO);
+    }
+
     @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
@@ -312,6 +322,7 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         builder.define(IS_SEARCHING, false);
         builder.define(IS_CRAWLING, false);
         builder.define(STASIS_TICK, 0);
+        builder.define(HOME_BLOCKPOS, BlockPos.ZERO);
     }
 
     @Override
@@ -327,6 +338,10 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         compound.putBoolean("isHissing", this.isHissing());
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
+        BlockPos homeBlock = this.getHomeBlock();
+        if (homeBlock != null) {
+            NbtUtils.writeBlockPos(homeBlock);
+        }
         stasisManager.save(compound);
         searchingManager.save(compound);
         crawlingManager.save(compound);
@@ -352,11 +367,11 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
-    }
-
-    @Override
-    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
-        return new GigNavigation(this, level);
+        if (compound.contains("homeBlock")) {
+            this.setHomeBlock(
+                NbtUtils.readBlockPos(compound, "homeBlock").orElse(BlockPos.ZERO)
+            );
+        }
     }
 
     @Override
@@ -387,11 +402,6 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         this.setAirSupply(this.getMaxAirSupply());
         searchingManager.tick();
         stasisManager.tick();
-        if (this.isInWater()) {
-            this.moveControl = new WaterMoveControl(this);
-        } else {
-            this.moveControl = new MoveControl(this);
-        }
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel) {
@@ -410,6 +420,9 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
         if (this.tickCount % 10 == 0)
             this.refreshDimensions();
     }
+
+    @Override
+    protected void jumpInLiquid(@NotNull TagKey<Fluid> fluid) {}
 
     @Override
     public boolean requiresCustomPersistence() {
@@ -458,12 +471,9 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public void travel(@NotNull Vec3 travelVector) {
         if (this.isEffectiveAi() && this.isInWater()) {
-            this.moveRelative(this.getSpeed(), travelVector);
+            moveRelative(0.1F, travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
-            if (this.getTarget() == null) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.005, 0.0));
-            }
         } else {
             super.travel(travelVector);
         }
@@ -682,6 +692,40 @@ public abstract class AlienEntity extends WaterAnimal implements Enemy, Vibratio
     @Override
     public boolean dampensVibrations() {
         return true;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean onClimbable() {
+        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
+        if (this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = true;
+        }
+        if (!this.level().getBlockState(blockPos).blocksMotion()) {
+            this.inTwoBlockSpace = false;
+        }
+        return this.inTwoBlockSpace;
+    }
+
+    public void setMoveControl(MoveControl moveControl) {
+        this.moveControl = moveControl;
+    }
+
+    public void setNavigation(PathNavigation navigation) {
+        this.navigation = navigation;
+    }
+
+    @Override
+    public void updateSwimming() {
+        if (!level().isClientSide) {
+            if (isEffectiveAi() && isInWater()) {
+                navigationManager.switchToWater(this);
+                setSwimming(true);
+            } else {
+                navigationManager.switchToGround(this);
+                setSwimming(false);
+            }
+        }
     }
 
 }
