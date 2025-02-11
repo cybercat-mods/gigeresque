@@ -21,7 +21,7 @@ public class HammerpedeAnimManager {
     }
 
     public static void handleAggroMovementAnimations(HammerpedeEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalkHostile);
@@ -31,7 +31,7 @@ public class HammerpedeAnimManager {
     public static void handleMovementAnimations(HammerpedeEntity entity) {
         if (entity.isAggressive()) {
             handleAggroMovementAnimations(entity);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -40,7 +40,7 @@ public class HammerpedeAnimManager {
 
     public static void handleIdleAnimations(HammerpedeEntity entity) {
         if (!entity.isAggressive()) {
-            if (entity.isInWater()) {
+            if (entity.isUnderWater()) {
                 GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdleWater);
             } else {
                 GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);

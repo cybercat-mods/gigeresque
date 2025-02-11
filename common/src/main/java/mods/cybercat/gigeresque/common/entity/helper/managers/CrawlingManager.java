@@ -27,11 +27,11 @@ public class CrawlingManager {
             return;
         }
 
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             return;
         }
 
-        if (!entity.isInWater())
+        if (!entity.isUnderWater())
             tryToCrawl();
     }
 

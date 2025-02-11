@@ -285,7 +285,7 @@ public class FacehuggerEntity extends AlienEntity {
     public void stopRiding() {
         if (
             this.getVehicle() != null && this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()
-                && ticksAttachedToHost < Constants.TPM * 5 && isInWater()
+                && ticksAttachedToHost < Constants.TPM * 5 && isUnderWater()
         )
             return;
         super.stopRiding();

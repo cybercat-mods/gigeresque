@@ -18,7 +18,7 @@ public class NeobursterAnimManager {
     }
 
     public static void handleAggroMovementAnimations(NeobursterEntity neobursterEntity) {
-        if (neobursterEntity.isInWater()) {
+        if (neobursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(neobursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(neobursterEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class NeobursterAnimManager {
     public static void handleMovementAnimations(NeobursterEntity neobursterEntity) {
         if (neobursterEntity.isAggressive()) {
             handleAggroMovementAnimations(neobursterEntity);
-        } else if (neobursterEntity.isInWater()) {
+        } else if (neobursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(neobursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(neobursterEntity.animationDispatcher::sendRun);

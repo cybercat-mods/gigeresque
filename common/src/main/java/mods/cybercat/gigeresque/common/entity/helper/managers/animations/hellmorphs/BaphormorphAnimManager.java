@@ -18,7 +18,7 @@ public class BaphormorphAnimManager {
     }
 
     public static void handleAggroMovementAnimations(BaphomorphEntity baphomorphEntity) {
-        if (baphomorphEntity.isInWater()) {
+        if (baphomorphEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class BaphormorphAnimManager {
     public static void handleMovementAnimations(BaphomorphEntity baphomorphEntity) {
         if (baphomorphEntity.isAggressive()) {
             handleAggroMovementAnimations(baphomorphEntity);
-        } else if (baphomorphEntity.isInWater()) {
+        } else if (baphomorphEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendWalk);
@@ -36,7 +36,7 @@ public class BaphormorphAnimManager {
     }
 
     public static void handleIdleAnimations(BaphomorphEntity baphomorphEntity) {
-        if (baphomorphEntity.isInWater()) {
+        if (baphomorphEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(baphomorphEntity.animationDispatcher::sendIdle);

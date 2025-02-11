@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +67,7 @@ public class AcidEntity extends Entity {
             var blockStateBelow = this.level().getBlockState(this.blockPosition().below());
             acidTicks++;
             if (this.tickCount % 5 == 0 && canGrief && !blockStateBelow.is(GigTags.ACID_RESISTANT)) {
-                this.doBlockBreaking(this.random, acidTicks * 2);
+                this.doBlockBreaking(this.random, acidTicks * 2, blockStateBelow);
                 acidTicks = 0;
             }
             if (this.tickCount % 40 == 0) {
@@ -112,8 +113,9 @@ public class AcidEntity extends Entity {
         this.setDeltaMovement(this.getDeltaMovement().scale(0.38));
     }
 
-    private void doBlockBreaking(RandomSource randomSource, int acidTicks) {
-        BlockBreakProgressManager.damage(level(), this.blockPosition().below(), acidTicks);
+    private void doBlockBreaking(RandomSource randomSource, int acidTicks, BlockState blockStateBelow) {
+        var destorySpeed = blockStateBelow.getDestroySpeed(this.level(), this.blockPosition().below());
+        BlockBreakProgressManager.damage(level(), this.blockPosition().below(), destorySpeed * acidTicks);
         this.level()
             .playSound(
                 null,

@@ -90,8 +90,8 @@ public class ClassicAlienEntity extends AlienEntity {
     @Override
     @NotNull
     public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.isInWater())
-            return EntityDimensions.scalable(3.0f, 1.0f);
+        if (this.isUnderWater())
+            return EntityDimensions.scalable(2.0f, 1.0f);
         return EntityDimensions.scalable(
             0.9f,
             crawlingManager.isCrawling()

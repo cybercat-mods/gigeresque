@@ -18,7 +18,7 @@ public class PopperAnimManager {
     }
 
     public static void handleAggroMovementAnimations(PopperEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             if (entity.getEntityData().get(entity.STATE) == 0) {
@@ -32,7 +32,7 @@ public class PopperAnimManager {
     public static void handleMovementAnimations(PopperEntity entity) {
         if (entity.isAggressive()) {
             handleAggroMovementAnimations(entity);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -40,7 +40,7 @@ public class PopperAnimManager {
     }
 
     public static void handleIdleAnimations(PopperEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);

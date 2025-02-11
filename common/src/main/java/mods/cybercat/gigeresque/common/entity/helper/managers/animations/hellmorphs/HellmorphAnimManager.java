@@ -18,7 +18,7 @@ public class HellmorphAnimManager {
     }
 
     public static void handleAggroMovementAnimations(HellmorphRunnerEntity hellmorphRunnerEntity) {
-        if (hellmorphRunnerEntity.isInWater()) {
+        if (hellmorphRunnerEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class HellmorphAnimManager {
     public static void handleMovementAnimations(HellmorphRunnerEntity hellmorphRunnerEntity) {
         if (hellmorphRunnerEntity.isAggressive()) {
             handleAggroMovementAnimations(hellmorphRunnerEntity);
-        } else if (hellmorphRunnerEntity.isInWater()) {
+        } else if (hellmorphRunnerEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendWalk);
@@ -36,7 +36,7 @@ public class HellmorphAnimManager {
     }
 
     public static void handleIdleAnimations(HellmorphRunnerEntity hellmorphRunnerEntity) {
-        if (hellmorphRunnerEntity.isInWater()) {
+        if (hellmorphRunnerEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(hellmorphRunnerEntity.animationDispatcher::sendIdle);

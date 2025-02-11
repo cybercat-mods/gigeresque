@@ -20,7 +20,7 @@ public class SpitterAnimManager {
     public static void handleAggroMovementAnimations(SpitterEntity spitterEntity) {
         if (spitterEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendCrawl);
-        } else if (spitterEntity.isInWater()) {
+        } else if (spitterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendRun);
@@ -32,7 +32,7 @@ public class SpitterAnimManager {
             handleAggroMovementAnimations(spitterEntity);
         } else if (spitterEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendCrawl);
-        } else if (spitterEntity.isInWater()) {
+        } else if (spitterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendWalk);
@@ -42,7 +42,7 @@ public class SpitterAnimManager {
     public static void handleIdleAnimations(SpitterEntity spitterEntity) {
         if (spitterEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendCrawl);
-        } else if (spitterEntity.isInWater()) {
+        } else if (spitterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(spitterEntity.animationDispatcher::sendIdle);

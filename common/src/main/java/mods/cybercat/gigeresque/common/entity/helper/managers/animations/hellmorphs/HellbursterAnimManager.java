@@ -18,7 +18,7 @@ public class HellbursterAnimManager {
     }
 
     public static void handleAggroMovementAnimations(HellbursterEntity hellbursterEntity) {
-        if (hellbursterEntity.isInWater()) {
+        if (hellbursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(hellbursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(hellbursterEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class HellbursterAnimManager {
     public static void handleMovementAnimations(HellbursterEntity hellbursterEntity) {
         if (hellbursterEntity.isAggressive()) {
             handleAggroMovementAnimations(hellbursterEntity);
-        } else if (hellbursterEntity.isInWater()) {
+        } else if (hellbursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(hellbursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(hellbursterEntity.animationDispatcher::sendRun);

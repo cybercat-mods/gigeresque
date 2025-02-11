@@ -25,7 +25,7 @@ public class NeomorphAnimManager {
             handleAggroMovementAnimations(entity);
         } else if (entity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendCrawl);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -35,7 +35,7 @@ public class NeomorphAnimManager {
     public static void handleAggroMovementAnimations(NeomorphEntity entity) {
         if (entity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendCrawl);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
@@ -47,7 +47,7 @@ public class NeomorphAnimManager {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendStasisLoop);
         } else if (entity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendCrawl);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);

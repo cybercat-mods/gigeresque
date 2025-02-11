@@ -10,7 +10,7 @@ public class StalkerAnimManager {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendDeath);
             return;
         }
-        if (entity.getLastDamageSource() != null && entity.hurtDuration > 0 && !entity.isInWater()) {
+        if (entity.getLastDamageSource() != null && entity.hurtDuration > 0 && !entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendHurt);
         }
         if (entity.moveAnalysis.isMoving()) {
@@ -21,7 +21,7 @@ public class StalkerAnimManager {
     }
 
     public static void handleAggroMovementAnimations(StalkerEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
@@ -31,7 +31,7 @@ public class StalkerAnimManager {
     public static void handleMovementAnimations(StalkerEntity entity) {
         if (entity.isAggressive() && !entity.swinging) {
             handleAggroMovementAnimations(entity);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -40,7 +40,7 @@ public class StalkerAnimManager {
 
     public static void handleIdleAnimations(StalkerEntity entity) {
         if (!entity.swinging) {
-            if (entity.isInWater()) {
+            if (entity.isUnderWater()) {
                 GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdleWater);
             } else {
                 GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);

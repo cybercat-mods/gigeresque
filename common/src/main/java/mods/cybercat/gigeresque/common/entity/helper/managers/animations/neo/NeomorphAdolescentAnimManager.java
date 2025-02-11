@@ -18,7 +18,7 @@ public class NeomorphAdolescentAnimManager {
     }
 
     public static void handleAggroMovementAnimations(NeomorphAdolescentEntity adolescentEntity) {
-        if (adolescentEntity.isInWater()) {
+        if (adolescentEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class NeomorphAdolescentAnimManager {
     public static void handleMovementAnimations(NeomorphAdolescentEntity adolescentEntity) {
         if (adolescentEntity.isAggressive()) {
             handleAggroMovementAnimations(adolescentEntity);
-        } else if (adolescentEntity.isInWater()) {
+        } else if (adolescentEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendWalk);
@@ -36,7 +36,7 @@ public class NeomorphAdolescentAnimManager {
     }
 
     public static void handleIdleAnimations(NeomorphAdolescentEntity adolescentEntity) {
-        if (adolescentEntity.isInWater()) {
+        if (adolescentEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(adolescentEntity.animationDispatcher::sendIdle);

@@ -36,7 +36,7 @@ public class RomAlienAnimManager {
     public static void handleMovementAnimations(RomAlienEntity entity) {
         if (entity.isAggressive()) {
             handleAggroMovementAnimations(entity);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -44,7 +44,7 @@ public class RomAlienAnimManager {
     }
 
     public static void handleAggroMovementAnimations(RomAlienEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
@@ -56,7 +56,7 @@ public class RomAlienAnimManager {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendStatisEnter);
         } else if (entity.searchingManager.isSearching()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendAmbient);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdleLand);

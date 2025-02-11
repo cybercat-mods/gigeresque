@@ -18,7 +18,7 @@ public class RunnerbursterAnimManager {
     }
 
     public static void handleAggroMovementAnimations(RunnerbursterEntity runnerbursterEntity) {
-        if (runnerbursterEntity.isInWater()) {
+        if (runnerbursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(runnerbursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(runnerbursterEntity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class RunnerbursterAnimManager {
     public static void handleMovementAnimations(RunnerbursterEntity runnerbursterEntity) {
         if (runnerbursterEntity.isAggressive()) {
             handleAggroMovementAnimations(runnerbursterEntity);
-        } else if (runnerbursterEntity.isInWater()) {
+        } else if (runnerbursterEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(runnerbursterEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(runnerbursterEntity.animationDispatcher::sendRun);

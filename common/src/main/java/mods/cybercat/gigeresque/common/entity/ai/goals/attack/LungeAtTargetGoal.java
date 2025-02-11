@@ -163,13 +163,6 @@ public class LungeAtTargetGoal extends Goal {
             return false;
         }
 
-        var distanceToHost = mob.distanceToSqr(target);
-
-        var minimumRange = maxLungeRange * 0.5;
-        var maximumRange = maxLungeRange * 0.75;
-        var minimumRangeSquared = minimumRange * minimumRange;
-        var maximumRangeSquared = maximumRange * maximumRange;
-
-        return distanceToHost <= maximumRangeSquared && distanceToHost >= minimumRangeSquared;
+        return !this.mob.isWithinMeleeAttackRange(target);
     }
 }

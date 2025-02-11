@@ -1,5 +1,7 @@
-package mods.cybercat.gigeresque.common.entity.ai.nav;
+package mods.cybercat.gigeresque.common.entity.helper.managers;
 
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
+import mods.cybercat.gigeresque.common.entity.ai.nav.WaterMoveControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;

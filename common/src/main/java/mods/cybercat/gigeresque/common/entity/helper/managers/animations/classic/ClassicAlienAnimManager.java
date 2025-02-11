@@ -31,7 +31,7 @@ public class ClassicAlienAnimManager {
             handleAggroMovementAnimations(classicAlienEntity);
         } else if (classicAlienEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
-        } else if (classicAlienEntity.isInWater()) {
+        } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
         } else if (classicAlienEntity.isFleeing()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendRun);
@@ -45,7 +45,7 @@ public class ClassicAlienAnimManager {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
         } else if (classicAlienEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
-        } else if (classicAlienEntity.isInWater()) {
+        } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
         } else if (classicAlienEntity.isFleeing()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendRun);
@@ -63,7 +63,7 @@ public class ClassicAlienAnimManager {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendAmbient);
         } else if (classicAlienEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
-        } else if (classicAlienEntity.isInWater()) {
+        } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendIdleLand);

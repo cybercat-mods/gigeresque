@@ -18,7 +18,7 @@ public class DraconicTempleBeastAnimManager {
     }
 
     public static void handleAggroMovementAnimations(DraconicTempleBeastEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
@@ -28,7 +28,7 @@ public class DraconicTempleBeastAnimManager {
     public static void handleMovementAnimations(DraconicTempleBeastEntity entity) {
         if (entity.isAggressive()) {
             handleAggroMovementAnimations(entity);
-        } else if (entity.isInWater()) {
+        } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
@@ -36,7 +36,7 @@ public class DraconicTempleBeastAnimManager {
     }
 
     public static void handleIdleAnimations(DraconicTempleBeastEntity entity) {
-        if (entity.isInWater()) {
+        if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);

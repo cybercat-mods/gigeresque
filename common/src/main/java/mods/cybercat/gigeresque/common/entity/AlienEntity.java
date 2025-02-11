@@ -50,7 +50,7 @@ import java.util.function.BiConsumer;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.ai.nav.AlienNavigationManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.AlienNavigationManager;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
@@ -470,7 +470,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public void travel(@NotNull Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWater()) {
+        if (this.isEffectiveAi() && this.isUnderWater()) {
             moveRelative(0.1F, travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9));
@@ -718,7 +718,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     @Override
     public void updateSwimming() {
         if (!level().isClientSide) {
-            if (isEffectiveAi() && isInWater()) {
+            if (isEffectiveAi() && isUnderWater() && !this.level().getBlockState(this.blockPosition().above()).isAir()) {
                 navigationManager.switchToWater(this);
                 setSwimming(true);
             } else {

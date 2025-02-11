@@ -18,7 +18,7 @@ public class AquaticAlienAnimManager {
     }
 
     public static void handleAggroMovementAnimations(AquaticAlienEntity aquaticAlienEntity) {
-        if (aquaticAlienEntity.isInWater()) {
+        if (aquaticAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendRushSwim);
         } else {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendCrawlRush);
@@ -28,7 +28,7 @@ public class AquaticAlienAnimManager {
     public static void handleMovementAnimations(AquaticAlienEntity aquaticAlienEntity) {
         if (aquaticAlienEntity.isAggressive()) {
             handleAggroMovementAnimations(aquaticAlienEntity);
-        } else if (aquaticAlienEntity.isInWater()) {
+        } else if (aquaticAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendSwim);
         } else {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendCrawl);
@@ -36,7 +36,7 @@ public class AquaticAlienAnimManager {
     }
 
     public static void handleIdleAnimations(AquaticAlienEntity aquaticAlienEntity) {
-        if (aquaticAlienEntity.isInWater()) {
+        if (aquaticAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendIdleWater);
         } else {
             GigCommonMethods.setAnimation(aquaticAlienEntity.animationDispatcher::sendIdleLand2);
