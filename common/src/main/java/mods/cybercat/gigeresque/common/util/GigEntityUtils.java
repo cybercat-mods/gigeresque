@@ -157,6 +157,10 @@ public record GigEntityUtils() {
             return false;
         }
 
+        if (target.isBaby()) {
+            return false;
+        }
+
         return GigEntityUtils.isTargetHostable(target) && target.isAlive();
     }
 
