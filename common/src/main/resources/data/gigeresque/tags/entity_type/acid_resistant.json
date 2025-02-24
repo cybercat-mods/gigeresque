@@ -3,5 +3,9 @@
   "values": [
     "#gigeresque:gigeresquealiens",
     "minecraft:wither",
+    {
+      "id": "#avp:acid_immune",
+      "required": false
+    }
   ]
 }

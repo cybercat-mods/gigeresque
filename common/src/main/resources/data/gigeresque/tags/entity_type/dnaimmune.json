@@ -74,6 +74,10 @@
     {
       "id": "livingthings:snail",
       "required": false
+    },
+    {
+      "id": "#avp:aliens",
+      "required": false
     }
   ]
 }
