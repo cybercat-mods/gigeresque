@@ -12,10 +12,14 @@ import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.item.group.GigItemGroups;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public record CommonMod() {
 
     public static final String MOD_ID = "gigeresque";
+
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     public static GigeresqueConfig config;
 

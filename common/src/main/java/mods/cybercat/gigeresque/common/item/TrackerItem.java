@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.item;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.platform.Services;
+import mods.cybercat.gigeresque.CommonMod;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -54,8 +55,8 @@ public class TrackerItem extends Item {
                     distanceCategory = 1; // Far (greater than 75 blocks)
                 var hologramEntity = GigEntities.ENGINEER_HOLOGRAM.get().create(level);
                 if (hologramEntity != null) {
-                    if (Services.PLATFORM.isDevelopmentEnvironment())
-                        AzureLib.LOGGER.info("Distance Category: {}", distanceCategory);
+                    if (CommonMod.config.enableLogging)
+                        CommonMod.LOGGER.info("Distance Category: {}", distanceCategory);
                     hologramEntity.setPos(spawnX, player.getY(), spawnZ);
                     hologramEntity.setDistanceState(distanceCategory);
                     hologramEntity.setDistanceFromStructure((int) horizontalDistance);

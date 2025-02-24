@@ -85,7 +85,7 @@ public class PandorasBoxStatusEffect extends MobEffect {
 
         if (spawnPos == null) {
             if (CommonMod.config.enableLogging)
-                AzureLib.LOGGER.warn("Failed to find a valid spawn position after {} attempts.", maxAttempts);
+                CommonMod.LOGGER.warn("Failed to find a valid spawn position after {} attempts.", maxAttempts);
             return;
         }
 
@@ -105,15 +105,15 @@ public class PandorasBoxStatusEffect extends MobEffect {
                         SoundSource.PLAYERS, 1.0F, 1.0F);
                 player.level().addFreshEntity(eggEntity);
                 if (CommonMod.config.enableLogging) {
-                    AzureLib.LOGGER.info("Spawned Mob at {}, {}, {}", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+                    CommonMod.LOGGER.info("Spawned Mob at {}, {}, {}", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
                 }
             } else {
                 if (CommonMod.config.enableLogging)
-                    AzureLib.LOGGER.warn("Failed to spawn entity: Light level at {} is too high ({}).", spawnPos, player.level().getBrightness(LightLayer.SKY, spawnPos));
+                    CommonMod.LOGGER.warn("Failed to spawn entity: Light level at {} is too high ({}).", spawnPos, player.level().getBrightness(LightLayer.SKY, spawnPos));
             }
         } else {
             if (CommonMod.config.enableLogging)
-                AzureLib.LOGGER.warn("Failed to create egg entity. Entity type might be null: {}", isWaterBiome ? "AQUA_EGG" : "EGG");
+                CommonMod.LOGGER.warn("Failed to create egg entity. Entity type might be null: {}", isWaterBiome ? "AQUA_EGG" : "EGG");
         }
     }
 
