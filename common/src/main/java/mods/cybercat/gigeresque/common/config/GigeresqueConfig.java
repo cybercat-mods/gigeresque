@@ -10,6 +10,10 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enableLogging = false;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enableDevparticles = false;
 
     @Configurable
