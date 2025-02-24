@@ -92,7 +92,7 @@ public record GigTags() {
 
     public static final TagKey<EntityType<?>> ACID_RESISTANT_ENTITY = TagKey.create(
         Registries.ENTITY_TYPE,
-        Constants.modResource("acidresistant")
+        Constants.modResource("acid_resistant")
     );
 
     public static final TagKey<EntityType<?>> HWG_ENTITIES = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("hwg_entities"));
