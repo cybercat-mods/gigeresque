@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -47,6 +48,9 @@ public class SporeStatusEffect extends MobEffect {
             if (entity instanceof Player player) {
                 player.addEffect(new MobEffectInstance(MobEffects.HARM, 100, 100));
                 player.kill();
+            }
+            if (entity instanceof Mob mob) {
+                mob.remove(Entity.RemovalReason.KILLED);
             }
         }
     }
