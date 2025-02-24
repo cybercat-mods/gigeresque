@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
-import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.core.object.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,6 +44,10 @@ public class PandorasBoxStatusEffect extends MobEffect {
         }
 
         if (Constants.isCreativeSpecPlayer.test(player)) {
+            return false;
+        }
+
+        if (player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS)) {
             return false;
         }
 
