@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,8 +32,9 @@ public class AquaEggEntity extends Entity implements Growable {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && this.isAlive() && this.tickCount % Constants.TPS == 0) {
-            this.grow(this, this.growthCounter++ * getGrowthMultiplier());
+        if (level() instanceof ServerLevel && this.isAlive()) {
+            this.grow(this, this.getGrowth() * getGrowthMultiplier());
+            this.setGrowth(this.growthCounter++);
         }
         GigCommonMethods.handleFloatingPhysics(this);
         GigCommonMethods.handleCollisionPhysics(this);

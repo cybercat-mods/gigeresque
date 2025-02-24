@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
+import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -405,8 +406,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel) {
-            if (this.isAlive() && this.tickCount % Constants.TPS == 0)
-                this.grow(this, this.growthCounter++ * getGrowthMultiplier());
+            if (this.isAlive() && this.getGrowth() <= this.getMaxGrowth()) {
+                this.grow(this, this.getGrowth() * getGrowthMultiplier());
+                this.setGrowth(this.tickCount * getGrowthMultiplier());
+                AzureLib.LOGGER.info(this.getGrowth());
+            }
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
                 this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
                     if (e.is(GigTags.NEST_BLOCKS))
@@ -564,7 +568,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
      * GROWTH
      */
     public float getMaxGrowth() {
-        return Constants.TPM;
+        return Constants.TPD / 2.0F;
     }
 
     public LivingEntity growInto() {

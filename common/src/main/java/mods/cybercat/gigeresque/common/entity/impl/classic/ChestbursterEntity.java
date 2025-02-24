@@ -35,11 +35,6 @@ public class ChestbursterEntity extends AlienEntity {
         EntityDataSerializers.BOOLEAN
     );
 
-    private static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(
-        ChestbursterEntity.class,
-        EntityDataSerializers.FLOAT
-    );
-
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
@@ -91,19 +86,8 @@ public class ChestbursterEntity extends AlienEntity {
     }
 
     @Override
-    public float getGrowth() {
-        return entityData.get(GROWTH);
-    }
-
-    @Override
-    public void setGrowth(float growth) {
-        entityData.set(GROWTH, growth);
-    }
-
-    @Override
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(GROWTH, 0.0f);
         builder.define(BIRTHED, false);
     }
 
@@ -135,7 +119,6 @@ public class ChestbursterEntity extends AlienEntity {
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
-        nbt.putFloat("growth", getGrowth());
         if (hostId != null)
             nbt.putString("hostId", hostId);
         nbt.putBoolean("is_birthed", isBirthed());
@@ -172,11 +155,6 @@ public class ChestbursterEntity extends AlienEntity {
     @Override
     public float getGrowthMultiplier() {
         return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
-    }
-
-    @Override
-    public float getMaxGrowth() {
-        return Constants.TPD / 2.0f;
     }
 
     /**

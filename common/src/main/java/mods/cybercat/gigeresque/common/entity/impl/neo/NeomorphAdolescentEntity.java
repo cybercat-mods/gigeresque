@@ -88,11 +88,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
     }
 
     @Override
-    public float getMaxGrowth() {
-        return Constants.TPD / 2.0f;
-    }
-
-    @Override
     public LivingEntity growInto() {
         return GigEntities.NEOMORPH.get().create(level());
     }
