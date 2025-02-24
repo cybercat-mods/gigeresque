@@ -18,6 +18,9 @@ daemon
 wrapper
 native
 
+# vscode
+.vscode
+
 # allow gradlew
 !gradle/wrapper
 # gradle
