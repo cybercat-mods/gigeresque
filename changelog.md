@@ -1,9 +1,5 @@
-v0.8.4
+v0.8.5
 
-- Fixes facehuggers targeting baby mobs.
-- Fixes growth system being odd.
-- Classic Xenos will no longer use young texture system.
-- Fixes Mycosis Death on mobs.
-- Fixes Pandoras Box effect not properly triggering mobs.
-- Adds Logging config that will enable extra logging to the Pandoras Box spawning system.
-- Added en_nz.json (PR #320)
+- Fixes Pandoras Box effect triggering when still in a dungeon.
+- Rename entity tag for acid resistant mobs. acidresistant -> acid_resistant
+- Adds compat for AVP 1.21.1 mod if loaded with Gig (AVP not released publicly yet, this is done in advance)
