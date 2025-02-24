@@ -1,26 +1,9 @@
-v0.8.3
+v0.8.4
 
-- Fixes left over check on egg turning.
-- Fixes Neomorph Adolescent crash.
-- Fixes tunnel crawling if holding a mob.
-- Fixes growth timer not increasing.
-- Fixes the sac appearing on Neoburster randomly.
-- Fixes the Spore effect affecting entities around the creative player.
-- Neobursters now inherit any custom name it's host had.
-- Bursters now gain any effects the effects had when birthing.
-- Fixes the large max scaling of Classic Xenos.
-- Fixes AI of aliens with a rewrite.
-- Fixes a lot of pathfinding issues.
-- Moves animation code to client side.
-- Fixes Spore death issue.
-- Rewrote block breaking to use goal now.
-- Updates Black Fluid textures and overlay.
-- Fixes Spitters not generating when an entity has the goo effect and has a burster from the impregnation effect.
-- Updated Pandoras Effect to only spawn eggs in areas around the player that are dark. This means light level can stop the spawning.
-- Fixes speed of all xenos on land.
-- Fixes speed of all xenos in water.
-- Classic Xenos now save their nest block for taking mobs back to.
-- Fixes Black Fluid being bucket-able.
-- Mutants now have a chance to change plants and water in a 10 block radius to spores/black fluid on death.
-- Updated Dungeon parts, will only apply to non-generated/new dungeons.
-- Xenos can now exit water to go after target on land.
+- Fixes facehuggers targeting baby mobs.
+- Fixes growth system being odd.
+- Classic Xenos will no longer use young texture system.
+- Fixes Mycosis Death on mobs.
+- Fixes Pandoras Box effect not properly triggering mobs.
+- Adds Logging config that will enable extra logging to the Pandoras Box spawning system.
+- Added en_nz.json (PR #320)
