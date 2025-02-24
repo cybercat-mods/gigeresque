@@ -409,7 +409,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             if (this.isAlive() && this.getGrowth() <= this.getMaxGrowth()) {
                 this.grow(this, this.getGrowth() * getGrowthMultiplier());
                 this.setGrowth(this.tickCount * getGrowthMultiplier());
-                AzureLib.LOGGER.info(this.getGrowth());
             }
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
                 this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
