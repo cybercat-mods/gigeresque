@@ -20,7 +20,6 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public abstract class BlackFluid extends FlowingFluid {

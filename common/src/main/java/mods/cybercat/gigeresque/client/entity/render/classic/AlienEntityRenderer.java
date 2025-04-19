@@ -22,12 +22,12 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
     public AlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<ClassicAlienEntity>builder($ -> EntityModels.ALIEN, xeno -> {
-                        if (xeno.stasisManager.isStasis()) {
-                            return EntityTextures.ALIEN_STATIS;
-                        }
+                if (xeno.stasisManager.isStasis()) {
+                    return EntityTextures.ALIEN_STATIS;
+                }
 
-                        return EntityTextures.ALIEN;
-                    })
+                return EntityTextures.ALIEN;
+            })
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .build(),

@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.entity;
 
-import mods.cybercat.gigeresque.common.util.SilencedEntityTypeBuilder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.common.util.SilencedEntityTypeBuilder;
 import mods.cybercat.gigeresque.platform.GigServices;
 
 /**
@@ -70,10 +70,10 @@ public interface CommonEntityRegistryInterface {
     }
 
     static <T extends Entity> SilencedEntityTypeBuilder create(
-            EntityType.EntityFactory<T> entity,
-            MobCategory mobCategory,
-            float width,
-            float height
+        EntityType.EntityFactory<T> entity,
+        MobCategory mobCategory,
+        float width,
+        float height
     ) {
         return (SilencedEntityTypeBuilder) EntityType.Builder.of(entity, mobCategory).sized(width, height);
     }

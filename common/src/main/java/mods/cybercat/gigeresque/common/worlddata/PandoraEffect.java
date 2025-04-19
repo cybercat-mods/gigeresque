@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common.worlddata;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
@@ -15,6 +12,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+
 public class PandoraEffect implements CustomSpawner {
 
     private int nextTick = 0;
@@ -23,7 +24,10 @@ public class PandoraEffect implements CustomSpawner {
 
     @Override
     public int tick(@NotNull ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
-        if (!PandoraData.isTriggered() || !spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING) || !CommonMod.config.enablePandoraEffects) {
+        if (
+            !PandoraData.isTriggered() || !spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING)
+                || !CommonMod.config.enablePandoraEffects
+        ) {
             return 0;
         }
 
@@ -36,7 +40,7 @@ public class PandoraEffect implements CustomSpawner {
         }
 
         this.nextTick = 12000 + level.random.nextInt(6000);
-        
+
         var randomSource = level.random;
 
         if (!isValidSpawnTime(level)) {
@@ -55,9 +59,15 @@ public class PandoraEffect implements CustomSpawner {
 
         if (level.getMaxLocalRawBrightness(player.blockPosition()) >= 8) {
             if (CommonMod.config.enableLogging) {
-                CommonMod.LOGGER.warn("Failed to spawn entity: Light level at {} is too high ({}).",
-                        player.blockPosition(), player.level().getBrightness(
-                                LightLayer.SKY, player.blockPosition()));
+                CommonMod.LOGGER.warn(
+                    "Failed to spawn entity: Light level at {} is too high ({}).",
+                    player.blockPosition(),
+                    player.level()
+                        .getBrightness(
+                            LightLayer.SKY,
+                            player.blockPosition()
+                        )
+                );
             }
             return 0;
         }
@@ -125,8 +135,8 @@ public class PandoraEffect implements CustomSpawner {
         var isWaterBiome = level.getBiome(pos).is(GigTags.AQUASPAWN_BIOMES);
 
         var eggEntity = isWaterBiome
-                ? GigEntities.AQUA_EGG.get().create(level)
-                : GigEntities.EGG.get().create(level);
+            ? GigEntities.AQUA_EGG.get().create(level)
+            : GigEntities.EGG.get().create(level);
 
         eggEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
 

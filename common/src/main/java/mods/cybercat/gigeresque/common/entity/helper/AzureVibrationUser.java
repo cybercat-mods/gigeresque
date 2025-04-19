@@ -49,7 +49,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
         return (int) (maxRadius * factor);
     }
 
-
     @Override
     public @NotNull PositionSource getPositionSource() {
         return this.positionSource;

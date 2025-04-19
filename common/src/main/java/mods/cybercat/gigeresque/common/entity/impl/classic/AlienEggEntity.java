@@ -180,8 +180,9 @@ public class AlienEggEntity extends AlienEntity {
             GigCommonMethods.handleNestProgress(this);
             GigCommonMethods.handleHatchingProgress(this);
             GigCommonMethods.handleFacehuggerSpawn(this);
-            if (this.getEggState() == EggStates.IDLE.ordinal())
+            if (this.getEggState() == EggStates.IDLE.ordinal()) {
                 hatchCheckTimer++;
+            }
             GigCommonMethods.handleAoEEntityHatchCheck(this);
             GigCommonMethods.handleAoEBlockHatchCheck(this);
             if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger()) {
