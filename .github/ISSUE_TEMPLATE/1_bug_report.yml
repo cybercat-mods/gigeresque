@@ -7,14 +7,20 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-  - type: dropdown
+  - type: input
     id: mod_version
     attributes:
       label: Mod Version
       description: What version of the mod are you running?
-      options:
-        - 0.8.6
-      default: 0
+      placeholder: DO NOT PUT LATEST ex. 0.8.0
+    validations:
+      required: true
+  - type: input
+    id: mc_version
+    attributes:
+      label: Minecraft Version
+      description: What version of Minecraft are you running?
+      placeholder: DO NOT PUT LATEST! ex. 1.21.1
     validations:
       required: true
   - type: dropdown
@@ -28,12 +34,12 @@ body:
       default: 0
     validations:
       required: true
-  - type: textarea
+  - type: input
     id: modloader_version
     attributes:
       label: Mod Loader Version
-      description: What version of the mod are you running?
-      value: "NeoForge 21.1.x/Fabric Loader x.x.x"
+      description: What version of Fabric Loader or NeoForge are you running?
+      placeholder: DO NOT PUT LATEST! ex. Fabric Loader x.x.x
     validations:
       required: true
   - type: textarea
