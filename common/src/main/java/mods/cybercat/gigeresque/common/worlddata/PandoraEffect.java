@@ -17,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PandoraEffect implements CustomSpawner {
 
-    private int nextTick;
+    private int nextTick = 0;
 
     public PandoraEffect() {}
 
     @Override
     public int tick(@NotNull ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
-        if (!spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING) || !CommonMod.config.enablePandoraEffects) {
+        if (!PandoraData.isTriggered() || !spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING) || !CommonMod.config.enablePandoraEffects) {
             return 0;
         }
 
@@ -31,14 +31,13 @@ public class PandoraEffect implements CustomSpawner {
             return 0;
         }
 
-        var randomSource = level.random;
-        --this.nextTick;
-
-        if (this.nextTick > 0) {
+        if (--this.nextTick > 0) {
             return 0;
         }
 
-        this.nextTick += 12000 + randomSource.nextInt(1200);
+        this.nextTick = 12000 + level.random.nextInt(6000);
+        
+        var randomSource = level.random;
 
         if (!isValidSpawnTime(level)) {
             return 0;
@@ -97,26 +96,23 @@ public class PandoraEffect implements CustomSpawner {
             return false;
         }
 
+        if (level.getMaxLocalRawBrightness(pos) >= 8) {
+            return false;
+        }
+
         var biomeHolder = level.getBiome(pos);
         return biomeHolder.is(BiomeTags.IS_OVERWORLD);
     }
 
     private int spawnEggs(ServerLevel level, BlockPos startPos) {
         var randomSource = level.random;
-        var difficulty = (int) Math.ceil(level.getCurrentDifficultyAt(startPos).getEffectiveDifficulty()) + 1;
+        startPos.setY(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, startPos).getY());
 
-        var spawnCount = 0;
-        for (var i = 0; i < difficulty; ++i) {
-            spawnCount++;
+        this.spawnEgg(level, startPos);
+        startPos.setX(startPos.getX() + randomSource.nextInt(5) - randomSource.nextInt(5));
+        startPos.setZ(startPos.getZ() + randomSource.nextInt(5) - randomSource.nextInt(5));
 
-            startPos.setY(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, startPos).getY());
-            this.spawnEgg(level, startPos);
-
-            startPos.setX(startPos.getX() + randomSource.nextInt(5) - randomSource.nextInt(5));
-            startPos.setZ(startPos.getZ() + randomSource.nextInt(5) - randomSource.nextInt(5));
-        }
-
-        return spawnCount;
+        return 1;
     }
 
     private void spawnEgg(ServerLevel level, BlockPos pos) {
