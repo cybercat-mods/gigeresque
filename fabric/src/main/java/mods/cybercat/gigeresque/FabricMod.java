@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -37,8 +38,11 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
+import net.minecraft.world.level.GameRules;
 
 public final class FabricMod implements ModInitializer {
+
+    private final PandoraEffect pandoraEffect = new PandoraEffect();
 
     @Override
     public void onInitialize() {
@@ -93,15 +97,21 @@ public final class FabricMod implements ModInitializer {
         );
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes());
-        if (CommonMod.config.enablePandoraEffects)
-            ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
+        if (CommonMod.config.enablePandoraEffects) {
+            ServerTickEvents.END_WORLD_TICK.register(this::onWorldEndTick);
+            ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+        }
         AzIdentityRegistry.register(GigItems.TRACKER.get());
     }
 
-    private void onWorldTick(ServerLevel level) {
+    private void onWorldTick(ServerLevel serverLevel) {
+        pandoraEffect.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+    }
+
+    private void onWorldEndTick(ServerLevel serverLevel) {
         boolean hasAdvancement = false;
 
-        for (ServerPlayer player : level.getPlayers(player -> true)) {
+        for (ServerPlayer player : serverLevel.getPlayers(player -> true)) {
             var advancement = player.server.getAdvancements().get(Constants.modResource("xeno_dungeon"));
             if (advancement != null && player.getAdvancements().getOrStartProgress(advancement).isDone()) {
                 hasAdvancement = true;
@@ -110,12 +120,7 @@ public final class FabricMod implements ModInitializer {
         }
 
         if (hasAdvancement) {
-            for (ServerPlayer serverPlayer : level.getPlayers(player -> true)) {
-                // Apply effect to all players
-                if (!serverPlayer.hasEffect(GigStatusEffects.DUNGEON_EFFECT))
-                    serverPlayer.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 0, false, false, false, null));
-                PandoraData.setIsTriggered(true);
-            }
+            PandoraData.setIsTriggered(true);
         }
     }
 }

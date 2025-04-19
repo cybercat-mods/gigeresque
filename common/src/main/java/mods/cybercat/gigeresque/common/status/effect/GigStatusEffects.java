@@ -56,11 +56,5 @@ public record GigStatusEffects() implements CommonStatusEffectRegistryInterface 
         EggMorphingStatusEffect::new
     );
 
-    public static final Holder<MobEffect> DUNGEON_EFFECT = CommonStatusEffectRegistryInterface.registerStatusEffect(
-        CommonMod.MOD_ID,
-        "dungeon_status",
-        PandorasBoxStatusEffect::new
-    );
-
     public static void initialize() {}
 }

@@ -28,8 +28,7 @@
     "client.entity.render.feature.SheepWoolFeatureRendererMixin",
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
     "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
-    "client.render.InGameOverlayRendererMixin",
-    "client.render.EffectRenderingMixin"
+    "client.render.InGameOverlayRendererMixin"
   ],
   "server": []
 }

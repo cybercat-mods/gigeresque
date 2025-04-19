@@ -4,11 +4,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -129,6 +131,8 @@ public final class NeoForgeMod {
         CommonMod.MOD_ID
     );
 
+    private final PandoraEffect pandoraEffect = new PandoraEffect();
+
     public static final Supplier<FluidType> BLACKFLUID_TYPE = FLUID_TYPES.register(
         "black_fluid_type",
         () -> new FluidType(
@@ -189,8 +193,10 @@ public final class NeoForgeMod {
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
-        if (CommonMod.config.enablePandoraEffects)
+        if (CommonMod.config.enablePandoraEffects) {
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldEndTick);
             NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
+        }
         NeoForge.EVENT_BUS.addListener(this::onJoin);
         modEventBus.addListener(this::commonSetup);
     }
@@ -238,14 +244,22 @@ public final class NeoForgeMod {
         GigVillagerTrades.addTrades();
     }
 
-    public void onWorldTick(final LevelTickEvent.Post event) {
-        // Ensure we are on the server side
+    public void onWorldTick(final LevelTickEvent.Pre event) {
+        if (event.getLevel().isClientSide) {
+            return;
+        }
+
+        var serverLevel = (ServerLevel) event.getLevel();
+
+        pandoraEffect.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+    }
+
+    public void onWorldEndTick(final LevelTickEvent.Post event) {
         if (event.getLevel().isClientSide)
             return;
 
         boolean hasAdvancement = false;
 
-        // Check if any player has the advancement
         for (var player : event.getLevel().players()) {
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.getServer().getAdvancements().get(Constants.modResource("xeno_dungeon"));
@@ -260,14 +274,8 @@ public final class NeoForgeMod {
             }
         }
 
-        // If at least one player has the advancement, apply the effect to all players
         if (hasAdvancement) {
-            for (var player : event.getLevel().players()) {
-                if (!player.hasEffect(GigStatusEffects.DUNGEON_EFFECT)) {
-                    player.addEffect(new MobEffectInstance(GigStatusEffects.DUNGEON_EFFECT, -1, 1, false, false, false, null));
-                }
-                PandoraData.setIsTriggered(true);
-            }
+            PandoraData.setIsTriggered(true);
         }
     }
 
