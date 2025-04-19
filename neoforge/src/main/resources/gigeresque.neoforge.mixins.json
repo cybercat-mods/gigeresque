@@ -9,6 +9,7 @@
   "mixins": [
     "FlameBlockMixin",
     "FluidMixin",
+    "common.MixinEntityTypeBuilder_SilenceDataFixerError",
     "common.PointOfInterestTypesInvoker",
     "common.RaidMixin",
     "common.ServerLevelMixin",

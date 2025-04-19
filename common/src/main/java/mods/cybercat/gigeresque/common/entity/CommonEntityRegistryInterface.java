@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity;
 
+import mods.cybercat.gigeresque.common.util.SilencedEntityTypeBuilder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -64,7 +65,17 @@ public interface CommonEntityRegistryInterface {
         return GigServices.COMMON_REGISTRY.registerEntity(
             modID,
             entityName,
-            () -> EntityType.Builder.of(entity, mobCategory).sized(width, height).build(entityName)
+            () -> create(entity, mobCategory, width, height).buildWithoutDataFixerCheck()
         );
     }
+
+    static <T extends Entity> SilencedEntityTypeBuilder create(
+            EntityType.EntityFactory<T> entity,
+            MobCategory mobCategory,
+            float width,
+            float height
+    ) {
+        return (SilencedEntityTypeBuilder) EntityType.Builder.of(entity, mobCategory).sized(width, height);
+    }
+
 }
