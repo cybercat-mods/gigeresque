@@ -93,12 +93,12 @@ public class NeomorphAdolescentEntity extends AlienEntity {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new EatFoodItemGoal(this, 0.9F, 5));
-        this.goalSelector.addGoal(1, new EatFoodBlockGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.15F, 10));
+        this.goalSelector.addGoal(3, new EatFoodBlockGoal(this));
+        this.goalSelector.addGoal(3, new EatFoodItemGoal(this, 0.9F, 5));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));

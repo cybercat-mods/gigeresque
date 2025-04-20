@@ -85,11 +85,6 @@ public class EatFoodItemGoal extends Goal {
     }
 
     @Override
-    public void stop() {
-        this.mob.getNavigation().stop();
-    }
-
-    @Override
     public boolean requiresUpdateEveryTick() {
         return true;
     }
@@ -128,6 +123,7 @@ public class EatFoodItemGoal extends Goal {
                 this.ticksUntilNextPathRecalculation = this.adjustedTickDelay(this.ticksUntilNextPathRecalculation);
             }
             this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 1, 0);
+            this.mob.getNavigation().moveTo(target, this.speedModifier);
             this.checkAndPerformAttack(target);
         }
     }
@@ -149,7 +145,7 @@ public class EatFoodItemGoal extends Goal {
                 target.getItem().finishUsingItem(this.mob.level(), this.mob);
                 target.getItem().shrink(1);
                 this.mob.swing(InteractionHand.MAIN_HAND);
-                this.mob.grow(this.mob, 2400.0f);
+                this.mob.setGrowth(this.mob.getGrowth() + 200.0F);
                 this.triggeredAttackAnimation = false;
             }
         } else {

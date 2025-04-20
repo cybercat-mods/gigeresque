@@ -68,8 +68,8 @@ public class SpitterEntity extends AlienEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(1, new SpitAcidGoal(this, 1.1F, 5));
-        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
+        this.goalSelector.addGoal(1, new SpitAcidGoal(this, 1.3F, 5));
+        this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.3F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
         this.goalSelector.addGoal(10, new KillLightsGoal(this));
