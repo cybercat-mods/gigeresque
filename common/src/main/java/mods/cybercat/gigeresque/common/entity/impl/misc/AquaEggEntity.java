@@ -33,8 +33,11 @@ public class AquaEggEntity extends Entity implements Growable {
     public void tick() {
         super.tick();
         if (level() instanceof ServerLevel && this.isAlive()) {
-            this.grow(this, this.getGrowth() * getGrowthMultiplier());
-            this.setGrowth(this.growthCounter++);
+            if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
+                this.setGrowth((this.getGrowth() + this.growthCounter++) * getGrowthMultiplier());
+            } else if (this.getGrowth() >= this.getMaxGrowth()) {
+                this.growUp(this);
+            }
         }
         GigCommonMethods.handleFloatingPhysics(this);
         GigCommonMethods.handleCollisionPhysics(this);
@@ -53,7 +56,7 @@ public class AquaEggEntity extends Entity implements Growable {
 
     @Override
     public float getMaxGrowth() {
-        return Constants.TPD / 2.0f;
+        return 600;
     }
 
     @Override

@@ -23,8 +23,4 @@ public interface AbstractAlien {
     boolean isHissing();
 
     void setIsHissing(boolean isHissing);
-
-    float getGrowth();
-
-    void setGrowth(float growth);
 }

@@ -163,8 +163,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     private final AlienNavigationManager navigationManager;
 
-    private int growthTimeInTicks;
-
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
@@ -292,7 +290,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public void setGrowth(float growth) {
-        this.growthCounter = growth;
         entityData.set(GROWTH, growth);
     }
 
@@ -406,9 +403,15 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         stasisManager.tick();
 
         this.setAirSupply(this.getMaxAirSupply());
-        if (level() instanceof ServerLevel serverLevel) {
-            if (this.isAlive() && this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                this.setGrowth(this.growthTimeInTicks++ * getGrowthMultiplier());
+        if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
+            if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
+                if (CommonMod.config.enableLogging) {
+                    CommonMod.LOGGER.warn("Current Growth: {} of {} located at {}", this.getGrowth(), this.getDisplayName().getString(), this.blockPosition());
+                }
+                this.growthCounter++;
+                this.setGrowth((this.getGrowth() + 1) * getGrowthMultiplier());
+            } else if (this.getGrowth() >= this.getMaxGrowth()) {
+                this.growUp(this);
             }
             if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
                 this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
@@ -567,7 +570,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
      * GROWTH
      */
     public float getMaxGrowth() {
-        return Constants.TPD / 2.0F;
+        return 1200.0F;
     }
 
     public LivingEntity growInto() {
