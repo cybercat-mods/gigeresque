@@ -19,8 +19,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class BeaconBlock extends Block {
 
-    private long lastEffectTime = 0;
-
     public BeaconBlock() {
         super(
             Properties.of()
@@ -37,21 +35,16 @@ public class BeaconBlock extends Block {
     @Override
     protected void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         if (!level.isClientSide()) {
-            lastEffectTime++;
-            if (lastEffectTime > 20) {
-                var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(30));
-                for (var player : nearbyPlayers) {
-                    if (
+            var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(30));
+            for (var player : nearbyPlayers) {
+                if (
                         !player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(
-                            MobEffects.DARKNESS
-                        )
-                            && Constants.isNotCreativeSpecPlayer.test(player)
-                    ) {
-                        player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
-                        level.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1F, 1F);
-                    }
+                                MobEffects.DARKNESS
+                        ) && Constants.isNotCreativeSpecPlayer.test(player)
+                ) {
+                    player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
+                    level.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1F, 1F);
                 }
-                lastEffectTime = 0;
             }
         }
     }
