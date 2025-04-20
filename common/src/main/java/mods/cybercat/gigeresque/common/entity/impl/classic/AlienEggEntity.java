@@ -177,6 +177,7 @@ public class AlienEggEntity extends AlienEntity {
         }
 
         if (!this.level().isClientSide) {
+            this.setGrowth(0);
             GigCommonMethods.handleNestProgress(this);
             GigCommonMethods.handleHatchingProgress(this);
             GigCommonMethods.handleFacehuggerSpawn(this);
