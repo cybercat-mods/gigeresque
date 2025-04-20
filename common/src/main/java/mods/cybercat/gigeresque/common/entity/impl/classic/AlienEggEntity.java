@@ -183,8 +183,10 @@ public class AlienEggEntity extends AlienEntity {
             if (this.getEggState() == EggStates.IDLE.ordinal()) {
                 hatchCheckTimer++;
             }
-            GigCommonMethods.handleAoEEntityHatchCheck(this);
-            GigCommonMethods.handleAoEBlockHatchCheck(this);
+            if (this.tickCount % 20 == 0) {
+                GigCommonMethods.handleAoEEntityHatchCheck(this);
+                GigCommonMethods.handleAoEBlockHatchCheck(this);
+            }
             if (this.getEggState() == EggStates.HATCHED.ordinal() && !this.hasFacehugger()) {
                 this.hatchedOpenTimer++;
                 if (this.hatchedOpenTimer >= 1200) {
