@@ -1,10 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -28,6 +31,9 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWa
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.world.level.ServerLevelAccessor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements Growable {
 
@@ -113,5 +119,18 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
                     && target.getBbHeight() < 0.8
             )
         );
+    }
+
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(
+            @NotNull ServerLevelAccessor level,
+            @NotNull DifficultyInstance difficulty,
+            @NotNull MobSpawnType spawnType,
+            @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (spawnType == MobSpawnType.SPAWN_EGG)
+            setHostId("runner");
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 }
