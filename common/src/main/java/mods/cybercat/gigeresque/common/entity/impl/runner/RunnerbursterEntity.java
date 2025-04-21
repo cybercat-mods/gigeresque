@@ -16,6 +16,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -31,9 +34,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWa
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.world.level.ServerLevelAccessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RunnerbursterEntity extends ChestbursterEntity implements Growable {
 
@@ -124,10 +124,10 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(
-            @NotNull ServerLevelAccessor level,
-            @NotNull DifficultyInstance difficulty,
-            @NotNull MobSpawnType spawnType,
-            @Nullable SpawnGroupData spawnGroupData
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
     ) {
         if (spawnType == MobSpawnType.SPAWN_EGG)
             setHostId("runner");

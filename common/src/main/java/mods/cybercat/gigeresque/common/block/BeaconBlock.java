@@ -38,9 +38,9 @@ public class BeaconBlock extends Block {
             var nearbyPlayers = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(30));
             for (var player : nearbyPlayers) {
                 if (
-                        !player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(
-                                MobEffects.DARKNESS
-                        ) && Constants.isNotCreativeSpecPlayer.test(player)
+                    !player.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS) && !player.hasEffect(
+                        MobEffects.DARKNESS
+                    ) && Constants.isNotCreativeSpecPlayer.test(player)
                 ) {
                     player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 200, 10));
                     level.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1F, 1F);
