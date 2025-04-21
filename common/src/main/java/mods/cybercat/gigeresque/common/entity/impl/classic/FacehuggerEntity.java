@@ -218,6 +218,7 @@ public class FacehuggerEntity extends AlienEntity {
     public void tick() {
         super.tick();
         moveAnalysis.update();
+        this.setGrowth(0);
         if (this.isAttachedToHost() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
