@@ -405,8 +405,13 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                if (CommonMod.config.enableLogging) {
-                    CommonMod.LOGGER.warn("Current Growth: {} of {} located at {}", this.getGrowth(), this.getDisplayName().getString(), this.blockPosition());
+                if (CommonMod.config.enableLogging && this.getGrowth() > 0) {
+                    CommonMod.LOGGER.warn(
+                        "Current Growth: {} of {} located at {}",
+                        this.getGrowth(),
+                        this.getDisplayName().getString(),
+                        this.blockPosition()
+                    );
                 }
                 this.growthCounter++;
                 this.setGrowth((this.getGrowth() + 1) * getGrowthMultiplier());
