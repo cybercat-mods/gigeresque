@@ -1,11 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -104,6 +108,23 @@ public class ChestbursterEntity extends AlienEntity {
     public void tick() {
         super.tick();
         moveAnalysis.update();
+
+        if (!this.level().isClientSide() && this.tickCount % 20 == 0) {
+            var itemEntities = this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(2), itemEntity -> true);
+            if (!itemEntities.isEmpty()) {
+                this.animationDispatcher.sendChomp();
+                if (this.tickCount % 10 == 0) {
+                    if (itemEntities.getFirst().getItem().is(GigTags.POTIONS)) {
+                        this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                    }
+                    this.animationDispatcher.sendChomp();
+                    itemEntities.getFirst().getItem().finishUsingItem(this.level(), this);
+                    itemEntities.getFirst().getItem().shrink(1);
+                    this.swing(InteractionHand.MAIN_HAND);
+                    this.setGrowth(this.getGrowth() + 20.0F);
+                }
+            }
+        }
 
         if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
             this.setBirthStatus(false);

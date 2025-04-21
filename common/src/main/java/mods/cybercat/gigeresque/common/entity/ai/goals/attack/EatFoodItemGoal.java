@@ -145,7 +145,7 @@ public class EatFoodItemGoal extends Goal {
                 target.getItem().finishUsingItem(this.mob.level(), this.mob);
                 target.getItem().shrink(1);
                 this.mob.swing(InteractionHand.MAIN_HAND);
-                this.mob.setGrowth(this.mob.getGrowth() + 200.0F);
+                this.mob.setGrowth(this.mob.getGrowth() + 20.0F);
                 this.triggeredAttackAnimation = false;
             }
         } else {
