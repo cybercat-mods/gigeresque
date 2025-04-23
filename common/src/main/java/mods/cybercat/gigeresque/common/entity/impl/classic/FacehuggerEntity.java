@@ -308,7 +308,7 @@ public class FacehuggerEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeFaceHuggerTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeFaceHuggerTarget(target) && !this.hasEffect(MobEffects.CONFUSION)
             )
         );
     }

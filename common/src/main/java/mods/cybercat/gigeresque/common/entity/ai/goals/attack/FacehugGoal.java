@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 
@@ -11,6 +12,22 @@ public class FacehugGoal extends DelayedAttackGoal {
 
     public FacehugGoal(AlienEntity mob, double speedModifier, int delayTicksBeforeAttack) {
         super(mob, speedModifier, delayTicksBeforeAttack);
+    }
+
+    @Override
+    public boolean canUse() {
+        if (this.mob.hasEffect(MobEffects.CONFUSION)) {
+            return false;
+        }
+        return super.canUse();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        if (this.mob.hasEffect(MobEffects.CONFUSION)) {
+            return false;
+        }
+        return super.canContinueToUse();
     }
 
     @Override
@@ -25,7 +42,7 @@ public class FacehugGoal extends DelayedAttackGoal {
                 }
             } else {
                 this.resetAttackCooldown();
-                if (!target.getUseItem().is(Items.SHIELD)) {
+                if (!target.getUseItem().is(Items.SHIELD) && !mob.hasEffect(MobEffects.CONFUSION)) {
                     this.mob.swing(InteractionHand.MAIN_HAND);
                     mob.grabTarget(target);
                 }

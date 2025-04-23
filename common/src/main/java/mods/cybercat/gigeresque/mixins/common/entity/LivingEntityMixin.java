@@ -85,7 +85,7 @@ public abstract class LivingEntityMixin extends Entity {
             this.getFirstPassenger().hurt(source, amount / 2);
             ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
                 new MobEffectInstance(
-                    MobEffects.MOVEMENT_SLOWDOWN,
+                    MobEffects.CONFUSION,
                     CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer,
                     100,
                     false,
