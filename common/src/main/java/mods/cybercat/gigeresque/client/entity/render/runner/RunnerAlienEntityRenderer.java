@@ -38,9 +38,7 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
         @NotNull MultiBufferSource bufferIn,
         int packedLightIn
     ) {
-        float scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         RunnerAnimManager.handleAnimations(entity);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }
