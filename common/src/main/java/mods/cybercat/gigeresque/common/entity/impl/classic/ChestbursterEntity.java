@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -39,6 +41,10 @@ public class ChestbursterEntity extends AlienEntity {
     );
 
     protected String hostId = null;
+
+    protected int delayBeforeEating = 0;
+
+    protected boolean triggeredAttackAnimation = false;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
@@ -109,23 +115,6 @@ public class ChestbursterEntity extends AlienEntity {
         super.tick();
         moveAnalysis.update();
 
-        if (!this.level().isClientSide() && this.tickCount % 20 == 0) {
-            var itemEntities = this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(2), itemEntity -> true);
-            if (!itemEntities.isEmpty()) {
-                this.animationDispatcher.sendChomp();
-                if (this.tickCount % 10 == 0) {
-                    if (itemEntities.getFirst().getItem().is(GigTags.POTIONS)) {
-                        this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
-                    }
-                    this.animationDispatcher.sendChomp();
-                    itemEntities.getFirst().getItem().finishUsingItem(this.level(), this);
-                    itemEntities.getFirst().getItem().shrink(1);
-                    this.swing(InteractionHand.MAIN_HAND);
-                    this.setGrowth(this.getGrowth() + 20.0F);
-                }
-            }
-        }
-
         if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
             this.setBirthStatus(false);
         if (this.isDeadOrDying()) {
@@ -133,6 +122,16 @@ public class ChestbursterEntity extends AlienEntity {
         }
         if (this.getVehicle() instanceof LivingEntity livingEntity && livingEntity.isAlive()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
+        }
+
+        if (!this.level().isClientSide) {
+            var radius = this.getBoundingBox().inflate(1.25D);
+            this.level()
+                .getEntitiesOfClass(ItemEntity.class, radius)
+                .stream()
+                .filter(itemEntity -> itemEntity.getItem().is(GigTags.BURSTER_FOODS))
+                .findFirst()
+                .ifPresent(this::checkAndPerformEating);
         }
     }
 
@@ -192,5 +191,68 @@ public class ChestbursterEntity extends AlienEntity {
                 entity.setCustomName(this.getCustomName());
         }
         return entity;
+    }
+
+    protected void checkAndPerformEating(ItemEntity target) {
+        if (target == null)
+            return;
+        if (this.isBirthed())
+            return;
+
+        if (isWithinEatingRange(target)) {
+            if (this.delayBeforeEating > 0) {
+                this.delayBeforeEating--;
+                this.lookAt(target, 10.0F, 10.0F);
+
+                if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
+                    this.animationDispatcher.sendChomp();
+                    this.triggeredAttackAnimation = true;
+                }
+            } else {
+                if (target.getItem().is(GigTags.POTIONS)) {
+                    this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                } else {
+                    this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
+                }
+                this.swing(InteractionHand.MAIN_HAND);
+                float growthValue;
+                if (target.getItem().has(DataComponents.FOOD)) {
+                    var foodComponent = target.getItem().get(DataComponents.FOOD);
+                    growthValue = foodComponent.nutrition() * 20.0F;
+                    target.getItem().finishUsingItem(this.level(), this);
+                } else {
+                    growthValue = 20.0F;
+                    if (target.getItem().is(GigTags.POTIONS)) {
+                        target.getItem().finishUsingItem(this.level(), this);
+                        target.getItem().consume(1, this);
+                    } else {
+                        target.getItem().consume(1, this);
+                    }
+                }
+                this.setGrowth(this.getGrowth() + growthValue);
+                this.triggeredAttackAnimation = false;
+                this.delayBeforeEating = 20;
+            }
+        } else {
+            delayBeforeEating--;
+            this.triggeredAttackAnimation = false;
+        }
+    }
+
+    public boolean isWithinEatingRange(@NotNull ItemEntity entity) {
+        for (
+            var testPos : BlockPos.betweenClosed(
+                this.blockPosition()
+                    .relative(this.getDirection(), 1)
+                    .above(-1)
+                    .relative(this.getDirection().getClockWise(), -1),
+                this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
+            )
+        ) {
+            if (entity.blockPosition().equals(testPos)) {
+                return true;
+            }
+        }
+        return this.getBoundingBox().intersects(entity.getBoundingBox().inflate(1.5F));
     }
 }
