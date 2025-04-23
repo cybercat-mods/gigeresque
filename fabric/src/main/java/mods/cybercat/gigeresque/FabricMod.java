@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque;
 
-import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -44,7 +43,6 @@ public final class FabricMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        AzureLib.initialize();
         CommonMod.initRegistries();
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());

@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -174,7 +173,6 @@ public final class NeoForgeMod {
     );
 
     public NeoForgeMod(IEventBus modEventBus) {
-        AzureLib.initialize();
         CommonMod.initRegistries();
         NeoForgeMod.blockEntityTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.blockDeferredRegister.register(modEventBus);
