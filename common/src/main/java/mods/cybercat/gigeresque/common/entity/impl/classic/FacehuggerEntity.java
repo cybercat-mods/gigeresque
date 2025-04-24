@@ -224,7 +224,7 @@ public class FacehuggerEntity extends AlienEntity {
         this.setGrowth(0);
         if (
             this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox()
-                .intersects(this.getTarget().getBoundingBox())
+                .intersects(this.getTarget().getBoundingBox()) && GigEntityUtils.faceHuggerTest(this.getTarget())
         ) {
             grabTarget(this.getTarget());
         }
