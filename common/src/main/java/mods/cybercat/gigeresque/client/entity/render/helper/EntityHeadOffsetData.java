@@ -52,6 +52,10 @@ public record EntityHeadOffsetData(
                 new EntityHeadOffsetData(EntityHeadOffsetData::goatVerticalOffset, EntityHeadOffsetData::goatFaceOffset)
             ),
             Map.entry(
+                EntityType.HOGLIN,
+                new EntityHeadOffsetData(EntityHeadOffsetData::hoglinVerticalOffset, EntityHeadOffsetData::hoglinFaceOffset)
+            ),
+            Map.entry(
                 EntityType.HORSE,
                 new EntityHeadOffsetData(EntityHeadOffsetData::horseVerticalOffset, EntityHeadOffsetData::horseFaceOffset)
             ),
@@ -150,6 +154,14 @@ public record EntityHeadOffsetData(
 
     private static double goatFaceOffset(EntityHeadData data, Entity parasite) {
         return data.size().z + (data.size().z / 3) + parasite.getBbHeight() / 4;
+    }
+
+    private static double hoglinVerticalOffset(EntityHeadData data, Entity parasite) {
+        return -data.size().y - data.size().y * 2.3;
+    }
+
+    private static double hoglinFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z + (data.size().z / 10) + parasite.getBbHeight();
     }
 
     private static double horseVerticalOffset(EntityHeadData data, Entity parasite) {

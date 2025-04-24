@@ -35,6 +35,7 @@ public record EntityHeadData(
             Map.entry(EntityType.EVOKER, VILLAGER),
             Map.entry(EntityType.FOX, adjust(vec3(8, 6, 6), vec3(-4, 3.5, -8), vec3(1, 7.5, -3))),
             Map.entry(EntityType.GOAT, adjust(vec3(5, 7, 10), vec3(-3, 16, -14), vec3(-0.5, 10, 0))),
+            Map.entry(EntityType.HOGLIN, adjust(vec3(14, 6, 19), vec3(-7, 21, -24), vec3(0, 22, -5))),
             Map.entry(EntityType.HORSE, HORSE),
             Map.entry(EntityType.ILLUSIONER, VILLAGER),
             Map.entry(EntityType.LLAMA, LLAMA),
