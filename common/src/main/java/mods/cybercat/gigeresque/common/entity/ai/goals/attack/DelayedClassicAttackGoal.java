@@ -92,7 +92,7 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
                 if (isTargetValidForExecution(target)) {
                     if (shouldNestBehavior(nearbyBlocks, randomPhase) && GigEntityUtils.isTargetHostable(target) && !mob.isInWater()) {
                         mob.grabTarget(target);
-                    } else if (shouldBiteBehavior(target, randomPhase) && !mob.isInWater()) {
+                    } else if (shouldBiteBehavior(target, randomPhase) && !mob.isInWater() && GigEntityUtils.isTargetHostable(target)) {
                         mob.grabTarget(target);
                     } else if (!mob.isVehicle()) {
                         this.mob.swing(InteractionHand.MAIN_HAND);
