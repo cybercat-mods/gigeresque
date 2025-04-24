@@ -24,3 +24,4 @@ accessible method net/minecraft/core/Vec3i setX (I)Lnet/minecraft/core/Vec3i;
 accessible method net/minecraft/core/Vec3i setY (I)Lnet/minecraft/core/Vec3i;
 accessible method net/minecraft/core/Vec3i setZ (I)Lnet/minecraft/core/Vec3i;
 accessible class net/minecraft/world/entity/EntityType$Builder
+accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;

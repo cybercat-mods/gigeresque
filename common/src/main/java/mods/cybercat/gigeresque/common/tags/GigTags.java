@@ -42,6 +42,8 @@ public record GigTags() {
     );
 
     /* MOBS */
+    public static final TagKey<EntityType<?>> DODGEABLE_PROJECTILE = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("dodgeable_projectile"));
+
     public static final TagKey<EntityType<?>> ALL_HOSTS = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("allhosts"));
 
     public static final TagKey<EntityType<?>> AQUATIC_HOSTS = TagKey.create(

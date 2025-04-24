@@ -19,6 +19,7 @@
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
     "common.entity.PlayerEntityMixin",
+    "common.entity.ProjectileEntityMixin",
     "common.entity.VillagerEntityMixin",
     "common.entity.VillagerHostilesSensorMixin",
     "common.entity.WanderingTraderEntityMixin",

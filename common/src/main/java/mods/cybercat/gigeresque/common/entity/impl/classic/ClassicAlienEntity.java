@@ -168,6 +168,7 @@ public class ClassicAlienEntity extends AlienEntity {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new DodgeProjectilesGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new DelayedClassicAttackGoal(this, 1.25F, 5));
