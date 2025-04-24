@@ -61,6 +61,7 @@ public class LungeAtFoodTargetGoal extends Goal {
         return target.isPresent() &&
             mob.onGround() &&
             isInRange() &&
+            !canPathfind() &&
             canUse &&
             mob.getSensing().hasLineOfSight(target.get());
     }
@@ -69,7 +70,7 @@ public class LungeAtFoodTargetGoal extends Goal {
     public boolean canContinueToUse() {
         var target = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(5)).stream().findFirst();
 
-        return target.isPresent() && mob.onGround() && mob.getSensing().hasLineOfSight(target.get());
+        return !canPathfind() && target.isPresent() && mob.onGround() && mob.getSensing().hasLineOfSight(target.get());
     }
 
     @Override
@@ -124,8 +125,8 @@ public class LungeAtFoodTargetGoal extends Goal {
         // 0.6 seems to be a good minimum value for lunging towards the target's upper half.
         mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);
 
-        if (mob instanceof AlienEntity alienEntity) {
-            alienEntity.animationDispatcher.sendSwim();
+        if (onLungeCallback != null) {
+            onLungeCallback.run();
         }
 
         resetWindUpTimeInTicks();
@@ -138,10 +139,6 @@ public class LungeAtFoodTargetGoal extends Goal {
         resetCooldown();
         resetWindUpTimeInTicks();
         distanceToTarget = DEFAULT_DISTANCE_TARGET;
-
-        if (mob instanceof AlienEntity alienEntity) {
-            alienEntity.animationDispatcher.sendIdle();
-        }
     }
 
     @Override
@@ -179,5 +176,15 @@ public class LungeAtFoodTargetGoal extends Goal {
         var maximumRangeSquared = maxLungeRange * maxLungeRange;
 
         return distanceToHost <= maximumRangeSquared && distanceToHost >= minimumRangeSquared;
+    }
+
+    private boolean canPathfind() {
+        var target = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(5)).stream().findFirst();
+
+        if (target.isEmpty()) {
+            return false;
+        }
+
+        return !mob.getNavigation().moveTo(target.get(), 1);
     }
 }

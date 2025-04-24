@@ -84,6 +84,8 @@ public class AnimationDispatcher {
 
     private final AzCommand SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.LOOP);
 
+    private final AzCommand LUNGE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.PLAY_ONCE);
+
     private final AzCommand RUSH_SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_swim", AzPlayBehaviors.LOOP);
 
     private final AzCommand RUN_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "run", AzPlayBehaviors.LOOP);
@@ -440,6 +442,10 @@ public class AnimationDispatcher {
 
     public void sendStasisLoop() {
         STASIS_LOOP_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendLunge() {
+        LUNGE_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendFacehuggerLunge() {

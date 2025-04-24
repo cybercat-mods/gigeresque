@@ -322,7 +322,7 @@ public class FacehuggerEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.96));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(1, new FacehuggerRunToTargetGoal(this, 1.3F, 0));
-        this.goalSelector.addGoal(1, new LungeAtTargetGoal(this, 0.75F, 40, 5));
+        this.goalSelector.addGoal(1, new LungeAtTargetGoal(this, 0.75F, 40, 5).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
@@ -338,5 +338,10 @@ public class FacehuggerEntity extends AlienEntity {
                 )
             )
         );
+    }
+
+    @Override
+    protected void runLungeAnimation() {
+        animationDispatcher.sendFacehuggerLunge();
     }
 }

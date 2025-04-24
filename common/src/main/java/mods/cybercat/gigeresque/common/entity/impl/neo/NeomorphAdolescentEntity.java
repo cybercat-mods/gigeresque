@@ -101,7 +101,7 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.15F, 10));
-        this.goalSelector.addGoal(2, new LungeAtFoodTargetGoal(this, 0.75F, 80, 5));
+        this.goalSelector.addGoal(2, new LungeAtFoodTargetGoal(this, 0.75F, 80, 5).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(3, new EatFoodItemGoal(this, 0.9F, 5));
         this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.BURSTER_BLOCKS, 1.5F));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));

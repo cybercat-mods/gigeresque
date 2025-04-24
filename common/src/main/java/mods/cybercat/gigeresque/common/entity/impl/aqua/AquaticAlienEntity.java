@@ -106,7 +106,7 @@ public class AquaticAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.25F, 5));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
-        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16)); // TODO: Leaping Aniamtion
+        this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal

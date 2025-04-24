@@ -764,4 +764,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         }
     }
 
+    protected void runLungeAnimation() {
+        animationDispatcher.sendLunge();
+    }
+
 }
