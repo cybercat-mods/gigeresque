@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "minecraft:cocoa",
     "minecraft:grass_block",
     "minecraft:mycelium",
     "minecraft:podzol",
