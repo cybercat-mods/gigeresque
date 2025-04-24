@@ -178,6 +178,9 @@ public class AlienEggEntity extends AlienEntity {
 
         if (!this.level().isClientSide) {
             this.setGrowth(0);
+            if (this.getEggState() == EggStates.IDLE.ordinal() && this.getLastDamageSource() != null) {
+                this.setEggState(EggStates.HATCHING.ordinal());
+            }
             GigCommonMethods.handleNestProgress(this);
             GigCommonMethods.handleHatchingProgress(this);
             GigCommonMethods.handleFacehuggerSpawn(this);
@@ -242,16 +245,6 @@ public class AlienEggEntity extends AlienEntity {
      */
     @Override
     public void knockback(double strength, double x, double z) {}
-
-    @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (
-            source != damageSources().genericKill() && source.getDirectEntity() != null && this.getEggState() != EggStates.HATCHED.ordinal()
-        ) {
-            this.setEggState(EggStates.HATCHING.ordinal());
-        }
-        return source != damageSources().inWall() && super.hurt(source, amount);
-    }
 
     @Override
     public boolean requiresCustomPersistence() {
