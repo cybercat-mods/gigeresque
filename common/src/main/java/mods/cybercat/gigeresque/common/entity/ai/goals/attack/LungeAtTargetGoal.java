@@ -22,6 +22,8 @@ public class LungeAtTargetGoal extends Goal {
 
     private final float normalizedChance;
 
+    private final double minLungeRange = 1;
+
     private final double maxLungeRange;
 
     private float distanceToTarget;
@@ -55,12 +57,13 @@ public class LungeAtTargetGoal extends Goal {
         return mob.getTarget() != null &&
             mob.onGround() &&
             isInRange() &&
-            canUse;
+            canUse &&
+            mob.getSensing().hasLineOfSight(mob.getTarget());
     }
 
     @Override
     public boolean canContinueToUse() {
-        return mob.getTarget() != null && mob.onGround();
+        return mob.getTarget() != null && mob.onGround() && mob.getSensing().hasLineOfSight(mob.getTarget());
     }
 
     @Override
@@ -79,6 +82,9 @@ public class LungeAtTargetGoal extends Goal {
         }
 
         var target = mob.getTarget();
+
+        mob.getLookControl().setLookAt(target, 180.0F, 180.0F);
+
         var currentDistanceToTarget = mob.distanceTo(target);
 
         if (distanceToTarget == DEFAULT_DISTANCE_TARGET) {
@@ -94,26 +100,18 @@ public class LungeAtTargetGoal extends Goal {
 
         if (windUpTimeInTicks > 0) {
             windUpTimeInTicks--;
+            mob.getNavigation().stop();
             return;
         }
 
         distanceToTarget = currentDistanceToTarget;
 
         var deltaMovement = mob.getDeltaMovement().scale(0.2);
-
-        // Target might be on the same y level as the mob.
-        var targetX = target.getEyePosition().x;
-        var targetY = target.getEyePosition().y;
-        var targetZ = target.getEyePosition().z;
-        var mobX = mob.getEyePosition().x;
-        var mobY = mob.getEyePosition().y;
-        var mobZ = mob.getEyePosition().z;
-
-        var vectorDifference = new Vec3(targetX - mobX, targetY - mobY, targetZ - mobZ);
+        var vectorDifference = target.getEyePosition().subtract(mob.getEyePosition());
 
         vectorDifference = vectorDifference.normalize()
-            .scale(0.2 * distanceToTarget)
-            .add(deltaMovement.x, 0, deltaMovement.z);
+                .scale(0.2 * distanceToTarget)
+                .add(deltaMovement.x, 0, deltaMovement.z);
 
         // 0.6 seems to be a good minimum value for lunging towards the target's upper half.
         mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);
@@ -163,6 +161,11 @@ public class LungeAtTargetGoal extends Goal {
             return false;
         }
 
-        return !this.mob.isWithinMeleeAttackRange(target);
+        var distanceToHost = mob.distanceToSqr(target);
+
+        var minimumRangeSquared = minLungeRange * minLungeRange;
+        var maximumRangeSquared = maxLungeRange * maxLungeRange;
+
+        return distanceToHost <= maximumRangeSquared && distanceToHost >= minimumRangeSquared;
     }
 }
