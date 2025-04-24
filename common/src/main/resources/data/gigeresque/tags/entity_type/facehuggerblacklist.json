@@ -35,6 +35,10 @@
     "minecraft:armadillo",
     "minecraft:bogged",
     {
+      "id": "#minecraft:undead",
+      "required": false
+    },
+    {
       "id": "#avp:aliens",
       "required": false
     },
