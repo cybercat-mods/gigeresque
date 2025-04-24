@@ -154,6 +154,8 @@ public class LungeAtTargetFaceGoal extends Goal {
         resetCooldown();
         resetWindUpTimeInTicks();
         distanceToTarget = DEFAULT_DISTANCE_TARGET;
+        mob.getNavigation().stop();
+        mob.animationDispatcher.sendIdle();
     }
 
     @Override
