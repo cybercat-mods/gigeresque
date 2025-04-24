@@ -184,7 +184,7 @@ public class ClassicAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
         this.goalSelector.addGoal(9, new RotateTowardsEntityGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new RotateTowardsEntityGoal(this, LivingEntity.class, 15.0F));
-        this.goalSelector.addGoal(10, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 1.5F));
+        this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 2.5F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
         this.targetSelector.addGoal(
             2,
