@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 

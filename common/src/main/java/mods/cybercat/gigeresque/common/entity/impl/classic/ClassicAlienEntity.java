@@ -113,7 +113,7 @@ public class ClassicAlienEntity extends AlienEntity {
         if (this.isVehicle() && !GigEntityUtils.isTargetHostable(this.getFirstPassenger())) {
             this.ejectPassengers();
         }
-        
+
         if (this.level() instanceof ServerLevel serverLevel && this.isVehicle() && this.getInBlockState().is(GigTags.NEST_BLOCKS)) {
             GigEntityUtils.placeInNest(serverLevel, this, this.getFirstPassenger());
         }

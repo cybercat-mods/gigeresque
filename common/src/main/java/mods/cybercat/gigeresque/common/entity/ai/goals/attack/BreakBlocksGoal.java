@@ -51,8 +51,13 @@ public class BreakBlocksGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (alienEntity.isPassenger() || alienEntity.isAggressive() || !alienEntity.level().getGameRules().getBoolean(
-                GameRules.RULE_MOBGRIEFING)) {
+        if (
+            alienEntity.isPassenger() || alienEntity.isAggressive() || !alienEntity.level()
+                .getGameRules()
+                .getBoolean(
+                    GameRules.RULE_MOBGRIEFING
+                )
+        ) {
             return false;
         }
 
@@ -80,7 +85,10 @@ public class BreakBlocksGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (alienEntity.isPassenger() || targetBlock == null || alienEntity.level().getBlockState(targetPos).is(blockTagKey) || alienEntity.isAggressive() || !alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (
+            alienEntity.isPassenger() || targetBlock == null || alienEntity.level().getBlockState(targetPos).is(blockTagKey) || alienEntity
+                .isAggressive() || !alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
+        ) {
             return false;
         }
 

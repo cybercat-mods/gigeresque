@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.movement;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -52,27 +53,38 @@ public class DodgeProjectilesGoal extends Goal {
                 velocity = -velocity;
             }
 
-            alienEntity.setDeltaMovement(dodgeDirection.x * velocity, 0.3, dodgeDirection.z * velocity);
+            var newMovement = new Vec3(dodgeDirection.x * velocity, 0.3, dodgeDirection.z * velocity);
+
+            var newPos = alienEntity.blockPosition().offset((int) newMovement.x, 0, (int) newMovement.z);
+            if (isDangerousPosition(newPos)) {
+                alienEntity.setDeltaMovement(newMovement);
+            }
 
             setDodgeTarget(null);
             dodgeDelay = 40;
         }
     }
 
-    private void setDodgeTarget(@Nullable Vec3 projectileDirection) {
-        if (projectileDirection == null) {
-            projectileMotionDirection = null;
-            giveUpDelay = 0;
-        } else if (dodgeDelay <= 0 && alienEntity.getRandom().nextDouble() < dodgeChance) {
-            projectileMotionDirection = projectileDirection;
-            giveUpDelay = 10;
-        }
+    private boolean isDangerousPosition(BlockPos pos) {
+        var belowPos = pos.below();
+        return alienEntity.level().isEmptyBlock(belowPos) ||
+            alienEntity.level().getFluidState(belowPos).isEmpty();
     }
 
-    private static void tryDodgeProjectile(PathfinderMob entity, Vec3 projectileDirection) {
+    private static void tryDodgeProjectile(PathfinderMob entity, Vec3 projectileDirection, Entity projectile) {
         for (var task : new ArrayList<>(entity.goalSelector.getAvailableGoals())) {
-            if (task.getGoal() instanceof DodgeProjectilesGoal dodgeProjectilesGoal) {
-                dodgeProjectilesGoal.setDodgeTarget(projectileDirection);
+            if (task.getGoal() instanceof DodgeProjectilesGoal dodgeGoal) {
+                var distance = entity.distanceTo(projectile);
+                var projectileSpeed = projectile.getDeltaMovement().length();
+
+                if (distance > 6.0 && distance < 24.0) {
+                    var dodgeRadius = 1.0;
+                    var predictedApproach = Math.abs(projectileDirection.length() - dodgeRadius);
+
+                    if (predictedApproach <= dodgeRadius || projectileSpeed < 2.0) {
+                        dodgeGoal.setDodgeTarget(projectileDirection);
+                    }
+                }
             }
         }
     }
@@ -82,11 +94,10 @@ public class DodgeProjectilesGoal extends Goal {
             return;
         }
 
-        if (projectile.onGround()) {
-            return;
-        }
-
-        if (projectile instanceof AbstractArrow arrow && arrow.inGround) {
+        if (
+            projectile.onGround() ||
+                (projectile instanceof AbstractArrow arrow && arrow.inGround)
+        ) {
             return;
         }
 
@@ -104,15 +115,26 @@ public class DodgeProjectilesGoal extends Goal {
                     final var distanceX = entity.position().x - projectile.position().x;
                     final var distanceZ = entity.position().z - projectile.position().z;
                     final var distanceH = Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+
                     if (distanceH <= rangeHorizontal) {
                         final var cos = (projectileDirection.x * distanceX + projectileDirection.z * distanceZ) / distanceH;
                         final var sin = Math.sqrt(1 - cos * cos);
                         if (width > distanceH * sin) {
-                            tryDodgeProjectile(pathfinderMob, projectileDirection);
+                            tryDodgeProjectile(pathfinderMob, projectileDirection, projectile);
                         }
                     }
                 }
             }
+        }
+    }
+
+    private void setDodgeTarget(@Nullable Vec3 projectileDirection) {
+        if (projectileDirection == null) {
+            projectileMotionDirection = null;
+            giveUpDelay = 0;
+        } else if (dodgeDelay <= 0 && alienEntity.getRandom().nextDouble() < dodgeChance) {
+            projectileMotionDirection = projectileDirection;
+            giveUpDelay = 10;
         }
     }
 }

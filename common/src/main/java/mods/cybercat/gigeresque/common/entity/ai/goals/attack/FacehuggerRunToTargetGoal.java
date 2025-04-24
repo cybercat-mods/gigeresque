@@ -1,12 +1,12 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
 

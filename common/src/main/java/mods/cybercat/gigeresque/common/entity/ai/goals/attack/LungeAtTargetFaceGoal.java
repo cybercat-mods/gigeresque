@@ -1,13 +1,14 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class LungeAtTargetFaceGoal extends Goal {
 
@@ -66,10 +67,10 @@ public class LungeAtTargetFaceGoal extends Goal {
         }
 
         return mob.getTarget() != null &&
-                mob.onGround() &&
-                isInRange() &&
-                canUse &&
-                mob.getSensing().hasLineOfSight(mob.getTarget());
+            mob.onGround() &&
+            isInRange() &&
+            canUse &&
+            mob.getSensing().hasLineOfSight(mob.getTarget());
     }
 
     @Override
@@ -115,8 +116,8 @@ public class LungeAtTargetFaceGoal extends Goal {
         }
 
         if (
-                (mob.getLastHurtByMobTimestamp() > 0 && mob.tickCount - mob.getLastHurtByMobTimestamp() < 20) ||
-                        currentDistanceToTarget > distanceToTarget
+            (mob.getLastHurtByMobTimestamp() > 0 && mob.tickCount - mob.getLastHurtByMobTimestamp() < 20) ||
+                currentDistanceToTarget > distanceToTarget
         ) {
             windUpTimeInTicks = 0;
         }
@@ -133,8 +134,8 @@ public class LungeAtTargetFaceGoal extends Goal {
         var vectorDifference = target.getEyePosition().subtract(mob.getEyePosition());
 
         vectorDifference = vectorDifference.normalize()
-                .scale(0.2 * distanceToTarget)
-                .add(deltaMovement.x, 0, deltaMovement.z);
+            .scale(0.2 * distanceToTarget)
+            .add(deltaMovement.x, 0, deltaMovement.z);
 
         // 0.6 seems to be a good minimum value for lunging towards the target's upper half.
         mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);
