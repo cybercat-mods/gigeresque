@@ -419,6 +419,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setAirSupply(this.getMaxAirSupply());
         searchingManager.tick();
         stasisManager.tick();
+        if (this.getTarget() != null && this.getTarget().hasPassenger(AlienEntity.class::isInstance)) {
+            this.setTarget(null);
+        }
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
