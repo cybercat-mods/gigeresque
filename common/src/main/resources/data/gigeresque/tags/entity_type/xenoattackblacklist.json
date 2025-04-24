@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "minecraft:shulker",
     "minecraft:warden",
     "minecraft:slime",
     "minecraft:magma_cube",
