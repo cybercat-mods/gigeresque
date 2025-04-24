@@ -22,7 +22,7 @@ public abstract class ProjectileEntityMixin extends Entity {
     @Inject(method = { "tick" }, at = { @At("HEAD") }, cancellable = true)
     private void gigeresque$tick(CallbackInfo ci) {
         var projectile = (Projectile) (Object) this;
-        if (projectile.getType().is(GigTags.DODGEABLE_PROJECTILE)) {
+        if (projectile.getType().is(GigTags.DODGEABLE_PROJECTILE) && !projectile.onGround()) {
             DodgeProjectilesGoal.doDodgeCheckForProjectile(projectile);
         }
     }

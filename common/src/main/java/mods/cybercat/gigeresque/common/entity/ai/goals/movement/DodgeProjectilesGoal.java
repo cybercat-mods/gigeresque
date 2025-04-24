@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,6 +79,14 @@ public class DodgeProjectilesGoal extends Goal {
 
     public static void doDodgeCheckForProjectile(Entity projectile) {
         if (!(projectile.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        if (projectile.onGround()) {
+            return;
+        }
+
+        if (projectile instanceof AbstractArrow arrow && arrow.inGround) {
             return;
         }
 
