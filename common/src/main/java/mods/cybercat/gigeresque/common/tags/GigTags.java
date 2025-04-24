@@ -130,7 +130,10 @@ public record GigTags() {
 
     public static final TagKey<EntityType<?>> GIG_CRAWLER = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigcrawler"));
 
-    public static final TagKey<EntityType<?>> GIG_VILLAGERS_FEAR = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gig_villagers_fear"));
+    public static final TagKey<EntityType<?>> GIG_VILLAGERS_FEAR = TagKey.create(
+        Registries.ENTITY_TYPE,
+        Constants.modResource("gig_villagers_fear")
+    );
 
     /* SPAWN BIOMES */
     public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
