@@ -237,12 +237,12 @@ public class BreakBlocksGoal extends Goal {
         var level = alienEntity.level();
         level.destroyBlock(targetPos, true);
         level.playSound(
-                alienEntity,
-                alienEntity.blockPosition(),
-                targetBlock.getSoundType().getBreakSound(),
-                SoundSource.BLOCKS,
-                1.0F,
-                1.0F
+            alienEntity,
+            alienEntity.blockPosition(),
+            targetBlock.getSoundType().getBreakSound(),
+            SoundSource.BLOCKS,
+            1.0F,
+            1.0F
         );
 
         if (!alienEntity.swinging) {
