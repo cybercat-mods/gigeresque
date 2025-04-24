@@ -43,6 +43,9 @@ public class EatFoodItemGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (mob.isBirthed()) {
+            return false;
+        }
         var gameTime = this.mob.level().getGameTime();
         if (gameTime - this.lastCanUseCheck < COOLDOWN_BETWEEN_CAN_USE_CHECKS) {
             return false;
@@ -60,6 +63,9 @@ public class EatFoodItemGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (mob.isBirthed()) {
+            return false;
+        }
         return this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(15)).stream().anyMatch(entity -> {
             var itemStack = entity.getItem();
             return itemStack.is(GigTags.BURSTER_FOODS) && entity.isAlive() && !entity.hasPickUpDelay();

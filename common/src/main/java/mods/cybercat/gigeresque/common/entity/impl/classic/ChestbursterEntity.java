@@ -35,11 +35,6 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class ChestbursterEntity extends AlienEntity {
 
-    public static final EntityDataAccessor<Boolean> BIRTHED = SynchedEntityData.defineId(
-        ChestbursterEntity.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
     protected String hostId = null;
 
     protected int delayBeforeEating = 0;
@@ -86,20 +81,6 @@ public class ChestbursterEntity extends AlienEntity {
         this.hostId = hostId;
     }
 
-    public boolean isBirthed() {
-        return this.entityData.get(BIRTHED);
-    }
-
-    public void setBirthStatus(boolean birth) {
-        this.entityData.set(BIRTHED, birth);
-    }
-
-    @Override
-    public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(BIRTHED, false);
-    }
-
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.HUGGER_HURT.get();
@@ -140,7 +121,6 @@ public class ChestbursterEntity extends AlienEntity {
         super.addAdditionalSaveData(nbt);
         if (hostId != null)
             nbt.putString("hostId", hostId);
-        nbt.putBoolean("is_birthed", isBirthed());
     }
 
     @Override
@@ -150,8 +130,6 @@ public class ChestbursterEntity extends AlienEntity {
             setGrowth(nbt.getFloat("growth"));
         if (nbt.contains("hostId"))
             hostId = nbt.getString("hostId");
-        if (nbt.contains("is_birthed"))
-            setBirthStatus(nbt.getBoolean("is_birthed"));
     }
 
     @Override

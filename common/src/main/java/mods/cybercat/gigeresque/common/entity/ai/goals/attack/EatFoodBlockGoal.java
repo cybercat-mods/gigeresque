@@ -25,7 +25,7 @@ public class EatFoodBlockGoal extends Goal {
     @Override
     public boolean canUse() {
         this.targetBlock = findNearestDestructibleLight();
-        return this.targetBlock.isPresent() && !this.mob.isAggressive() && !this.mob.isVehicle();
+        return this.targetBlock.isPresent() && !this.mob.isAggressive() && !this.mob.isVehicle() && !mob.isBirthed();
     }
 
     @Override
@@ -34,7 +34,8 @@ public class EatFoodBlockGoal extends Goal {
             && !this.mob.isAggressive()
             && !this.mob.isFleeing()
             && !this.mob.isVehicle()
-            && !this.mob.stasisManager.isStasis();
+            && !this.mob.stasisManager.isStasis()
+            && !mob.isBirthed();
     }
 
     @Override

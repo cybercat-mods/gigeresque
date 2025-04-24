@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -131,6 +132,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     public static final EntityDataAccessor<Integer> STASIS_TICK = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.INT
+    );
+
+    public static final EntityDataAccessor<Boolean> IS_BIRTHED = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -283,6 +289,14 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         entityData.set(IS_HISSING, isHissing);
     }
 
+    public boolean isBirthed() {
+        return this.entityData.get(IS_BIRTHED);
+    }
+
+    public void setBirthStatus(boolean birth) {
+        this.entityData.set(IS_BIRTHED, birth);
+    }
+
     @Override
     public float getGrowth() {
         return entityData.get(GROWTH);
@@ -316,6 +330,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(IS_HISSING, false);
         builder.define(IS_EXECUTION, false);
         builder.define(IS_HEADBITE, false);
+        builder.define(IS_BIRTHED, false);
         // MOVED
         builder.define(IS_STASIS, false);
         builder.define(IS_SEARCHING, false);
@@ -337,6 +352,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         compound.putBoolean("isHissing", this.isHissing());
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
+        compound.putBoolean("is_birthed", isBirthed());
         BlockPos homeBlock = this.getHomeBlock();
         if (homeBlock != null) {
             NbtUtils.writeBlockPos(homeBlock);
@@ -366,6 +382,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
+        if (compound.contains("is_birthed")) {
+            this.setBirthStatus(compound.getBoolean("is_birthed"));
+        }
         if (compound.contains("homeBlock")) {
             this.setHomeBlock(
                 NbtUtils.readBlockPos(compound, "homeBlock").orElse(BlockPos.ZERO)
