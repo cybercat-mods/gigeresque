@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.jetbrains.annotations.Nullable;
@@ -115,8 +117,10 @@ public class LungeAtTargetGoal extends Goal {
         // 0.6 seems to be a good minimum value for lunging towards the target's upper half.
         mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);
 
-        if (onLungeCallback != null) {
-            onLungeCallback.run();
+        if (mob instanceof FacehuggerEntity facehuggerEntity) {
+            facehuggerEntity.animationDispatcher.sendFacehuggerLunge();
+        } else if (mob instanceof AlienEntity alienEntity) {
+            alienEntity.animationDispatcher.sendSwim();
         }
 
         resetWindUpTimeInTicks();
@@ -129,6 +133,9 @@ public class LungeAtTargetGoal extends Goal {
         resetCooldown();
         resetWindUpTimeInTicks();
         distanceToTarget = DEFAULT_DISTANCE_TARGET;
+        if (mob instanceof AlienEntity alienEntity) {
+            alienEntity.animationDispatcher.sendIdle();
+        }
     }
 
     @Override
