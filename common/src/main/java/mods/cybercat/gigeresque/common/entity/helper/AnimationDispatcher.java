@@ -54,6 +54,26 @@ public class AnimationDispatcher {
 
     private final AzCommand HURT_COMMAND = AzCommand.create(Constants.HOSTILE_CONTROLLER, "hurt", AzPlayBehaviors.PLAY_ONCE);
 
+    private final AzCommand MIDAIR_JUMP_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "midair_jump",
+            AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private final AzCommand MIDAIR_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "midair",
+            AzPlayBehaviors.LOOP
+    );
+
+    private final AzCommand CHARGE_UP_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "charge",
+            AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private final AzCommand FACEHUGGER_LUNGE_COMMAND = AzCommand.compose(CHARGE_UP_COMMAND, MIDAIR_JUMP_COMMAND, MIDAIR_COMMAND);
+
     private final AzCommand IMPREGNATE_COMMAND = AzCommand.create(
         Constants.BASE_CONTROLLER,
         "impregnate",
@@ -420,5 +440,9 @@ public class AnimationDispatcher {
 
     public void sendStasisLoop() {
         STASIS_LOOP_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendFacehuggerLunge() {
+        FACEHUGGER_LUNGE_COMMAND.sendForEntity(animatedEntity);
     }
 }

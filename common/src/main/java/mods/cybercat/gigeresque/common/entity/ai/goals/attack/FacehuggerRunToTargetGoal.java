@@ -2,17 +2,15 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Items;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 
-public class FacehugGoal extends DelayedAttackGoal {
+public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
 
-    public FacehugGoal(AlienEntity mob, double speedModifier, int delayTicksBeforeAttack) {
+    public FacehuggerRunToTargetGoal(AlienEntity mob, double speedModifier, int delayTicksBeforeAttack) {
         super(mob, speedModifier, delayTicksBeforeAttack);
     }
 
@@ -57,15 +55,10 @@ public class FacehugGoal extends DelayedAttackGoal {
                 this.delayBeforeAttack--;
 
                 if (this.delayBeforeAttack == delayTicksBeforeAttack && !this.triggeredAttackAnimation) {
-                    mob.animationSelector.select(mob);
                     this.triggeredAttackAnimation = true;
                 }
             } else {
                 this.resetAttackCooldown();
-                if (!target.getUseItem().is(Items.SHIELD) && !mob.hasEffect(MobEffects.CONFUSION)) {
-                    this.mob.swing(InteractionHand.MAIN_HAND);
-                    mob.grabTarget(target);
-                }
                 this.triggeredAttackAnimation = false;
             }
         } else {

@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.FacehuggerRunToTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetFaceGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.FacehugGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
@@ -220,6 +222,9 @@ public class FacehuggerEntity extends AlienEntity {
         super.tick();
         moveAnalysis.update();
         this.setGrowth(0);
+        if (this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox().intersects(this.getTarget().getBoundingBox())) {
+            grabTarget(this.getTarget());
+        }
         if (this.isAttachedToHost() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
@@ -299,7 +304,8 @@ public class FacehuggerEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.96));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
-        this.goalSelector.addGoal(1, new FacehugGoal(this, 1.6F, 6));
+        this.goalSelector.addGoal(1, new FacehuggerRunToTargetGoal(this, 1.3F, 0));
+        this.goalSelector.addGoal(1, new LungeAtTargetFaceGoal(this, 0.05F, 40, 5));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
