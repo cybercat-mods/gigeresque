@@ -1518,7 +1518,7 @@
 						"vector": [-177.5, "Math.sin(query.anim_time*360)*3", "Math.cos(query.anim_time*360)*3"]
 					},
 					"position": {
-						"vector": [0, 0, -2.5]
+						"vector": [0, 3.5, -2.5]
 					}
 				},
 				"tube01": {
