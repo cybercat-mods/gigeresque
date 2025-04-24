@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -105,6 +107,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
         this.goalSelector.addGoal(3, new EatFoodItemGoal(this, 0.9F, 5));
+        this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.BURSTER_BLOCKS, 1.5F));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
