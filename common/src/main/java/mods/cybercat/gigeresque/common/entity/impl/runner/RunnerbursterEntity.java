@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtFoodTargetGoal;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -29,6 +28,7 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtFoodTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;

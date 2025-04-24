@@ -1,13 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 /**
  * Credit to Boston/AVP

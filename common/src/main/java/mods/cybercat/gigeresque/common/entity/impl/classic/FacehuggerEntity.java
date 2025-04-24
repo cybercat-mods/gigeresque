@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -35,6 +34,7 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.FacehuggerRunToTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
@@ -230,10 +230,16 @@ public class FacehuggerEntity extends AlienEntity {
             grabTarget(this.getTarget());
         }
 
-        if (this.getTarget() != null && !this.level().getEntitiesOfClass(
-                Mob.class, this.getBoundingBox().inflate(5),
-                entity -> GigEntityUtils.faceHuggerTest(entity) &&
-                        entity.getUseItem().is(Items.SHIELD)).isEmpty()) {
+        if (
+            this.getTarget() != null && !this.level()
+                .getEntitiesOfClass(
+                    Mob.class,
+                    this.getBoundingBox().inflate(5),
+                    entity -> GigEntityUtils.faceHuggerTest(entity) &&
+                        entity.getUseItem().is(Items.SHIELD)
+                )
+                .isEmpty()
+        ) {
             grabTarget(this.getTarget());
         }
         if (this.isAttachedToHost() && !this.isDeadOrDying()) {
