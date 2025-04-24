@@ -161,6 +161,10 @@ public record GigEntityUtils() {
             return false;
         }
 
+        if (target.getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+            return false;
+        }
+
         return GigEntityUtils.isTargetHostable(target) && target.isAlive();
     }
 
