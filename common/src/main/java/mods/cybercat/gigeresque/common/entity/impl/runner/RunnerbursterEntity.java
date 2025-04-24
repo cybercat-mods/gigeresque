@@ -76,7 +76,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
     @Override
     public void tick() {
         super.tick();
-        if (this.tickCount < 5) {
+        if (this.getGrowth() < 2) {
             this.animationDispatcher.sendBirth();
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 10), this);
         }
