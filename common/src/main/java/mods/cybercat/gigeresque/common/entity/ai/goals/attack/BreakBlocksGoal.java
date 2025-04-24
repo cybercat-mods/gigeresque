@@ -5,6 +5,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -43,14 +44,15 @@ public class BreakBlocksGoal extends Goal {
 
     public BreakBlocksGoal(AlienEntity alienEntity, TagKey<Block> blockTagKey, float range) {
         this.alienEntity = alienEntity;
-        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         this.blockTagKey = blockTagKey;
         this.range = range;
+        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
-        if (alienEntity.isPassenger()) {
+        if (alienEntity.isPassenger() || alienEntity.isAggressive() || !alienEntity.level().getGameRules().getBoolean(
+                GameRules.RULE_MOBGRIEFING)) {
             return false;
         }
 
@@ -78,7 +80,7 @@ public class BreakBlocksGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (alienEntity.isPassenger() || targetBlock == null || alienEntity.level().getBlockState(targetPos).is(blockTagKey)) {
+        if (alienEntity.isPassenger() || targetBlock == null || alienEntity.level().getBlockState(targetPos).is(blockTagKey) || alienEntity.isAggressive() || !alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             return false;
         }
 
