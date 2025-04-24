@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +21,15 @@ public class FacehugGoal extends DelayedAttackGoal {
         if (this.mob.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && !GigEntityUtils.isTargetHostable(this.mob.getTarget())) {
+            return false;
+        }
+
         return super.canUse();
     }
 
@@ -27,6 +38,15 @@ public class FacehugGoal extends DelayedAttackGoal {
         if (this.mob.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
+
+        if (this.mob.getTarget() != null && this.mob.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
+            return false;
+        }
+
+        if (this.mob.getTarget() != null && !GigEntityUtils.isTargetHostable(this.mob.getTarget())) {
+            return false;
+        }
+
         return super.canContinueToUse();
     }
 
