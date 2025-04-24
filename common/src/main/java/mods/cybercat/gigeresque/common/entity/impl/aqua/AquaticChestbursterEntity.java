@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +16,7 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
 
     public AquaticChestbursterEntity(EntityType<? extends AquaticChestbursterEntity> type, Level world) {
         super(type, world);
+        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +44,8 @@ public class ChestbursterEntity extends AlienEntity {
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
+        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
+        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

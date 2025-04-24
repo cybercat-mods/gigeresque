@@ -44,6 +44,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
+        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
