@@ -17,7 +17,6 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodBlockGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
@@ -82,7 +81,6 @@ public class NeobursterEntity extends RunnerbursterEntity {
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
-        this.goalSelector.addGoal(3, new EatFoodBlockGoal(this));
         this.goalSelector.addGoal(3, new EatFoodItemGoal(this, 0.9F, 5));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
