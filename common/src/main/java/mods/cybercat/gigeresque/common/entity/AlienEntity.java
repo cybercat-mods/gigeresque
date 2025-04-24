@@ -560,6 +560,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         if (source == damageSources().inWall())
             return false;
 
+        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
+            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 
