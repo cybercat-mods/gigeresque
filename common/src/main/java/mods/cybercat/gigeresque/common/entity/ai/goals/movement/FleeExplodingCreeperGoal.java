@@ -24,7 +24,7 @@ public class FleeExplodingCreeperGoal extends Goal {
 
     protected final AlienEntity alienEntity;
 
-    protected final double speedModifier = 1.3D;
+    protected final double speedModifier = 1.3;
 
     private Entity entityToAvoid;
 
@@ -78,12 +78,17 @@ public class FleeExplodingCreeperGoal extends Goal {
 
     @Override
     public void stop() {
+        alienEntity.animationDispatcher.sendIdle();
         entityToAvoid = null;
     }
 
     @Override
     public void tick() {
-        alienEntity.getNavigation().setSpeedModifier(alienEntity.distanceToSqr(entityToAvoid) < 64.0 ? speedModifier : 1.0);
+        alienEntity.getNavigation().setSpeedModifier(alienEntity.distanceToSqr(entityToAvoid) < 64.0 ? speedModifier : 1.3);
+        if (alienEntity.moveAnalysis.isMoving()) {
+            alienEntity.animationDispatcher.sendRun();
+        }
+        alienEntity.setTarget(null);
     }
 
     private <T extends Entity> T getNearest(List<T> entities) {
