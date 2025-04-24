@@ -423,6 +423,10 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             this.setTarget(null);
         }
 
+        if (this.getTarget() != null && this.getTarget().getType().is(GigTags.GIG_ALIENS)) {
+            this.setTarget(null);
+        }
+
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
