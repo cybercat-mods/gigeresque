@@ -1,14 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.movement;
 
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.projectile.DragonFireball;
-import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
@@ -16,11 +12,14 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class FleeExplodingCreeperGoal extends Goal {
 
-    private static final Predicate<Entity> IS_EXPLODING_SELECTOR = entity -> isExplodingCreeper(entity) || entity.getType().is(
-            GigTags.EXPLODING_ENTITY) ||
+    private static final Predicate<Entity> IS_EXPLODING_SELECTOR = entity -> isExplodingCreeper(entity) || entity.getType()
+        .is(
+            GigTags.EXPLODING_ENTITY
+        ) ||
         entity instanceof PrimedTnt;
 
     protected final AlienEntity alienEntity;

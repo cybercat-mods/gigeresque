@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -110,8 +109,8 @@ public class LungeAtTargetGoal extends Goal {
         var vectorDifference = target.getEyePosition().subtract(mob.getEyePosition());
 
         vectorDifference = vectorDifference.normalize()
-                .scale(0.2 * distanceToTarget)
-                .add(deltaMovement.x, 0, deltaMovement.z);
+            .scale(0.2 * distanceToTarget)
+            .add(deltaMovement.x, 0, deltaMovement.z);
 
         // 0.6 seems to be a good minimum value for lunging towards the target's upper half.
         mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);

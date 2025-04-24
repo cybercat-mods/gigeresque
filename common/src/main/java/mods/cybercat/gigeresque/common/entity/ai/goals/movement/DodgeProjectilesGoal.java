@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.movement;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -10,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class DodgeProjectilesGoal extends Goal {
 
@@ -30,7 +31,8 @@ public class DodgeProjectilesGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return dodgeDelay-- <= 0 && projectileMotionDirection != null && giveUpDelay-- > 0 && alienEntity.onGround() && !alienEntity.isPassenger();
+        return dodgeDelay-- <= 0 && projectileMotionDirection != null && giveUpDelay-- > 0 && alienEntity.onGround() && !alienEntity
+            .isPassenger();
     }
 
     @Override
