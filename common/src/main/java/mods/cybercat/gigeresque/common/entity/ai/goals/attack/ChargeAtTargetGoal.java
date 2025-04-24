@@ -34,15 +34,14 @@ public class ChargeAtTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (--attackTime > 0 || !alienEntity.onGround() || alienEntity.isPassenger() || alienEntity.getRandom().nextInt(10) != 0) {
+        if (--attackTime > 0 || !alienEntity.onGround() || alienEntity.isPassenger()) {
             return false;
         }
 
         final var target = alienEntity.getTarget();
         if (target != null) {
-            final double distanceSqr = alienEntity.distanceToSqr(target);
-            return distanceSqr <= 10 && distanceSqr >= 3
-                && alienEntity.hasLineOfSight(target);
+            final var distanceSqr = alienEntity.distanceToSqr(target);
+            return distanceSqr >= 3 && alienEntity.hasLineOfSight(target);
         }
         return false;
     }
@@ -68,15 +67,13 @@ public class ChargeAtTargetGoal extends Goal {
         attackTime = 20;
         currentActivity = Activity.CHARGE_UP;
         alienEntity.swing(InteractionHand.OFF_HAND);
-        if (alienEntity.level().isClientSide()) {
-            alienEntity.animationDispatcher.sendRun();
-        }
         alienEntity.setDeltaMovement(alienEntity.getDeltaMovement().add(0.0, 0.3, 0.0));
         alienEntity.playSound(
             SoundEvents.ARMOR_EQUIP_LEATHER.value(),
             1.0F,
             1.0F / (alienEntity.getRandom().nextFloat() * 0.4F + 0.8F)
         );
+        alienEntity.getNavigation().stop();
     }
 
     @Override
@@ -109,6 +106,10 @@ public class ChargeAtTargetGoal extends Goal {
             return;
         }
 
+        if (alienEntity.level().isClientSide()) {
+            alienEntity.animationDispatcher.sendRun();
+        }
+
         alienEntity.getLookControl().setLookAt(target, 100.0F, 100.0F);
 
         if (attackTime <= 0) {
@@ -123,11 +124,14 @@ public class ChargeAtTargetGoal extends Goal {
     private void tickCharging() {
         final var target = alienEntity.getTarget();
 
+        if (alienEntity.level().isClientSide()) {
+            alienEntity.animationDispatcher.sendRun();
+        }
         alienEntity.lookAt(EntityAnchorArgument.Anchor.FEET, alienEntity.position().add(attackVec));
         alienEntity.setDeltaMovement(
-            attackVec.x * 28.0F,
+            attackVec.x * 2.0F,
             alienEntity.getDeltaMovement().y,
-            attackVec.z * 28.0F
+            attackVec.z * 2.0F
         );
         final boolean hit;
         if (target != null) {
@@ -141,14 +145,14 @@ public class ChargeAtTargetGoal extends Goal {
             alienEntity.swing(InteractionHand.MAIN_HAND);
 
             alienEntity.setDeltaMovement(
-                attackVec.x * -1.2,
-                0.4,
-                attackVec.z * -1.2
+                    attackVec.x * -1.2,
+                    0.4,
+                    attackVec.z * -1.2
             );
             target.setDeltaMovement(
-                attackVec.x * 120.0F,
-                0.5,
-                attackVec.z * 120.0F
+                    attackVec.x * 3.0F,
+                    0.5,
+                    attackVec.z * 3.0F
             );
             alienEntity.doHurtTarget(target);
             currentActivity = Activity.NONE;
