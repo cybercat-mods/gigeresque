@@ -105,11 +105,18 @@ public class ClassicAlienEntity extends AlienEntity {
         super.tick();
         moveAnalysis.update();
         crawlingManager.tick();
+
+        if (!this.isVehicle()) {
+            this.setIsExecuting(false);
+        }
+
+        if (this.isVehicle() && !GigEntityUtils.isTargetHostable(this.getFirstPassenger())) {
+            this.ejectPassengers();
+        }
+        
         if (this.level() instanceof ServerLevel serverLevel && this.isVehicle() && this.getInBlockState().is(GigTags.NEST_BLOCKS)) {
             GigEntityUtils.placeInNest(serverLevel, this, this.getFirstPassenger());
         }
-        if (!this.isVehicle())
-            this.setIsExecuting(false);
     }
 
     @Override
