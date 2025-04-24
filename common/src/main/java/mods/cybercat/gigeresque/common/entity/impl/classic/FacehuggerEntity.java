@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -294,6 +295,7 @@ public class FacehuggerEntity extends AlienEntity {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.96));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));

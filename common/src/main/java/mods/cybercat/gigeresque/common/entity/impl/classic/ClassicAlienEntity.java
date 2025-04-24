@@ -14,7 +14,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -160,14 +159,13 @@ public class ClassicAlienEntity extends AlienEntity {
                     : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage
             );
         }
-        if (target instanceof Creeper creeper)
-            creeper.hurt(GigDamageSources.of(this.level(), GigDamageSources.XENO), creeper.getMaxHealth());
         this.heal(1.0833f);
         return super.doHurtTarget(target);
     }
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(0, new DodgeProjectilesGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));

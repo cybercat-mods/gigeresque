@@ -131,6 +131,7 @@ public class ChestbursterEntity extends AlienEntity {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
