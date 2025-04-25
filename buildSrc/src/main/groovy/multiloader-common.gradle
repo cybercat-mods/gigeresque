@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:24.1.0'
+    implementation "org.jetbrains:annotations:${jetbrains_annotations_version}"
 }
 
 ['apiElements', 'runtimeElements'].each { variant ->
