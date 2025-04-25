@@ -82,18 +82,20 @@ public abstract class LivingEntityMixin extends Entity {
                     FacehuggerEntity.class::isInstance
                 )
         ) {
-            this.getFirstPassenger().hurt(source, amount / 2);
-            ((FacehuggerEntity) this.getFirstPassenger()).addEffect(
+            var facehugger = (FacehuggerEntity) this.getFirstPassenger();
+            facehugger.hurt(source, amount / 2);
+            facehugger.addEffect(
                 new MobEffectInstance(
                     MobEffects.CONFUSION,
                     CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer,
-                    100,
+                    60,
                     false,
                     false
                 )
             );
-            ((FacehuggerEntity) this.getFirstPassenger()).animationDispatcher.sendStunned();
-            ((FacehuggerEntity) this.getFirstPassenger()).detachFromHost();
+            facehugger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, false, false));
+            facehugger.animationDispatcher.sendStunned();
+            facehugger.detachFromHost();
         }
     }
 
