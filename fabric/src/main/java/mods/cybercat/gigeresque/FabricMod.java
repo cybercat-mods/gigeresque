@@ -33,6 +33,7 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTe
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.DispenserBehaviors;
 import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
@@ -98,6 +99,7 @@ public final class FabricMod implements ModInitializer {
             ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         }
         AzIdentityRegistry.register(GigItems.TRACKER.get());
+        DispenserBehaviors.initialize();
     }
 
     private void onWorldTick(ServerLevel serverLevel) {
