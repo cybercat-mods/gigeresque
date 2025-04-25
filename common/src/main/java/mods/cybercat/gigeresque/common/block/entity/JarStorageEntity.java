@@ -141,7 +141,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int syncId, @NotNull Inventory inventory) {
-        return new ChestMenu(MenuType.GENERIC_9x2, syncId, inventory, this, 2);
+        return new ChestMenu(MenuType.GENERIC_9x1, syncId, inventory, this, 1);
     }
 
     @Override

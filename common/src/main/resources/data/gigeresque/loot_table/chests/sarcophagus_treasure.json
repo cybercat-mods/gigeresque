@@ -2,13 +2,142 @@
 	"type": "minecraft:chest",
 	"pools": [
 		{
-			"bonus_rolls": 0.0,
+			"bonus_rolls": 0,
+			"rolls": {
+				"type": "minecraft:uniform",
+				"min": 6,
+				"max": 12
+			},
 			"entries": [
 				{
 					"type": "minecraft:item",
+					"weight": 6,
+					"name": "minecraft:ancient_debris"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 12,
+					"name": "minecraft:gold_ingot",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 2,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
 					"weight": 10,
+					"name": "minecraft:diamond",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 4,
+					"name": "minecraft:nether_star"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 16,
+					"name": "minecraft:book",
+					"functions": [
+						{
+							"function": "minecraft:enchant_randomly"
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 8,
+					"name": "minecraft:emerald",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 3,
+								"max": 7
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 6,
+					"name": "minecraft:totem_of_undying"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:golden_apple"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:enchanted_golden_apple"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 14,
+					"name": "minecraft:saddle"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 7,
+					"name": "minecraft:diamond_horse_armor"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:bread",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 2,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:golden_carrot",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 7,
 					"name": "minecraft:suspicious_stew",
-					"quality": 1,
 					"functions": [
 						{
 							"function": "minecraft:set_components",
@@ -19,8 +148,28 @@
 									"effects": [
 										{
 											"effect": {
+												"id": "minecraft:night_vision",
+												"duration": 200
+											},
+											"probability": 0.2
+										},
+										{
+											"effect": {
+												"id": "minecraft:poison",
+												"duration": 200
+											},
+											"probability": 0.2
+										},
+										{
+											"effect": {
+												"id": "minecraft:regeneration",
+												"duration": 200
+											},
+											"probability": 0.2
+										},
+										{
+											"effect": {
 												"id": "minecraft:wither",
-												"amplifier": 0,
 												"duration": 200
 											},
 											"probability": 0.8
@@ -28,793 +177,149 @@
 									]
 								}
 							}
-						},
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 2.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
 						}
 					]
 				},
 				{
 					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 2.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:enchanted_golden_apple"
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": 1.0,
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:compass",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 2.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:sculk_catalyst",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:name_tag",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": 1.0,
-							"function": "minecraft:set_count"
-						},
-						{
-							"add": false,
-							"damage": {
-								"type": "minecraft:uniform",
-								"max": 1.0,
-								"min": 0.8
-							},
-							"function": "minecraft:set_damage"
-						},
-						{
-							"function": "minecraft:enchant_with_levels",
-							"levels": {
-								"type": "minecraft:uniform",
-								"max": 50.0,
-								"min": 30.0
-							},
-							"treasure": true
-						}
-					],
-					"name": "minecraft:diamond_hoe",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": 1.0,
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:lead",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": 1.0,
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:diamond_horse_armor",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": 1.0,
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:saddle",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:music_disc_13",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:music_disc_cat",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"function": "minecraft:enchant_with_levels",
-							"levels": {
-								"type": "minecraft:uniform",
-								"max": 50.0,
-								"min": 30.0
-							},
-							"treasure": true
-						}
-					],
-					"name": "minecraft:diamond_leggings",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"enchantments": [
-								"minecraft:swift_sneak"
-							],
-							"function": "minecraft:enchant_randomly"
-						}
-					],
-					"name": "minecraft:book",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 10.0,
-								"min": 4.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:sculk",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:sculk_sensor",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:candle",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 15.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
+					"weight": 14,
 					"name": "minecraft:amethyst_shard",
-					"weight": 3
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 2,
+								"max": 6
+							},
+							"add": false
+						}
+					]
 				},
 				{
 					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:experience_bottle",
-					"weight": 3
+					"weight": 8,
+					"name": "minecraft:music_disc_cat"
 				},
 				{
 					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 15.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
+					"weight": 8,
+					"name": "minecraft:music_disc_otherside"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
 					"name": "minecraft:glow_berries",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
 					"functions": [
 						{
-							"function": "minecraft:enchant_with_levels",
-							"levels": {
-								"type": "minecraft:uniform",
-								"max": 39.0,
-								"min": 20.0
-							},
-							"treasure": true
-						}
-					],
-					"name": "minecraft:iron_leggings",
-					"weight": 3
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
+							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
+								"min": 1,
+								"max": 5
 							},
-							"function": "minecraft:set_count"
+							"add": false
 						}
-					],
-					"name": "minecraft:echo_shard",
-					"weight": 4
+					]
 				},
 				{
 					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:iron_ingot",
 					"functions": [
 						{
-							"add": false,
+							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
+								"min": 2,
+								"max": 6
 							},
-							"function": "minecraft:set_count"
+							"add": false
 						}
-					],
-					"name": "minecraft:disc_fragment_5",
-					"weight": 4
+					]
 				},
 				{
 					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:written_book",
+					"quality": 1,
 					"functions": [
 						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
+							"function": "minecraft:set_book_cover",
+							"title": "Watcher’s Warning",
+							"author": "A Lost Soul"
 						},
 						{
-							"function": "minecraft:set_potion",
-							"id": "minecraft:strong_regeneration"
+							"function": "minecraft:set_written_book_pages",
+							"pages": [
+								"Day 37: The deeper I venture, the stranger the silence. But silence is not an ally here. They watch, they wait."
+							],
+							"mode": "replace_all"
 						}
-					],
-					"name": "minecraft:potion",
-					"weight": 5
+					]
 				},
 				{
 					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:written_book",
+					"quality": 1,
 					"functions": [
 						{
-							"function": "minecraft:enchant_randomly"
+							"function": "minecraft:set_book_cover",
+							"title": "The Wall’s Tale",
+							"author": "Unknown"
+						},
+						{
+							"function": "minecraft:set_written_book_pages",
+							"pages": [
+								"Carvings on the walls depict creatures with venom and hunger. Their eyes glow like the darkest void."
+							],
+							"mode": "replace_all"
 						}
-					],
-					"name": "minecraft:book",
-					"weight": 5
+					]
 				},
 				{
 					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:written_book",
+					"quality": 1,
 					"functions": [
 						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 10.0,
-								"min": 3.0
-							},
-							"function": "minecraft:set_count"
+							"function": "minecraft:set_book_cover",
+							"title": "Egg of Despair",
+							"author": "A Survivor"
+						},
+						{
+							"function": "minecraft:set_written_book_pages",
+							"pages": [
+								"Beware the eggs in the shadows. An ancient wrath grows within, and release means your doom."
+							],
+							"mode": "replace_all"
 						}
-					],
-					"name": "minecraft:book",
-					"weight": 5
+					]
 				},
 				{
 					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:written_book",
+					"quality": 1,
 					"functions": [
 						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 15.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:bone",
-					"weight": 5
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
+							"function": "minecraft:set_book_cover",
+							"title": "The Altar",
+							"author": "Explorer’s Note",
+							"generation": 3
+						},
 						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 15.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
+							"function": "minecraft:set_written_book_pages",
+							"pages": [
+								"An altar lies deep within, surrounded by bones and silence. It demands tribute. Few return."
+							],
+							"mode": "replace_all"
 						}
-					],
-					"name": "minecraft:soul_torch",
-					"weight": 5
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 15.0,
-								"min": 6.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:coal",
-					"weight": 7
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:saddle",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:golden_apple",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:enchanted_golden_apple",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:music_disc_otherside",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:music_disc_13",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:music_disc_cat",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:name_tag",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:golden_horse_armor",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:iron_horse_armor",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:diamond_horse_armor",
-					"weight": 5
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"function": "minecraft:enchant_randomly"
-						}
-					],
-					"name": "minecraft:book",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:iron_ingot",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:gold_ingot",
-					"weight": 5
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:bread",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:wheat",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:bucket",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:redstone",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:coal",
-					"weight": 15
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 2.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:melon_seeds",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 2.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:pumpkin_seeds",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 2.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:beetroot_seeds",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 8.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:bone",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 8.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:gunpowder",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 8.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:rotten_flesh",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 8.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:string",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:book",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 7.0,
-								"min": 2.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:paper",
-					"weight": 20
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:map"
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:compass"
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"function": "minecraft:enchant_with_levels",
-							"levels": 30.0,
-							"treasure": true
-						}
-					],
-					"name": "minecraft:book",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 4.0,
-								"min": 1.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:coal",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:stone_axe",
-					"weight": 2
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:rotten_flesh",
-					"weight": 5
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:emerald"
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"add": false,
-							"count": {
-								"type": "minecraft:uniform",
-								"max": 3.0,
-								"min": 2.0
-							},
-							"function": "minecraft:set_count"
-						}
-					],
-					"name": "minecraft:wheat",
-					"weight": 10
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:leather_chestplate"
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:golden_helmet"
-				},
-				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"function": "minecraft:enchant_randomly"
-						}
-					],
-					"name": "minecraft:fishing_rod",
-					"weight": 5
+					]
 				}
-			],
-			"rolls": {
-				"type": "minecraft:uniform",
-				"max": 9.0,
-				"min": 5.0
-			}
+			]
 		}
 	]
 }
