@@ -223,6 +223,10 @@ public class FacehuggerEntity extends AlienEntity {
         super.tick();
         moveAnalysis.update();
         this.setGrowth(0);
+
+        if (this.getTarget() != null && !GigEntityUtils.faceHuggerTest(this.getTarget())) {
+            this.setTarget(null);
+        }
         if (
             this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox()
                 .intersects(this.getTarget().getBoundingBox()) && GigEntityUtils.faceHuggerTest(this.getTarget())
@@ -245,8 +249,11 @@ public class FacehuggerEntity extends AlienEntity {
         if (this.isAttachedToHost() && !this.isDeadOrDying()) {
             GigCommonMethods.setAnimation(animationDispatcher::sendImpregate);
         }
-        if (this.getVehicle() != null && !this.getVehicle().isAlive()) {
+        if (this.getVehicle() != null && !this.getVehicle().isAlive() && this.isAlive()) {
             this.stopRiding();
+            GigCommonMethods.setAnimation(animationDispatcher::sendStunned);
+            this.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 10, false, false));
+            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, false, false));
         }
         this.handleAttachmentToHost();
         if (isInfertile()) {

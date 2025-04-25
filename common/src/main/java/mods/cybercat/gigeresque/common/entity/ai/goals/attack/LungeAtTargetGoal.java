@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+
 /**
  * Credit to Boston/AVP
  */
@@ -99,7 +101,7 @@ public class LungeAtTargetGoal extends Goal {
 
         if (windUpTimeInTicks > 0) {
             windUpTimeInTicks--;
-            mob.getNavigation().stop();
+            // mob.getNavigation().stop();
             return;
         }
 
@@ -129,6 +131,9 @@ public class LungeAtTargetGoal extends Goal {
         resetCooldown();
         resetWindUpTimeInTicks();
         distanceToTarget = DEFAULT_DISTANCE_TARGET;
+        if (this.mob instanceof FacehuggerEntity facehuggerEntity) {
+            facehuggerEntity.animationDispatcher.sendIdle();
+        }
     }
 
     @Override
