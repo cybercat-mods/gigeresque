@@ -102,7 +102,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = { "tick" }, at = { @At("HEAD") })
     void tick(CallbackInfo callbackInfo) {
         if (this.level().isClientSide && (Constants.shouldApplyImpEffects.test(this))) {
-            this.applyParticle(GigParticles.ACID.get());
+            this.applyParticle(GigParticles.BLOOD.get());
         }
         if (!this.level().isClientSide) {
             if (Constants.hasCureEffects.test(this)) {
@@ -138,9 +138,7 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
-                if (this.level().isClientSide()) {
-                    this.applyParticle(GigParticles.BLOOD.get());
-                }
+                this.applyParticle(GigParticles.BLOOD.get());
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
             var getType = this.level().getFluidState(this.blockPosition()).getType();
