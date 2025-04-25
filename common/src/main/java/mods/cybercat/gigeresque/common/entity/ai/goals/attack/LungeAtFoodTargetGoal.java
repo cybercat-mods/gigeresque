@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
+
 /**
  * Credit to Boston/AVP
  */
@@ -50,6 +52,9 @@ public class LungeAtFoodTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (mob instanceof AlienEntity alienEntity && (alienEntity.isBirthed() || alienEntity.getGrowth() > 10)) {
+            return false;
+        }
         cooldown = Math.max(cooldown - 1, 0);
 
         var canUse = !isOnCooldown() && mob.getRandom().nextFloat() < normalizedChance;
@@ -66,6 +71,9 @@ public class LungeAtFoodTargetGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (mob instanceof AlienEntity alienEntity && (alienEntity.isBirthed() || alienEntity.getGrowth() > 10)) {
+            return false;
+        }
         var target = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(5)).stream().findFirst();
 
         return !canPathfind() && target.isPresent() && mob.onGround() && mob.getSensing().hasLineOfSight(target.get());

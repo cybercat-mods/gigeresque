@@ -131,11 +131,11 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         if (!this.level().isClientSide) {
             var radius = this.getBoundingBox().inflate(1.25D);
             this.level()
-                    .getEntitiesOfClass(ItemEntity.class, radius)
-                    .stream()
-                    .filter(itemEntity -> itemEntity.getItem().is(GigTags.BURSTER_FOODS))
-                    .findFirst()
-                    .ifPresent(this::checkAndPerformEating);
+                .getEntitiesOfClass(ItemEntity.class, radius)
+                .stream()
+                .filter(itemEntity -> itemEntity.getItem().is(GigTags.BURSTER_FOODS))
+                .findFirst()
+                .ifPresent(this::checkAndPerformEating);
         }
     }
 
@@ -144,6 +144,8 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         if (target == null)
             return;
         if (this.isBirthed())
+            return;
+        if (this.getGrowth() < 10)
             return;
 
         if (isWithinEatingRange(target)) {

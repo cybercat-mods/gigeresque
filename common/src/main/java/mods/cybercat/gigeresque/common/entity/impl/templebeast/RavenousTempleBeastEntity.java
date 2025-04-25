@@ -77,11 +77,11 @@ public class RavenousTempleBeastEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.15F, 7));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(3, new ChargeAtTargetGoal(this));
+        this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 1.5F));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
-        this.goalSelector.addGoal(10, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 1.5F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
         this.targetSelector.addGoal(
             2,

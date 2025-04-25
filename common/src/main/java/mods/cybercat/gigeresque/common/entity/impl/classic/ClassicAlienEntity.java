@@ -176,6 +176,7 @@ public class ClassicAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(1, new DelayedClassicAttackGoal(this, 1.25F, 5));
         this.goalSelector.addGoal(2, new HeadBiteGoal(this));
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16).setOnLungeCallback(this::runLungeAnimation));
+        this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 1.5F));
         this.goalSelector.addGoal(3, new EggmorphGoal(this));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
@@ -184,7 +185,6 @@ public class ClassicAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
         this.goalSelector.addGoal(9, new RotateTowardsEntityGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new RotateTowardsEntityGoal(this, LivingEntity.class, 15.0F));
-        this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 2.5F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
         this.targetSelector.addGoal(
             2,

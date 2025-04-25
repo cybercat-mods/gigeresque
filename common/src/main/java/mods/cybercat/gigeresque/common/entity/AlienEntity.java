@@ -774,6 +774,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             return;
         if (this.isBirthed())
             return;
+        if (this.getGrowth() < 10)
+            return;
 
         if (isWithinEatingRange(target)) {
             this.lookAt(target, 10.0F, 10.0F);
@@ -817,13 +819,13 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public boolean isWithinEatingRange(@NotNull ItemEntity entity) {
         for (
-                var testPos : BlockPos.betweenClosed(
+            var testPos : BlockPos.betweenClosed(
                 this.blockPosition()
-                        .relative(this.getDirection(), 1)
-                        .above(-1)
-                        .relative(this.getDirection().getClockWise(), -1),
+                    .relative(this.getDirection(), 1)
+                    .above(-1)
+                    .relative(this.getDirection().getClockWise(), -1),
                 this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
-        )
+            )
         ) {
             if (entity.blockPosition().equals(testPos)) {
                 return true;

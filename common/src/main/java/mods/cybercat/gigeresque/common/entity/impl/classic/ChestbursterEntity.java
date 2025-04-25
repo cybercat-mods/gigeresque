@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -175,6 +174,8 @@ public class ChestbursterEntity extends AlienEntity {
             return;
         if (this.isBirthed())
             return;
+        if (this.getGrowth() < 10)
+            return;
 
         if (isWithinEatingRange(target)) {
             this.lookAt(target, 10.0F, 10.0F);
@@ -197,6 +198,7 @@ public class ChestbursterEntity extends AlienEntity {
                     var foodComponent = target.getItem().get(DataComponents.FOOD);
                     growthValue = foodComponent.nutrition() * 20.0F;
                     target.getItem().finishUsingItem(this.level(), this);
+                    target.getItem().shrink(1);
                 } else {
                     growthValue = 20.0F;
                     if (target.getItem().is(GigTags.POTIONS)) {

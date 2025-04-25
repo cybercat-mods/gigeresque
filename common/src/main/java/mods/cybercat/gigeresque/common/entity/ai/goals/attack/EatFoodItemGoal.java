@@ -43,7 +43,7 @@ public class EatFoodItemGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.isBirthed()) {
+        if (mob.isBirthed() || mob.getGrowth() < 10) {
             return false;
         }
         var gameTime = this.mob.level().getGameTime();
@@ -63,7 +63,7 @@ public class EatFoodItemGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (mob.isBirthed()) {
+        if (mob.isBirthed() || mob.getGrowth() < 10) {
             return false;
         }
         return this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(15)).stream().anyMatch(entity -> {

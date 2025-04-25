@@ -55,6 +55,10 @@ public class BreakBlocksGoal extends Goal {
             return false;
         }
 
+        if (alienEntity.isBirthed() || alienEntity.getGrowth() < 10) {
+            return false;
+        }
+
         sightCounter--;
         if (sightCounter <= 0) {
             sightCounter = 2;
@@ -86,6 +90,11 @@ public class BreakBlocksGoal extends Goal {
         ) {
             return false;
         }
+
+        if (alienEntity.isBirthed() || alienEntity.getGrowth() < 10) {
+            return false;
+        }
+
         return giveUpDelay < 40;
     }
 
