@@ -154,7 +154,6 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 if (entity2 instanceof LivingEntity livingEntity && GigEntityUtils.TARGET_PREDICATE.test(alienEntity, livingEntity)) {
                     this.mob.setTarget(livingEntity);
                 }
-                alienEntity.setAggressive(true);
                 alienEntity.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1.0F);
                 alienEntity.wakeupCounter = 0;
             }

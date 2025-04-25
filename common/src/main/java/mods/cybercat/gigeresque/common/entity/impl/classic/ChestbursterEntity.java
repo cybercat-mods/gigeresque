@@ -36,10 +36,6 @@ public class ChestbursterEntity extends AlienEntity {
 
     protected String hostId = null;
 
-    protected int delayBeforeEating = 0;
-
-    protected boolean triggeredAttackAnimation = false;
-
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
         super(type, world);
         this.animationDispatcher = new AnimationDispatcher(this);
@@ -173,6 +169,7 @@ public class ChestbursterEntity extends AlienEntity {
         return entity;
     }
 
+    @Override
     protected void checkAndPerformEating(ItemEntity target) {
         if (target == null)
             return;
@@ -180,9 +177,9 @@ public class ChestbursterEntity extends AlienEntity {
             return;
 
         if (isWithinEatingRange(target)) {
+            this.lookAt(target, 10.0F, 10.0F);
             if (this.delayBeforeEating > 0) {
                 this.delayBeforeEating--;
-                this.lookAt(target, 10.0F, 10.0F);
 
                 if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
                     this.animationDispatcher.sendChomp();
@@ -217,22 +214,5 @@ public class ChestbursterEntity extends AlienEntity {
             delayBeforeEating--;
             this.triggeredAttackAnimation = false;
         }
-    }
-
-    public boolean isWithinEatingRange(@NotNull ItemEntity entity) {
-        for (
-            var testPos : BlockPos.betweenClosed(
-                this.blockPosition()
-                    .relative(this.getDirection(), 1)
-                    .above(-1)
-                    .relative(this.getDirection().getClockWise(), -1),
-                this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
-            )
-        ) {
-            if (entity.blockPosition().equals(testPos)) {
-                return true;
-            }
-        }
-        return this.getBoundingBox().intersects(entity.getBoundingBox().inflate(1.5F));
     }
 }

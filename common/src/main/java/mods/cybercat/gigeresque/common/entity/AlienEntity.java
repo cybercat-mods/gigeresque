@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.entity;
 
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
@@ -43,7 +43,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
 
@@ -138,7 +137,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         EntityDataSerializers.BOOLEAN
     );
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    protected int delayBeforeEating = 0;
+
+    protected boolean triggeredAttackAnimation = false;
 
     private final DynamicGameEventListener<Listener> dynamicGameEventListener;
 
@@ -343,7 +344,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         super.addAdditionalSaveData(compound);
         Data.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData)
             .resultOrPartial(
-                LOGGER::error
+                CommonMod.LOGGER::error
             )
             .ifPresent(tag -> compound.put("listener", tag));
         compound.putFloat("growth", this.getGrowth());
@@ -372,7 +373,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                 new Dynamic<>(NbtOps.INSTANCE, compound.getCompound("listener"))
             )
                 .resultOrPartial(
-                    LOGGER::error
+                    CommonMod.LOGGER::error
                 )
                 .ifPresent(data -> this.vibrationData = data);
         this.setGrowth(compound.getFloat("growth"));
@@ -766,6 +767,69 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     protected void runLungeAnimation() {
         animationDispatcher.sendLunge();
+    }
+
+    protected void checkAndPerformEating(ItemEntity target) {
+        if (target == null)
+            return;
+        if (this.isBirthed())
+            return;
+
+        if (isWithinEatingRange(target)) {
+            this.lookAt(target, 10.0F, 10.0F);
+            if (this.delayBeforeEating > 0) {
+                this.delayBeforeEating--;
+
+                if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
+                    this.animationDispatcher.sendChomp();
+                    this.triggeredAttackAnimation = true;
+                }
+            } else {
+                if (target.getItem().is(GigTags.POTIONS)) {
+                    this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                } else {
+                    this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
+                }
+                this.swing(InteractionHand.MAIN_HAND);
+                float growthValue;
+                if (target.getItem().has(DataComponents.FOOD)) {
+                    var foodComponent = target.getItem().get(DataComponents.FOOD);
+                    growthValue = foodComponent.nutrition() * 20.0F;
+                    target.getItem().finishUsingItem(this.level(), this);
+                } else {
+                    growthValue = 20.0F;
+                    if (target.getItem().is(GigTags.POTIONS)) {
+                        target.getItem().finishUsingItem(this.level(), this);
+                        target.getItem().consume(1, this);
+                    } else {
+                        target.getItem().consume(1, this);
+                    }
+                }
+                this.setGrowth(this.getGrowth() + growthValue);
+                this.triggeredAttackAnimation = false;
+                this.delayBeforeEating = 20;
+            }
+        } else {
+            delayBeforeEating--;
+            this.triggeredAttackAnimation = false;
+        }
+    }
+
+    public boolean isWithinEatingRange(@NotNull ItemEntity entity) {
+        for (
+                var testPos : BlockPos.betweenClosed(
+                this.blockPosition()
+                        .relative(this.getDirection(), 1)
+                        .above(-1)
+                        .relative(this.getDirection().getClockWise(), -1),
+                this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
+        )
+        ) {
+            if (entity.blockPosition().equals(testPos)) {
+                return true;
+            }
+        }
+        return this.getBoundingBox().intersects(entity.getBoundingBox().inflate(1.5F));
     }
 
 }

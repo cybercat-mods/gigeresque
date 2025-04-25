@@ -1,6 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -8,6 +11,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -123,6 +127,63 @@ public class NeomorphAdolescentEntity extends AlienEntity {
     public void tick() {
         super.tick();
         moveAnalysis.update();
+
+        if (!this.level().isClientSide) {
+            var radius = this.getBoundingBox().inflate(1.25D);
+            this.level()
+                    .getEntitiesOfClass(ItemEntity.class, radius)
+                    .stream()
+                    .filter(itemEntity -> itemEntity.getItem().is(GigTags.BURSTER_FOODS))
+                    .findFirst()
+                    .ifPresent(this::checkAndPerformEating);
+        }
+    }
+
+    @Override
+    protected void checkAndPerformEating(ItemEntity target) {
+        if (target == null)
+            return;
+        if (this.isBirthed())
+            return;
+
+        if (isWithinEatingRange(target)) {
+            this.lookAt(target, 10.0F, 10.0F);
+            if (this.delayBeforeEating > 0) {
+                this.delayBeforeEating--;
+
+                if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
+                    this.animationDispatcher.sendChomp();
+                    this.triggeredAttackAnimation = true;
+                }
+            } else {
+                if (target.getItem().is(GigTags.POTIONS)) {
+                    this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                } else {
+                    this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
+                }
+                this.swing(InteractionHand.MAIN_HAND);
+                float growthValue;
+                if (target.getItem().has(DataComponents.FOOD)) {
+                    var foodComponent = target.getItem().get(DataComponents.FOOD);
+                    growthValue = foodComponent.nutrition() * 20.0F;
+                    target.getItem().finishUsingItem(this.level(), this);
+                } else {
+                    growthValue = 20.0F;
+                    if (target.getItem().is(GigTags.POTIONS)) {
+                        target.getItem().finishUsingItem(this.level(), this);
+                        target.getItem().consume(1, this);
+                    } else {
+                        target.getItem().consume(1, this);
+                    }
+                }
+                this.setGrowth(this.getGrowth() + growthValue);
+                this.triggeredAttackAnimation = false;
+                this.delayBeforeEating = 20;
+            }
+        } else {
+            delayBeforeEating--;
+            this.triggeredAttackAnimation = false;
+        }
     }
 
 }

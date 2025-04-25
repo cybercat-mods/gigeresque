@@ -32,15 +32,9 @@ public class BreakBlocksGoal extends Goal {
 
     private int giveUpDelay;
 
-    private int hitCounter;
-
-    private float blockDamage;
-
-    private int lastBlockDamage = -1;
-
     private final TagKey<Block> blockTagKey;
 
-    private float range;
+    private final float range;
 
     public BreakBlocksGoal(AlienEntity alienEntity, TagKey<Block> blockTagKey, float range) {
         this.alienEntity = alienEntity;
@@ -52,7 +46,7 @@ public class BreakBlocksGoal extends Goal {
     @Override
     public boolean canUse() {
         if (
-            alienEntity.isPassenger() || alienEntity.isAggressive() || !alienEntity.level()
+            alienEntity.isPassenger() || !alienEntity.level()
                 .getGameRules()
                 .getBoolean(
                     GameRules.RULE_MOBGRIEFING
@@ -86,18 +80,18 @@ public class BreakBlocksGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         if (
-            alienEntity.isPassenger() || targetBlock == null || alienEntity.level().getBlockState(targetPos).is(blockTagKey) || alienEntity
-                .isAggressive() || !alienEntity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
+            alienEntity.isPassenger() || !alienEntity.level()
+                .getGameRules()
+                .getBoolean(GameRules.RULE_MOBGRIEFING)
         ) {
             return false;
         }
-
-        return blockDamage > 0.0F || giveUpDelay < 400;
+        return giveUpDelay < 40;
     }
 
     @Override
     public boolean isInterruptable() {
-        return blockDamage <= 0.0F;
+        return alienEntity.isFleeing();
     }
 
     @Override
@@ -107,28 +101,23 @@ public class BreakBlocksGoal extends Goal {
 
     @Override
     public void start() {
+        alienEntity.setAggressive(false);
         targetHitResult = null;
         canReach = false;
         sightCounter = 0;
         giveUpDelay = 0;
-
-        hitCounter = 0;
-        blockDamage = 0.0F;
-        lastBlockDamage = -1;
 
         pathToTarget();
     }
 
     @Override
     public void stop() {
+        alienEntity.setAggressive(false);
         targetBlock = null;
         targetHitResult = null;
         canReach = false;
         sightCounter = 20;
         giveUpDelay = 0;
-        hitCounter = 0;
-        blockDamage = 0.0F;
-        lastBlockDamage = -1;
 
         alienEntity.level().destroyBlockProgress(alienEntity.getId(), targetPos, -1);
     }
@@ -149,6 +138,7 @@ public class BreakBlocksGoal extends Goal {
         }
 
         if (canReach && targetHitResult != null && targetBlock != null) {
+
             performGriefing();
         } else {
             if (sightCounter-- <= 0) {
@@ -175,7 +165,6 @@ public class BreakBlocksGoal extends Goal {
         if (block.isAir()) {
             return false;
         }
-
         return tryTargetBlockGriefing(block, pos);
     }
 
@@ -259,7 +248,6 @@ public class BreakBlocksGoal extends Goal {
             alienEntity.swing(alienEntity.getUsedItemHand());
             alienEntity.animationSelector.select(alienEntity);
         }
-        blockDamage = 0.0F;
         targetBlock = null;
     }
 }
