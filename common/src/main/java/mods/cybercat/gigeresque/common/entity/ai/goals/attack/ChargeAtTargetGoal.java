@@ -145,14 +145,14 @@ public class ChargeAtTargetGoal extends Goal {
             alienEntity.swing(InteractionHand.MAIN_HAND);
 
             alienEntity.setDeltaMovement(
-                    attackVec.x * -1.2,
-                    0.4,
-                    attackVec.z * -1.2
+                attackVec.x * -1.2,
+                0.4,
+                attackVec.z * -1.2
             );
             target.setDeltaMovement(
-                    attackVec.x * 3.0F,
-                    0.5,
-                    attackVec.z * 3.0F
+                attackVec.x * 3.0F,
+                0.5,
+                attackVec.z * 3.0F
             );
             alienEntity.doHurtTarget(target);
             currentActivity = Activity.NONE;

@@ -7,8 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-
 /**
  * Credit to Boston/AVP
  */

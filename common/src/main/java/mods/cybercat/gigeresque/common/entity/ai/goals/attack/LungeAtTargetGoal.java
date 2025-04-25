@@ -6,9 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-
 /**
  * Credit to Boston/AVP
  */
