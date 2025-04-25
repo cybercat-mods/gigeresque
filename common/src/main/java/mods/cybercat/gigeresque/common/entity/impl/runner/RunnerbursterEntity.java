@@ -135,8 +135,11 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         @NotNull MobSpawnType spawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        if (spawnType == MobSpawnType.SPAWN_EGG)
+        if (spawnType == MobSpawnType.SPAWN_EGG) {
             setHostId("runner");
+            setGrowth(5);
+            setBirthStatus(false);
+        }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 }
