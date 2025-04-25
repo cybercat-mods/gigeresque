@@ -32,6 +32,7 @@ public record EntityHeadData(
             Map.entry(EntityType.CAMEL, adjust(vec3(7, 8, 19), vec3(-3.5, 22, -24), vec3(0, 23, -9))),
             Map.entry(EntityType.COW, COW),
             Map.entry(EntityType.DONKEY, HORSE),
+            Map.entry(EntityType.DOLPHIN, adjust(vec3(2, 2, 4), vec3(-1, 0, -13), vec3(0, 0, -3))),
             Map.entry(EntityType.EVOKER, VILLAGER),
             Map.entry(EntityType.FOX, adjust(vec3(8, 6, 6), vec3(-4, 3.5, -8), vec3(1, 7.5, -3))),
             Map.entry(EntityType.GOAT, adjust(vec3(5, 7, 10), vec3(-3, 16, -14), vec3(-0.5, 10, 0))),
@@ -57,7 +58,8 @@ public record EntityHeadData(
             Map.entry(EntityType.WITCH, VILLAGER),
             Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
             Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7))),
-            Map.entry(EntityType.DOLPHIN, adjust(vec3(2, 2, 4), vec3(-1, 0, -13), vec3(0, 0, -3)))
+            Map.entry(EntityType.ZOGLIN, adjust(vec3(14, 6, 19), vec3(-7, 21, -24), vec3(0, 22, -5))),
+            Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER)
         )
     );
 

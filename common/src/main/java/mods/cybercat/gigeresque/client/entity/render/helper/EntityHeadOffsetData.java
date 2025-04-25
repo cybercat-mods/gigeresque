@@ -42,6 +42,10 @@ public record EntityHeadOffsetData(
                 EntityType.DONKEY,
                 new EntityHeadOffsetData(EntityHeadOffsetData::donkeyVerticalOffset, EntityHeadOffsetData::donkeyFaceOffset)
             ),
+            Map.entry(
+                EntityType.DOLPHIN,
+                new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
+            ),
             Map.entry(EntityType.EVOKER, VILLAGER),
             Map.entry(
                 EntityType.FOX,
@@ -110,9 +114,10 @@ public record EntityHeadOffsetData(
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
             ),
             Map.entry(
-                EntityType.DOLPHIN,
-                new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
-            )
+                EntityType.ZOGLIN,
+                new EntityHeadOffsetData(EntityHeadOffsetData::hoglinVerticalOffset, EntityHeadOffsetData::hoglinFaceOffset)
+            ),
+            Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER)
         )
     );
 
