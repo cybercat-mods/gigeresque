@@ -33,7 +33,7 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void render(
+    private void gigeresque$render(
         PoseStack matrixStack,
         MultiBufferSource vertexConsumerProvider,
         int light,

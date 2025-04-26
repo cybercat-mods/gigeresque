@@ -38,7 +38,7 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void render(
+    private void gigeresque$render(
         PoseStack matrixStack,
         MultiBufferSource vertexConsumerProvider,
         int light,

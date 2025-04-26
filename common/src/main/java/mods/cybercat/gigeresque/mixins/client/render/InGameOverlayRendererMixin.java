@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,14 +32,14 @@ public class InGameOverlayRendererMixin {
     private static int fovGooticker = 0;
 
     @Inject(method = { "renderScreenEffect" }, at = { @At("RETURN") })
-    private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
+    private static void gigeresque$renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
         assert client.player != null;
         if (!client.player.isSpectator()) {
             var d = client.player.getEyeY() - 0.1111111119389534D;
             var blockPos = BlockPos.containing(client.player.getX(), d, client.player.getZ());
             var fluidState = client.player.level().getFluidState(blockPos);
             if (fluidState.is(GigFluids.BLACK_FLUID_STILL.get()) || fluidState.is(GigFluids.BLACK_FLUID_FLOWING.get()))
-                renderOverlay(client, matrices, 1, EntityTextures.BLACK_FLUID_TEXTURE);
+                gigeresque$renderOverlay(client, matrices, 1, EntityTextures.BLACK_FLUID_TEXTURE);
 
             if (
                 Constants.isNotCreativeSpecPlayer.test(client.player) && client.player.hasEffect(
@@ -47,7 +48,7 @@ public class InGameOverlayRendererMixin {
             ) {
                 fovGooticker++;
                 var dnaDuration = Math.max(0, Math.min(fovGooticker / CommonMod.config.getgooEffectTickTimer(), 1));
-                renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
+                gigeresque$renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
             }
 
             if (
@@ -60,12 +61,13 @@ public class InGameOverlayRendererMixin {
                     0,
                     Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1)
                 );
-                renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
+                gigeresque$renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
     }
 
-    private static void renderOverlay(Minecraft minecraft, PoseStack poseStack, float progress, ResourceLocation resourceLocation) {
+    @Unique
+    private static void gigeresque$renderOverlay(Minecraft minecraft, PoseStack poseStack, float progress, ResourceLocation resourceLocation) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
         BlockPos blockpos = BlockPos.containing(minecraft.player.getX(), minecraft.player.getEyeY(), minecraft.player.getZ());

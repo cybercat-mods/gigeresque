@@ -21,7 +21,7 @@ public abstract class FoxMixin extends Animal {
     }
 
     @Inject(method = { "tick" }, at = { @At("HEAD") }, cancellable = true)
-    void noBuckling(CallbackInfo callbackInfo) {
+    void gigeresque$noBuckling(CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(AlienEntity.class::isInstance)) {
             this.removeFreeWill();
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 400, 10));

@@ -28,13 +28,13 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(method = { "playAmbientSound" }, at = { @At("HEAD") }, cancellable = true)
-    public void playAmbientSound(CallbackInfo callbackInfo) {
+    public void gigeresque$playAmbientSound(CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.cancel();
     }
 
     @Inject(method = { "requiresCustomPersistence" }, at = { @At("RETURN") }, cancellable = true)
-    public void cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void gigeresque$cannotDespawn(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.hasEffect(GigStatusEffects.IMPREGNATION))
             callbackInfo.setReturnValue(true);
         if (this.hasEffect(GigStatusEffects.EGGMORPHING))

@@ -23,7 +23,7 @@ public abstract class HostileEntityMixin extends LivingEntity {
     }
 
     @Inject(method = { "isDarkEnoughToSpawn" }, at = { @At("RETURN") }, cancellable = true)
-    private static void isDarkEnoughToSpawn(
+    private static void gigeresque$isDarkEnoughToSpawn(
         ServerLevelAccessor world,
         BlockPos pos,
         RandomSource random,
@@ -34,7 +34,7 @@ public abstract class HostileEntityMixin extends LivingEntity {
     }
 
     @Inject(method = { "checkMonsterSpawnRules" }, at = { @At("RETURN") }, cancellable = true)
-    private static void checkMonsterSpawnRules(
+    private static void gigeresque$checkMonsterSpawnRules(
         EntityType<? extends Monster> type,
         ServerLevelAccessor world,
         MobSpawnType spawnReason,

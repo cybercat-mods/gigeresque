@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,32 +30,34 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
     @Inject(method = { "wantsToStopRiding" }, at = { @At("RETURN") }, cancellable = true)
-    protected void shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
+    protected void gigeresque$shouldDismount(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getVehicle() instanceof AlienEntity)
             callbackInfo.setReturnValue(false);
     }
 
     @Inject(method = { "interactOn" }, at = { @At("HEAD") }, cancellable = true)
-    protected void stopPlayerUsing(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
+    protected void gigeresque$stopPlayerUsing(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.setReturnValue(InteractionResult.FAIL);
     }
 
     @Inject(method = { "attack" }, at = { @At("HEAD") }, cancellable = true)
-    protected void noAttacking(Entity target, CallbackInfo callbackInfo) {
+    protected void gigeresque$noAttacking(Entity target, CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             this.stopUsingItem();
     }
 
     @Inject(method = { "aiStep" }, at = { @At("HEAD") }, cancellable = true)
-    public void tickMovement(CallbackInfo callbackInfo) {
+    public void gigeresque$tickMovement(CallbackInfo callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.cancel();
     }
 
+    @Unique
     private long lastUpdateTime = 0L;
 
-    private String generateTimerMessage() {
+    @Unique
+    private String gigeresque$generateTimerMessage() {
         var ticksAttached = ((FacehuggerEntity) Objects.requireNonNull(this.getFirstPassenger())).ticksAttachedToHost;
         var tickTimer = CommonMod.config.getFacehuggerAttachTickTimer();
 
@@ -70,7 +73,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
     @Inject(method = { "tick" }, at = { @At("HEAD") })
-    public void tellPlayer(CallbackInfo ci) {
+    public void gigeresque$tellPlayer(CallbackInfo ci) {
         if (
             this.level().isClientSide() && this.getPassengers()
                 .stream()
@@ -85,7 +88,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 // Check if enough time has elapsed since the last update
                 if (currentTime - lastUpdateTime >= 1000L) {
                     lastUpdateTime = currentTime; // Update last update time
-                    var timerMessage = generateTimerMessage();
+                    var timerMessage = gigeresque$generateTimerMessage();
                     player.displayClientMessage(Component.literal(timerMessage), true);
                 }
             }

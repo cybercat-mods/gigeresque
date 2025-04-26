@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -66,7 +67,7 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract boolean removeEffect(Holder<MobEffect> effect);
 
     @Inject(method = { "hurt" }, at = { @At("HEAD") }, cancellable = true)
-    public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void gigeresque$hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (
             this.getVehicle() != null && this.getVehicle()
                 .getType()
@@ -100,10 +101,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = { "tick" }, at = { @At("HEAD") })
-    void tick(CallbackInfo callbackInfo) {
-        if (this.level().isClientSide && (Constants.shouldApplyImpEffects.test(this))) {
-            this.applyParticle(GigParticles.BLOOD.get());
-        }
+    void gigeresque$tick(CallbackInfo callbackInfo) {
         if (!this.level().isClientSide) {
             if (Constants.hasCureEffects.test(this)) {
                 this.removeEffect(GigStatusEffects.DNA);
@@ -138,26 +136,36 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
-                this.applyParticle(GigParticles.BLOOD.get());
+                CommonMod.LOGGER.warn("Applying blood particles");
+                this.gigeresque$applyParticle(GigParticles.BLOOD.get());
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
             var getType = this.level().getFluidState(this.blockPosition()).getType();
             if ((getType == GigFluids.BLACK_FLUID_STILL.get() || getType == GigFluids.BLACK_FLUID_FLOWING.get())) {
-                this.handleBlackGooLogic(this);
+                this.gigeresque$handleBlackGooLogic(this);
             }
         }
     }
 
-    private void applyParticle(ParticleOptions particleOptions) {
+    @Unique
+    private void gigeresque$applyParticle(ParticleOptions particleOptions) {
         if (this.isAlive()) {
             var yOffset = this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0);
-            var customX = this.getX() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-            var customZ = this.getZ() + ((this.getRandom().nextDouble() / 2.0) - 0.5) * (this.getRandom().nextBoolean() ? -1 : 1);
-            this.level().addAlwaysVisibleParticle(particleOptions, customX, yOffset, customZ, 0.0, -0.15, 0.0);
+
+            for (var i = 0; i < 5; i++) {
+                var angle = 2 * Math.PI * this.getRandom().nextDouble();
+                var radius = this.getRandom().nextDouble() * 1.5;
+                var customX = this.getX() + (Math.cos(angle) * radius);
+                var customZ = this.getZ() + (Math.sin(angle) * radius);
+
+                CommonMod.LOGGER.warn("Applied blood particles");
+                this.level().addAlwaysVisibleParticle(particleOptions, customX, yOffset, customZ, 0.0, -0.15, 0.0);
+            }
         }
     }
 
-    private void handleBlackGooLogic(Entity entity) {
+    @Unique
+    private void gigeresque$handleBlackGooLogic(Entity entity) {
         if (!(entity instanceof LivingEntity livingEntity))
             return;
         if (this.hasEffect(GigStatusEffects.DNA) || GigEntityUtils.isTargetDNAImmune(livingEntity))
@@ -171,7 +179,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = { "isImmobile" }, at = { @At("RETURN") }, cancellable = true)
-    protected void isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
+    protected void gigeresque$isImmobile(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance))
             callbackInfo.setReturnValue(true);
     }

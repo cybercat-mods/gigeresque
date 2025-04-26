@@ -37,7 +37,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
         method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;" + "Lnet/minecraft/client/renderer"
             + "/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("TAIL")
     )
-    private void render(
+    private void gigeresque$render(
         PoseStack matrixStack,
         MultiBufferSource vertexConsumerProvider,
         int light,

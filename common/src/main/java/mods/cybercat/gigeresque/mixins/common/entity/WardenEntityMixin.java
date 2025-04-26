@@ -14,7 +14,7 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 public class WardenEntityMixin {
 
     @Inject(method = { "canTargetEntity" }, at = { @At("HEAD") }, cancellable = true)
-    void tick(@Nullable Entity entity, CallbackInfoReturnable<Boolean> ci) {
+    void gigeresque$tick(@Nullable Entity entity, CallbackInfoReturnable<Boolean> ci) {
         if (entity != null && entity.getType().is(GigTags.GIG_ALIENS))
             ci.setReturnValue(false);
     }

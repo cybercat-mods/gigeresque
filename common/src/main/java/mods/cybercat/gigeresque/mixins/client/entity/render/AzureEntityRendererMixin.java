@@ -28,7 +28,7 @@ public abstract class AzureEntityRendererMixin<T extends Entity> extends AzRende
         method = "addRenderLayer(Lmod/azure/azurelib/rewrite/render/layer/AzRenderLayer;)Lmod/azure/azurelib/rewrite/render/entity/AzEntityRendererConfig$Builder;",
         at = @At("RETURN"), remap = false
     )
-    private <T extends Entity> void gig$InjectEggMorph(
+    private <T extends Entity> void gigeresque$$InjectEggMorph(
         AzRenderLayer<T> renderLayer,
         CallbackInfoReturnable<AzEntityRendererConfig.Builder<T>> cir
     ) {

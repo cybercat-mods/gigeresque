@@ -12,7 +12,7 @@ import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
 public class ServerLevelMixin {
 
     @Inject(at = @At("HEAD"), method = "tick")
-    public void tick(CallbackInfo callbackInfo) {
+    public void gigeresque$tick(CallbackInfo callbackInfo) {
         var serverLevel = ServerLevel.class.cast(this);
         BlockBreakProgressManager.tick(serverLevel);
     }

@@ -18,7 +18,7 @@ import mods.cybercat.gigeresque.common.item.SurgeryKitItem;
 public abstract class WanderingTraderEntityMixin {
 
     @Inject(method = { "mobInteract" }, at = { @At("HEAD") }, cancellable = true)
-    protected void mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
+    protected void gigeresque$mobInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callbackInfo) {
         if (player.getItemInHand(hand).getItem() instanceof SurgeryKitItem)
             callbackInfo.setReturnValue(callbackInfo.getReturnValue());
     }

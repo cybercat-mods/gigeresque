@@ -24,7 +24,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     protected abstract boolean addLayer(RenderLayer<T, M> feature);
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void init(EntityRendererProvider.Context ctx, M model, float shadowRadius, CallbackInfo ci) {
+    private void gigeresque$init(EntityRendererProvider.Context ctx, M model, float shadowRadius, CallbackInfo ci) {
         this.addLayer(new EggmorphFeatureRenderer<>((RenderLayerParent<T, M>) this));
     }
 }

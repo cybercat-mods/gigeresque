@@ -17,7 +17,7 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 public abstract class VillagerHostilesSensorMixin extends NearestVisibleLivingEntitySensor {
 
     @Inject(at = @At("HEAD"), method = "isClose", cancellable = true)
-    void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+    void gigeresque$isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (!livingEntity2.getType().is(GigTags.GIG_VILLAGERS_FEAR))
             return;
 
@@ -27,7 +27,7 @@ public abstract class VillagerHostilesSensorMixin extends NearestVisibleLivingEn
     }
 
     @Inject(at = @At("HEAD"), method = "isHostile", cancellable = true)
-    void isHostile(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+    void gigeresque$isHostile(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (livingEntity.getType().is(GigTags.GIG_VILLAGERS_FEAR)) {
             callbackInfoReturnable.setReturnValue(true);
         }

@@ -40,7 +40,7 @@ public abstract class BrushableBlockEntityMixin extends BlockEntity {
     }
 
     @Inject(method = "dropContent", at = { @At("HEAD") })
-    private void dropEggTest(Player player, CallbackInfo ci) {
+    private void gigeresque$dropEggTest(Player player, CallbackInfo ci) {
         if (this.level != null && this.level.getServer() != null && random.nextInt(0, 100) > 90) {
             var d = EntityType.ITEM.getWidth();
             var e = 1.0 - d;
