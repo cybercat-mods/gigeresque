@@ -170,6 +170,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     private final AlienNavigationManager navigationManager;
 
+    private int healCounter;
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
@@ -445,11 +446,25 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             } else if (this.getGrowth() >= this.getMaxGrowth()) {
                 this.growUp(this);
             }
-            if (this.tickCount % Constants.TPS == 0 && this.getHealth() != this.getMaxHealth())
-                this.level().getBlockStates(this.getBoundingBox().inflate(3)).forEach(e -> {
-                    if (e.is(GigTags.NEST_BLOCKS))
-                        this.heal(0.5833f);
-                });
+            if (this.getHealth() != this.getMaxHealth() && this.getTarget() == null && this.tickCount % 20 == 0) {
+                healCounter++;
+                if (CommonMod.config.enableLogging) {
+                    CommonMod.LOGGER.warn("Current Health: {} and Max Health: {}", this.getHealth(),
+                            this.getMaxHealth());
+                }
+                if (healCounter >= 20 && healCounter > this.lastHurt) {
+                    var healAmount = 3.5833F;
+                    if (this.level().getBlockStatesIfLoaded(this.getBoundingBox().inflate(5)).anyMatch(state -> state.is(GigTags.NEST_BLOCKS))) {
+                        healAmount *= 1.5F;
+                    }
+                    if (CommonMod.config.enableLogging) {
+                        CommonMod.LOGGER.warn("Now healing for {}", healAmount);
+                    }
+                    this.heal(healAmount);
+                    healCounter = 0;
+                    this.lastHurt = 0;
+                }
+            }
             if (this.isExecuting()) {
                 this.navigation.stop();
             }
