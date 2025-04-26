@@ -52,6 +52,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
+        EntityRenderers.register(GigEntities.BLOOD.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new);
         // EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);

@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -101,12 +101,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = { "tick" }, at = { @At("HEAD") })
     void gigeresque$tick(CallbackInfo callbackInfo) {
-        if (this.level().isClientSide && Constants.shouldApplyImpEffects.test(this)) {
-            if (CommonMod.config.enableLogging) {
-                CommonMod.LOGGER.warn("Applying blood particles");
-            }
-            gigeresque$applyParticle();
-        }
         if (!this.level().isClientSide) {
             if (Constants.hasCureEffects.test(this)) {
                 this.removeEffect(GigStatusEffects.DNA);
@@ -141,32 +135,12 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
+                GigCommonMethods.generateBloodPool(Constants.self(this), this.blockPosition().above(), 0, 0);
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
             var getType = this.level().getFluidState(this.blockPosition()).getType();
             if ((getType == GigFluids.BLACK_FLUID_STILL.get() || getType == GigFluids.BLACK_FLUID_FLOWING.get())) {
                 this.gigeresque$handleBlackGooLogic(this);
-            }
-        }
-    }
-
-    @Unique
-    private void gigeresque$applyParticle() {
-        if (this.isAlive()) {
-            for (var i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
-                if (CommonMod.config.enableLogging && i == 1) {
-                    CommonMod.LOGGER.warn("Applied blood particles");
-                }
-                this.level()
-                        .addAlwaysVisibleParticle(
-                                GigParticles.BLOOD.get(),
-                                this.blockPosition().getX() + this.random.nextDouble(),
-                                this.getEyeY(),
-                                this.blockPosition().getZ() + this.random.nextDouble(),
-                                0.0,
-                                0.0,
-                                0.0
-                        );
             }
         }
     }

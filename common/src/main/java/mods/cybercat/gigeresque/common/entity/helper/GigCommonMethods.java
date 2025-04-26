@@ -32,6 +32,13 @@ public record GigCommonMethods() {
         animationAction.run();
     }
 
+    public static void generateBloodPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+        var acidEntity = GigEntities.BLOOD.get().create(entity.level());
+        assert acidEntity != null;
+        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
+        entity.level().addFreshEntity(acidEntity);
+    }
+
     public static void generateAcidPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
         var acidEntity = GigEntities.ACID.get().create(entity.level());
         assert acidEntity != null;

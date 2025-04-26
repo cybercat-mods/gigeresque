@@ -15,6 +15,7 @@ import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.blood.AcidEntity;
 import mods.cybercat.gigeresque.common.entity.impl.blood.GooEntity;
+import mods.cybercat.gigeresque.common.entity.impl.blood.MobBloodEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -239,6 +240,15 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         CommonMod.MOD_ID,
         EntityIdentifiers.ACID.getPath(),
         AcidEntity::new,
+        MobCategory.MISC,
+        0.8f,
+        0.05f
+    );
+
+    public static final Supplier<EntityType<Entity>> BLOOD = CommonEntityRegistryInterface.registerEntity(
+        CommonMod.MOD_ID,
+        EntityIdentifiers.BLOOD.getPath(),
+        MobBloodEntity::new,
         MobCategory.MISC,
         0.8f,
         0.05f

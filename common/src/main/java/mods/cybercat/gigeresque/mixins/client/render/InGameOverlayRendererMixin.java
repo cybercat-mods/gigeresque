@@ -67,7 +67,12 @@ public class InGameOverlayRendererMixin {
     }
 
     @Unique
-    private static void gigeresque$renderOverlay(Minecraft minecraft, PoseStack poseStack, float progress, ResourceLocation resourceLocation) {
+    private static void gigeresque$renderOverlay(
+        Minecraft minecraft,
+        PoseStack poseStack,
+        float progress,
+        ResourceLocation resourceLocation
+    ) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, resourceLocation);
         BlockPos blockpos = BlockPos.containing(minecraft.player.getX(), minecraft.player.getEyeY(), minecraft.player.getZ());

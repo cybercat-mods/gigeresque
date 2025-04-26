@@ -53,6 +53,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(GigEntities.BLOOD.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
         event.registerEntityRenderer(
             GigEntities.ALIEN.get(),

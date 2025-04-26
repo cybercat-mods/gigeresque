@@ -52,6 +52,8 @@ public record EntityIdentifiers() {
 
     public static final ResourceLocation AQUA_EGG = Constants.modResource("aqua_egg");
 
+    public static final ResourceLocation BLOOD = Constants.modResource("blood");
+
     public static final ResourceLocation ACID = Constants.modResource("acid");
 
     public static final ResourceLocation ACID_PROJECTILE = Constants.modResource("acid_projectile");
