@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -102,6 +101,12 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = { "tick" }, at = { @At("HEAD") })
     void gigeresque$tick(CallbackInfo callbackInfo) {
+        if (this.level().isClientSide && Constants.shouldApplyImpEffects.test(this)) {
+            if (CommonMod.config.enableLogging) {
+                CommonMod.LOGGER.warn("Applying blood particles");
+            }
+            gigeresque$applyParticle();
+        }
         if (!this.level().isClientSide) {
             if (Constants.hasCureEffects.test(this)) {
                 this.removeEffect(GigStatusEffects.DNA);
@@ -136,8 +141,6 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
-                CommonMod.LOGGER.warn("Applying blood particles");
-                this.gigeresque$applyParticle(GigParticles.BLOOD.get());
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
             var getType = this.level().getFluidState(this.blockPosition()).getType();
@@ -148,18 +151,22 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique
-    private void gigeresque$applyParticle(ParticleOptions particleOptions) {
+    private void gigeresque$applyParticle() {
         if (this.isAlive()) {
-            var yOffset = this.getEyeY() - ((this.getEyeY() - this.blockPosition().getY()) / 2.0);
-
-            for (var i = 0; i < 5; i++) {
-                var angle = 2 * Math.PI * this.getRandom().nextDouble();
-                var radius = this.getRandom().nextDouble() * 1.5;
-                var customX = this.getX() + (Math.cos(angle) * radius);
-                var customZ = this.getZ() + (Math.sin(angle) * radius);
-
-                CommonMod.LOGGER.warn("Applied blood particles");
-                this.level().addAlwaysVisibleParticle(particleOptions, customX, yOffset, customZ, 0.0, -0.15, 0.0);
+            for (var i = 0; i < this.random.nextIntBetweenInclusive(0, 4); i++) {
+                if (CommonMod.config.enableLogging && i == 1) {
+                    CommonMod.LOGGER.warn("Applied blood particles");
+                }
+                this.level()
+                        .addAlwaysVisibleParticle(
+                                GigParticles.BLOOD.get(),
+                                this.blockPosition().getX() + this.random.nextDouble(),
+                                this.getEyeY(),
+                                this.blockPosition().getZ() + this.random.nextDouble(),
+                                0.0,
+                                0.0,
+                                0.0
+                        );
             }
         }
     }
