@@ -41,7 +41,6 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -171,6 +170,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     private final AlienNavigationManager navigationManager;
 
     private int healCounter;
+
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
@@ -449,12 +449,20 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             if (this.getHealth() != this.getMaxHealth() && this.getTarget() == null && this.tickCount % 20 == 0) {
                 healCounter++;
                 if (CommonMod.config.enableLogging) {
-                    CommonMod.LOGGER.warn("Current Health: {} and Max Health: {}", this.getHealth(),
-                            this.getMaxHealth());
+                    CommonMod.LOGGER.warn(
+                        "Current Health: {} and Max Health: {} of {}",
+                        this.getHealth(),
+                        this.getMaxHealth(),
+                        this.getDisplayName().getString()
+                    );
                 }
                 if (healCounter >= 20 && healCounter > this.lastHurt) {
                     var healAmount = 3.5833F;
-                    if (this.level().getBlockStatesIfLoaded(this.getBoundingBox().inflate(5)).anyMatch(state -> state.is(GigTags.NEST_BLOCKS))) {
+                    if (
+                        this.level()
+                            .getBlockStatesIfLoaded(this.getBoundingBox().inflate(5))
+                            .anyMatch(state -> state.is(GigTags.NEST_BLOCKS))
+                    ) {
                         healAmount *= 1.5F;
                     }
                     if (CommonMod.config.enableLogging) {
@@ -735,7 +743,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         return super.isWithinMeleeAttackRange(entity);
     }
-
 
     @Override
     public boolean dampensVibrations() {
