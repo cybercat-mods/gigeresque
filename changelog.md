@@ -1,3 +1,70 @@
-v0.8.6
+![Happy Alien Day](https://pbs.twimg.com/media/FuoA5YjWYAI-jzA.jpg "Happy Alien Day")
 
-- Tweaks growth system.
+# v0.8.7
+
+- Adds delay to growth ticks, fixing growth issues. 
+  - Growth now increases 1 every 20 game ticks, so 1 second.
+    - If you enable dev logging config, it will log where all active aliens growth and where that alien is at.
+- Rewrote Pandora system, no longer uses effect, uses a system similar to raids now.
+  - If the player is in a lighted area, spawns will not happen. (Uses light level based on monster spawning)
+  - If you enable dev logging config, it will log where it spawned at and make it glow.
+- Fixed log spawn about datafixers.
+- Adds missing lang entries for configuration options.
+- Disables growth on normal eggs.
+- Disables growth on facehuggers.
+- Increases spitter speed.
+- Adds a tick delay on eggs logic, should help with any tick issues.
+- Fixed the odd pathfinding when going to food.
+- Reduced how much growth gained when bursters eat items.
+- Lithe Burster from a spawn egg is now set to go into Lithe Interloper instead of Entombed Interloper. 
+- Rewrote the food eating system for bursters, now more consistent.
+  - Food values are now taken into a factor in how much growth is gained.
+  - Now properly eats only one item in a stack.
+- Facehuggers are now properly stunned if knocked off.
+- Villagers now only run from alien or fully hostile xenos.
+- Fixed runner burster playing birth animations on relogs.
+- Fixed bursters eating/breaking blocks when birthed.
+- Adult aliens can now randomly dodge any projectile that is tagged as `dodgeable_projectile`.
+  - "minecraft:arrow"
+  - "minecraft:llama_spit"
+  - "minecraft:fireball"
+  - "minecraft:small_fireball"
+  - "minecraft:dragon_fireball"
+  - "minecraft:firework_rocket"
+  - "minecraft:shulker_bullet"
+  - "minecraft:trident"
+  - "minecraft:wither_skull"
+  - "minecraft:wind_charge"
+- Fixed lunge happening at far distances and when the target is out of sight.
+- Aliens now run from exploding creepers, and no longer 1 tap them, they will also run from exploding tagged entities (`exploding_entity`)
+  - "minecraft:fireball"
+  - "minecraft:dragon_fireball"
+  - "minecraft:wither_skull"
+  - "minecraft:tnt"
+- Rewrote Crop Breaking/Light breaking goals into 1.
+- Templebeasts can now randomly charge at a target and do not fear exploding tagged mobs.
+- Fixed aliens not invaliding a target if it's facehugged or grabbed.
+- Fixed bug with Eggs not taking damage properly.
+- Fixed bug where Aliens would pick up non-hostable mobs, if it happens again, they will eject them now.
+- Fixed bug where Facehuggers would target un-facehuggable entities and facehug them.
+- Fixed hell_burster not being acid-resistant.
+- Fixed bursters unable to break Nether Wart.
+- Non-runner-like bursters don't go to sounds now.
+- Fixed aliens being able to target other aliens.
+- Fixed facehuggers clipping into the ground when stunned.
+- Slight rework to facehugging.
+- Aliens no longer target Shulkers.
+- Fixed cacoa blocks missing in the weak blocks tag.
+- Huggers can now jump from five blocks out to attach.
+- Quadruped bursters can now jump from five blocks to a food item.
+- Fixed Hoglin offset for Facehuggers.
+- Tweaks blade on runner for z-fighting.
+- Tweaks Quadruped bursters spawn eggs to not have birth effect.
+- Acid particles fixed for birthing, now uses Blood. (still a bit buggy unsure why)
+- Fixed Pitcher Planet and Flowertorch items not being properly eaten by bursters.
+- Fixed spawn eggs not working with dispensers in Fabric.
+- Rebalanced loot tables to have more better loot.
+- Fixed Sarcophagus opening any other Sarcophagus to the left or right if not clicked on the bottom.
+- Tweaks attack range of xenos.
+- Rework healing to heal outside of combat and more so when near nest blocks.
+- Reworked how blood is spawned when chestbursting.
