@@ -84,7 +84,16 @@ public class AnimationDispatcher {
 
     private final AzCommand SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.LOOP);
 
-    private final AzCommand LUNGE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "swim", AzPlayBehaviors.PLAY_ONCE);
+    private final AzCommand LUNGE_COMMAND = AzCommand.builder()
+        .playSequence(
+            Constants.BASE_CONTROLLER,
+            sequenceBuilder -> sequenceBuilder.queue(
+                "swim",
+                props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE)
+            )
+        )
+        .setSpeed(2.5F)
+        .build();
 
     private final AzCommand RUSH_SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_swim", AzPlayBehaviors.LOOP);
 
