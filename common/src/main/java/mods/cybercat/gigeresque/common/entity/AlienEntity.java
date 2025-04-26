@@ -41,6 +41,7 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -713,18 +714,13 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
-        for (
-            var testPos : BlockPos.betweenClosed(
-                this.blockPosition().relative(this.getDirection(), 1).above(-1).relative(this.getDirection().getClockWise(), -1),
-                this.blockPosition().relative(this.getDirection(), 3).above(1).relative(this.getDirection().getClockWise(), 1)
-            )
-        ) {
-            if (entity.blockPosition().equals(testPos)) {
-                return true;
-            }
+        if (this.getBoundingBox().intersects(entity.getBoundingBox().inflate(3.5))) {
+            return true;
         }
+
         return super.isWithinMeleeAttackRange(entity);
     }
+
 
     @Override
     public boolean dampensVibrations() {
