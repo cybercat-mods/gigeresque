@@ -39,7 +39,7 @@ public class AlienSarcophagusInvisBlock extends Block {
         @NotNull BlockHitResult hitResult
     ) {
         if (!level.isClientSide) {
-            var radius = new Vec3i(2, 2, 2);
+            var radius = new Vec3i(0, 2, 0);
             for (BlockPos testPos : BlockPos.betweenClosed(pos.subtract(radius), pos.offset(radius))) {
                 if (level.getBlockState(testPos).is(GigBlocks.ALIEN_STORAGE_BLOCK_1.get())) {
                     if (level.getBlockEntity(testPos) instanceof AlienStorageEntity idolStorageEntity)
