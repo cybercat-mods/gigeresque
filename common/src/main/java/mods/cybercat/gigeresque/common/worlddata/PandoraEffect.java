@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.worlddata;
 
-import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
