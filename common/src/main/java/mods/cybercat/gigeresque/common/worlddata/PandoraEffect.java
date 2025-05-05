@@ -1,7 +1,9 @@
 package mods.cybercat.gigeresque.common.worlddata;
 
+import mods.cybercat.gigeresque.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -86,6 +88,13 @@ public class PandoraEffect implements CustomSpawner {
         var mutableBlockPos = getRandomNearbyPosition(player, randomSource);
         if (!isValidSpawnLocation(mutableBlockPos, level)) {
             return 0;
+        }
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("firstspawnfromeffect"));
+            if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone())
+                for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria())
+                    serverPlayer.getAdvancements().award(advancement, s);
         }
 
         return spawnEggs(level, mutableBlockPos);
