@@ -74,20 +74,18 @@ public class FleeExplodingCreeperGoal extends Goal {
     @Override
     public void start() {
         alienEntity.getNavigation().moveTo(path, speedModifier);
+        alienEntity.setFleeingStatus(true);
     }
 
     @Override
     public void stop() {
-        alienEntity.animationDispatcher.sendIdle();
         entityToAvoid = null;
+        alienEntity.setFleeingStatus(false);
     }
 
     @Override
     public void tick() {
-        alienEntity.getNavigation().setSpeedModifier(alienEntity.distanceToSqr(entityToAvoid) < 64.0 ? speedModifier : 1.3);
-        if (alienEntity.moveAnalysis.isMoving()) {
-            alienEntity.animationDispatcher.sendRun();
-        }
+        alienEntity.getNavigation().setSpeedModifier(speedModifier);
         alienEntity.setTarget(null);
     }
 
