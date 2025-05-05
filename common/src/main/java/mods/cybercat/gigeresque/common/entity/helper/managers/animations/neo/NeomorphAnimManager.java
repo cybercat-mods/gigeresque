@@ -27,6 +27,8 @@ public class NeomorphAnimManager {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendCrawl);
         } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
+        } else if (entity.isFleeing()) {
+            GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
         } else {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
         }
@@ -37,8 +39,10 @@ public class NeomorphAnimManager {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendCrawl);
         } else if (entity.isUnderWater()) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendSwim);
-        } else {
+        } else if (entity.getSpeed() <= 1.0F) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendRun);
+        } else {
+            GigCommonMethods.setAnimation(entity.animationDispatcher::sendWalk);
         }
     }
 
