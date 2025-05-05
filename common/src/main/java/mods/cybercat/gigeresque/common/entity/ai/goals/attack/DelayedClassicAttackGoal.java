@@ -90,14 +90,17 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
                 }
             } else {
                 if (isTargetValidForExecution(target)) {
-                    if (shouldNestBehavior(nearbyBlocks, randomPhase) && GigEntityUtils.isTargetHostable(target) && !mob.isInWater()) {
-                        mob.grabTarget(target);
-                    } else if (shouldBiteBehavior(target, randomPhase) && !mob.isInWater() && GigEntityUtils.isTargetHostable(target)) {
-                        mob.grabTarget(target);
+                    if (GigEntityUtils.isTargetHostable(target) && !mob.isInWater()) {
+                        if (shouldNestBehavior(nearbyBlocks, randomPhase) || shouldBiteBehavior(target, randomPhase)) {
+                            mob.grabTarget(target);
+                        }
                     } else if (!mob.isVehicle()) {
-                        this.mob.swing(InteractionHand.MAIN_HAND);
-                        this.mob.doHurtTarget(target);
+                        mob.swing(InteractionHand.MAIN_HAND);
+                        mob.doHurtTarget(target);
                     }
+                } else {
+                    mob.swing(InteractionHand.MAIN_HAND);
+                    mob.doHurtTarget(target);
                 }
                 this.resetAttackCooldown();
                 this.triggeredAttackAnimation = false;
