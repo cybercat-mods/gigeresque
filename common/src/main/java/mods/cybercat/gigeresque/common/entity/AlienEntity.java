@@ -59,6 +59,7 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
@@ -422,12 +423,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setAirSupply(this.getMaxAirSupply());
         searchingManager.tick();
         stasisManager.tick();
-        if (this.getTarget() != null && this.getTarget().hasPassenger(AlienEntity.class::isInstance)) {
-            this.setTarget(null);
-        }
 
-        if (this.getTarget() != null && this.getTarget().getType().is(GigTags.GIG_ALIENS)) {
-            this.setTarget(null);
+        if (getTarget() != null && !GigEntityUtils.isValidTarget(getTarget())) {
+            setTarget(null);
         }
 
         this.setAirSupply(this.getMaxAirSupply());
@@ -737,7 +735,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
-        if (this.getBoundingBox().intersects(entity.getBoundingBox().inflate(3.5))) {
+        if (this.getBoundingBox().intersects(entity.getBoundingBox().inflate(2))) {
             return true;
         }
 

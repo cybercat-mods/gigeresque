@@ -23,7 +23,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
         super(
             AzEntityRendererConfig.<ClassicAlienEntity>builder($ -> EntityModels.ALIEN, xeno -> {
                 if (xeno.stasisManager.isStasis()) {
-                    return EntityTextures.ALIEN_STATIS;
+                    return EntityTextures.ALIEN_STASIS;
                 }
 
                 return EntityTextures.ALIEN;

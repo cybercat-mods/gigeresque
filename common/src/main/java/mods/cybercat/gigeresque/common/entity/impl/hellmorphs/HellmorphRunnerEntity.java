@@ -92,7 +92,7 @@ public class HellmorphRunnerEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidTarget(target)
             )
         );
     }

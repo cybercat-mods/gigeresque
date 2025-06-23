@@ -4,15 +4,11 @@ import mod.azure.azurelib.sblforked.util.RandomUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -21,12 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
@@ -57,10 +51,6 @@ public record GigEntityUtils() {
 
     public static boolean isTargetDNAImmune(Entity target) {
         return target.getType().is(GigTags.DNAIMMUNE);
-    }
-
-    public static boolean convertToSpitter(LivingEntity target) {
-        return target.hasEffect(GigStatusEffects.DNA) && target.hasEffect(GigStatusEffects.IMPREGNATION);
     }
 
     public static boolean convertToNeo(LivingEntity target) {
@@ -99,41 +89,23 @@ public record GigEntityUtils() {
         return GigEntityUtils.isTargetHostable(target);
     }
 
-    public static boolean entityTest(LivingEntity target, LivingEntity self) {
-        return !((target.getType().is(GigTags.GIG_ALIENS) || target.getType()
-            .is(
-                GigTags.XENO_ATTACK_BLACKLIST
-            )) || !target.hasLineOfSight(target) || GigEntityUtils.mainCheck(
-                target
-            ) || self.isVehicle() && target.isAlive());
-    }
-
-    public static boolean removeTarget(LivingEntity target) {
-        if (target.getType().is(GigTags.GIG_ALIENS)) {
+    public static boolean isValidTarget(LivingEntity target) {
+        if (
+            target.getType().is(GigTags.GIG_ALIENS)
+                || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
+                || GigEntityUtils.passengerCheck(target)
+                || target.hasEffect(GigStatusEffects.IMPREGNATION)
+                || target.hasEffect(GigStatusEffects.EGGMORPHING)
+                || GigEntityUtils.isFacehuggerAttached(target)
+                || !target.isAlive()
+                || target.isInvulnerable()
+                || !target.attackable()
+                || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
+        ) {
             return false;
         }
 
-        if (target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)) {
-            return false;
-        }
-
-        if (GigEntityUtils.passengerCheck(target)) {
-            return false;
-        }
-
-        if (target.hasEffect(GigStatusEffects.IMPREGNATION)) {
-            return false;
-        }
-
-        if (target.hasEffect(GigStatusEffects.EGGMORPHING)) {
-            return false;
-        }
-
-        if (GigEntityUtils.isFacehuggerAttached(target)) {
-            return false;
-        }
-
-        return target.isAlive();
+        return true;
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
@@ -168,28 +140,12 @@ public record GigEntityUtils() {
         return GigEntityUtils.isTargetHostable(target) && target.isAlive();
     }
 
-    public static boolean mainCheck(LivingEntity target) {
-        return GigEntityUtils.passengerCheck(target) || GigEntityUtils.feetCheck(target);
-    }
-
-    public static boolean mainCheck2(LivingEntity target) {
-        return GigEntityUtils.hostEggCheck(target) || GigEntityUtils.isFacehuggerAttached(target);
-    }
-
     public static boolean passengerCheck(LivingEntity target) {
         return target.getVehicle() != null && target.getVehicle()
             .getSelfAndPassengers()
             .anyMatch(
                 AlienEntity.class::isInstance
             );
-    }
-
-    public static boolean feetCheck(LivingEntity target) {
-        return target.getInBlockState().getBlock() == GigBlocks.NEST_RESIN_WEB_CROSS;
-    }
-
-    public static boolean hostEggCheck(LivingEntity target) {
-        return target.hasEffect(GigStatusEffects.IMPREGNATION) || target.hasEffect(GigStatusEffects.EGGMORPHING);
     }
 
     public static void spawnMutant(LivingEntity entity) {
@@ -255,32 +211,6 @@ public record GigEntityUtils() {
                     entity.getRandom().nextGaussian() * 0.02,
                     0.15000000596046448
                 );
-    }
-
-    public static void handleLivingEntityInteractions(AlienEntity self, Entity target, LivingEntity livingEntity) {
-        if (target instanceof Player playerEntity) {
-            handlePlayerInteraction(playerEntity);
-        } else if (livingEntity instanceof Mob mobEntity) {
-            handleMobInteraction(self, mobEntity);
-        }
-
-        livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-        float damage = self.getRandom().nextInt(4) > 2
-            ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
-            : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage;
-        livingEntity.hurt(GigDamageSources.of(self.level(), GigDamageSources.XENO), damage);
-
-        self.heal(1.0833f);
-    }
-
-    public static void handlePlayerInteraction(Player playerEntity) {
-        playerEntity.drop(playerEntity.getInventory().getSelected(), false);
-        playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
-    }
-
-    public static void handleMobInteraction(AlienEntity self, Mob mobEntity) {
-        self.drop(mobEntity, mobEntity.getMainHandItem());
-        mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
     }
 
     public static final BiPredicate<AlienEntity, LivingEntity> TARGET_PREDICATE = (xenomorph, potentialTarget) -> {
