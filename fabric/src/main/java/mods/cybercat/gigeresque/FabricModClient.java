@@ -13,9 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.entity.render.aqua.AquaticChestbursterEntityRenderer;
@@ -45,10 +43,10 @@ public class FabricModClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB_CROSS.get(), RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.BEACON_BLOCK.get(), RenderType.translucent());
-        registerParticle("acid", GigParticles.ACID.get(), AcidParticleFactory::new);
-        registerParticle("goo", GigParticles.GOO.get(), GooParticleFactory::new);
-        registerParticle("blood", GigParticles.BLOOD.get(), BloodParticleFactory::new);
-        registerParticle("mist", GigParticles.MIST.get(), MistParticleFactory::new);
+        registerParticle(GigParticles.ACID.get(), AcidParticleFactory::new);
+        registerParticle(GigParticles.GOO.get(), GooParticleFactory::new);
+        registerParticle(GigParticles.BLOOD.get(), BloodParticleFactory::new);
+        registerParticle(GigParticles.MIST.get(), MistParticleFactory::new);
         EntityRenderers.register(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
@@ -165,11 +163,9 @@ public class FabricModClient implements ClientModInitializer {
     }
 
     private void registerParticle(
-        String path,
         SimpleParticleType type,
         ParticleFactoryRegistry.PendingParticleFactory<SimpleParticleType> factory
     ) {
-        Registry.register(BuiltInRegistries.PARTICLE_TYPE, Constants.modResource(path), type);
         ParticleFactoryRegistry.getInstance().register(type, factory);
     }
 

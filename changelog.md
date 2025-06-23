@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed a fatal crash occurring when rejoining a server with Gigeresque.
 - Fixed entombed interlopers not attacking properly.
 - Fixed aliens targeting entities that are already being grabbed.
 - Fixed aliens targeting players in spectator or creative.
