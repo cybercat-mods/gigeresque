@@ -4,122 +4,108 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
+import mods.cybercat.gigeresque.bvanseg.Cooldown;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class DelayedClassicAttackGoal extends MeleeAttackGoal {
 
-    private int delayBeforeAttack;
+    private static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
 
-    private boolean triggeredAttackAnimation;
+    private final AlienEntity alienEntity;
 
-    private final int delayTicksBeforeAttack;
+    private final Cooldown attackAnimationCooldown;
 
-    public static final Predicate<BlockState> NEST = state -> state.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
+    private boolean ranAttackAnimation;
 
-    public DelayedClassicAttackGoal(AlienEntity mob, double speedModifier, int delayTicksBeforeAttack) {
-        super(mob, speedModifier, true);
-        this.delayTicksBeforeAttack = delayTicksBeforeAttack;
+    public DelayedClassicAttackGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack) {
+        super(alienEntity, speedModifier, true);
+        this.alienEntity = alienEntity;
+        this.attackAnimationCooldown = Cooldown.withCooldownTimeInTicks("attackAnimationCooldownInTicks", delayTicksBeforeAttack);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        attackAnimationCooldown.tick();
+
+        if (
+            // If target is not null
+            alienEntity.getTarget() != null
+                // AND we ran the attack animation.
+                && ranAttackAnimation
+                // AND the animation cooldown has finished
+                && !attackAnimationCooldown.isActive()
+                // AND target is still within melee range
+                && alienEntity.isWithinMeleeAttackRange(alienEntity.getTarget())
+                // AND we still have line of sight of the target
+                && alienEntity.getSensing().hasLineOfSight(alienEntity.getTarget())
+        ) {
+            resetAttackCooldown();
+
+            if (canGrab()) {
+                alienEntity.grabTarget(alienEntity.getTarget());
+            } else {
+                mob.swing(InteractionHand.MAIN_HAND);
+                mob.doHurtTarget(alienEntity.getTarget());
+            }
+
+            this.ranAttackAnimation = false;
+        }
+    }
+
+    @Override
+    protected void checkAndPerformAttack(@NotNull LivingEntity target) {
+        if (!ranAttackAnimation && canPerformAttack(target)) {
+            // Play the animation.
+            alienEntity.animationSelector.select(alienEntity);
+            this.ranAttackAnimation = true;
+            // Reset the cooldown.
+            attackAnimationCooldown.reset();
+        }
     }
 
     @Override
     public boolean canUse() {
-        if (this.mob.isVehicle()) {
-            return false;
-        }
-
-        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
-            return false;
-        }
-
-        return super.canUse();
+        return isAbleToAttack() && super.canUse();
     }
 
     @Override
     public boolean canContinueToUse() {
-        if (this.mob.isVehicle()) {
-            return false;
-        }
-
-        if (this.mob.getTarget() != null && this.mob.getTarget().getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
-            return false;
-        }
-
-        return super.canContinueToUse();
+        return isAbleToAttack() && super.canContinueToUse();
     }
 
-    @Override
-    public void start() {
-        super.start();
-        this.delayBeforeAttack = 0;
-        this.triggeredAttackAnimation = false;
+    private boolean isAbleToAttack() {
+        if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
+            return false;
+        }
+
+        return !NEST.test(alienEntity.getTarget().getInBlockState());
     }
 
     @Override
     public void stop() {
-        LivingEntity livingentity = this.mob.getTarget();
+        var livingentity = alienEntity.getTarget();
+
         if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
-            this.mob.setTarget(null);
+            alienEntity.setTarget(null);
         }
 
-        this.mob.setAggressive(false);
+        alienEntity.setAggressive(false);
     }
 
-    @Override
-    protected void checkAndPerformAttack(LivingEntity target) {
-        var nearbyBlocks = mob.level().getBlockStatesIfLoaded(mob.getBoundingBox().inflate(18.0));
-        var randomPhase = mob.getRandom().nextInt(0, 100);
-        if (this.canPerformAttack(target) && this.mob instanceof AlienEntity mob) {
-            if (this.mob.isVehicle()) {
-                return;
-            }
-
-            if (this.delayBeforeAttack > 0) {
-                this.delayBeforeAttack--;
-
-                if (this.delayBeforeAttack == delayTicksBeforeAttack && !this.triggeredAttackAnimation) {
-                    mob.animationSelector.select(mob);
-                    this.triggeredAttackAnimation = true;
-                }
-            } else {
-                if (isTargetValidForExecution(target)) {
-                    if (GigEntityUtils.isTargetHostable(target) && !mob.isInWater()) {
-                        if (shouldNestBehavior(nearbyBlocks, randomPhase) || shouldBiteBehavior(target, randomPhase)) {
-                            mob.grabTarget(target);
-                        }
-                    } else if (!mob.isVehicle()) {
-                        mob.swing(InteractionHand.MAIN_HAND);
-                        mob.doHurtTarget(target);
-                    }
-                } else {
-                    mob.swing(InteractionHand.MAIN_HAND);
-                    mob.doHurtTarget(target);
-                }
-                this.resetAttackCooldown();
-                this.triggeredAttackAnimation = false;
-            }
-        } else {
-            this.delayBeforeAttack = this.adjustedTickDelay(10);
-            this.triggeredAttackAnimation = false;
+    private boolean canGrab() {
+        if (mob.getTarget() instanceof Player player) {
+            var randomPhase = mob.getRandom().nextInt(0, 100);
+            return randomPhase < 33 && player.getHealth() <= (player.getMaxHealth() * 0.50);
         }
-    }
 
-    private boolean isTargetValidForExecution(LivingEntity target) {
-        return !target.getType().is(GigTags.XENO_EXECUTE_BLACKLIST);
-    }
-
-    private boolean shouldNestBehavior(Stream<BlockState> nearbyBlocks, int randomPhase) {
-        return nearbyBlocks.anyMatch(NEST) && randomPhase >= 50;
-    }
-
-    private boolean shouldBiteBehavior(LivingEntity target, int randomPhase) {
-        return target.getHealth() <= (target.getMaxHealth() * 0.50) && randomPhase >= 80;
+        return true;
     }
 }

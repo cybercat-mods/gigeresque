@@ -26,9 +26,9 @@ public record EntityTextures() {
 
     public static final ResourceLocation ROM_ALIEN = Constants.modResource("%s/rom_alien/rom_alien.png".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation ALIEN_STATIS = Constants.modResource("%s/alien/alien_stasis.png".formatted(BASE_ENTITY_URL));
+    public static final ResourceLocation ALIEN_STASIS = Constants.modResource("%s/alien/alien_stasis.png".formatted(BASE_ENTITY_URL));
 
-    public static final ResourceLocation ROM_ALIEN_STATIS = Constants.modResource(
+    public static final ResourceLocation ROM_ALIEN_STASIS = Constants.modResource(
         "%s/rom_alien/rom_alien_stasis.png".formatted(BASE_ENTITY_URL)
     );
 

@@ -25,7 +25,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
                 var progress = Math.max(0, Math.min(1 - (xeno.getGrowth() / xeno.getMaxGrowth()), 1));
 
                 if (xeno.stasisManager.isStasis()) {
-                    return EntityTextures.ROM_ALIEN_STATIS;
+                    return EntityTextures.ROM_ALIEN_STASIS;
                 }
                 if (progress > 0) {
                     return EntityTextures.ROM_ALIEN_YOUNG;
