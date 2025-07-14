@@ -1,13 +1,19 @@
 package mods.cybercat.gigeresque.common.item;
 
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.flag.FeatureFlagRegistry;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.Fireworks;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.platform.GigServices;
+
+import net.minecraft.core.component.*;
 
 public record GigItems() implements CommonItemRegistryInterface {
 
@@ -18,6 +24,24 @@ public record GigItems() implements CommonItemRegistryInterface {
     );
 
     public static final Supplier<Item> TRACKER = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID, "tracker", TrackerItem::new);
+
+    public static final Supplier<Item> SEALED_AMPOULE_EMPTY = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_empty",
+        () -> new Item(new Item.Properties().stacksTo(16))
+    );
+
+    public static final Supplier<Item> SEALED_AMPOULE_ACID = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_acid",
+        () -> new AcidAmpoule(new Item.Properties().stacksTo(16))
+    );
+
+    public static final Supplier<Item> SEALED_AMPOULE_GOO = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_goo",
+        () -> new GooAmpoule(new Item.Properties().stacksTo(16))
+    );
 
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,
