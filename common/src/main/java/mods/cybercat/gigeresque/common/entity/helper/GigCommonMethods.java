@@ -25,6 +25,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import net.minecraft.world.level.*;
 
 public record GigCommonMethods() {
 
@@ -46,11 +47,25 @@ public record GigCommonMethods() {
         entity.level().addFreshEntity(acidEntity);
     }
 
-    public static void generateGooBlood(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = GigEntities.GOO.get().create(entity.level());
+    public static void generateAcidPoolAtPos(Level level, BlockPos pos) {
+        var acidEntity = GigEntities.ACID.get().create(level);
         assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(acidEntity);
+        acidEntity.moveTo(pos.offset(0, 1, 0), 0, 0);
+        level.addFreshEntity(acidEntity);
+    }
+
+    public static void generateGooBlood(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+        var gooEntity = GigEntities.GOO.get().create(entity.level());
+        assert gooEntity != null;
+        gooEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
+        entity.level().addFreshEntity(gooEntity);
+    }
+
+    public static void generateGooBloodAtPos(Level level, BlockPos pos) {
+        var gooEntity = GigEntities.GOO.get().create(level);
+        assert gooEntity != null;
+        gooEntity.moveTo(pos.offset(0, 1, 0), 0, 0);
+        level.addFreshEntity(gooEntity);
     }
 
     public static void generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset, float radius) {

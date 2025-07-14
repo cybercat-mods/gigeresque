@@ -1,0 +1,69 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "block/ampoule_projectile"
+	},
+	"elements": [
+		{
+			"from": [7, 0, 1],
+			"to": [9, 2, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 2]},
+			"faces": {
+				"north": {"uv": [6, 14, 8, 16], "texture": "#0"},
+				"east": {"uv": [0, 14, 6, 16], "texture": "#0"},
+				"south": {"uv": [14, 14, 16, 16], "texture": "#0"},
+				"west": {"uv": [8, 14, 14, 16], "texture": "#0"},
+				"up": {"uv": [8, 14, 6, 8], "texture": "#0"},
+				"down": {"uv": [10, 8, 8, 14], "texture": "#0"}
+			}
+		},
+		{
+			"from": [6.5, -0.5, 7],
+			"to": [9.5, 2.5, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.5, -0.5, 8]},
+			"faces": {
+				"north": {"uv": [5, 5, 8, 8], "texture": "#0"},
+				"east": {"uv": [0, 5, 5, 8], "texture": "#0"},
+				"south": {"uv": [13, 5, 16, 8], "texture": "#0"},
+				"west": {"uv": [8, 5, 13, 8], "texture": "#0"},
+				"up": {"uv": [8, 5, 5, 0], "texture": "#0"},
+				"down": {"uv": [11, 0, 8, 5], "texture": "#0"}
+			}
+		},
+		{
+			"from": [6.5, 1, 12],
+			"to": [9.5, 1, 16],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 1, 12]},
+			"faces": {
+				"north": {"uv": [0, 13, 3, 13], "texture": "#0"},
+				"east": {"uv": [-4, 13, 0, 13], "texture": "#0"},
+				"south": {"uv": [7, 13, 10, 13], "texture": "#0"},
+				"west": {"uv": [3, 13, 7, 13], "texture": "#0"},
+				"up": {"uv": [3, 13, 0, 9], "texture": "#0"},
+				"down": {"uv": [6, 9, 3, 13], "texture": "#0"}
+			}
+		},
+		{
+			"from": [6.5, 1, 12],
+			"to": [9.5, 1, 16],
+			"rotation": {"angle": -45, "axis": "z", "origin": [8, 1, 12]},
+			"faces": {
+				"north": {"uv": [0, 13, 3, 13], "texture": "#0"},
+				"east": {"uv": [-4, 13, 0, 13], "texture": "#0"},
+				"south": {"uv": [7, 13, 10, 13], "texture": "#0"},
+				"west": {"uv": [3, 13, 7, 13], "texture": "#0"},
+				"up": {"uv": [3, 13, 0, 9], "texture": "#0"},
+				"down": {"uv": [6, 9, 3, 13], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "ampoule_projectile",
+			"origin": [8, 0, 2],
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		}
+	]
+}
