@@ -34,13 +34,13 @@ public record GigItems() implements CommonItemRegistryInterface {
     public static final Supplier<Item> SEALED_AMPOULE_ACID = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,
         "sealed_ampoule_acid",
-        () -> new AcidAmpoule(new Item.Properties().stacksTo(16))
+        () -> new AcidAmpouleItem(new Item.Properties().stacksTo(16))
     );
 
     public static final Supplier<Item> SEALED_AMPOULE_GOO = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,
         "sealed_ampoule_goo",
-        () -> new GooAmpoule(new Item.Properties().stacksTo(16))
+        () -> new GooAmpouleItem(new Item.Properties().stacksTo(16))
     );
 
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(
