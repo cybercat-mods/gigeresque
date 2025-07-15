@@ -22,7 +22,6 @@ import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRen
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
-import mods.cybercat.gigeresque.client.entity.render.misc.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
@@ -34,6 +33,7 @@ import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.client.entity.render.misc.*;
 
 public class FabricModClient implements ClientModInitializer {
 
@@ -52,6 +52,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         EntityRenderers.register(GigEntities.BLOOD.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
+        EntityRenderers.register(GigEntities.AMPOULE_PROJECTILE.get(), AmpouleRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new);
         // EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         EntityRenderers.register(

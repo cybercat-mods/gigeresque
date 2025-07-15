@@ -19,6 +19,7 @@ import mods.cybercat.gigeresque.client.entity.render.classic.ChestbursterEntityR
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.entity.render.misc.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.misc.AmpouleRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
@@ -55,6 +56,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GigEntities.BLOOD.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
+        event.registerEntityRenderer(GigEntities.AMPOULE_PROJECTILE.get(), AmpouleRender::new);
         event.registerEntityRenderer(
             GigEntities.ALIEN.get(),
             mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new
