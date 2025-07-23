@@ -1,0 +1,6 @@
+{
+  "parent": "item/crossbow",
+  "textures": {
+    "layer0": "gigeresque:item/crossbow_ampoule_goo"
+  }
+}
