@@ -1,6 +1,15 @@
 {
   "values": [
-    "#minecraft:is_mountain",
+    {
+      "id": "#minecraft:is_mountain",
+      "required": false
+    },
+    "minecraft:meadow",
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks",
+    "minecraft:stony_peaks",
+    "minecraft:snowy_slopes",
+    "minecraft:cherry_grove",
     {
       "id": "stellaris:mars_ice_spikes",
       "required": false
