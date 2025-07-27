@@ -49,8 +49,6 @@ public class InGameOverlayRendererMixin {
                 fovGooticker++;
                 var dnaDuration = Math.max(0, Math.min(fovGooticker / CommonMod.config.getgooEffectTickTimer(), 1));
                 gigeresque$renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
-            } else {
-                fovEggticker = 0;
             }
 
             if (
