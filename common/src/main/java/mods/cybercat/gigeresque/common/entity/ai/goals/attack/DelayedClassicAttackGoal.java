@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -101,11 +102,11 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
     }
 
     private boolean canGrab() {
-        if (mob.getTarget() instanceof Player player) {
+        if (mob.getTarget() instanceof LivingEntity livingEntity) {
             var randomPhase = mob.getRandom().nextInt(0, 100);
-            return randomPhase < 33 && player.getHealth() <= (player.getMaxHealth() * 0.50);
+            return randomPhase < 33 && livingEntity.getHealth() <= (livingEntity.getMaxHealth() * 0.50);
         }
 
-        return true;
+        return false;
     }
 }
