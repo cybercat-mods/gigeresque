@@ -5,10 +5,9 @@ import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
-
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.resources.ResourceLocation;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class ClassicAgingOverLay<T extends AlienEntity> implements AzRenderLayer<T> {
 

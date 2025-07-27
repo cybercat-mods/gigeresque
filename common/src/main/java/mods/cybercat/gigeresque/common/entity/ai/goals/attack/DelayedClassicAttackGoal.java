@@ -1,11 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 

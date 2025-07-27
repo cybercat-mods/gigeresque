@@ -2,12 +2,9 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.core.object.Color;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -20,6 +17,7 @@ import java.util.HashMap;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
@@ -48,7 +46,11 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         matrices.pushPose();
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
-        var progress = Math.clamp(((CommonMod.config.getEggmorphTickTimer() / 2  - fovEggticker) / (CommonMod.config.getEggmorphTickTimer() / 2)), -1, 1);
+        var progress = Math.clamp(
+            ((CommonMod.config.getEggmorphTickTimer() / 2 - fovEggticker) / (CommonMod.config.getEggmorphTickTimer() / 2)),
+            -1,
+            1
+        );
         var alpha = (int) (progress * 0xFF) << 24;
         vertexConsumer.setColor(Color.ofOpaque(alpha).argbInt());
         renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
