@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
@@ -102,6 +103,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = { "tick" }, at = { @At("HEAD") })
     void gigeresque$tick(CallbackInfo callbackInfo) {
         if (!this.level().isClientSide) {
+            if (this.getPassengers().stream().anyMatch(AlienEntity.class::isInstance)) {
+                this.setAirSupply(this.getMaxAirSupply());
+            }
             if (Constants.hasCureEffects.test(this)) {
                 this.removeEffect(GigStatusEffects.DNA);
                 if (Constants.self(this) instanceof ServerPlayer serverPlayer) {
