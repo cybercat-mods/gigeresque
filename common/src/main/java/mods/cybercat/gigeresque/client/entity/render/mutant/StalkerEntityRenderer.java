@@ -34,6 +34,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
                 .setAnimatorProvider(StalkerAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .setRenderType(stalker -> stalker.isAggressive() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
+                .setAlpha(stalker -> stalker.isAggressive() ? 0.2F : 1.0F)
                 .build(),
             context
         );
