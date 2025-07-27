@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.neo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
             AzEntityRendererConfig.<NeobursterEntity>builder(EntityModels.NEOBURSTER, EntityTextures.NEOBURSTER)
                 .setAnimatorProvider(NeobursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new BloodLayer<>())
                 .setPrerenderEntry(rendererPipelineContext -> {
                     if (rendererPipelineContext.bakedModel().getBone("sac").isPresent()) {
                         rendererPipelineContext.bakedModel().getBone("sac").get().setHidden(true);
