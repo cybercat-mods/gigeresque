@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +25,7 @@ public class EggmorphGeoFeatureRenderer<T extends Entity> implements AzRenderLay
         AzRendererPipeline<T> renderPipeline = context.rendererPipeline();
         ResourceLocation textureLocation = renderPipeline.config().textureLocation(animatable);
         var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(textureLocation).renderLayer;
-        if (animatable instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+        if (animatable instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             fovEggticker++;
             var progress = fovEggticker / CommonMod.config.getEggmorphTickTimer();
             context.setVertexConsumer(context.multiBufferSource().getBuffer(renderLayer));

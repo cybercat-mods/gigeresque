@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.client.model.SheepFurModel;
 import net.minecraft.client.model.SheepModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,7 +53,7 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
         float l,
         CallbackInfo ci
     ) {
-        if (!sheepEntity.isSheared() && sheepEntity.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+        if (!sheepEntity.isSheared() && sheepEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             this.getParentModel().copyPropertiesTo(this.model);
             EggmorphFeatureRenderer.renderEggmorphedModel(
                 this.model,

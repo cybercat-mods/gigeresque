@@ -35,6 +35,8 @@ public record GigTags() {
 
     public static final TagKey<Block> ALLOW_MIST_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("allow_mist_blocks"));
 
+    public static final TagKey<Block> NEST_CROSS_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("nest_cross_blocks"));
+
     /* DUNGEONS */
     public static final TagKey<Structure> GIG_EXPLORER_MAPS = TagKey.create(
         Registries.STRUCTURE,

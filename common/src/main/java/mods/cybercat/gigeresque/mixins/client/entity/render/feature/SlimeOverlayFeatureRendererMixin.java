@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.SlimeModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -47,7 +48,7 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
         float l,
         CallbackInfo ci
     ) {
-        if (entity.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+        if (entity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             this.model.prepareMobModel(entity, f, g, h);
             this.model.setupAnim(entity, f, g, j, k, l);
             this.getParentModel().copyPropertiesTo(this.model);

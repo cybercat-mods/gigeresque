@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.mixins.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.VillagerHeadModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -51,7 +52,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
         float l,
         CallbackInfo ci
     ) {
-        if (livingEntity.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+        if (livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             var entityModel = this.getParentModel();
             EggmorphFeatureRenderer.renderEggmorphedModel(
                 entityModel,

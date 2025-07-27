@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.feature;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.core.object.Color;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -79,7 +80,7 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         float headYaw,
         float headPitch
     ) {
-        if (entity instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())) {
+        if (entity instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             if (livingEntity.tickCount % 20 == 0)
                 fovEggticker++;
             if (fovEggticker > CommonMod.config.getEggmorphTickTimer()) {
