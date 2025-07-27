@@ -27,6 +27,7 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
             )
                 .setAnimatorProvider(NeomorphAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setScale(0.76F)
                 .build(),
             context
         );
@@ -53,7 +54,6 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        poseStack.scale(0.76F, 0.76F, 0.76F);
         NeomorphAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
