@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render.runner;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAgingOverLay;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,12 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
             )
                 .setAnimatorProvider(RunnerAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.RUNNER_ALIEN_YOUNG))
+                .setScale(runnerAlienEntity -> {
+                    var scaleFactor = 0.8f + ((runnerAlienEntity.getGrowth() / runnerAlienEntity.getMaxGrowth()) / 5f);
+
+                    return Math.min(scaleFactor, 1.0F);
+                })
                 .build(),
             context
         );
