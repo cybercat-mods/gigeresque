@@ -182,6 +182,7 @@
   "item.gigeresque.surgery_kit": "Surgery Kit",
   "item.gigeresque.tracker": "Memo Stone",
   "item.gigeresque.dev_debug_stick": "You sleep now",
+  "item.gigeresque.gig_bucket.tooltip": "Creative Mode Only Item",
   "filled_map.gig_dungeon": "Otherworldly Structure Map",
   "itemGroup.gigeresque.items": "Gigeresque Items",
   "itemGroup.gigeresque.blocks": "Gigeresque Blocks",
