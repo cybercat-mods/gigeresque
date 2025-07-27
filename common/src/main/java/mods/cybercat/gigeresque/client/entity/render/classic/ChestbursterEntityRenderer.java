@@ -22,6 +22,7 @@ public class ChestbursterEntityRenderer extends AzEntityRenderer<ChestbursterEnt
                 .setAnimatorProvider(ChestbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 4.0f))
                 .build(),
             context
         );
@@ -30,15 +31,13 @@ public class ChestbursterEntityRenderer extends AzEntityRenderer<ChestbursterEnt
 
     @Override
     public void render(
-        ChestbursterEntity entity,
+        @NotNull ChestbursterEntity entity,
         float entityYaw,
         float partialTicks,
-        PoseStack stack,
+        @NotNull PoseStack stack,
         @NotNull MultiBufferSource bufferIn,
         int packedLightIn
     ) {
-        float scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 4.0f);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
         ChestbursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }

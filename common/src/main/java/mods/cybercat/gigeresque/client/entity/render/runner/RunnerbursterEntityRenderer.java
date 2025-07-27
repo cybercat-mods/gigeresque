@@ -22,6 +22,7 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
                 .setAnimatorProvider(RunnerbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
@@ -37,9 +38,7 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         RunnerbursterAnimManager.handleAnimations(entity);
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

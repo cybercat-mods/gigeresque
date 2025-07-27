@@ -22,6 +22,7 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
                 .setAnimatorProvider(HellbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
@@ -37,8 +38,6 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         HellbursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
