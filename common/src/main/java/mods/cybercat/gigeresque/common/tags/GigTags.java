@@ -9,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.material.Fluid;
 
 import mods.cybercat.gigeresque.Constants;
 
@@ -170,4 +171,7 @@ public record GigTags() {
         Registries.MOB_EFFECT,
         Constants.modResource("gigstatuseffects")
     );
+
+    /* FLUIDS */
+    public static final TagKey<Fluid> BLACK_FLUID = TagKey.create(Registries.FLUID, Constants.modResource("black_fluid"));
 }
