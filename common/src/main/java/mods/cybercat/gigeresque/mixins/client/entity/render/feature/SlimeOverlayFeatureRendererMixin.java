@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 /**
  * @author Aelpecyem
@@ -46,7 +46,7 @@ public abstract class SlimeOverlayFeatureRendererMixin<T extends LivingEntity> e
         float l,
         CallbackInfo ci
     ) {
-        if (entity.hasEffect(GigStatusEffects.EGGMORPHING)) {
+        if (entity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             this.model.prepareMobModel(entity, f, g, h);
             this.model.setupAnim(entity, f, g, j, k, l);
             this.getParentModel().copyPropertiesTo(this.model);

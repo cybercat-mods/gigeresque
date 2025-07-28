@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 /**
  * @author Aelpecyem
@@ -50,7 +50,7 @@ public abstract class VillagerClothingFeatureRendererMixin<T extends LivingEntit
         float l,
         CallbackInfo ci
     ) {
-        if (livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
+        if (livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             var entityModel = this.getParentModel();
             EggmorphFeatureRenderer.renderEggmorphedModel(
                 entityModel,

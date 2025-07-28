@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public abstract class BlackFluid extends FlowingFluid {
@@ -31,7 +31,7 @@ public abstract class BlackFluid extends FlowingFluid {
 
     @Override
     public @NotNull Item getBucket() {
-        return Items.BUCKET;
+        return GigItems.BLACK_FLUID_BUCKET.get();
     }
 
     @Override

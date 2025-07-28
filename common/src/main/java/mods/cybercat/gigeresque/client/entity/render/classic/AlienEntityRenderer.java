@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.ClassicModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAgingOverLay;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.classic.ClassicAlienAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.classic.ClassicAlienAnimManager;
@@ -30,6 +31,12 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
             })
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.ALIEN_YOUNG))
+                .setScale(classicAlienEntity -> {
+                    var scaleFactor = 0.8f + ((classicAlienEntity.getGrowth() / classicAlienEntity.getMaxGrowth()) / 5f);
+
+                    return Math.min(scaleFactor, 1.0F);
+                })
                 .build(),
             context
         );

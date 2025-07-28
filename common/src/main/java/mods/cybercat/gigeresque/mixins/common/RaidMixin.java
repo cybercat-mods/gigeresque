@@ -23,9 +23,11 @@ public class RaidMixin {
 
     @Inject(method = "joinRaid", at = @At("HEAD"))
     public void gigeresque$injectCustomMob(int wave, Raider raider, BlockPos pos, boolean isRecruited, CallbackInfo ci) {
+        if (!CommonMod.config.enablePandoraEffects || !PandoraData.isTriggered()) {
+            return;
+        }
         if (
-            wave >= 2 && this.level.getRandom().nextIntBetweenInclusive(0, 10) >= 7 && (PandoraData.isTriggered()
-                || !CommonMod.config.enablePandoraEffects)
+            wave >= 2 && this.level.getRandom().nextIntBetweenInclusive(0, 10) >= 7
         ) {
             var runnerMob = GigEntities.RUNNER_ALIEN.get().create(this.level);
             runnerMob.setPos(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);

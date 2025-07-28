@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.hellmorphs.HellbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.hellmorphs.HellbursterAnimManager;
@@ -20,6 +21,8 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
             AzEntityRendererConfig.<HellbursterEntity>builder(EntityModels.HELLBURSTER, EntityTextures.HELLBURSTER)
                 .setAnimatorProvider(HellbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
@@ -35,8 +38,6 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         HellbursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }

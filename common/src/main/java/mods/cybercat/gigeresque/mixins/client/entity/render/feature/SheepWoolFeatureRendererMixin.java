@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphFeatureRenderer;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 /**
  * @author Aelpecyem
@@ -51,7 +51,7 @@ public abstract class SheepWoolFeatureRendererMixin extends RenderLayer<Sheep, S
         float l,
         CallbackInfo ci
     ) {
-        if (!sheepEntity.isSheared() && sheepEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
+        if (!sheepEntity.isSheared() && sheepEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             this.getParentModel().copyPropertiesTo(this.model);
             EggmorphFeatureRenderer.renderEggmorphedModel(
                 this.model,

@@ -22,7 +22,7 @@ public record GigItems() implements CommonItemRegistryInterface {
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,
         "black_fluid_bucket",
-        () -> new BucketItem(
+        () -> new GigBucketItem(
             GigFluids.BLACK_FLUID_STILL.get(),
             new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)
         )

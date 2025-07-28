@@ -13,6 +13,7 @@
     "common.PointOfInterestTypesInvoker",
     "common.RaidMixin",
     "common.ServerLevelMixin",
+    "common.item.BucketMixin_DontBucketBlackFluid",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
     "common.entity.FoxMixin",

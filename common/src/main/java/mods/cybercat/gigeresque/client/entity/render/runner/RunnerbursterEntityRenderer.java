@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.runner.RunnerbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.runner.RunnerbursterAnimManager;
@@ -20,6 +21,8 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
             AzEntityRendererConfig.<RunnerbursterEntity>builder(EntityModels.RUNNERBURSTER, EntityTextures.RUNNERBURSTER)
                 .setAnimatorProvider(RunnerbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
@@ -35,9 +38,7 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
         RunnerbursterAnimManager.handleAnimations(entity);
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

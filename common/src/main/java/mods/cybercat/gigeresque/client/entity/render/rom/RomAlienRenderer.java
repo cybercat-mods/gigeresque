@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAgingOverLay;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.rom.RomAlienAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.rom.RomAlienAnimManager;
@@ -34,6 +35,11 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
             })
                 .setAnimatorProvider(RomAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.ROM_ALIEN_YOUNG))
+                .setScale(romAlienEntity -> {
+                    var scaleFactor = 0.8f + ((romAlienEntity.getGrowth() / romAlienEntity.getMaxGrowth()) / 5f);
+                    return Math.min(scaleFactor, 1.0F);
+                })
                 .build(),
             context
         );

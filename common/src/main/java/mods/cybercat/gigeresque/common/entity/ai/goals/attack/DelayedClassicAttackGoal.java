@@ -4,7 +4,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,11 +100,11 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
     }
 
     private boolean canGrab() {
-        if (mob.getTarget() instanceof Player player) {
+        if (mob.getTarget() instanceof LivingEntity livingEntity) {
             var randomPhase = mob.getRandom().nextInt(0, 100);
-            return randomPhase < 33 && player.getHealth() <= (player.getMaxHealth() * 0.50);
+            return randomPhase < 33 && livingEntity.getHealth() <= (livingEntity.getMaxHealth() * 0.50);
         }
 
-        return true;
+        return false;
     }
 }

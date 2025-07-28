@@ -23,6 +23,7 @@ public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolesc
             )
                 .setAnimatorProvider(NeomorphAdolescentAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setScale(neoEntity -> 1.0f + (neoEntity.getGrowth() / neoEntity.getMaxGrowth()) / 5f)
                 .build(),
             context
         );
@@ -38,9 +39,7 @@ public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolesc
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var scaleFactor = 1.0f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         NeomorphAdolescentAnimManager.handleAnimations(entity);
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

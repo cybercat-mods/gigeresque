@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mod.azure.azurelib.core.object.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.entity.texture.EggmorphLayerTexture;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
@@ -45,14 +46,15 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         matrices.pushPose();
         renderedModel.prepareMobModel(entity, limbAngle, limbDistance, tickDelta);
         var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(texture).renderLayer);
-        renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-        renderedModel.renderToBuffer(
-            matrices,
-            vertexConsumer,
-            light,
-            OverlayTexture.NO_OVERLAY,
-            -1
+        var progress = Math.clamp(
+            ((CommonMod.config.getEggmorphTickTimer() / 2 - fovEggticker) / (CommonMod.config.getEggmorphTickTimer() / 2)),
+            -1,
+            1
         );
+        var alpha = (int) (progress * 0xFF) << 24;
+        vertexConsumer.setColor(Color.ofOpaque(alpha).argbInt());
+        renderedModel.setupAnim(entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+        renderedModel.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, -1);
         matrices.popPose();
     }
 
@@ -80,10 +82,12 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         float headYaw,
         float headPitch
     ) {
-        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(GigStatusEffects.EGGMORPHING)) {
-            var vertexConsumer = vertexConsumers.getBuffer(getEggmorphLayerTexture(getTextureLocation(entity)).renderLayer);
-            fovEggticker++;
-            var progress = Math.max(0, Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1));
+        if (entity instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
+            if (livingEntity.tickCount % 20 == 0)
+                fovEggticker++;
+            if (fovEggticker > CommonMod.config.getEggmorphTickTimer()) {
+                fovEggticker = 0;
+            }
             renderEggmorphedModel(
                 getParentModel(),
                 getTextureLocation(entity),
@@ -94,10 +98,12 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
                 limbAngle,
                 limbDistance,
                 tickDelta,
-                progress,
+                animationProgress,
                 headYaw,
                 headPitch
             );
+        } else {
+            fovEggticker = 0;
         }
     }
 }

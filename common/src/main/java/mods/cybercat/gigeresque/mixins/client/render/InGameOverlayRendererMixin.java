@@ -49,6 +49,8 @@ public class InGameOverlayRendererMixin {
                 fovGooticker++;
                 var dnaDuration = Math.max(0, Math.min(fovGooticker / CommonMod.config.getgooEffectTickTimer(), 1));
                 gigeresque$renderOverlay(client, matrices, dnaDuration, EntityTextures.BLACK_FLUID_TEXTURE);
+            } else {
+                fovGooticker = 0;
             }
 
             if (
@@ -57,11 +59,10 @@ public class InGameOverlayRendererMixin {
                 ) && client.player.hasEffect(GigStatusEffects.EGGMORPHING)
             ) {
                 fovEggticker++;
-                var eggmorphingProgress = Math.max(
-                    0,
-                    Math.min(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 1)
-                );
+                var eggmorphingProgress = Math.clamp(fovEggticker / CommonMod.config.getEggmorphTickTimer(), 0, 1);
                 gigeresque$renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
+            } else {
+                fovEggticker = 0;
             }
         }
     }
@@ -81,7 +82,7 @@ public class InGameOverlayRendererMixin {
             minecraft.player.level().getMaxLocalRawBrightness(blockpos)
         );
         RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(f, f, f, 0.8F);
+        RenderSystem.setShaderColor(f, f, f, progress);
         float f1 = 4.0F;
         float f2 = -1.0F;
         float f3 = 1.0F;

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.aqua.AquaticChestbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.aqua.AquaticChestbursterAnimManager;
@@ -20,6 +21,8 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
             AzEntityRendererConfig.<AquaticChestbursterEntity>builder(EntityModels.AQUATICBURSTER, EntityTextures.AQUATICBURSTER)
                 .setAnimatorProvider(AquaticChestbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .addRenderLayer(new BloodLayer<>())
+                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
@@ -28,15 +31,13 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
 
     @Override
     public void render(
-        AquaticChestbursterEntity entity,
+        @NotNull AquaticChestbursterEntity entity,
         float entityYaw,
         float partialTicks,
-        PoseStack stack,
+        @NotNull PoseStack stack,
         @NotNull MultiBufferSource bufferIn,
         int packedLightIn
     ) {
-        float scaleFactor = 1.0f + (entity.getGrowth() / entity.getMaxGrowth());
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
         AquaticChestbursterAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
