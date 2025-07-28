@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.movement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
@@ -20,6 +21,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.BlockBreakProgressManager;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Credit to Boston/AVP
@@ -93,7 +95,7 @@ public class DigToTargetGoal extends Goal {
             return;
         }
 
-        gatherTargetBlocks();
+        gatherTargetBlocks(target);
 
         if (!targetBlocks.isEmpty()) {
             initBlockBreak();
@@ -114,11 +116,12 @@ public class DigToTargetGoal extends Goal {
 
     @Override
     public void tick() {
-        if (targetBlocks.isEmpty()) {
+        var target = mob.getTarget();
+
+        if (targetBlocks.isEmpty() || target == null) {
             return;
         }
 
-        var target = mob.getTarget();
         var pos = targetBlocks.getFirst();
         mob.getLookControl().setLookAt(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
 
@@ -143,8 +146,10 @@ public class DigToTargetGoal extends Goal {
         } else if (mob.tickCount % 20 == 0) {
             this.mob.animationSelector.select(this.mob);
             var acidEntity = GigEntities.ACID.get().create(mob.level());
-            acidEntity.setPos(pos.getX(), pos.getY() + 1, pos.getZ());
-            this.mob.level().addFreshEntity(acidEntity);
+            if (acidEntity != null) {
+                acidEntity.setPos(pos.getX(), pos.getY() + 1, pos.getZ());
+                this.mob.level().addFreshEntity(acidEntity);
+            }
         }
 
         if (mob.level().getBlockState(pos).is(Blocks.AIR)) {
@@ -162,8 +167,7 @@ public class DigToTargetGoal extends Goal {
         this.blockState = mob.level().getBlockState(targetBlocks.getFirst());
     }
 
-    private void gatherTargetBlocks() {
-        var target = mob.getTarget();
+    private void gatherTargetBlocks(@NotNull LivingEntity target) {
         int mobWidth = Mth.ceil(mob.getBbWidth());
         int mobHeight = Mth.ceil(mob.getBbHeight());
 
