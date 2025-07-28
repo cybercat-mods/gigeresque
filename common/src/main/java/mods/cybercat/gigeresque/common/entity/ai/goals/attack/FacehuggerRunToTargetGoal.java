@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -7,6 +8,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
 
@@ -15,55 +17,38 @@ public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
     }
 
     @Override
-    public boolean canUse() {
-        if (this.mob.hasEffect(MobEffects.CONFUSION)) {
+    protected boolean isAbleToAttack() {
+        if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
+            return false;
+        }
+        if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
+            return false;
+        }
+        if (alienEntity.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST) || !GigEntityUtils.isTargetHostable(alienEntity.getTarget())) {
             return false;
         }
 
-        if (this.mob.getTarget() != null && this.mob.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
-            return false;
-        }
-
-        if (this.mob.getTarget() != null && !GigEntityUtils.isTargetHostable(this.mob.getTarget())) {
-            return false;
-        }
-
-        return super.canUse();
+        return !NEST.test(alienEntity.getTarget().getInBlockState());
     }
 
     @Override
-    public boolean canContinueToUse() {
-        if (this.mob.hasEffect(MobEffects.CONFUSION)) {
-            return false;
-        }
+    public void tick() {
+        super.tick();
+        attackAnimationCooldown.tick();
 
-        if (this.mob.getTarget() != null && this.mob.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST)) {
-            return false;
-        }
+        if (
+            // If target is not null
+            alienEntity.getTarget() != null
+                // AND we ran the attack animation.
+                && ranAttackAnimation
+                // AND the animation cooldown has finished
+                && !attackAnimationCooldown.isActive()
+                // AND we still have a line of sight of the target
+                && alienEntity.getSensing().hasLineOfSight(alienEntity.getTarget())
+        ) {
+            resetAttackCooldown();
 
-        if (this.mob.getTarget() != null && !GigEntityUtils.isTargetHostable(this.mob.getTarget())) {
-            return false;
-        }
-
-        return super.canContinueToUse();
-    }
-
-    @Override
-    public void checkAndPerformAttack(LivingEntity target) {
-        if (this.canPerformAttack(target) && this.mob instanceof FacehuggerEntity mob) {
-            if (this.delayBeforeAttack > 0) {
-                this.delayBeforeAttack--;
-
-                if (this.delayBeforeAttack == delayTicksBeforeAttack && !this.triggeredAttackAnimation) {
-                    this.triggeredAttackAnimation = true;
-                }
-            } else {
-                this.resetAttackCooldown();
-                this.triggeredAttackAnimation = false;
-            }
-        } else {
-            this.delayBeforeAttack = this.adjustedTickDelay(10);
-            this.triggeredAttackAnimation = false;
+            this.ranAttackAnimation = false;
         }
     }
 }

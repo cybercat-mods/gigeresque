@@ -41,9 +41,9 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
                 && ranAttackAnimation
                 // AND the animation cooldown has finished
                 && !attackAnimationCooldown.isActive()
-                // AND target is still within melee range
+                // AND the target is still within melee range
                 && alienEntity.isWithinMeleeAttackRange(alienEntity.getTarget())
-                // AND we still have line of sight of the target
+                // AND we still have a line of sight of the target
                 && alienEntity.getSensing().hasLineOfSight(alienEntity.getTarget())
         ) {
             resetAttackCooldown();
