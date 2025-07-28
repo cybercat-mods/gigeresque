@@ -42,7 +42,41 @@ configurations {
     }
 }
 
+// ##################################################################################
+// # Generate common/src/main/generated and mark as resource folder.                #
+// ##################################################################################
+tasks.register('prepareGeneratedDir') {
+    doLast {
+        file('src/main/generated').mkdirs()
+    }
+}
+
+tasks.named('processResources') {
+    dependsOn 'prepareGeneratedDir'
+}
+// END
+
+// ##################################################################################
+// # Include src/main/generated as a resource folder for common.                    #
+// ##################################################################################
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/generated'
+        }
+    }
+}
+
+tasks.register('packageCommonResources', Sync) {
+    from sourceSets.main.resources
+    into layout.buildDirectory.dir("commonResourcesOut")
+}
+
 artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
-    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+
+    commonResources(tasks.named('packageCommonResources').get().outputs.files.singleFile) {
+        builtBy tasks.named('packageCommonResources')
+    }
 }
+// END

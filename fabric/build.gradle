@@ -5,6 +5,43 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
+fabricApi {
+    configureDataGeneration()
+}
+
+// ##################################################################################
+// # Runs data gen using Fabric and moves generated resources to common.            #
+// ##################################################################################
+tasks.named('runDatagen') {
+    doLast {
+        def generatedDir = new File(project.projectDir, 'src/main/generated')
+        def targetDir = new File(rootProject.projectDir, 'common/src/main/generated')
+
+        println "Checking generatedDir: ${generatedDir.absolutePath}"
+
+        if (generatedDir.exists()) {
+            targetDir.mkdirs()
+
+            // Copy files to the common module.
+            ant.copy(todir: targetDir) {
+                fileset(dir: generatedDir)
+            }
+
+            println "Copied generated data to: ${targetDir}"
+
+            // Delete the original generated directory.
+            if (generatedDir.deleteDir()) {
+                println "Deleted original generated directory: ${generatedDir}"
+            } else {
+                println "Failed to delete: ${generatedDir} — possibly contains files still in use"
+            }
+        } else {
+            println "No generated data found at: ${generatedDir}"
+        }
+    }
+}
+// END
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {

@@ -21,6 +21,9 @@
     ],
     "client": [
       "mods.cybercat.gigeresque.FabricModClient"
+    ],
+    "fabric-datagen": [
+      "mods.cybercat.gigeresque.datagen.GigeresqueDataGengenerator"
     ]
   },
   "mixins": [
