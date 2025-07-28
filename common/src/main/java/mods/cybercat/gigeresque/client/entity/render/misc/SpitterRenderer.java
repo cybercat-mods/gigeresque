@@ -25,10 +25,10 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 .setAnimatorProvider(SpitterAnimator::new)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
     }
 
     @Override

@@ -23,10 +23,10 @@ public class BaphomorphEntityRenderer extends AzEntityRenderer<BaphomorphEntity>
             )
                 .setAnimatorProvider(BaphomorphAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(1F)
                 .build(),
             context
         );
-        this.shadowRadius = 1.0f;
     }
 
     @Override

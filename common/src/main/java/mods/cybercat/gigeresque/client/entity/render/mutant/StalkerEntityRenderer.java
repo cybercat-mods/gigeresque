@@ -33,16 +33,12 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
             )
                 .setAnimatorProvider(StalkerAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(stalkerEntity -> stalkerEntity.walkAnimation.speedOld < 0.35F && !stalkerEntity.swinging ? 0.0f : 1.0f)
                 .setRenderType(stalker -> stalker.isAggressive() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
                 .setAlpha(stalker -> stalker.isAggressive() ? 0.2F : 1.0F)
                 .build(),
             context
         );
-    }
-
-    @Override
-    protected float getShadowRadius(@NotNull StalkerEntity entity) {
-        return entity.walkAnimation.speedOld < 0.35F && !entity.swinging ? 0.0f : 1.0f;
     }
 
     @Override

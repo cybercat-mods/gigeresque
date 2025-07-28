@@ -35,6 +35,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
             })
                 .setAnimatorProvider(RomAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.ROM_ALIEN_YOUNG))
                 .setScale(romAlienEntity -> {
                     var scaleFactor = 0.8f + ((romAlienEntity.getGrowth() / romAlienEntity.getMaxGrowth()) / 5f);

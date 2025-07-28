@@ -24,6 +24,7 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
             )
                 .setAnimatorProvider(RunnerAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.RUNNER_ALIEN_YOUNG))
                 .setScale(runnerAlienEntity -> {
                     var scaleFactor = 0.8f + ((runnerAlienEntity.getGrowth() / runnerAlienEntity.getMaxGrowth()) / 5f);
@@ -33,7 +34,6 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
     }
 
     @Override

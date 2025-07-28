@@ -27,11 +27,11 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
             )
                 .setAnimatorProvider(NeomorphAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .setScale(0.76F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
     }
 
     @Override

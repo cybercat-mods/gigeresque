@@ -31,6 +31,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
             })
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.ALIEN_YOUNG))
                 .setScale(classicAlienEntity -> {
                     var scaleFactor = 0.8f + ((classicAlienEntity.getGrowth() / classicAlienEntity.getMaxGrowth()) / 5f);
@@ -40,7 +41,6 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
     }
 
     @Override

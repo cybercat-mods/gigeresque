@@ -24,10 +24,10 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
             AzEntityRendererConfig.<FacehuggerEntity>builder(EntityModels.FACEHUGGER, EntityTextures.FACEHUGGER)
                 .setAnimatorProvider(FacehuggerAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.25F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.25f;
     }
 
     @Override

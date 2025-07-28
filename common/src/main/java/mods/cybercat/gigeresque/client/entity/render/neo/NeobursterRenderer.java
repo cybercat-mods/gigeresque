@@ -22,6 +22,7 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
                 .setAnimatorProvider(NeobursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodLayer<>())
+                .setShadowRadius(0.25F)
                 .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 5.0f))
                 .setPrerenderEntry(rendererPipelineContext -> {
                     if (rendererPipelineContext.bakedModel().getBone("sac").isPresent()) {
@@ -32,7 +33,6 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
                 .build(),
             context
         );
-        this.shadowRadius = 0.25f;
     }
 
     @Override

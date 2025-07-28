@@ -34,6 +34,7 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
             )
                 .setAnimatorProvider(AlienEggAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.5F)
                 .setRenderType(
                     alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
                         .getEggState() == EggStates.HATCHED.ordinal() && alienEggEntity.isAlive()
@@ -43,7 +44,6 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
                 .build(),
             context
         );
-        this.shadowRadius = 0.5f;
     }
 
     @Override

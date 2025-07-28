@@ -21,12 +21,12 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
             AzEntityRendererConfig.<AquaticChestbursterEntity>builder(EntityModels.AQUATICBURSTER, EntityTextures.AQUATICBURSTER)
                 .setAnimatorProvider(AquaticChestbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.1F)
                 .addRenderLayer(new BloodLayer<>())
                 .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
-        this.shadowRadius = 0.1f;
     }
 
     @Override

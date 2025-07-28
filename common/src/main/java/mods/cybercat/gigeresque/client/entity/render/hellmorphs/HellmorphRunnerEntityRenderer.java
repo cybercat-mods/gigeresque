@@ -23,6 +23,7 @@ public class HellmorphRunnerEntityRenderer extends AzEntityRenderer<HellmorphRun
             )
                 .setAnimatorProvider(HellmorphRunnerAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(1.0F)
                 .build(),
             context
         );

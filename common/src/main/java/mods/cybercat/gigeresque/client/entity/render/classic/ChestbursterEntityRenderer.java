@@ -21,12 +21,12 @@ public class ChestbursterEntityRenderer extends AzEntityRenderer<ChestbursterEnt
             AzEntityRendererConfig.<ChestbursterEntity>builder(EntityModels.CHESTBURSTER, EntityTextures.CHESTBURSTER)
                 .setAnimatorProvider(ChestbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.1F)
                 .addRenderLayer(new BloodLayer<>())
                 .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 4.0f))
                 .build(),
             context
         );
-        this.shadowRadius = 0.1f;
     }
 
     @Override

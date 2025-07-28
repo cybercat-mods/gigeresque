@@ -21,12 +21,12 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
             AzEntityRendererConfig.<HellbursterEntity>builder(EntityModels.HELLBURSTER, EntityTextures.HELLBURSTER)
                 .setAnimatorProvider(HellbursterAnimator::new)
                 .setDeathMaxRotation(0.0F)
+                .setShadowRadius(0.3F)
                 .addRenderLayer(new BloodLayer<>())
                 .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
-        this.shadowRadius = 0.3f;
     }
 
     @Override
