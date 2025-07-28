@@ -26,6 +26,7 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
+                .setScale(spitterEntity -> 0.5f + ((spitterEntity.getGrowth() / spitterEntity.getMaxGrowth()) / 5f))
                 .build(),
             context
         );
@@ -33,16 +34,14 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
 
     @Override
     public void render(
-        SpitterEntity entity,
+        @NotNull SpitterEntity entity,
         float entityYaw,
         float partialTick,
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var scaleFactor = 0.5f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
         SpitterAnimManager.handleAnimations(entity);
-        poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }
