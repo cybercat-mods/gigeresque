@@ -1,15 +1,16 @@
 package mods.cybercat.gigeresque.datagen.lang;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
+
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -194,6 +195,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Tool Tips
         builder.add("item.gigeresque.creativeonly.tooltip", "Creative Mode Only Item");
+        builder.add("item.gigeresque.tracker.tooltip", "Right-click to use Tracker");
+        builder.add("item.gigeresque.surgery_kit.tooltip1", "Right-click on infected hosts to perform invasive surgery.");
+        builder.add("item.gigeresque.surgery_kit.tooltip2", "Right-click in the air to purge the parasite from within yourself.");
         builder.add("block.gigeresque.unfinished.tooltip", "Unfinished Block");
 
         // Death
@@ -359,7 +363,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("advancements.gigeresque.surgery_kit.title", "Cut It Out");
         builder.add("advancements.gigeresque.surgery_kit.description", "Remove a parasite before it removes you");
         builder.add("advancements.gigeresque.dna_cure.title", "All I Am is Me");
-        builder.add("advancements.gigeresque.dna_cure.description", "Prevent total genetic collapse by consuming wither suspicious stew and a golden apple");
+        builder.add(
+            "advancements.gigeresque.dna_cure.description",
+            "Prevent total genetic collapse by consuming wither suspicious stew and a golden apple"
+        );
         builder.add("advancements.gigeresque.all_gig_effects.title", "This Has to Be On Spore-pose");
         builder.add("advancements.gigeresque.all_gig_effects.description", "Have three separate infections at once");
         builder.add("advancements.gigeresque.doubletrouble.title", "Now You're Really In the Spit");

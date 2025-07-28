@@ -1,5 +1,7 @@
 package mods.cybercat.gigeresque.common.item;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -11,8 +13,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
@@ -113,5 +118,23 @@ public class SurgeryKitItem extends Item {
             burster.setCustomName(entity.getCustomName());
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
+    }
+
+    @Override
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        Item.@NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
+        tooltipComponents.add(
+            Component.translatable("item.gigeresque.surgery_kit.tooltip1").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.ITALIC)
+        );
+        tooltipComponents.add(
+            Component.translatable("item.gigeresque.surgery_kit.tooltip2")
+                .withStyle(ChatFormatting.GREEN)
+                .withStyle(ChatFormatting.ITALIC)
+        );
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }
