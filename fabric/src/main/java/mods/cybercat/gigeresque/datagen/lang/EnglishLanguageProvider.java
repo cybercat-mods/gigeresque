@@ -194,6 +194,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Tool Tips
         builder.add("item.gigeresque.gig_bucket.tooltip", "Creative Mode Only Item");
+        builder.add("block.gigeresque.unfinished.tooltip", "Unfinished Block");
 
         // Death
         builder.add("death.attack.acid", "%s dissolved in acid.");
