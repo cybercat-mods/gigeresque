@@ -29,3 +29,5 @@ accessible method net/minecraft/world/level/block/state/BlockBehaviour getSoundT
 accessible field net/minecraft/world/entity/projectile/AbstractArrow inGround Z
 accessible method net/minecraft/world/entity/monster/Shulker setRawPeekAmount (I)V
 accessible method net/minecraft/world/item/Item getPlayerPOVHitResult (Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/ClipContext$Fluid;)Lnet/minecraft/world/phys/BlockHitResult;
+accessible field net/minecraft/world/entity/ai/goal/MeleeAttackGoal lastCanUseCheck J
+accessible field net/minecraft/world/entity/ai/goal/MeleeAttackGoal path Lnet/minecraft/world/level/pathfinder/Path;
