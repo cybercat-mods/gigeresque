@@ -48,15 +48,13 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
 
     @Override
     public void render(
-        RomAlienEntity entity,
+        @NotNull RomAlienEntity entity,
         float entityYaw,
         float partialTick,
-        PoseStack stack,
+        @NotNull PoseStack stack,
         @NotNull MultiBufferSource bufferSource,
         int packedLightIn
     ) {
-        var scaleFactor = 0.8f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
         RomAlienAnimManager.handleAnimations(entity);
         super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }

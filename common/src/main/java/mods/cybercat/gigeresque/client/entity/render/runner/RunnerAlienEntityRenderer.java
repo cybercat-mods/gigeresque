@@ -38,10 +38,10 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
 
     @Override
     public void render(
-        RunnerAlienEntity entity,
+        @NotNull RunnerAlienEntity entity,
         float entityYaw,
         float partialTicks,
-        PoseStack stack,
+        @NotNull PoseStack stack,
         @NotNull MultiBufferSource bufferIn,
         int packedLightIn
     ) {
