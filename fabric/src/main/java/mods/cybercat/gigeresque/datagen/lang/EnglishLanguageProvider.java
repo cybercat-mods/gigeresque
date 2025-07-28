@@ -193,7 +193,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("itemGroup." + CommonMod.MOD_ID + ".blocks", "Gigeresque Blocks");
 
         // Tool Tips
-        builder.add("item.gigeresque.gig_bucket.tooltip", "Creative Mode Only Item");
+        builder.add("item.gigeresque.creativeonly.tooltip", "Creative Mode Only Item");
         builder.add("block.gigeresque.unfinished.tooltip", "Unfinished Block");
 
         // Death

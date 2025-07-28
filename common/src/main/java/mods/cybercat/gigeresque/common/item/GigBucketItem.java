@@ -24,7 +24,9 @@ public class GigBucketItem extends BucketItem {
         @NotNull TooltipFlag tooltipFlag
     ) {
         tooltipComponents.add(
-            Component.translatable("item.gigeresque.gig_bucket.tooltip").withStyle(ChatFormatting.DARK_RED).withStyle(ChatFormatting.ITALIC)
+            Component.translatable("item.gigeresque.creativeonly.tooltip")
+                .withStyle(ChatFormatting.DARK_RED)
+                .withStyle(ChatFormatting.ITALIC)
         );
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
