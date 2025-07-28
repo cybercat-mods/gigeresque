@@ -32,7 +32,13 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
-                .setScale(classicAlienEntity -> Math.clamp(0.8f + ((classicAlienEntity.getGrowth() / classicAlienEntity.getMaxGrowth()) / 5f), 0, 1))
+                .setScale(
+                    classicAlienEntity -> Math.clamp(
+                        0.8f + ((classicAlienEntity.getGrowth() / classicAlienEntity.getMaxGrowth()) / 5f),
+                        0,
+                        1
+                    )
+                )
                 .addRenderLayer(new ClassicAgingOverLay<>(EntityTextures.ALIEN_YOUNG))
                 .setScale(classicAlienEntity -> {
                     var scaleFactor = 0.8f + ((classicAlienEntity.getGrowth() / classicAlienEntity.getMaxGrowth()) / 5f);

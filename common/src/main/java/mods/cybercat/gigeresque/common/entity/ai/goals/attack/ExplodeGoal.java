@@ -2,12 +2,10 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.SplittableRandom;
 
 import mods.cybercat.gigeresque.common.entity.impl.mutant.PopperEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class ExplodeGoal extends DelayedAttackGoal {
 

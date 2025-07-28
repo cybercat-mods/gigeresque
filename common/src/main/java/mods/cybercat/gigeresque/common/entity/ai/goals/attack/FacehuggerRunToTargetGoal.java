@@ -1,14 +1,10 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
 
@@ -24,7 +20,9 @@ public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
         if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
             return false;
         }
-        if (alienEntity.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST) || !GigEntityUtils.isTargetHostable(alienEntity.getTarget())) {
+        if (
+            alienEntity.getTarget().getType().is(GigTags.FACEHUGGER_BLACKLIST) || !GigEntityUtils.isTargetHostable(alienEntity.getTarget())
+        ) {
             return false;
         }
 

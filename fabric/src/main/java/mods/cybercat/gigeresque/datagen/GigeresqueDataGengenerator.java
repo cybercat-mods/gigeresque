@@ -1,10 +1,10 @@
 package mods.cybercat.gigeresque.datagen;
 
-import mods.cybercat.gigeresque.datagen.lang.EnglishNewZealandLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 import mods.cybercat.gigeresque.datagen.lang.EnglishLanguageProvider;
+import mods.cybercat.gigeresque.datagen.lang.EnglishNewZealandLanguageProvider;
 
 public class GigeresqueDataGengenerator implements DataGeneratorEntrypoint {
 
@@ -16,7 +16,7 @@ public class GigeresqueDataGengenerator implements DataGeneratorEntrypoint {
         pack.addProvider(EnglishLanguageProvider::new);
         pack.addProvider(EnglishNewZealandLanguageProvider::new);
 
-		// TODO
+        // TODO
         // pack.addProvider(DeutschLanguageProvider::new);
         // pack.addProvider(MexicanSpanishLanguageProvider::new);
         // pack.addProvider(FrenchLanguageProvider::new);

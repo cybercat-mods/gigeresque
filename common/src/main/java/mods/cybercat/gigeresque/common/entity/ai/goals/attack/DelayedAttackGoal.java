@@ -1,17 +1,17 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
-import mods.cybercat.gigeresque.bvanseg.Cooldown;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
+
+import mods.cybercat.gigeresque.bvanseg.Cooldown;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
 

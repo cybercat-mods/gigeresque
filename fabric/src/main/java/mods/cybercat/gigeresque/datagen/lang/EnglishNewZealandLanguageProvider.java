@@ -1,15 +1,16 @@
 package mods.cybercat.gigeresque.datagen.lang;
 
-import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
+
+import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class EnglishNewZealandLanguageProvider extends FabricLanguageProvider {
 

@@ -3,28 +3,27 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class SpitAcidGoal extends DelayedAttackGoal {
 
     public SpitAcidGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack) {
-	    super(alienEntity, speedModifier, delayTicksBeforeAttack);
+        super(alienEntity, speedModifier, delayTicksBeforeAttack);
     }
 
     @Override
     protected boolean isAbleToAttack() {
         var livingentity = alienEntity.getTarget();
-        
+
         if (alienEntity.isVehicle() || livingentity == null) {
             return false;
         }
-        
+
         if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
             return false;
         }
-        
 
         return !NEST.test(livingentity.getInBlockState());
     }
