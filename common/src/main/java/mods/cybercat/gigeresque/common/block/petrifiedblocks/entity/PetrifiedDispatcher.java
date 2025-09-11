@@ -14,6 +14,12 @@ public class PetrifiedDispatcher {
         AzPlayBehaviors.LOOP
     );
 
+    private static final AzCommand STASIS_COMMAND = AzCommand.create(
+            Constants.BASE_CONTROLLER,
+            "stasis_loop",
+            AzPlayBehaviors.LOOP
+    );
+
     private final BlockEntity blockEntity;
 
     public PetrifiedDispatcher(BlockEntity blockEntity) {
@@ -22,5 +28,9 @@ public class PetrifiedDispatcher {
 
     public void setPetrifiedCommand() {
         PETRIFIED_COMMAND.sendForBlockEntity(blockEntity);
+    }
+
+    public void setStasisCommand(){
+        STASIS_COMMAND.sendForBlockEntity(blockEntity);
     }
 }

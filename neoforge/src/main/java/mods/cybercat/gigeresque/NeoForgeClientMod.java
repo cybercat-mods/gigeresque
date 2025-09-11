@@ -139,6 +139,10 @@ public class NeoForgeClientMod {
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render()
         );
         event.registerBlockEntityRenderer(
+                GigEntities.PETRIFIED_STATUE.get(),
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedStatueRender()
+        );
+        event.registerBlockEntityRenderer(
             GigEntities.SPORE_ENTITY.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
         );

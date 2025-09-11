@@ -130,6 +130,10 @@ public class FabricModClient implements ClientModInitializer {
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObject5Render()
         );
         BlockEntityRenderers.register(
+                GigEntities.PETRIFIED_STATUE.get(),
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedStatueRender()
+        );
+        BlockEntityRenderers.register(
             GigEntities.SPORE_ENTITY.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
         );

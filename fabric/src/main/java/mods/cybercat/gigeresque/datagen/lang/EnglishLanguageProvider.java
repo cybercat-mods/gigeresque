@@ -59,6 +59,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("entity.gigeresque.petrified_object_3", "Petrified Object");
         builder.add("entity.gigeresque.petrified_object_4", "Petrified Object");
         builder.add("entity.gigeresque.petrified_object_5", "Petrified Object");
+        builder.add("entity.gigeresque.petrified_statue", "Unnerving Statue");
         builder.add("entity.gigeresque.neomorph_spore_pods", "Spore Pods");
         builder.add("entity.gigeresque.sitting_idol_entity", "Sitting Idol");
         builder.add("entity.gigeresque.alien_storage_jar_entity", "Bonelike Jar");
@@ -103,6 +104,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigBlocks.PETRIFIED_OBJECT_3_BLOCK.get(), "Petrified Object");
         builder.add(GigBlocks.PETRIFIED_OBJECT_4_BLOCK.get(), "Petrified Object");
         builder.add(GigBlocks.PETRIFIED_OBJECT_5_BLOCK.get(), "Petrified Object");
+        builder.add(GigBlocks.PETRIFIED_STATUE_BLOCK.get(), "Unnerving Statue");
+        builder.add(GigBlocks.PETRIFIED_STATUE_BLOCK_INVIS.get(), "Unnerving Statue");
         builder.add(GigBlocks.NEST_RESIN.get(), "Nest Resin");
         builder.add(GigBlocks.NEST_RESIN_BLOCK.get(), "Nest Resin Block");
         builder.add(GigBlocks.NEST_RESIN_WEB.get(), "Nest Resin Web");
