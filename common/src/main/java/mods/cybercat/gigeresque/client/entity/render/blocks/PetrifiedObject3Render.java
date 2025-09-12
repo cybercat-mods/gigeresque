@@ -11,7 +11,7 @@ import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedOjb
 
 public class PetrifiedObject3Render extends AzBlockEntityRenderer<PetrifiedOjbect3Entity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/entity/neoburster/neoburster.geo.json");
+    private static final ResourceLocation MODEL = Constants.modResource("geo/block/petrified/petrified_3.geo.json");
 
     public PetrifiedObject3Render() {
         super(
