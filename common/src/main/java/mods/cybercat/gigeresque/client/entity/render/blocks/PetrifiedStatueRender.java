@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class PetrifiedStatueRender extends AzBlockEntityRenderer<PetrifiedStatueEntity> {
 
-    private static final ResourceLocation MODEL = Constants.modResource("geo/block/petrified_statue/petrified_statue.geo.json");
+    private static final ResourceLocation MODEL = Constants.modResource("geo/block/petrified/petrified_statue.geo.json");
 
     public PetrifiedStatueRender() {
         super(
