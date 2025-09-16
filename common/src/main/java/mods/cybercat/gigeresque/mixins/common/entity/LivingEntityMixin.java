@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
@@ -116,11 +115,9 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (
-                Constants.hasEggEffect.test(this) && !this.level()
-                    .getBlockState(this.blockPosition())
-                    .is(
-                        GigBlocks.NEST_RESIN_WEB_CROSS.get()
-                    )
+                Constants.hasEggEffect.test(this) &&
+                    !GigEntityUtils.inResinEnoughToBeEggmorphed(this)
+
             ) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
             }

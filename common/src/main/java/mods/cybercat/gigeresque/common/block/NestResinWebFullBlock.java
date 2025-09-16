@@ -102,7 +102,10 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
         if (mob instanceof AlienEntity || sourceEntity instanceof AlienEntity) {
             return;
         }
-        if (!mob.hasEffect(GigStatusEffects.EGGMORPHING)) {
+        if (
+            !mob.hasEffect(GigStatusEffects.EGGMORPHING) &&
+                GigEntityUtils.inResinEnoughToBeEggmorphed(mob)
+        ) {
             mob.addEffect(
                 new MobEffectInstance(
                     GigStatusEffects.EGGMORPHING,
