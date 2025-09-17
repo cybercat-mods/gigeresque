@@ -37,3 +37,4 @@ runs
 forge*changelog.txt
 build.bat
 *.bat
+/common/src/main/generated/
