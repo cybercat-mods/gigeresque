@@ -48,8 +48,9 @@ Follow the steps here: https://docs.github.com/en/repositories/creating-and-mana
 ### 2) Setup in [IntelliJ IDEA] ###
 1. Open the template's root folder as a new project in IDEA. This is the folder that contains this README.md file and the gradlew executable.
 2. If your default JVM/JDK is not Java 21 you will encounter an error when opening the project. This error is fixed by going to `File > Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM` and changing the value to a valid Java 21 JVM. You will also need to set the Project SDK to Java 21. This can be done by going to `File > Project Structure > Project SDK`. Once both have been set open the Gradle tab in IDEA and click the refresh button to reload the project.
-3. Open your Run/Debug Configurations. Under the `Application` category there should now be options to run Fabric and NeoForge projects. Select one of the client options and try to run it.
-4. Assuming you were able to run the game in step 3 your workspace should now be set up.
+3. Open your Run/Debug Configurations. Under the `fabric` category there will be an option to run `runDatagen`, you'll want to run this before trying to start the game in step 4.
+4. Under the `Application` category there should now be options to run Fabric and NeoForge projects. Select one of the client options and try to run it.
+5. Assuming you were able to run the game in step 4 your workspace should now be set up.
 
 __**Eclipse/VSCode not supported**__
 
