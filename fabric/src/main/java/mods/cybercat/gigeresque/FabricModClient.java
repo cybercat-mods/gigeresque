@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
-import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -18,6 +16,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.particles.SimpleParticleType;
 
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
+import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.aqua.AquaticChestbursterEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
 import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRenderer;
@@ -32,6 +31,7 @@ import mods.cybercat.gigeresque.client.entity.render.mutant.StalkerEntityRendere
 import mods.cybercat.gigeresque.client.entity.render.neo.NeomorphRenderer;
 import mods.cybercat.gigeresque.client.entity.render.runner.RunnerbursterEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.templebeast.RavenousTempleBeastEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -112,32 +112,28 @@ public class FabricModClient implements ClientModInitializer {
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender()
         );
         BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_OBJECT_1.get(),
-                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED){}
+            GigEntities.PETRIFIED_OBJECT_1.get(),
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED){}
         );
         BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_OBJECT_2.get(),
-                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED){}
+            GigEntities.PETRIFIED_OBJECT_2.get(),
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED){}
         );
         BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_OBJECT_3.get(),
-                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED){}
+            GigEntities.PETRIFIED_OBJECT_3.get(),
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED){}
         );
         BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_OBJECT_4.get(),
-                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED){}
+            GigEntities.PETRIFIED_OBJECT_4.get(),
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED){}
         );
         BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_OBJECT_5.get(),
-                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED){}
-        );
-        BlockEntityRenderers.register(
-                GigEntities.PETRIFIED_STATUE.get(),
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
+            GigEntities.PETRIFIED_OBJECT_5.get(),
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED){}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_STATUE.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
         );
         BlockEntityRenderers.register(
             GigEntities.SPORE_ENTITY.get(),
