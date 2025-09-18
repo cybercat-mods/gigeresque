@@ -100,7 +100,7 @@ public class FacehuggerEntity extends AlienEntity {
 
     @Override
     public int getAcidDiameter() {
-        return this.isPassenger() ? 0 : 1;
+        return 1;
     }
 
     public boolean isInfertile() {
