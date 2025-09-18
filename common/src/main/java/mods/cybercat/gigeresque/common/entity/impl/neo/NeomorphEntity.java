@@ -84,7 +84,7 @@ public class NeomorphEntity extends AlienEntity {
     @Override
     protected void tickDeath() {
         if (this.deathTime == 1)
-            GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0);
+            GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 3.0f);
         super.tickDeath();
     }
 

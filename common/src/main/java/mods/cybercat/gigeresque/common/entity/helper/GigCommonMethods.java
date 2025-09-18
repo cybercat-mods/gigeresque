@@ -53,14 +53,14 @@ public record GigCommonMethods() {
         entity.level().addFreshEntity(acidEntity);
     }
 
-    public static void generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+    public static void generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset, float radius) {
         var areaEffectCloudEntity = new AreaEffectCloud(
             entity.level(),
             pos.getX(),
             pos.getY() + 0.5,
             pos.getZ()
         );
-        areaEffectCloudEntity.setRadius(3.0F);
+        areaEffectCloudEntity.setRadius(radius);
         areaEffectCloudEntity.setDuration(150);
         areaEffectCloudEntity.setRadiusPerTick(
             -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
