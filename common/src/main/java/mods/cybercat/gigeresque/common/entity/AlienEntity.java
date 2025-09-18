@@ -623,7 +623,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
      * GROWTH
      */
     public float getMaxGrowth() {
-        return 1200.0F;
+        return 300.0F;
     }
 
     public LivingEntity growInto() {
