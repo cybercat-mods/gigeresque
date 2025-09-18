@@ -41,9 +41,9 @@ public class SporeStatusEffect extends MobEffect {
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
-        if (!entity.getType().is(GigTags.NEOHOST)){
-            return;
-        }
+        //if (!entity.getType().is(GigTags.NEOHOST)){
+        //    return;
+        //}
         var burster = GigEntities.NEOBURSTER.get().create(entity.level());
         if (burster != null) {
             setBursterProperties(entity, burster);
@@ -51,13 +51,6 @@ public class SporeStatusEffect extends MobEffect {
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Float.MAX_VALUE);
-            if (entity instanceof Player player) {
-                player.addEffect(new MobEffectInstance(MobEffects.HARM, 100, 100));
-                player.kill();
-            }
-            if (entity instanceof Mob mob) {
-                mob.remove(Entity.RemovalReason.KILLED);
-            }
         }
     }
 
