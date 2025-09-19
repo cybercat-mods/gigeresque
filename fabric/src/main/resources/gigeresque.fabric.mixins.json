@@ -16,6 +16,7 @@
     "common.entity.FoxMixin",
     "common.entity.EntityMixin",
     "common.entity.HorseMixin",
+    "common.entity.RealHorseMixin",
     "common.entity.HostileEntityMixin",
     "common.entity.LivingEntityMixin",
     "common.entity.MobEntityMixin",
