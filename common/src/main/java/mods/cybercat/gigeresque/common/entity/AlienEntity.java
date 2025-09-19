@@ -735,7 +735,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public boolean isWithinMeleeAttackRange(@NotNull LivingEntity entity) {
-        if (this.getBoundingBox().intersects(entity.getBoundingBox().inflate(2))) {
+        if (this.getBoundingBox().inflate(1.25).intersects(entity.getBoundingBox())) {
             return true;
         }
 
