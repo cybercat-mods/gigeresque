@@ -36,10 +36,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigEntities.MUTANT_HAMMERPEDE.get(), "Mutant Hammerpede");
         builder.add(GigEntities.MUTANT_STALKER.get(), "Mutant Stalker");
         builder.add(GigEntities.NEOBURSTER.get(), "Pale Burster");
-        builder.add(GigEntities.NEOMORPH_ADOLESCENT.get(), "Maiming Pale Adolescent");
+        builder.add(GigEntities.NEOMORPH_ADOLESCENT.get(), "Adolescent Pale");
         builder.add(GigEntities.NEOMORPH.get(), "Maiming Pale");
         builder.add(GigEntities.SPITTER.get(), "Melting Interloper");
-        builder.add(GigEntities.RAVENOUSTEMPLEBEAST.get(), "Ravenous Templebeast");
+        builder.add(GigEntities.RAVENOUSTEMPLEBEAST.get(), "Rapacious Templebeast");
         builder.add(GigEntities.DRACONICTEMPLEBEAST.get(), "Draconic Templebeast");
         builder.add(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), "Moonlight Templebeast");
         builder.add(GigEntities.BAPHOMORPH.get(), "Charnel Templebeast");
@@ -49,8 +49,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigEntities.ACID.get(), "Acid");
         builder.add(GigEntities.ACID_PROJECTILE.get(), "Acid");
         builder.add(GigEntities.GOO.get(), "Black Goo");
-        builder.add(GigEntities.ENGINEER_HOLOGRAM.get(), "Hologram");
-        builder.add(GigEntities.AQUA_EGG.get(), "Threshing Egg");
+        builder.add(GigEntities.ENGINEER_HOLOGRAM.get(), "Ghostly Figure");
+        builder.add(GigEntities.AQUA_EGG.get(), "Aquatic Egg");
 
         // Block Entities
         builder.add("entity.gigeresque.petrified_object", "Petrified Object");
@@ -62,7 +62,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("entity.gigeresque.petrified_statue", "Unnerving Statue");
         builder.add("entity.gigeresque.neomorph_spore_pods", "Spore Pods");
         builder.add("entity.gigeresque.sitting_idol_entity", "Sitting Idol");
-        builder.add("entity.gigeresque.alien_storage_jar_entity", "Bonelike Jar");
+        builder.add("entity.gigeresque.alien_storage_jar_entity", "Catacomb Jar");
         builder.add("entity.gigeresque.alien_storage_block_entity", "Catacomb Sarcophagus");
         builder.add("entity.gigeresque.alien_storage_block_entity_hugger", "Catacomb Sarcophagus");
         builder.add("entity.gigeresque.alien_storage_block_entity_goo", "Catacomb Sarcophagus");
@@ -82,12 +82,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get(), "Mutant Hammerpede Spawn Egg");
         builder.add(GigItems.MUTANT_STALKER_SPAWN_EGG.get(), "Mutant Stalker Spawn Egg");
         builder.add(GigItems.NEOBURSTER_SPAWN_EGG.get(), "Pale Burster Spawn Egg");
-        builder.add(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get(), "Adolescent Maiming Pale Spawn Egg");
+        builder.add(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get(), "Adolescent Pale Spawn Egg");
         builder.add(GigItems.NEOMORPH_SPAWN_EGG.get(), "Maiming Pale Spawn Egg");
         builder.add(GigItems.SPITTER_SPAWN_EGG.get(), "Melting Interloper Spawn Egg");
-        builder.add(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get(), "Ravenous Templebeast Spawn Egg");
+        builder.add(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get(), "Rapacious Templebeast Spawn Egg");
         builder.add(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get(), "Draconic Templebeast Spawn Egg");
-        builder.add(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get(), "Moonlight Horror Templebeast Spawn Egg");
+        builder.add(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get(), "Moonlight Templebeast Spawn Egg");
         builder.add(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get(), "Infernal Interloper Spawn Egg");
         builder.add(GigItems.BAPHOMORPH_SPAWN_EGG.get(), "Charnel Templebeast Spawn Egg");
         builder.add(GigItems.HELL_BURSTER_SPAWN_EGG.get(), "Infernal Burster Spawn Egg");
@@ -163,7 +163,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigBlocks.MURAL_ALIEN_BLOCK_22.get(), "Creature Mural Block 22");
         builder.add(GigBlocks.MURAL_ALIEN_BLOCK_23.get(), "Creature Mural Block 23");
         builder.add(GigBlocks.MURAL_ALIEN_BLOCK_24.get(), "Creature Mural Block 24");
-        builder.add(GigBlocks.SPORE_BLOCK.get(), "Spores Puff");
+        builder.add(GigBlocks.SPORE_BLOCK.get(), "Spore Pods");
         builder.add(GigBlocks.ALIEN_STORAGE_BLOCK_1.get(), "Catacomb Sarcophagus");
         builder.add(GigBlocks.ALIEN_STORAGE_BLOCK_1_HUGGER.get(), "Catacomb Sarcophagus (Hugger)");
         builder.add(GigBlocks.ALIEN_STORAGE_BLOCK_1_GOO.get(), "Catacomb Sarcophagus (Goo)");
@@ -197,11 +197,11 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("itemGroup." + CommonMod.MOD_ID + ".blocks", "Gigeresque Blocks");
 
         // Tool Tips
-        builder.add("item.gigeresque.creativeonly.tooltip", "Creative Mode Only Item");
-        builder.add("item.gigeresque.tracker.tooltip", "Right-click to use Tracker");
-        builder.add("item.gigeresque.surgery_kit.tooltip1", "Right-click on infected hosts to perform invasive surgery.");
-        builder.add("item.gigeresque.surgery_kit.tooltip2", "Right-click in the air to purge the parasite from within yourself.");
-        builder.add("block.gigeresque.unfinished.tooltip", "Unfinished Block");
+        builder.add("item.gigeresque.creativeonly.tooltip", "Creative mode only item");
+        builder.add("item.gigeresque.tracker.tooltip", "Right click to use tracker");
+        builder.add("item.gigeresque.surgery_kit.tooltip1", "Right click on infected hosts to perform invasive surgery.");
+        builder.add("item.gigeresque.surgery_kit.tooltip2", "Right click in the air to purge the parasite from within yourself.");
+        builder.add("block.gigeresque.unfinished.tooltip", "Unfinished block");
 
         // Death
         builder.add("death.attack.acid", "%s dissolved in acid.");
@@ -214,25 +214,25 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("death.attack.xeno", "So %s um, we think we should discuss the bonus situation...");
         builder.add("death.attack.execution1", "%s suffered a splitting headache.");
         builder.add("death.attack.execution2", "%s had a brain blast!");
-        builder.add("death.attack.spore", "%s suffered from a massive dose of Tetanospasmin!");
+        builder.add("death.attack.spore", "%s suffered from a massive dose of tetanospasmin!");
 
         // Subtitles
         builder.add("subtitles.gigeresque.dungeon_idle", "Something strange plays");
         builder.add("subtitles.gigeresque.tracker_summon", "A ghostly figure appears");
-        builder.add("subtitles.gigeresque.alien_hiss", "");
+        builder.add("subtitles.gigeresque.alien_hiss", "Unnatural hiss");
         builder.add("subtitles.gigeresque.alien_claw", "");
         builder.add("subtitles.gigeresque.alien_tail", "");
-        builder.add("subtitles.gigeresque.alien_death", "");
-        builder.add("subtitles.gigeresque.alien_hurt", "");
+        builder.add("subtitles.gigeresque.alien_death", "Unnatural scream");
+        builder.add("subtitles.gigeresque.alien_hurt", "Unnatural screech");
         builder.add("subtitles.gigeresque.alien_headbite", "");
         builder.add("subtitles.gigeresque.alien_death_thud", "");
         builder.add("subtitles.gigeresque.alien_crunch", "");
         builder.add("subtitles.gigeresque.egg_notice", "");
-        builder.add("subtitles.gigeresque.hugger_ambient", "");
-        builder.add("subtitles.gigeresque.hugger_death", "");
-        builder.add("subtitles.gigeresque.hugger_hurt", "");
-        builder.add("subtitles.gigeresque.hugger_implant", "");
-        builder.add("subtitles.gigeresque.chestbursting", "");
+        builder.add("subtitles.gigeresque.hugger_ambient", "Facehugger chitters");
+        builder.add("subtitles.gigeresque.hugger_death", "Facehugger dies");
+        builder.add("subtitles.gigeresque.hugger_hurt", "Facehugger chirps");
+        builder.add("subtitles.gigeresque.hugger_implant", "Something swallows");
+        builder.add("subtitles.gigeresque.chestbursting", "Bones break");
         builder.add("subtitles.gigeresque.alien_footstep", "");
         builder.add("subtitles.gigeresque.alien_handstep", "");
         builder.add("subtitles.gigeresque.aqua_landmove", "");
@@ -250,11 +250,11 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.eggConfigs", "Strange Egg Configs");
         builder.add("config.gigeresque.option.spitterConfigs", "Melting Interloper Configs");
         builder.add("config.gigeresque.option.neobursterConfigs", "Pale Burster Configs");
-        builder.add("config.gigeresque.option.neomorphAdolescentConfigs", "Maiming Pale Adolescent Configs");
+        builder.add("config.gigeresque.option.neomorphAdolescentConfigs", "Adolescent Pale Configs");
         builder.add("config.gigeresque.option.neomorphConfigs", "Maiming Pale Configs");
         builder.add("config.gigeresque.option.draconicTempleBeastConfigs", "Draconic Templebeast Configs");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastConfigs", "Moonlight Horror Templebeast Configs");
-        builder.add("config.gigeresque.option.ravenousTempleBeastConfigs", "Ravenous Templebeast Configs");
+        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastConfigs", "Moonlight Templebeast Configs");
+        builder.add("config.gigeresque.option.ravenousTempleBeastConfigs", "Rapacious Templebeast Configs");
         builder.add("config.gigeresque.option.baphomorphConfigs", "Charnel Templebeast Configs");
         builder.add("config.gigeresque.option.hellmorphrunnerConfigs", "Infernal Interloper Configs");
         builder.add("config.gigeresque.option.facehuggerConfigs", "Facehugger Configs");
@@ -264,7 +264,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.surgeryKit", "Surgery Kit");
         builder.add("config.gigeresque.option.acidResistantBlocks", "Acid-Resistant Blocks");
         builder.add("config.gigeresque.option.acidResistantBlocks.@Tooltip", "Blocks that will not be destroyed by acid.");
-        builder.add("config.gigeresque.option.alienGrowthMultiplier", "Catacomb Growth Multiplier");
+        builder.add("config.gigeresque.option.alienGrowthMultiplier", "Entombed Interloper Growth Multiplier");
         builder.add("config.gigeresque.option.alienGrowthMultiplier.@Tooltip", "The rate at which aliens mature.");
         builder.add("config.gigeresque.option.aquaticAlienGrowthMultiplier", "Threshing Interloper Growth Multiplier");
         builder.add("config.gigeresque.option.aquaticChestbursterGrowthMultiplier", "Threshing Burster Growth Multiplier");
@@ -309,7 +309,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.runnerXenoTailAttackDamage", "Lithe Interloper Tail Extra Damage");
         builder.add("config.gigeresque.option.alieneggHatchRange", "Egg Hatch Range");
         builder.add("config.gigeresque.option.acidDamage", "Acid Damage Per Tick");
-        builder.add("config.gigeresque.option.xenoMaxSoundRange", "Xeno Audio Range");
+        builder.add("config.gigeresque.option.xenoMaxSoundRange", "Interloper Audio Range");
         builder.add("config.gigeresque.option.surgeryKitCooldownTicks", "Surgery Kit Cooldown Ticks");
         builder.add("config.gigeresque.option.facehuggerGivesBlindness", "Facehuggers Give Blindness");
         builder.add("config.gigeresque.option.spitterXenoHealth", "Melting Interloper Health");
@@ -319,9 +319,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.spitterRangeAttackDamage", "Melting Interloper Ranged Attack Damage");
         builder.add("config.gigeresque.option.neobursterXenoHealth", "Pale Burster Health");
         builder.add("config.gigeresque.option.neobursterAttackDamage", "Pale Burster Attack Damage");
-        builder.add("config.gigeresque.option.neomorph_adolescentXenoHealth", "Maiming Pale Adolescent Health");
-        builder.add("config.gigeresque.option.neomorph_adolescentAttackDamage", "Maiming Pale Adolescent Attack Damage");
-        builder.add("config.gigeresque.option.neomorph_adolescentXenoTailAttackDamage", "Maiming Pale Adolescent Tail Extra Damage");
+        builder.add("config.gigeresque.option.neomorph_adolescentXenoHealth", "Adolescent Pale Health");
+        builder.add("config.gigeresque.option.neomorph_adolescentAttackDamage", "Adolescent Pale Attack Damage");
+        builder.add("config.gigeresque.option.neomorph_adolescentXenoTailAttackDamage", "Adolescent Pale Tail Extra Damage");
         builder.add("config.gigeresque.option.neomorphXenoHealth", "Maiming Pale Health");
         builder.add("config.gigeresque.option.neomorphXenoArmor", "Maiming Pale Armor");
         builder.add("config.gigeresque.option.neomorphAttackDamage", "Maiming Pale Attack Damage");
@@ -329,12 +329,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.draconicTempleBeastXenoHealth", "Draconic Templebeast Health");
         builder.add("config.gigeresque.option.draconicTempleBeastXenoArmor", "Draconic Templebeast Armor");
         builder.add("config.gigeresque.option.draconicTempleBeastAttackDamage", "Draconic Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.ravenousTempleBeastXenoHealth", "Ravenous Templebeast Health");
-        builder.add("config.gigeresque.option.ravenousTempleBeastXenoArmor", "Ravenous Templebeast Armor");
-        builder.add("config.gigeresque.option.ravenousTempleBeastAttackDamage", "Ravenous Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoHealth", "Moonlight Horror Templebeast Health");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoArmor", "Moonlight Horror Templebeast Armor");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastAttackDamage", "Moonlight Horror Templebeast Attack Damage");
+        builder.add("config.gigeresque.option.ravenousTempleBeastXenoHealth", "Rapacious Templebeast Health");
+        builder.add("config.gigeresque.option.ravenousTempleBeastXenoArmor", "Rapacious Templebeast Armor");
+        builder.add("config.gigeresque.option.ravenousTempleBeastAttackDamage", "Rapacious Templebeast Attack Damage");
+        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoHealth", "Moonlight Templebeast Health");
+        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoArmor", "Moonlight Templebeast Armor");
+        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastAttackDamage", "Moonlight Templebeast Attack Damage");
         builder.add("config.gigeresque.option.baphomorphXenoHealth", "Charnel Templebeast Health");
         builder.add("config.gigeresque.option.baphomorphXenoArmor", "Charnel Templebeast Armor");
         builder.add("config.gigeresque.option.baphomorphAttackDamage", "Charnel Templebeast Attack Damage");
@@ -348,10 +348,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.enableDevEntites", "Enable Dev Entities");
         builder.add("config.gigeresque.option.blackfuildNonrepacle", "Makes Black Fluid Nonreplacable");
         builder.add("config.gigeresque.option.facehuggerStunTickTimer", "Facehugger Stun Timer");
-        builder.add("config.gigeresque.option.enableFacehuggerAttachmentTimer", "Enable Facehugger On Screen Timer");
+        builder.add("config.gigeresque.option.enableFacehuggerAttachmentTimer", "Enable On-Screen Facehugger Timer");
         builder.add("config.gigeresque.option.enableFacehuggerTimerTicks", "Make Facehugger Timer Screen Use Ticks");
         builder.add("config.gigeresque.option.enabledCreativeBootAcidProtection", "Make Acid Not Damage Boots of Creative Players");
-        builder.add("config.gigeresque.option.enableAcidLavaRemoval", "Make Lava be able to remove Acid/Black Goo bleeding");
+        builder.add("config.gigeresque.option.enableAcidLavaRemoval", "Make Lava be Able to Remove Acid/Black Goo Bleeding");
         builder.add("config.gigeresque.option.enableLogging", "Enable Extra Logging");
         builder.add("config.gigeresque.option.enablePandoraEffects", "Enable Pandora Effect");
         builder.add("config.gigeresque.option.hellbusterConfigs", "Infernal Burster Configs");
@@ -368,7 +368,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("advancements.gigeresque.dna_cure.title", "All I Am is Me");
         builder.add(
             "advancements.gigeresque.dna_cure.description",
-            "Prevent total genetic collapse by consuming wither suspicious stew and a golden apple"
+            "Prevent total genetic collapse by consuming a golden apple while withering"
         );
         builder.add("advancements.gigeresque.all_gig_effects.title", "This Has to Be On Spore-pose");
         builder.add("advancements.gigeresque.all_gig_effects.description", "Have three separate infections at once");
@@ -379,10 +379,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("advancements.gigeresque.firstspawnfromeffect.title", "Something Followed Us Back");
         builder.add("advancements.gigeresque.firstspawnfromeffect.description", "Realise you're no longer safe");
         builder.add("advancements.gigeresque.dontacidbottle.title", "Yeah, Like That's Ever Gonna Happen");
-        builder.add("advancements.gigeresque.dontacidbottle.description", "Fail to exploit acid");
+        builder.add("advancements.gigeresque.dontacidbottle.description", "Fail to exploit the unknown");
         builder.add("advancements.gigeresque.dontdothat.title", "Yeah, Like That's Ever Gonna Happen");
         builder.add("advancements.gigeresque.dontdothat.description", "Fail to exploit the unknown");
         builder.add("advancements.gigeresque.dontgoobottle.title", "Yeah, Like That's Ever Gonna Happen");
-        builder.add("advancements.gigeresque.dontgoobottle.description", "Fail to exploit black fluid blood");
+        builder.add("advancements.gigeresque.dontgoobottle.description", "Fail to exploit the unknown");
     }
 }
