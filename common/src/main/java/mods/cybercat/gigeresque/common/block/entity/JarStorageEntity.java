@@ -82,7 +82,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
 
     public StorageDispatcher animationDispatcher;
 
-    private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
     public JarStorageEntity(BlockPos pos, BlockState state) {
         super(GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(), pos, state);
@@ -133,7 +133,7 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
 
     @Override
     public int getContainerSize() {
-        return 18;
+        return 9;
     }
 
     @Override
