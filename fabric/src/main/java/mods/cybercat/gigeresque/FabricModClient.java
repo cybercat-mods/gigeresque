@@ -113,27 +113,27 @@ public class FabricModClient implements ClientModInitializer {
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_1.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_2.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_3.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_4.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_5.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_STATUE.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
+            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS) {}
         );
         BlockEntityRenderers.register(
             GigEntities.SPORE_ENTITY.get(),
