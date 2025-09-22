@@ -41,9 +41,9 @@ public class SporeStatusEffect extends MobEffect {
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
-        //if (!entity.getType().is(GigTags.NEOHOST)){
-        //    return;
-        //}
+        if (!entity.getType().is(GigTags.NEOHOST)){
+            return;
+        }
         var burster = GigEntities.NEOBURSTER.get().create(entity.level());
         if (burster != null) {
             setBursterProperties(entity, burster);
