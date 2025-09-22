@@ -302,4 +302,9 @@ public record GigEntityUtils() {
         }
     }
 
+    public static boolean inResinEnoughToBeEggmorphed(@NotNull Entity entity) {
+        var stateAtEntityPos = entity.level().getBlockState(entity.blockPosition());
+        return stateAtEntityPos.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
+    }
+
 }
