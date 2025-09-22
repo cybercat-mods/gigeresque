@@ -33,6 +33,8 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity {
 
     public static final EnumProperty<StorageStates> CHEST_STATE = StorageProperties.STORAGE_STATE;
 
+    private int closingTicks = -1;
+
     protected final ContainerOpenersCounter stateManager = new ContainerOpenersCounter() {
 
         @Override
@@ -102,6 +104,16 @@ public class AlienStorageEntity extends RandomizableContainerBlockEntity {
                     blockEntity.getBlockPos(),
                     blockEntity.getBlockState()
                 );
+            if (blockEntity.getChestState() == StorageStates.CLOSING && blockEntity.closingTicks == -1){
+                blockEntity.closingTicks = 0;
+            }
+            if (blockEntity.closingTicks >= 0){
+                blockEntity.closingTicks++;
+            }
+            if (blockEntity.closingTicks >= 60){
+                level.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSED));
+                blockEntity.closingTicks = -1;
+            }
             if (blockEntity.getLevel().isClientSide()) {
                 if (blockEntity.getChestState() == StorageStates.CLOSING) {
                     blockEntity.animationDispatcher.sendClose();

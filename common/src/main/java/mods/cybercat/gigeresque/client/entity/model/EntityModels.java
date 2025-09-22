@@ -10,6 +10,8 @@ public record EntityModels() {
 
     private static final String BASE_ENTITY_URL = "%s/entity".formatted(BASE_URL);
 
+    private static final String BASE_BLOCK_URL = "%s/block".formatted(BASE_URL);
+
     public static final ResourceLocation ENGINEER_HOLOGRAM = Constants.modResource(
         "%s/engineer_hologram/engineer_hologram.geo.json".formatted(BASE_ENTITY_URL)
     );
@@ -80,5 +82,29 @@ public record EntityModels() {
 
     public static final ResourceLocation HELLMORPH_RUNNER = Constants.modResource(
         "%s/hellmorph_runner/hellmorph_runner.geo.json".formatted(BASE_ENTITY_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_1 = Constants.modResource(
+            "%s/petrified/petrified_1.geo.json".formatted(BASE_BLOCK_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_2 = Constants.modResource(
+            "%s/petrified/petrified_2.geo.json".formatted(BASE_BLOCK_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_3 = Constants.modResource(
+            "%s/petrified/petrified_3.geo.json".formatted(BASE_BLOCK_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_4 = Constants.modResource(
+            "%s/petrified/petrified_4.geo.json".formatted(BASE_BLOCK_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_5 = Constants.modResource(
+            "%s/neomorph_spore_pods/neomorph_spore_pods.geo.json".formatted(BASE_BLOCK_URL)
+    );
+
+    public static final ResourceLocation PETRIFIED_STATUE = Constants.modResource(
+            "%s/petrified/petrified_statue.geo.json".formatted(BASE_BLOCK_URL)
     );
 }

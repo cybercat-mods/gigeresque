@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "gigeresque:block/petrified_statue",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "gigeresque:block/petrified_statue",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "gigeresque:block/petrified_statue",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "gigeresque:block/petrified_statue",
+      "y": 90
+    }
+  }
+}

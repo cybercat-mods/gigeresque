@@ -1,6 +1,8 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
+import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -19,6 +21,7 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class SporeStatusEffect extends MobEffect {
 
@@ -38,6 +41,9 @@ public class SporeStatusEffect extends MobEffect {
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
+        //if (!entity.getType().is(GigTags.NEOHOST)){
+        //    return;
+        //}
         var burster = GigEntities.NEOBURSTER.get().create(entity.level());
         if (burster != null) {
             setBursterProperties(entity, burster);
@@ -45,13 +51,6 @@ public class SporeStatusEffect extends MobEffect {
             if (Constants.isNotCreativeSpecPlayer.test(entity))
                 DamageSourceUtils.damageArmor(entity.getItemBySlot(EquipmentSlot.CHEST), entity.getRandom(), 5, 10);
             entity.hurt(GigDamageSources.of(entity.level(), GigDamageSources.SPORE), Float.MAX_VALUE);
-            if (entity instanceof Player player) {
-                player.addEffect(new MobEffectInstance(MobEffects.HARM, 100, 100));
-                player.kill();
-            }
-            if (entity instanceof Mob mob) {
-                mob.remove(Entity.RemovalReason.KILLED);
-            }
         }
     }
 

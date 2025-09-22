@@ -19,7 +19,7 @@ public class TraumaStatusEffect extends MobEffect {
     }
 
     public static void effectRemoval(LivingEntity entity, MobEffectInstance mobEffectInstance) {
-        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof SporeStatusEffect))
+        if (entity.level().isClientSide || !(mobEffectInstance.getEffect().value() instanceof TraumaStatusEffect))
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;

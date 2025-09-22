@@ -140,6 +140,13 @@ public class NeomorphAdolescentEntity extends AlienEntity {
     }
 
     @Override
+    protected void tickDeath() {
+        if (this.deathTime == 1)
+            GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 2.0f);
+        super.tickDeath();
+    }
+
+    @Override
     protected void checkAndPerformEating(ItemEntity target) {
         if (target == null)
             return;

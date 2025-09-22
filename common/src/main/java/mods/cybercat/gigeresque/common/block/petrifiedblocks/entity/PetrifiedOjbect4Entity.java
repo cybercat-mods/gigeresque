@@ -15,7 +15,6 @@ import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedObjectBloc
 import mods.cybercat.gigeresque.common.block.storage.StorageProperties;
 import mods.cybercat.gigeresque.common.block.storage.StorageStates;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 
 public class PetrifiedOjbect4Entity extends BlockEntity {
 
@@ -33,9 +32,6 @@ public class PetrifiedOjbect4Entity extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedOjbect4Entity blockEntity) {
-        if (blockEntity.getLevel() != null && blockEntity.getLevel().isClientSide()) {
-            GigCommonMethods.setAnimation(animationDispatcher::setPetrifiedCommand);
-        }
         if (blockEntity.level != null && (level.getRandom().nextInt(0, 200) == 0)) {
             int i = state.getValue(PetrifiedObjectBlock.HATCH);
             if (i < level.getRandom().nextInt(2, 25) && state.getValue(CHEST_STATE) == StorageStates.CLOSED) {

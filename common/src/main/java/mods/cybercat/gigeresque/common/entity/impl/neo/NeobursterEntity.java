@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -75,6 +76,18 @@ public class NeobursterEntity extends RunnerbursterEntity {
     @Override
     public LivingEntity growInto() {
         return GigEntities.NEOMORPH_ADOLESCENT.get().create(level());
+    }
+
+    @Override
+    protected void tickDeath() {
+        if (this.deathTime == 1)
+            GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 1.0f);
+        super.tickDeath();
+    }
+
+    @Override
+    public int getAcidDiameter() {
+        return 0;
     }
 
     @Override
