@@ -8,7 +8,6 @@
   "mixins": [
     "common.MixinEntityTypeBuilder_SilenceDataFixerError",
     "common.PointOfInterestTypesInvoker",
-    "common.RaidMixin",
     "common.ServerLevelMixin",
     "common.item.BucketMixin_DontBucketBlackFluid",
     "common.entity.BrushableBlockEntityMixin",
