@@ -31,7 +31,7 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
     }
 
     @Override
-    protected AzEntityRendererPipeline<FacehuggerEntity> createPipeline(AzEntityRendererConfig<FacehuggerEntity> config) {
+    public AzEntityRendererPipeline<FacehuggerEntity> createPipeline(AzEntityRendererConfig<FacehuggerEntity> config) {
         return new AzEntityRendererPipeline<>(config, this) {
 
             @Override

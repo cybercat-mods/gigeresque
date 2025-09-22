@@ -458,7 +458,7 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neobursterXenoHealth = 120;
+        public double neobursterXenoHealth = 60;
 
         @Configurable
         @Configurable.Synchronized
@@ -475,12 +475,12 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorph_adolescentXenoHealth = 60;
+        public double neomorph_adolescentXenoHealth = 90;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorph_adolescentAttackDamage = 7;
+        public double neomorph_adolescentAttackDamage = 6;
 
         @Configurable
         @Configurable.Synchronized
@@ -507,7 +507,7 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorphAttackDamage = 9;
+        public double neomorphAttackDamage = 7;
 
         @Configurable
         @Configurable.Synchronized

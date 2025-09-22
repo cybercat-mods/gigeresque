@@ -35,7 +35,7 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
     }
 
     @Override
-    protected AzEntityRendererPipeline<NeomorphEntity> createPipeline(AzEntityRendererConfig<NeomorphEntity> config) {
+    public AzEntityRendererPipeline<NeomorphEntity> createPipeline(AzEntityRendererConfig<NeomorphEntity> config) {
         return new AzEntityRendererPipeline<>(config, this) {
 
             @Override

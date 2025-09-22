@@ -51,7 +51,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
     }
 
     @Override
-    protected AzEntityRendererPipeline<ClassicAlienEntity> createPipeline(AzEntityRendererConfig<ClassicAlienEntity> config) {
+    public AzEntityRendererPipeline<ClassicAlienEntity> createPipeline(AzEntityRendererConfig<ClassicAlienEntity> config) {
         return new AzEntityRendererPipeline<>(config, this) {
 
             @Override

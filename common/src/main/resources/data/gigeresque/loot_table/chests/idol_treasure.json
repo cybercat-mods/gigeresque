@@ -186,49 +186,6 @@
 							"add": false
 						}
 					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 3,
-					"name": "minecraft:written_book",
-					"functions": [
-						{
-							"function": "minecraft:set_book_cover",
-							"title": "The Beast Below",
-							"author": "Ancient Chronicler",
-							"generation": 3
-						},
-						{
-							"function": "minecraft:set_written_book_pages",
-							"pages": [
-								"A great beast sleeps beyond the seal. Disturb not, lest you awaken the wrath of old."
-							],
-							"mode": "replace_all"
-						},
-						{
-							"function": "minecraft:set_book_cover"
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 3,
-					"name": "minecraft:written_book",
-					"functions": [
-						{
-							"function": "minecraft:set_book_cover",
-							"title": "Sanctuary’s Fall",
-							"author": "The Watcher",
-							"generation": 3
-						},
-						{
-							"function": "minecraft:set_written_book_pages",
-							"pages": [
-								"This place was once a sanctuary, now a tomb. Darkness has claimed its heart."
-							],
-							"mode": "replace_all"
-						}
-					]
 				}
 			]
 		}

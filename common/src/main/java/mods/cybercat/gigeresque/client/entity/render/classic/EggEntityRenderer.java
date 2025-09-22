@@ -68,7 +68,7 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
     }
 
     @Override
-    protected AzEntityRendererPipeline<AlienEggEntity> createPipeline(AzEntityRendererConfig<AlienEggEntity> config) {
+    public AzEntityRendererPipeline<AlienEggEntity> createPipeline(AzEntityRendererConfig<AlienEggEntity> config) {
         return new AzEntityRendererPipeline<>(config, this) {
 
             @Override
