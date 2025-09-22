@@ -56,7 +56,6 @@ public class InGameOverlayRendererMixin {
             ) {
                 float effectDur = client.player.getEffect(GigStatusEffects.EGGMORPHING).getDuration();
                 var eggmorphingProgress = 1.0f - Math.clamp(effectDur / CommonMod.config.getEggmorphTickTimer(), 0.0f, 1.0f);
-                System.out.println(eggmorphingProgress);
                 gigeresque$renderOverlay(client, matrices, eggmorphingProgress, EntityTextures.EGGMORPH_OVERLAY_TEXTURE);
             }
         }
