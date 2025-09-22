@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -28,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
+    public static final BooleanProperty UNSAFE = BooleanProperty.create("unsafe");
 
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
@@ -38,7 +41,7 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
     public PetrifiedStatueBlock(Properties properties){
         super(properties);
         this.registerDefaultState(
-                this.stateDefinition.any().setValue(FACING, Direction.NORTH)
+                this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UNSAFE, false)
         );
     }
 
@@ -48,7 +51,7 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, UNSAFE);
     }
 
     @Override
