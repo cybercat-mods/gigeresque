@@ -157,3 +157,7 @@ spotless {
 tasks.build {
     dependsOn("spotlessApply")
 }
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn("spotlessApply")
+}
