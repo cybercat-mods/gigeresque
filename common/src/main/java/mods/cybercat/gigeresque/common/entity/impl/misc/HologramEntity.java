@@ -9,11 +9,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 
 public class HologramEntity extends Entity {
 
