@@ -2,7 +2,6 @@ package mods.cybercat.gigeresque;
 
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -34,7 +33,6 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBea
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DispenserBehaviors;
-import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
 
@@ -46,7 +44,6 @@ public final class FabricMod implements ModInitializer {
     public void onInitialize() {
         CommonMod.initRegistries();
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
-        ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> GigVillagerTrades.addTrades());
         MobSpawn.initialize();
         FabricDefaultAttributeRegistry.register(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes());
         // FabricDefaultAttributeRegistry.register(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes());

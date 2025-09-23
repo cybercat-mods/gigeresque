@@ -39,9 +39,9 @@ public record GigTags() {
     public static final TagKey<Block> NEST_CROSS_BLOCKS = TagKey.create(Registries.BLOCK, Constants.modResource("nest_cross_blocks"));
 
     /* DUNGEONS */
-    public static final TagKey<Structure> GIG_EXPLORER_MAPS = TagKey.create(
+    public static final TagKey<Structure> GIG_DUNGEONS = TagKey.create(
         Registries.STRUCTURE,
-        Constants.modResource("gig_explorer_maps")
+        Constants.modResource("gig_dungeons")
     );
 
     /* MOBS */

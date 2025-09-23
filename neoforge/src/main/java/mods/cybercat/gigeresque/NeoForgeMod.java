@@ -44,7 +44,6 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -75,7 +74,6 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBea
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.util.GigVillagerTrades;
 import mods.cybercat.gigeresque.common.worlddata.PandoraData;
 import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
 
@@ -188,7 +186,6 @@ public final class NeoForgeMod {
         modEventBus.addListener(this::onRegisterEvent);
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
-        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         if (CommonMod.config.enablePandoraEffects) {
             NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldEndTick);
             NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
@@ -234,10 +231,6 @@ public final class NeoForgeMod {
         event.put(GigEntities.HELLMORPH_RUNNER.get(), HellmorphRunnerEntity.createAttributes().build());
         event.put(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes().build());
         event.put(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes().build());
-    }
-
-    public void onServerStarted(final ServerStartedEvent event) {
-        GigVillagerTrades.addTrades();
     }
 
     public void onWorldTick(final LevelTickEvent.Pre event) {

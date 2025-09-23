@@ -42,7 +42,7 @@ public class TrackerItem extends Item {
         super.onUseTick(level, livingEntity, itemstack, remainingUseDuration);
 
         if (level instanceof ServerLevel serverlevel && livingEntity instanceof Player player) {
-            var blockpos = serverlevel.findNearestMapStructure(GigTags.GIG_EXPLORER_MAPS, player.blockPosition(), 100, false);
+            var blockpos = serverlevel.findNearestMapStructure(GigTags.GIG_DUNGEONS, player.blockPosition(), 100, false);
             if (blockpos != null && !player.getCooldowns().isOnCooldown(this)) {
                 animationDispatcher.sendOpeningAnimation(player, itemstack);
                 var viewVector = player.getViewVector(1.0F);
