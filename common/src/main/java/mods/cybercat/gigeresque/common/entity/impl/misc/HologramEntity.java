@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
@@ -101,19 +102,8 @@ public class HologramEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
         this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
         super.tick();
-        this.handleAnimations();
         if (!this.level().isClientSide() && this.tickCount >= 125) {
             this.kill();
-        }
-    }
-
-    protected void handleAnimations() {
-        if (this.getDistanceState() == 2) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendStage2);
-        } else if (this.getDistanceState() == 3) {
-            GigCommonMethods.setAnimation(animationDispatcher::sendStage3);
-        } else {
-            GigCommonMethods.setAnimation(animationDispatcher::sendStage1);
         }
     }
 }
