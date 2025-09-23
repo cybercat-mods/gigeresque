@@ -96,13 +96,13 @@ public class JarStorageEntity extends RandomizableContainerBlockEntity {
                 blockEntity.getBlockPos(),
                 blockEntity.getBlockState()
             );
-            if (blockEntity.getChestState() == StorageStates.CLOSING && blockEntity.closingTicks == -1){
+            if (blockEntity.getChestState() == StorageStates.CLOSING && blockEntity.closingTicks == -1) {
                 blockEntity.closingTicks = 0;
             }
-            if (blockEntity.closingTicks >= 0){
+            if (blockEntity.closingTicks >= 0) {
                 blockEntity.closingTicks++;
             }
-            if (blockEntity.closingTicks >= 40){
+            if (blockEntity.closingTicks >= 40) {
                 level.setBlockAndUpdate(pos, state.setValue(CHEST_STATE, StorageStates.CLOSED));
                 blockEntity.closingTicks = -1;
             }

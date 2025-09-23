@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 
 public class PetrifiedStatueInvisBlock extends Block {
 
@@ -50,10 +51,10 @@ public class PetrifiedStatueInvisBlock extends Block {
 
     @Override
     public @NotNull VoxelShape getShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter world,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         return OUTLINE_SHAPE;
     }

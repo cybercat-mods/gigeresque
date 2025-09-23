@@ -9,7 +9,7 @@ public abstract class PetrifiedStatueRender<T extends BlockEntity> extends AzBlo
 
     public PetrifiedStatueRender(ResourceLocation model, ResourceLocation texture) {
         super(
-                AzBlockEntityRendererConfig.<T>builder(model, texture).build()
+            AzBlockEntityRendererConfig.<T>builder(model, texture).build()
         );
     }
 }

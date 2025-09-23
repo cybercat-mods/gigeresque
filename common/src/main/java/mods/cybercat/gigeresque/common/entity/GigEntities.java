@@ -420,14 +420,14 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         );
 
     public static final Supplier<BlockEntityType<PetrifiedStatueEntity>> PETRIFIED_STATUE = CommonBlockEntityRegistryInterface
-            .registerBlockEntity(
-                    CommonMod.MOD_ID,
-                    "petrified_statue",
-                    () -> BlockEntityType.Builder.of(
-                            PetrifiedStatueEntity::new,
-                            GigBlocks.PETRIFIED_STATUE_BLOCK.get()
-                    ).build(null)
-            );
+        .registerBlockEntity(
+            CommonMod.MOD_ID,
+            "petrified_statue",
+            () -> BlockEntityType.Builder.of(
+                PetrifiedStatueEntity::new,
+                GigBlocks.PETRIFIED_STATUE_BLOCK.get()
+            ).build(null)
+        );
 
     public static void initialize() {}
 }

@@ -1,9 +1,6 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks;
 
 import com.mojang.serialization.MapCodec;
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedStatueEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +23,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.PetrifiedStatueEntity;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+
 public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -38,10 +39,10 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     public static final MapCodec<PetrifiedStatueBlock> CODEC = simpleCodec(PetrifiedStatueBlock::new);
 
-    public PetrifiedStatueBlock(Properties properties){
+    public PetrifiedStatueBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-                this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UNSAFE, false)
+            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UNSAFE, false)
         );
     }
 
@@ -81,10 +82,10 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     @Override
     public @NotNull VoxelShape getShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter world,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        @NotNull BlockState state,
+        @NotNull BlockGetter world,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         return OUTLINE_SHAPE;
     }
@@ -100,11 +101,11 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     @Override
     public void setPlacedBy(
-            @NotNull Level world,
-            @NotNull BlockPos pos,
-            BlockState state,
-            LivingEntity placer,
-            @NotNull ItemStack itemStack
+        @NotNull Level world,
+        @NotNull BlockPos pos,
+        BlockState state,
+        LivingEntity placer,
+        @NotNull ItemStack itemStack
     ) {
         BlockPos.betweenClosed(pos, pos.relative(state.getValue(FACING), 1).above(2)).forEach(testPos -> {
             if (!testPos.equals(pos))
@@ -122,9 +123,9 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-            @NotNull Level level,
-            @NotNull BlockState state,
-            @NotNull BlockEntityType<T> type
+        @NotNull Level level,
+        @NotNull BlockState state,
+        @NotNull BlockEntityType<T> type
     ) {
         return createTickerHelper(type, GigEntities.PETRIFIED_STATUE.get(), PetrifiedStatueEntity::tick);
     }

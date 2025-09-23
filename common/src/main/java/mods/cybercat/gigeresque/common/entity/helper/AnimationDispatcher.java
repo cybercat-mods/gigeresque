@@ -92,7 +92,7 @@ public class AnimationDispatcher {
                 props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE)
             )
         )
-        .setSpeed(Constants.BASE_CONTROLLER,2.5F)
+        .setSpeed(Constants.BASE_CONTROLLER, 2.5F)
         .build();
 
     private final AzCommand RUSH_SWIM_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_swim", AzPlayBehaviors.LOOP);

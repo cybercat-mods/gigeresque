@@ -4,6 +4,7 @@ import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.impl.misc.HologramEntity;
 
 public class HologramAnimManager {
+
     public static void handleAnimations(HologramEntity entity) {
         if (entity.getDistanceState() == 2) {
             GigCommonMethods.setAnimation(entity.animationDispatcher::sendStage2);

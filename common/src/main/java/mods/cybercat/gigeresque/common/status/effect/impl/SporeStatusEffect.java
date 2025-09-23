@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.common.status.effect.impl;
 
 import mod.azure.azurelib.core.object.Color;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -17,6 +16,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 
 public class SporeStatusEffect extends MobEffect {
@@ -37,7 +37,7 @@ public class SporeStatusEffect extends MobEffect {
             return;
         if (entity instanceof Mob mob && mob.isNoAi())
             return;
-        if (!entity.getType().is(GigTags.NEOHOST)){
+        if (!entity.getType().is(GigTags.NEOHOST)) {
             return;
         }
         var burster = GigEntities.NEOBURSTER.get().create(entity.level());

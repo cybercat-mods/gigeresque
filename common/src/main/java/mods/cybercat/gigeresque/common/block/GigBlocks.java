@@ -152,24 +152,25 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     );
 
     public static final Supplier<PetrifiedStatueBlock> PETRIFIED_STATUE_BLOCK = CommonBlockRegistryInterface.registerBlock(
-            CommonMod.MOD_ID,
-            "petrified_statue",
-            () -> new PetrifiedStatueBlock(
-                    Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
-            )
+        CommonMod.MOD_ID,
+        "petrified_statue",
+        () -> new PetrifiedStatueBlock(
+            Properties.of().sound(SoundType.STONE).randomTicks().strength(30F, 15).noLootTable().noOcclusion()
+        )
     );
 
     public static final Supplier<BlockItem> PETRIFIED_STATUE_BLOCK_ITEM = CommonItemRegistryInterface.registerItem(
-            CommonMod.MOD_ID,
-            "petrified_statue",
-            () -> new BlockItem(PETRIFIED_STATUE_BLOCK.get(), new Item.Properties())
+        CommonMod.MOD_ID,
+        "petrified_statue",
+        () -> new BlockItem(PETRIFIED_STATUE_BLOCK.get(), new Item.Properties())
     );
 
     public static final Supplier<PetrifiedStatueInvisBlock> PETRIFIED_STATUE_BLOCK_INVIS = CommonBlockRegistryInterface.registerBlock(
-            CommonMod.MOD_ID,
-            "petrified_statue_invis",
-            PetrifiedStatueInvisBlock::new
+        CommonMod.MOD_ID,
+        "petrified_statue_invis",
+        PetrifiedStatueInvisBlock::new
     );
+
     /*
      * NORMAL BLOCKS
      */

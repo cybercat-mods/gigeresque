@@ -85,26 +85,26 @@ public record EntityModels() {
     );
 
     public static final ResourceLocation PETRIFIED_1 = Constants.modResource(
-            "%s/petrified/petrified_1.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/petrified/petrified_1.geo.json".formatted(BASE_BLOCK_URL)
     );
 
     public static final ResourceLocation PETRIFIED_2 = Constants.modResource(
-            "%s/petrified/petrified_2.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/petrified/petrified_2.geo.json".formatted(BASE_BLOCK_URL)
     );
 
     public static final ResourceLocation PETRIFIED_3 = Constants.modResource(
-            "%s/petrified/petrified_3.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/petrified/petrified_3.geo.json".formatted(BASE_BLOCK_URL)
     );
 
     public static final ResourceLocation PETRIFIED_4 = Constants.modResource(
-            "%s/petrified/petrified_4.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/petrified/petrified_4.geo.json".formatted(BASE_BLOCK_URL)
     );
 
     public static final ResourceLocation PETRIFIED_5 = Constants.modResource(
-            "%s/neomorph_spore_pods/neomorph_spore_pods.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/neomorph_spore_pods/neomorph_spore_pods.geo.json".formatted(BASE_BLOCK_URL)
     );
 
     public static final ResourceLocation PETRIFIED_STATUE = Constants.modResource(
-            "%s/petrified/petrified_statue.geo.json".formatted(BASE_BLOCK_URL)
+        "%s/petrified/petrified_statue.geo.json".formatted(BASE_BLOCK_URL)
     );
 }

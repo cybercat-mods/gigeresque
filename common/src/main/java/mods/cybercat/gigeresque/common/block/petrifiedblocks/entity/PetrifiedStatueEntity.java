@@ -1,14 +1,14 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks.entity;
 
-import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedStatueBlock;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedStatueBlock;
+import mods.cybercat.gigeresque.common.entity.GigEntities;
 
 public class PetrifiedStatueEntity extends BlockEntity {
 
@@ -23,21 +23,21 @@ public class PetrifiedStatueEntity extends BlockEntity {
         if (blockEntity.level != null) {
             if (!blockEntity.level.isClientSide)
                 BlockPos.betweenClosed(pos, pos.relative(state.getValue(PetrifiedStatueBlock.FACING), 1).above(2))
-                        .forEach(
-                                testPos -> {
-                                    if (
-                                            !testPos.equals(pos) && !level.getBlockState(testPos)
-                                                    .is(
-                                                            GigBlocks.PETRIFIED_STATUE_BLOCK_INVIS.get()
-                                                    )
+                    .forEach(
+                        testPos -> {
+                            if (
+                                !testPos.equals(pos) && !level.getBlockState(testPos)
+                                    .is(
+                                        GigBlocks.PETRIFIED_STATUE_BLOCK_INVIS.get()
                                     )
-                                        level.setBlock(
-                                                testPos,
-                                                GigBlocks.PETRIFIED_STATUE_BLOCK_INVIS.get().defaultBlockState(),
-                                                Block.UPDATE_ALL
-                                        );
-                                }
-                        );
+                            )
+                                level.setBlock(
+                                    testPos,
+                                    GigBlocks.PETRIFIED_STATUE_BLOCK_INVIS.get().defaultBlockState(),
+                                    Block.UPDATE_ALL
+                                );
+                        }
+                    );
         }
     }
 }

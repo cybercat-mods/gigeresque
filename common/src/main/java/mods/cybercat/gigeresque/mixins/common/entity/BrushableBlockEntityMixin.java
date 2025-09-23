@@ -1,7 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -16,9 +15,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.item.GigItems;
-
 
 @Mixin(BrushableBlockEntity.class)
 public abstract class BrushableBlockEntityMixin extends BlockEntity {
