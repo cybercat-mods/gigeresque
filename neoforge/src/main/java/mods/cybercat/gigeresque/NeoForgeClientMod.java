@@ -142,7 +142,7 @@ public class NeoForgeClientMod {
         );
         event.registerBlockEntityRenderer(
                 GigEntities.PETRIFIED_STATUE.get(),
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
+                (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS){}
         );
         event.registerBlockEntityRenderer(
             GigEntities.SPORE_ENTITY.get(),
