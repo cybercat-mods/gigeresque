@@ -18,7 +18,7 @@ public class RotateTowardsEntityGoal extends LookAtPlayerGoal {
 
     @Override
     public boolean canUse() {
-        if (this.mob instanceof AlienEntity alienEntity && alienEntity.stasisManager.isStasis()) {
+        if (this.mob instanceof AlienEntity alienEntity && alienEntity.stasisManager.isStasis() || this.mob.isVehicle()) {
             return false;
         }
         return super.canUse();

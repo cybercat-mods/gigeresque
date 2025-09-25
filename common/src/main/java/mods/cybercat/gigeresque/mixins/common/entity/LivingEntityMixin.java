@@ -72,7 +72,7 @@ public abstract class LivingEntityMixin extends Entity {
                 .getType()
                 .is(
                     GigTags.GIG_ALIENS
-                ) && (source == damageSources().drown() || source == damageSources().inWall()) && amount < 1
+                ) && (source == damageSources().drown() || source == damageSources().inWall())
         )
             callbackInfo.setReturnValue(false);
         if (

@@ -10616,6 +10616,102 @@
 				}
 			}
 		},
+		"unkidnap": {
+			"animation_length": 2,
+			"bones": {
+				"rArm01": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rArm02": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rHand": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rFinger01": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rFinger02": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rFinger03": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rFinger04": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"rFinger05": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lArm01": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lArm02": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lHand": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lFinger01": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lFinger03": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lFinger04": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lFinger05": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"lFinger02": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"mobBone": {
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
 		"right_claw": {
 			"animation_length": 0.6,
 			"bones": {

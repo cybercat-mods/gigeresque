@@ -30,7 +30,19 @@ public class AnimationDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
+    // private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
+
+    private final AzCommand STATIS_ENTER_COMMAND = AzCommand.controllerBuilder()
+        .playSequence(
+            Constants.BASE_CONTROLLER,
+            sequenceBuilder -> sequenceBuilder.queue(
+                "stasis_enter",
+                props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE)
+            ).queue("stasis_loop", props -> props.withPlayBehavior(AzPlayBehaviors.LOOP))
+
+        )
+        .setSpeed(Constants.BASE_CONTROLLER, 1.0f)
+        .build();
 
     private final AzCommand STATIS_LEAVE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stasis_leave", AzPlayBehaviors.PLAY_ONCE);
 
@@ -118,6 +130,10 @@ public class AnimationDispatcher {
     private final AzCommand RUSH_SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_slither", AzPlayBehaviors.LOOP);
 
     private final AzCommand KIDNAP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "kidnap", AzPlayBehaviors.LOOP);
+
+    private final AzCommand KIDNAP_IDLE = AzCommand.compose(IDLE_LAND_COMMAND, KIDNAP_COMMAND);
+
+    private final AzCommand UNKIDNAP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "unkidnap", AzPlayBehaviors.LOOP);
 
     private final AzCommand SPIT_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spit", AzPlayBehaviors.PLAY_ONCE);
 
@@ -310,7 +326,11 @@ public class AnimationDispatcher {
     }
 
     public void sendKidnap() {
-        KIDNAP_COMMAND.sendForEntity(animatedEntity);
+        KIDNAP_IDLE.sendForEntity(animatedEntity);
+    }
+
+    public void sendUnkidnap() {
+        UNKIDNAP_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendStunned() {
