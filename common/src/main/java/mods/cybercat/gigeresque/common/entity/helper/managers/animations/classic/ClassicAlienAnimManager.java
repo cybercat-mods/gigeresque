@@ -26,7 +26,11 @@ public class ClassicAlienAnimManager {
 
     public static void handleMovementAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isVehicle()) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
+            if (classicAlienEntity.getFirstPassenger().isAlive()) {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
+            } else {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendUnkidnap);
+            }
         } else if (classicAlienEntity.isAggressive()) {
             handleAggroMovementAnimations(classicAlienEntity);
         } else if (classicAlienEntity.crawlingManager.isCrawling()) {
@@ -42,7 +46,11 @@ public class ClassicAlienAnimManager {
 
     public static void handleAggroMovementAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isVehicle()) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
+            if (classicAlienEntity.getFirstPassenger().isAlive()) {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendWalkCarrying);
+            } else {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendUnkidnap);
+            }
         } else if (classicAlienEntity.crawlingManager.isCrawling()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isUnderWater()) {
@@ -56,7 +64,11 @@ public class ClassicAlienAnimManager {
 
     public static void handleIdleAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isVehicle()) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendKidnap);
+            if (classicAlienEntity.getFirstPassenger().isAlive()) {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendKidnap);
+            } else {
+                GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendUnkidnap);
+            }
         } else if (classicAlienEntity.stasisManager.isStasis()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendStatisEnter);
         } else if (classicAlienEntity.searchingManager.isSearching()) {
