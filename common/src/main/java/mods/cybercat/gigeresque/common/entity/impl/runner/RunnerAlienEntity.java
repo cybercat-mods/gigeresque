@@ -37,6 +37,7 @@ public class RunnerAlienEntity extends AlienEntity {
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
+        this.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -66,11 +67,8 @@ public class RunnerAlienEntity extends AlienEntity {
     }
 
     @Override
-    @NotNull
-    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.wasEyeInWater)
-            return EntityDimensions.scalable(3.0f, 1.0f);
-        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 1.75f);
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return EntityDimensions.scalable(3.0f, 1.0f);
     }
 
     @Override

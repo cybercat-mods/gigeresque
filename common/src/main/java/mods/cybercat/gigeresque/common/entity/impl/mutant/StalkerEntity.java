@@ -4,8 +4,10 @@ import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
@@ -24,8 +27,16 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DigToTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DodgeProjectilesGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FindDarknessGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -172,4 +183,8 @@ public class StalkerEntity extends AlienEntity {
         return super.doHurtTarget(target);
     }
 
+    @Override
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return null;
+    }
 }

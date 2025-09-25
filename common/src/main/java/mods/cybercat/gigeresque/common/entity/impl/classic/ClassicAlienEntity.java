@@ -3,15 +3,22 @@ package mods.cybercat.gigeresque.common.entity.impl.classic;
 import mod.azure.azurelib.rewrite.util.MoveAnalysis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
@@ -27,8 +34,17 @@ import java.util.SplittableRandom;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.RotateTowardsEntityGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedClassicAttackGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.HeadBiteGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DigToTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DodgeProjectilesGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FindDarknessGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.EggmorphGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
@@ -49,6 +65,8 @@ public class ClassicAlienEntity extends AlienEntity {
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
         this.animationSelector = GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR;
+        this.canClimb = true;
+        this.climbSpeedMultiplier = 0.4f;
     }
 
     /*
@@ -84,20 +102,8 @@ public class ClassicAlienEntity extends AlienEntity {
     }
 
     @Override
-    @NotNull
-    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.isUnderWater())
-            return EntityDimensions.scalable(2.0f, 1.0f);
-        return EntityDimensions.scalable(
-            0.9f,
-            crawlingManager.isCrawling()
-                ? 0.4f
-                : this.level()
-                    .getBlockState(this.blockPosition().below())
-                    .is(
-                        BlockTags.STAIRS
-                    ) ? 1.0F : 1.9f
-        );
+    protected EntityDimensions swimmingDimensions(Pose pose) {
+        return EntityDimensions.scalable(2, 1);
     }
 
     @Override

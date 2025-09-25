@@ -4,7 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.PathfinderMob;
+
+import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 /**
  * Credit to Boston/AVP
@@ -13,11 +14,11 @@ public class CrawlingManager {
 
     private static final String CRAWLING_TAG_KEY = "crawling";
 
-    private final PathfinderMob entity;
+    private final AlienEntity entity;
 
     private final EntityDataAccessor<Boolean> isCrawlingEDA;
 
-    public CrawlingManager(PathfinderMob entity, EntityDataAccessor<Boolean> isCrawlingEDA) {
+    public CrawlingManager(AlienEntity entity, EntityDataAccessor<Boolean> isCrawlingEDA) {
         this.entity = entity;
         this.isCrawlingEDA = isCrawlingEDA;
     }
@@ -54,16 +55,16 @@ public class CrawlingManager {
 
         var path = navigation.getPath();
 
-        var isTight = isTightSpace(blockPosition);
+        var shouldCrawl = isTightSpace(blockPosition) || entity.canClimb;
 
         if (path != null && path.getNextNodeIndex() < path.getNodeCount()) {
             var previousNode = path.getPreviousNode();
-            isTight = isTight || previousNode != null && isTightSpace(previousNode.asBlockPos());
+            shouldCrawl = shouldCrawl || previousNode != null && isTightSpace(previousNode.asBlockPos());
             var nextNode = path.getNextNode();
-            isTight = isTight || isTightSpace(nextNode.asBlockPos());
+            shouldCrawl = shouldCrawl || isTightSpace(nextNode.asBlockPos());
         }
         if (entity.tickCount % 20 == 0)
-            entity.getEntityData().set(isCrawlingEDA, isTight);
+            entity.getEntityData().set(isCrawlingEDA, shouldCrawl);
         if (entity.tickCount % 10 == 0)
             entity.refreshDimensions();
     }

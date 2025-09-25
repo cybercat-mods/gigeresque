@@ -14,9 +14,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -29,6 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
@@ -351,4 +354,10 @@ public class FacehuggerEntity extends AlienEntity {
     protected void runLungeAnimation() {
         animationDispatcher.sendFacehuggerLunge();
     }
+
+    @Override
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return null;
+    }
+
 }

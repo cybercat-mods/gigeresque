@@ -23,7 +23,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -43,13 +49,18 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
-import mods.cybercat.gigeresque.common.entity.helper.*;
+import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
+import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
+import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.helper.managers.AlienNavigationManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
@@ -146,8 +157,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public int wakeupCounter = 0;
 
-    public boolean inTwoBlockSpace = false;
-
     public float growthCounter = 0;
 
     protected User vibrationUser;
@@ -172,6 +181,10 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     private int healCounter;
 
+    public boolean canClimb;
+
+    public float climbSpeedMultiplier;
+
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
@@ -181,7 +194,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
-        this.navigationManager = new AlienNavigationManager(this, moveControl);
+        this.navigationManager = new AlienNavigationManager(this);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
@@ -747,19 +760,6 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         return true;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean onClimbable() {
-        var blockPos = new BlockPos.MutableBlockPos(this.position().x, this.position().y + 2.0, this.position().z);
-        if (this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = true;
-        }
-        if (!this.level().getBlockState(blockPos).blocksMotion()) {
-            this.inTwoBlockSpace = false;
-        }
-        return this.inTwoBlockSpace;
-    }
-
     public void setMoveControl(MoveControl moveControl) {
         this.moveControl = moveControl;
     }
@@ -848,6 +848,45 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             }
         }
         return this.getBoundingBox().intersects(entity.getBoundingBox().inflate(1.5F));
+    }
+
+    public Vec3 center() {
+        return position().add(0, getBbHeight() / 2, 0);
+    }
+
+    @Override
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        EntityDimensions dims = null;
+
+        if (isUnderWater()) {
+            dims = swimmingDimensions(pose);
+        } else if (canClimb) { // will be replaced with actual climbing check
+            dims = climbingDimensions(pose);
+        } else if (crawlingManager.isCrawling()) {
+            dims = crawlingDimensions(pose);
+        }
+
+        if (dims == null) {
+            dims = standingDimensions(pose);
+        }
+        return dims;
+    }
+
+    protected @NotNull EntityDimensions standingDimensions(Pose pose) {
+        return super.getDefaultDimensions(pose);
+    }
+
+    protected abstract @Nullable EntityDimensions swimmingDimensions(Pose pose);
+
+    protected @Nullable EntityDimensions crawlingDimensions(Pose pose) {
+        var standing = standingDimensions(pose);
+        return EntityDimensions.scalable(standing.width(), Math.min(standing.height(), 0.4f));
+    }
+
+    protected @Nullable EntityDimensions climbingDimensions(Pose pose) {
+        // this should be reasonable for most aliens
+        // it needs to be smaller than 1x1 for climbing to work correctly
+        return EntityDimensions.scalable(0.75f, 0.75f);
     }
 
 }

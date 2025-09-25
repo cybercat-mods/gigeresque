@@ -82,10 +82,8 @@ public class RomAlienEntity extends AlienEntity {
     }
 
     @Override
-    public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.wasEyeInWater)
-            return EntityDimensions.scalable(3.0f, 1.0f);
-        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 2.9f);
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return EntityDimensions.scalable(3.0f, 1.0f);
     }
 
     @Override

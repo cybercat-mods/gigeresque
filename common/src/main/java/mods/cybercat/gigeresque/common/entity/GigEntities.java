@@ -47,7 +47,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         ClassicAlienEntity::new,
         MobCategory.MONSTER,
         0.9f,
-        1.95f
+        1.9f
     );
 
     // public static final Supplier<EntityType<RomAlienEntity>> ROM_ALIEN =
@@ -60,8 +60,8 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         EntityIdentifiers.AQUATIC_ALIEN.getPath(),
         AquaticAlienEntity::new,
         MobCategory.MONSTER,
-        2.0f,
-        2.0f
+        3.0f,
+        1.0f
     );
 
     public static final Supplier<EntityType<AquaticChestbursterEntity>> AQUATIC_CHESTBURSTER = CommonEntityRegistryInterface.registerEntity(
@@ -105,7 +105,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
         EntityIdentifiers.RUNNER_ALIEN.getPath(),
         RunnerAlienEntity::new,
         MobCategory.MONSTER,
-        1.25f,
+        0.9f,
         1.75f
     );
 

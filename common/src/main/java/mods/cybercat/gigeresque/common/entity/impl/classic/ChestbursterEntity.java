@@ -7,8 +7,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -216,5 +219,10 @@ public class ChestbursterEntity extends AlienEntity {
             delayBeforeEating--;
             this.triggeredAttackAnimation = false;
         }
+    }
+
+    @Override
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return null;
     }
 }

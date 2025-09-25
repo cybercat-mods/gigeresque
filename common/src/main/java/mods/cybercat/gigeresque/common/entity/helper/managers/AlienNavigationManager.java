@@ -6,6 +6,7 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.pathfinder.PathType;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.ai.nav.GigMoveControl;
 import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
 import mods.cybercat.gigeresque.common.entity.ai.nav.WaterMoveControl;
 
@@ -19,8 +20,8 @@ public class AlienNavigationManager {
 
     private final WaterMoveControl waterMoveControl;
 
-    public AlienNavigationManager(AlienEntity xenomorph, MoveControl moveControl) {
-        this.groundMoveControl = moveControl;
+    public AlienNavigationManager(AlienEntity xenomorph) {
+        this.groundMoveControl = new GigMoveControl(xenomorph);
         this.groundNavigation = new GigNavigation(xenomorph, xenomorph.level());
 
         xenomorph.setPathfindingMalus(PathType.WATER, 0.0F);
