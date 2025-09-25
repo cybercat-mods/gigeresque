@@ -30,7 +30,19 @@ public class AnimationDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
+    // private final AzCommand STATIS_ENTER_COMMAND = AzCommand.compose(ENTER_STASIS_COMMAND, STASIS_LOOP_COMMAND);
+
+    private final AzCommand STATIS_ENTER_COMMAND = AzCommand.controllerBuilder()
+        .playSequence(
+            Constants.BASE_CONTROLLER,
+            sequenceBuilder -> sequenceBuilder.queue(
+                "stasis_enter",
+                props -> props.withPlayBehavior(AzPlayBehaviors.PLAY_ONCE)
+            ).queue("stasis_loop", props -> props.withPlayBehavior(AzPlayBehaviors.LOOP))
+
+        )
+        .setSpeed(Constants.BASE_CONTROLLER, 1.0f)
+        .build();
 
     private final AzCommand STATIS_LEAVE_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "stasis_leave", AzPlayBehaviors.PLAY_ONCE);
 
