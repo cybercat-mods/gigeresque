@@ -37,7 +37,7 @@ public class RunnerAlienEntity extends AlienEntity {
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
-        this.canClimb = true;
+        this.climbingManager.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

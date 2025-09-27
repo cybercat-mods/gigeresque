@@ -65,8 +65,8 @@ public class ClassicAlienEntity extends AlienEntity {
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
         this.animationSelector = GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR;
-        this.canClimb = true;
-        this.climbSpeedMultiplier = 0.4f;
+        this.climbingManager.canClimb = true;
+        this.climbingManager.climbSpeedMultiplier = 0.4f;
     }
 
     /*

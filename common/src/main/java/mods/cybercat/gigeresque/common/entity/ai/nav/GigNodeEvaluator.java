@@ -19,7 +19,7 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
     public void prepare(@NotNull PathNavigationRegion level, @NotNull Mob mob) {
         super.prepare(level, mob);
         var alien = (AlienEntity) mob;
-        if (alien.canClimb && !alien.isInWater() && !alien.isVehicle()) {
+        if (alien.climbingManager.canClimb && !alien.isInWater() && !alien.isVehicle()) {
             // this assumes that all aliens capable of climbing will correctly adjust their hitbox to actually allow
             // them to follow the path
             entityHeight = 1;
@@ -47,7 +47,7 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
                 for (int k = -1; k < 2; k++) {
                     var l = i * i + j * j + k * k;
                     var noOffset = l == 0;
-                    var corner = l == 3;
+                    var corner = l == 3 || l == 2;
                     if (noOffset || corner) {
                         continue;
                     }
@@ -93,8 +93,7 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
         if (!level.noBlockCollision(null, bb)) {
             return false;
         }
-        bb = new AABB(x, y, z, x + 1, y + 1, z + 1).inflate(1);
-        return !level.noBlockCollision(null, bb);
+        return !level.noBlockCollision(null, bb.inflate(1));
     }
 
 }

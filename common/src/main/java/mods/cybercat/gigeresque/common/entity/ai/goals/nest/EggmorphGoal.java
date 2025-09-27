@@ -20,14 +20,15 @@ public class EggmorphGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return this.mob.hasHomeBlock() && this.mob.isVehicle();
+        return this.mob.hasHomeBlock()
+            && !this.mob.isVehicle()
+            && !this.mob.climbingManager.climbing;
     }
 
     @Override
     public boolean canContinueToUse() {
-        return this.mob.hasHomeBlock()
+        return this.canUse()
             && !this.mob.isFleeing()
-            && this.mob.isVehicle()
             && !this.mob.stasisManager.isStasis();
     }
 

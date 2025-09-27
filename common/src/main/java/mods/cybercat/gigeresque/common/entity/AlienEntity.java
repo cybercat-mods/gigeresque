@@ -62,6 +62,7 @@ import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.helper.managers.AlienNavigationManager;
+import mods.cybercat.gigeresque.common.entity.helper.managers.ClimbingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
@@ -149,6 +150,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         EntityDataSerializers.BOOLEAN
     );
 
+    private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
     protected int delayBeforeEating = 0;
 
     protected boolean triggeredAttackAnimation = false;
@@ -181,9 +187,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     private int healCounter;
 
-    public boolean canClimb;
-
-    public float climbSpeedMultiplier;
+    public final ClimbingManager climbingManager;
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -196,6 +200,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.navigationManager = new AlienNavigationManager(this);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.climbingManager = new ClimbingManager(this, IS_CLIMBING);
     }
 
     public static boolean checkMonsterSpawnRules(
@@ -353,6 +358,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(IS_CRAWLING, false);
         builder.define(STASIS_TICK, 0);
         builder.define(HOME_BLOCKPOS, BlockPos.ZERO);
+        builder.define(IS_CLIMBING, false);
     }
 
     @Override
@@ -436,6 +442,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setAirSupply(this.getMaxAirSupply());
         searchingManager.tick();
         stasisManager.tick();
+        climbingManager.tick();
 
         if (getTarget() != null && !GigEntityUtils.isValidTarget(getTarget())) {
             setTarget(null);
@@ -489,8 +496,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             }
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
-        if (this.tickCount % 10 == 0)
+        if (this.tickCount % 10 == 0) {
             this.refreshDimensions();
+        }
     }
 
     @Override
@@ -860,7 +868,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         if (isUnderWater()) {
             dims = swimmingDimensions(pose);
-        } else if (canClimb) { // will be replaced with actual climbing check
+        } else if (climbingManager.climbing) {
             dims = climbingDimensions(pose);
         } else if (crawlingManager.isCrawling()) {
             dims = crawlingDimensions(pose);

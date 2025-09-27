@@ -55,7 +55,7 @@ public class CrawlingManager {
 
         var path = navigation.getPath();
 
-        var shouldCrawl = isTightSpace(blockPosition) || entity.canClimb;
+        var shouldCrawl = isTightSpace(blockPosition);
 
         if (path != null && path.getNextNodeIndex() < path.getNodeCount()) {
             var previousNode = path.getPreviousNode();
@@ -65,8 +65,6 @@ public class CrawlingManager {
         }
         if (entity.tickCount % 20 == 0)
             entity.getEntityData().set(isCrawlingEDA, shouldCrawl);
-        if (entity.tickCount % 10 == 0)
-            entity.refreshDimensions();
     }
 
     private boolean isTightSpace(BlockPos blockPos) {
