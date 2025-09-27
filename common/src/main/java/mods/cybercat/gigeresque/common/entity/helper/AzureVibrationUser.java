@@ -145,8 +145,10 @@ public class AzureVibrationUser implements VibrationSystem.User {
                 // add "twitch" animation here
             }
             if (alienEntity.wakeupCounter >= 3) {
-                alienEntity.animationDispatcher.sendStatisLeave();
-                alienEntity.stasisManager.setStasis(false);
+                if (alienEntity.stasisManager.isStasis()) {
+                    alienEntity.animationDispatcher.sendStatisLeave();
+                    alienEntity.stasisManager.setStasis(false);
+                }
                 if (entity2 instanceof LivingEntity livingEntity && GigEntityUtils.TARGET_PREDICATE.test(alienEntity, livingEntity)) {
                     this.mob.setTarget(livingEntity);
                 }
