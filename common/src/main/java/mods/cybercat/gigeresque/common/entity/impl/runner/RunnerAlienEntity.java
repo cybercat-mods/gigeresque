@@ -154,7 +154,9 @@ public class RunnerAlienEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && !this.stasisManager.isStasis() && GigEntityUtils.isValidTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && !this.stasisManager.isStasis() && GigEntityUtils.isValidTarget(
+                    target
+                )
             )
         );
     }
