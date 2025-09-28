@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.nav;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.PathNavigationRegion;
@@ -42,23 +43,12 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
         }
 
         // add climbable nodes
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                for (int k = -1; k < 2; k++) {
-                    var l = i * i + j * j + k * k;
-                    var noOffset = l == 0;
-                    var corner = l == 3 || l == 2;
-                    if (noOffset || corner) {
-                        continue;
-                    }
-
-                    int x = i + p_node.x;
-                    int y = j + p_node.y;
-                    int z = k + p_node.z;
-                    if (addClimbableNodeIfAbsent(x, y, z, outputArray, nodeCount)) {
-                        nodeCount++;
-                    }
-                }
+        for (var dir : Direction.values()) {
+            int x = dir.getStepX() + p_node.x;
+            int y = dir.getStepY() + p_node.y;
+            int z = dir.getStepZ() + p_node.z;
+            if (addClimbableNodeIfAbsent(x, y, z, outputArray, nodeCount)) {
+                nodeCount++;
             }
         }
 

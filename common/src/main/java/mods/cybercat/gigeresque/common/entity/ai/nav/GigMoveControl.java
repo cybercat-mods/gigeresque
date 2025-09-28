@@ -18,22 +18,7 @@ public class GigMoveControl extends MoveControl {
 
     @Override
     public void tick() {
-        var blockPos = BlockPos.containing(alien.center());
-        if (
-            operation == Operation.MOVE_TO &&
-                GigNodeEvaluator.climbable(
-                    mob.level(),
-                    blockPos.getX(),
-                    blockPos.getY(),
-                    blockPos.getZ()
-                )
-        ) {
-            var belowTarget = BlockPos.containing(wantedX, wantedY + 0.5, wantedZ).below();
-            var blockBelowTarget = alien.level().getBlockState(belowTarget);
-            if (!blockBelowTarget.entityCanStandOn(alien.level(), belowTarget, alien)) {
-                alien.climbingManager.climbingRequiredForMovement = true;
-            }
-        }
+        alien.climbingManager.climbingRequiredForMovement = needsToClimb();
 
         if (alien.climbingManager.climbing) {
             tickClimbing();
@@ -60,6 +45,23 @@ public class GigMoveControl extends MoveControl {
         }
         var desiredVelocity = offset.normalize().scale(speed);
         alien.setDeltaMovement(desiredVelocity);
+    }
+
+    private boolean needsToClimb() {
+        var blockPos = BlockPos.containing(alien.center());
+        return operation == Operation.MOVE_TO &&
+            GigNodeEvaluator.climbable(
+                mob.level(),
+                blockPos.getX(),
+                blockPos.getY(),
+                blockPos.getZ()
+            ) && (!walkable(blockPos) || !walkable(BlockPos.containing(wantedX, wantedY + 0.5, wantedZ)));
+    }
+
+    private boolean walkable(BlockPos pos) {
+        var below = pos.below();
+        var blockBelow = alien.level().getBlockState(below);
+        return blockBelow.entityCanStandOn(alien.level(), below, alien);
     }
 
 }

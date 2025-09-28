@@ -45,14 +45,14 @@ public class ClimbingManager {
                 alienBlockPos.getY(),
                 alienBlockPos.getZ()
             )
-                && (!alien.verticalCollisionBelow || climbingRequiredForMovement);
+                && climbingRequiredForMovement;
             alien.setNoGravity(climbing);
 
             closestCollision = getClosestBlockCollision(
                 alien.level(),
-                alien.position(),
+                alien.center(),
                 alien.getBbWidth() + 2,
-                0.5
+                0.2
             );
             hasClosestCollision = closestCollision != null;
 
@@ -64,7 +64,7 @@ public class ClimbingManager {
                     pull = Vec3.ZERO;
                 }
                 float pullSpeed = 1;
-                float pullStrength = 0.2f;
+                float pullStrength = 0.3f;
                 alien.setDeltaMovement(
                     alien.getDeltaMovement()
                         .scale(1.0 - pullStrength)
