@@ -131,8 +131,6 @@ public class AnimationDispatcher {
 
     private final AzCommand KIDNAP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "kidnap", AzPlayBehaviors.LOOP);
 
-    private final AzCommand KIDNAP_IDLE = AzCommand.compose(IDLE_LAND_COMMAND, KIDNAP_COMMAND);
-
     private final AzCommand UNKIDNAP_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "unkidnap", AzPlayBehaviors.LOOP);
 
     private final AzCommand SPIT_COMMAND = AzCommand.create(Constants.ATTACK_CONTROLLER, "spit", AzPlayBehaviors.PLAY_ONCE);
@@ -326,7 +324,7 @@ public class AnimationDispatcher {
     }
 
     public void sendKidnap() {
-        KIDNAP_IDLE.sendForEntity(animatedEntity);
+        KIDNAP_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendUnkidnap() {
