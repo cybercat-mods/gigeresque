@@ -9,6 +9,7 @@
     "common.MixinEntityTypeBuilder_SilenceDataFixerError",
     "common.PointOfInterestTypesInvoker",
     "common.ServerLevelMixin",
+    "common.MixinProjectileUtil_AllowHittingVehicle",
     "common.item.BucketMixin_DontBucketBlackFluid",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
@@ -24,7 +25,8 @@
     "common.entity.VillagerEntityMixin",
     "common.entity.VillagerHostilesSensorMixin",
     "common.entity.WanderingTraderEntityMixin",
-    "common.entity.WardenEntityMixin"
+    "common.entity.WardenEntityMixin",
+
   ],
   "client": [
     "client.entity.render.LivingEntityRendererMixin",

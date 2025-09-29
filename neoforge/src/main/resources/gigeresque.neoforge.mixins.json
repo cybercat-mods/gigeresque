@@ -12,6 +12,7 @@
     "common.MixinEntityTypeBuilder_SilenceDataFixerError",
     "common.PointOfInterestTypesInvoker",
     "common.ServerLevelMixin",
+    "common.MixinProjectileUtil_AllowHittingVehicle",
     "common.item.BucketMixin_DontBucketBlackFluid",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
