@@ -608,7 +608,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             return false;
         if (this.isVehicle() && !this.level().isClientSide) {
             this.setCarryDamage(this.getCarryDamage() + amount);
-            if (this.getCarryDamage() > 10.0f) {
+            if (this.getCarryDamage() > 15.0f) {
                 this.ejectPassengers();
                 this.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 10, false, false));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, false, false));
