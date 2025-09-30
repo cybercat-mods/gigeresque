@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.projectile;
 
-import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -13,7 +10,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
+import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
+
 public class GooAmpouleProjectile extends AmpouleProjectile {
+
     public GooAmpouleProjectile(EntityType<? extends GooAmpouleProjectile> type, Level level) {
         super(type, level);
     }
@@ -36,7 +38,7 @@ public class GooAmpouleProjectile extends AmpouleProjectile {
 
     private void generateVisuals(BlockPos pos) {
         GigCommonMethods.generateGooBloodAtPos(this.level(), pos, 0, 0);
-        
+
         var areaEffectCloudEntity = new AreaEffectCloud(this.level(), pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f);
         areaEffectCloudEntity.setRadius(2.0F);
         areaEffectCloudEntity.setDuration(30);
@@ -44,6 +46,6 @@ public class GooAmpouleProjectile extends AmpouleProjectile {
             -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
         );
         areaEffectCloudEntity.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 600, 0));
-        this.level().addFreshEntity(areaEffectCloudEntity);      
+        this.level().addFreshEntity(areaEffectCloudEntity);
     }
 }

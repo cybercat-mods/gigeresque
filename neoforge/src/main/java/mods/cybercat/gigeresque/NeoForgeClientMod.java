@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,10 +36,8 @@ import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 import mods.cybercat.gigeresque.common.predicates.*;
-import net.minecraft.client.renderer.item.*;
-
+import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 
 @EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class NeoForgeClientMod {

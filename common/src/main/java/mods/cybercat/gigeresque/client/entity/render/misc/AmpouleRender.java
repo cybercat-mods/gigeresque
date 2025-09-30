@@ -1,11 +1,11 @@
 package mods.cybercat.gigeresque.client.entity.render.misc;
 
-import mods.cybercat.gigeresque.Constants;
-import mods.cybercat.gigeresque.common.entity.impl.projectile.AmpouleProjectile;
-import mods.cybercat.gigeresque.common.entity.impl.projectile.GooAmpouleProjectile;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+
+import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.common.entity.impl.projectile.AmpouleProjectile;
 
 public class AmpouleRender extends ArrowRenderer<AmpouleProjectile> {
 

@@ -1,14 +1,11 @@
 package mods.cybercat.gigeresque;
 
-import org.intellij.lang.annotations.Identifier;
-
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderRegistryAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.RenderType;
@@ -17,11 +14,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
+
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.aqua.AquaticChestbursterEntityRenderer;
@@ -30,6 +25,7 @@ import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRen
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
+import mods.cybercat.gigeresque.client.entity.render.misc.*;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
@@ -43,7 +39,6 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.predicates.*;
-import mods.cybercat.gigeresque.client.entity.render.misc.*;
 
 public class FabricModClient implements ClientModInitializer {
 

@@ -1,19 +1,14 @@
 package mods.cybercat.gigeresque.common.item;
 
-import net.minecraft.world.flag.FeatureFlag;
-import net.minecraft.world.flag.FeatureFlagRegistry;
+import net.minecraft.core.component.*;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.Fireworks;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.platform.GigServices;
-
-import net.minecraft.core.component.*;
 
 public record GigItems() implements CommonItemRegistryInterface {
 

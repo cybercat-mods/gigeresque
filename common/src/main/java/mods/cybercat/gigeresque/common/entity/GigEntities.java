@@ -1,8 +1,6 @@
 package mods.cybercat.gigeresque.common.entity;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.entity.BlockEntityType;
