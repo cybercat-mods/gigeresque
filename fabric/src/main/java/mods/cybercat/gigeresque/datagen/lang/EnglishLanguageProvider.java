@@ -94,8 +94,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigItems.SURGERY_KIT.get(), "Surgery Kit");
         builder.add(GigItems.TRACKER.get(), "Memo Stone");
         builder.add(GigItems.SEALED_AMPOULE_GOO.get(), "Ampoule of Black Fluid");
-        builder.add(GigItems.SEALED_AMPOULE_ACID.get(),"Ampoule of Acid");
-        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(),"Empty Ampoule");
+        builder.add(GigItems.SEALED_AMPOULE_ACID.get(), "Ampoule of Acid");
+        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(), "Empty Ampoule");
         builder.add(GigItems.DEV_DEBUG_STICK.get(), "You sleep now");
 
         // Blocks
