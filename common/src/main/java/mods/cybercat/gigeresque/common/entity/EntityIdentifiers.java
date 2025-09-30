@@ -62,4 +62,8 @@ public record EntityIdentifiers() {
 
     public static final ResourceLocation ENGINEER_HOLOGRAM = Constants.modResource("engineer_hologram");
 
+    public static final ResourceLocation AMPOULE_PROJECTILE = Constants.modResource("ampoule_projectile");
+    public static final ResourceLocation ACID_AMPOULE_PROJECTILE = Constants.modResource("ampoule_projectile");
+    public static final ResourceLocation GOO_AMPOULE_PROJECTILE = Constants.modResource("ampoule_projectile");
+
 }
