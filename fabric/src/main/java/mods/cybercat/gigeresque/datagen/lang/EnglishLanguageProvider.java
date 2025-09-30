@@ -93,6 +93,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigItems.HELL_BURSTER_SPAWN_EGG.get(), "Infernal Burster Spawn Egg");
         builder.add(GigItems.SURGERY_KIT.get(), "Surgery Kit");
         builder.add(GigItems.TRACKER.get(), "Memo Stone");
+        builder.add(GigItems.SEALED_AMPOULE_GOO.get(), "Ampoule of Black Fluid");
+        builder.add(GigItems.SEALED_AMPOULE_ACID.get(),"Ampoule of Acid");
+        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(),"Empty Ampoule");
         builder.add(GigItems.DEV_DEBUG_STICK.get(), "You sleep now");
 
         // Blocks
@@ -189,9 +192,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigStatusEffects.EGGMORPHING.value(), "Eggmorphing");
         builder.add("effect.gigeresque.eggmorphing.description", "");
 
-        // Maps
-        builder.add("filled_map.gig_dungeon", "Otherworldly Structure Map");
-
         // Creative Tabs
         builder.add("itemGroup." + CommonMod.MOD_ID + ".items", "Gigeresque Items");
         builder.add("itemGroup." + CommonMod.MOD_ID + ".blocks", "Gigeresque Blocks");
@@ -217,27 +217,27 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("death.attack.spore", "%s suffered from a massive dose of tetanospasmin!");
 
         // Subtitles
-        builder.add("subtitles.gigeresque.dungeon_idle", "Something strange plays");
+        builder.add("subtitles.gigeresque.dungeon_idle", "Strange sound");
         builder.add("subtitles.gigeresque.tracker_summon", "A ghostly figure appears");
         builder.add("subtitles.gigeresque.alien_hiss", "Unnatural hiss");
-        builder.add("subtitles.gigeresque.alien_claw", "");
-        builder.add("subtitles.gigeresque.alien_tail", "");
+        builder.add("subtitles.gigeresque.alien_claw", "Something whooshes");
+        builder.add("subtitles.gigeresque.alien_tail", "Something swooshes");
         builder.add("subtitles.gigeresque.alien_death", "Unnatural scream");
         builder.add("subtitles.gigeresque.alien_hurt", "Unnatural screech");
-        builder.add("subtitles.gigeresque.alien_headbite", "");
-        builder.add("subtitles.gigeresque.alien_death_thud", "");
-        builder.add("subtitles.gigeresque.alien_crunch", "");
-        builder.add("subtitles.gigeresque.egg_notice", "");
+        builder.add("subtitles.gigeresque.alien_headbite", "Interloper headbites");
+        builder.add("subtitles.gigeresque.alien_death_thud", "Interloper dies");
+        builder.add("subtitles.gigeresque.alien_crunch", "Something cracks");
+        builder.add("subtitles.gigeresque.egg_notice", "Egg creaks");
         builder.add("subtitles.gigeresque.hugger_ambient", "Facehugger chitters");
         builder.add("subtitles.gigeresque.hugger_death", "Facehugger dies");
         builder.add("subtitles.gigeresque.hugger_hurt", "Facehugger chirps");
         builder.add("subtitles.gigeresque.hugger_implant", "Something swallows");
         builder.add("subtitles.gigeresque.chestbursting", "Bones break");
-        builder.add("subtitles.gigeresque.alien_footstep", "");
-        builder.add("subtitles.gigeresque.alien_handstep", "");
-        builder.add("subtitles.gigeresque.aqua_landmove", "");
-        builder.add("subtitles.gigeresque.burster_crawl", "");
-        builder.add("subtitles.gigeresque.aqua_landclaw", "");
+        builder.add("subtitles.gigeresque.alien_footstep", "Something walks");
+        builder.add("subtitles.gigeresque.alien_handstep", "Something prowls");
+        builder.add("subtitles.gigeresque.aqua_landmove", "Something drags");
+        builder.add("subtitles.gigeresque.burster_crawl", "Something crawls");
+        builder.add("subtitles.gigeresque.aqua_landclaw", "Something whooshes");
 
         // Configs
         builder.add("config.gigeresque.option.classicXenoConfigs", "Entombed Interloper Configs");
