@@ -24,10 +24,20 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
 
     protected boolean ranAttackAnimation;
 
+    protected int attackFrequency;
+
+    public DelayedAttackGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack, int attackFrequency) {
+        super(alienEntity, speedModifier, true);
+        this.alienEntity = alienEntity;
+        this.attackAnimationCooldown = Cooldown.withCooldownTimeInTicks("attackAnimationCooldownInTicks", delayTicksBeforeAttack);
+        this.attackFrequency = attackFrequency;
+    }
+
     public DelayedAttackGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack) {
         super(alienEntity, speedModifier, true);
         this.alienEntity = alienEntity;
         this.attackAnimationCooldown = Cooldown.withCooldownTimeInTicks("attackAnimationCooldownInTicks", delayTicksBeforeAttack);
+        this.attackFrequency = 20;
     }
 
     @Override
@@ -98,4 +108,10 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
 
         return !NEST.test(alienEntity.getTarget().getInBlockState());
     }
+
+    @Override
+    protected void resetAttackCooldown() {
+        this.ticksUntilNextAttack = this.adjustedTickDelay(this.attackFrequency);
+    }
+
 }
