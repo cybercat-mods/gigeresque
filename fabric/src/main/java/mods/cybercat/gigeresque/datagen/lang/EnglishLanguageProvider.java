@@ -93,9 +93,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(GigItems.HELL_BURSTER_SPAWN_EGG.get(), "Infernal Burster Spawn Egg");
         builder.add(GigItems.SURGERY_KIT.get(), "Surgery Kit");
         builder.add(GigItems.TRACKER.get(), "Memo Stone");
-        builder.add(GigItems.SEALED_AMPOULE_GOO.get(), "Ampoule of Black Fluid");
-        builder.add(GigItems.SEALED_AMPOULE_ACID.get(), "Ampoule of Acid");
-        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(), "Empty Ampoule");
+        builder.add(GigItems.SEALED_AMPOULE_GOO.get(), "Ampule of Black Fluid");
+        builder.add(GigItems.SEALED_AMPOULE_ACID.get(), "Ampule of Acid");
+        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(), "Empty Ampule");
         builder.add(GigItems.DEV_DEBUG_STICK.get(), "You sleep now");
 
         // Blocks
