@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,28 +33,47 @@ public record GigCommonMethods() {
         animationAction.run();
     }
 
-    public static void generateBloodPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = GigEntities.BLOOD.get().create(entity.level());
-        assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(acidEntity);
+    public static Entity generateBloodPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+        var bloodEntity = GigEntities.BLOOD.get().create(entity.level());
+        assert bloodEntity != null;
+        bloodEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
+        entity.level().addFreshEntity(bloodEntity);
+        return bloodEntity;
     }
 
-    public static void generateAcidPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+    public static Entity generateAcidPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
         var acidEntity = GigEntities.ACID.get().create(entity.level());
         assert acidEntity != null;
         acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
         entity.level().addFreshEntity(acidEntity);
+        return acidEntity;
     }
 
-    public static void generateGooBlood(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = GigEntities.GOO.get().create(entity.level());
+    public static Entity generateAcidPoolAtPos(Level level, BlockPos pos, int xOffset, int zOffset) {
+        var acidEntity = GigEntities.ACID.get().create(level);
         assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(acidEntity);
+        acidEntity.moveTo(pos.offset(0, 1, 0), xOffset, zOffset);
+        level.addFreshEntity(acidEntity);
+        return acidEntity;
     }
 
-    public static void generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset, float radius) {
+    public static Entity generateGooBlood(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
+        var gooEntity = GigEntities.GOO.get().create(entity.level());
+        assert gooEntity != null;
+        gooEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
+        entity.level().addFreshEntity(gooEntity);
+        return gooEntity;
+    }
+
+    public static Entity generateGooBloodAtPos(Level level, BlockPos pos, int xOffset, int zOffset) {
+        var gooEntity = GigEntities.GOO.get().create(level);
+        assert gooEntity != null;
+        gooEntity.moveTo(pos.offset(0, 1, 0), xOffset, zOffset);
+        level.addFreshEntity(gooEntity);
+        return gooEntity;
+    }
+
+    public static Entity generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset, float radius) {
         var areaEffectCloudEntity = new AreaEffectCloud(
             entity.level(),
             pos.getX(),
@@ -72,6 +92,7 @@ public record GigCommonMethods() {
             );
         }
         entity.level().addFreshEntity(areaEffectCloudEntity);
+        return areaEffectCloudEntity;
     }
 
     public static void handleNestProgress(AlienEggEntity alienEggEntity) {

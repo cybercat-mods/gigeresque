@@ -21,6 +21,9 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
             .icon(() -> new ItemStack(GigBlocks.PETRIFIED_OBJECT_3_BLOCK.get()))
             .displayItems((enabledFeatures, entries) -> {
                 entries.accept(GigItems.BLACK_FLUID_BUCKET.get());
+                entries.accept(GigItems.SEALED_AMPOULE_EMPTY.get());
+                entries.accept(GigItems.SEALED_AMPOULE_ACID.get());
+                entries.accept(GigItems.SEALED_AMPOULE_GOO.get());
                 entries.accept(GigItems.SURGERY_KIT.get());
                 entries.accept(GigItems.TRACKER.get());
                 if (CommonMod.config.enableDevEntites)

@@ -5,6 +5,9 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.item.*;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,6 +23,7 @@ import mods.cybercat.gigeresque.client.entity.render.classic.ChestbursterEntityR
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.entity.render.misc.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.misc.AmpouleRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
@@ -32,6 +36,7 @@ import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.predicates.*;
 import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 
 @EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -57,6 +62,7 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GigEntities.BLOOD.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.GOO.get(), AcidEntityRender::new);
+        event.registerEntityRenderer(GigEntities.AMPOULE_PROJECTILE.get(), AmpouleRender::new);
         event.registerEntityRenderer(
             GigEntities.ALIEN.get(),
             mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new
@@ -171,6 +177,18 @@ public class NeoForgeClientMod {
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
+        );
+
+        ItemProperties.register(
+            Items.CROSSBOW,
+            Constants.modResource("acid_loaded"),
+            AmpoulePredicates::acidLoadedPredicate
+        );
+
+        ItemProperties.register(
+            Items.CROSSBOW,
+            Constants.modResource("goo_loaded"),
+            AmpoulePredicates::gooLoadedPredicate
         );
     }
 

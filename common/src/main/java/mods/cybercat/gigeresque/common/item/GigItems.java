@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.item;
 
+import net.minecraft.core.component.*;
 import net.minecraft.world.item.*;
 
 import java.util.function.Supplier;
@@ -18,6 +19,24 @@ public record GigItems() implements CommonItemRegistryInterface {
     );
 
     public static final Supplier<Item> TRACKER = CommonItemRegistryInterface.registerItem(CommonMod.MOD_ID, "tracker", TrackerItem::new);
+
+    public static final Supplier<Item> SEALED_AMPOULE_EMPTY = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_empty",
+        () -> new Item(new Item.Properties().stacksTo(16))
+    );
+
+    public static final Supplier<Item> SEALED_AMPOULE_ACID = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_acid",
+        () -> new AcidAmpouleItem(new Item.Properties().stacksTo(16))
+    );
+
+    public static final Supplier<Item> SEALED_AMPOULE_GOO = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "sealed_ampoule_goo",
+        () -> new GooAmpouleItem(new Item.Properties().stacksTo(16))
+    );
 
     public static final Supplier<Item> BLACK_FLUID_BUCKET = CommonItemRegistryInterface.registerItem(
         CommonMod.MOD_ID,

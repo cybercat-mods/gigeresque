@@ -140,17 +140,15 @@ public class AzureVibrationUser implements VibrationSystem.User {
     private void doVibrationAction(@NotNull BlockPos blockPos, @Nullable Entity entity2) {
         if (this.mob instanceof AlienEntity alienEntity && !alienEntity.crawlingManager.isCrawling()) {
             alienEntity.wakeupCounter++;
-            if (alienEntity.stasisManager.isStasis() && alienEntity.wakeupCounter == 1) {
-                alienEntity.animationDispatcher.sendStatisLeave();
-            }
-            if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
-                alienEntity.stasisManager.setStasis(false);
-            if (alienEntity.wakeupCounter == 2 && !alienEntity.moveAnalysis.isMoving()) {
-                if (alienEntity.level().getBlockState(alienEntity.blockPosition().below()).isSolid())
-                    alienEntity.stasisManager.setStasis(false);
+            if (alienEntity.stasisManager.isStasis() && alienEntity.wakeupCounter < 3) {
+                // alienEntity.animationDispatcher.sendStatisLeave();
+                // add "twitch" animation here
             }
             if (alienEntity.wakeupCounter >= 3) {
-                alienEntity.stasisManager.setStasis(false);
+                if (alienEntity.stasisManager.isStasis()) {
+                    alienEntity.animationDispatcher.sendStatisLeave();
+                    alienEntity.stasisManager.setStasis(false);
+                }
                 if (entity2 instanceof LivingEntity livingEntity && GigEntityUtils.TARGET_PREDICATE.test(alienEntity, livingEntity)) {
                     this.mob.setTarget(livingEntity);
                 }

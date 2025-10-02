@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -23,10 +24,20 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
 
     protected boolean ranAttackAnimation;
 
+    protected int attackFrequency;
+
+    public DelayedAttackGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack, int attackFrequency) {
+        super(alienEntity, speedModifier, true);
+        this.alienEntity = alienEntity;
+        this.attackAnimationCooldown = Cooldown.withCooldownTimeInTicks("attackAnimationCooldownInTicks", delayTicksBeforeAttack);
+        this.attackFrequency = attackFrequency;
+    }
+
     public DelayedAttackGoal(AlienEntity alienEntity, double speedModifier, int delayTicksBeforeAttack) {
         super(alienEntity, speedModifier, true);
         this.alienEntity = alienEntity;
         this.attackAnimationCooldown = Cooldown.withCooldownTimeInTicks("attackAnimationCooldownInTicks", delayTicksBeforeAttack);
+        this.attackFrequency = 20;
     }
 
     @Override
@@ -91,7 +102,16 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
         if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
             return false;
         }
+        if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
+            return false;
+        }
 
         return !NEST.test(alienEntity.getTarget().getInBlockState());
     }
+
+    @Override
+    protected void resetAttackCooldown() {
+        this.ticksUntilNextAttack = this.adjustedTickDelay(this.attackFrequency);
+    }
+
 }

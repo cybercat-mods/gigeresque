@@ -1,6 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -82,6 +83,9 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
 
     private boolean isAbleToAttack() {
         if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
+            return false;
+        }
+        if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
 

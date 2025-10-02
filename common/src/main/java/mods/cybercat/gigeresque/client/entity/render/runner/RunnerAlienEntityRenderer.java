@@ -18,10 +18,13 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
 
     public RunnerAlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<RunnerAlienEntity>builder(
-                EntityModels.RUNNER_ALIEN,
-                EntityTextures.RUNNER_ALIEN
-            )
+            AzEntityRendererConfig.<RunnerAlienEntity>builder($ -> EntityModels.RUNNER_ALIEN, xeno -> {
+                if (xeno.stasisManager.isStasis()) {
+                    return EntityTextures.RUNNER_ALIEN_STASIS;
+                }
+
+                return EntityTextures.RUNNER_ALIEN;
+            })
                 .setAnimatorProvider(RunnerAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)

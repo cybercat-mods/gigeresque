@@ -114,6 +114,10 @@ public record EntityTextures() {
         "%s/runner_alien/runner_alien_young.png".formatted(BASE_ENTITY_URL)
     );
 
+    public static final ResourceLocation RUNNER_ALIEN_STASIS = Constants.modResource(
+        "%s/runner_alien/runner_alien_stasis.png".formatted(BASE_ENTITY_URL)
+    );
+
     public static final ResourceLocation HELLMORPH_RUNNER = Constants.modResource(
         "%s/hellmorph_runner/hellmorph_runner.png".formatted(BASE_ENTITY_URL)
     );

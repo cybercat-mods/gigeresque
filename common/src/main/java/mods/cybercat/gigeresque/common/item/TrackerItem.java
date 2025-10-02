@@ -108,6 +108,11 @@ public class TrackerItem extends Item {
     }
 
     @Override
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+        return 1;
+    }
+
+    @Override
     public void appendHoverText(
         @NotNull ItemStack stack,
         Item.@NotNull TooltipContext context,

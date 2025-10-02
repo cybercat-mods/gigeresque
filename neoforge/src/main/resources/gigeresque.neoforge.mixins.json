@@ -12,6 +12,7 @@
     "common.MixinEntityTypeBuilder_SilenceDataFixerError",
     "common.PointOfInterestTypesInvoker",
     "common.ServerLevelMixin",
+    "common.MixinProjectileUtil_AllowHittingVehicle",
     "common.item.BucketMixin_DontBucketBlackFluid",
     "common.entity.BrushableBlockEntityMixin",
     "common.entity.CreeperMixin",
@@ -34,7 +35,8 @@
     "client.entity.render.feature.SheepWoolFeatureRendererMixin",
     "client.entity.render.feature.SlimeOverlayFeatureRendererMixin",
     "client.entity.render.feature.VillagerClothingFeatureRendererMixin",
-    "client.render.InGameOverlayRendererMixin"
+    "client.render.InGameOverlayRendererMixin",
+    "client.item.BowItemMixin"
   ],
   "server": []
 }

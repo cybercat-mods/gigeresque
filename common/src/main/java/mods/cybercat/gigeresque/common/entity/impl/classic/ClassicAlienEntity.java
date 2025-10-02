@@ -198,7 +198,9 @@ public class ClassicAlienEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && !this.stasisManager.isStasis() && GigEntityUtils.isValidTarget(
+                    target
+                )
             )
         );
     }
@@ -207,7 +209,8 @@ public class ClassicAlienEntity extends AlienEntity {
     public void positionRider(@NotNull Entity entity, @NotNull MoveFunction moveFunction) {
         if (entity instanceof LivingEntity mob) {
             var random = new SplittableRandom();
-            mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 100, true, true));
+            mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, true, true));
+            mob.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 1, true, true));
             var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
             var g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
             var y1 = random.nextFloat(0.14F, 0.15F);

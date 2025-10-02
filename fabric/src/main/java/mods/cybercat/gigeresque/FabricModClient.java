@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.item.Items;
 
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
@@ -23,7 +25,7 @@ import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRen
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.SporeItemBlockRender;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
-import mods.cybercat.gigeresque.client.entity.render.misc.AcidEntityRender;
+import mods.cybercat.gigeresque.client.entity.render.misc.*;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
@@ -36,6 +38,7 @@ import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
+import mods.cybercat.gigeresque.common.predicates.*;
 
 public class FabricModClient implements ClientModInitializer {
 
@@ -54,6 +57,7 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);
         EntityRenderers.register(GigEntities.BLOOD.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.GOO.get(), AcidEntityRender::new);
+        EntityRenderers.register(GigEntities.AMPOULE_PROJECTILE.get(), AmpouleRender::new);
         EntityRenderers.register(GigEntities.ALIEN.get(), mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new);
         // EntityRenderers.register(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         EntityRenderers.register(
@@ -166,6 +170,19 @@ public class FabricModClient implements ClientModInitializer {
         AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
         AzItemRendererRegistry.register(SporeItemBlockRender::new, GigBlocks.SPORE_BLOCK.get().asItem());
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
+
+        // Predicate stuff
+        ItemProperties.register(
+            Items.CROSSBOW,
+            Constants.modResource("acid_loaded"),
+            AmpoulePredicates::acidLoadedPredicate
+        );
+
+        ItemProperties.register(
+            Items.CROSSBOW,
+            Constants.modResource("goo_loaded"),
+            AmpoulePredicates::gooLoadedPredicate
+        );
     }
 
     private void registerParticle(

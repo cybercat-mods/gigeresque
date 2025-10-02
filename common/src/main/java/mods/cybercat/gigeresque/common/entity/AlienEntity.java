@@ -23,6 +23,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -153,6 +155,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.BOOLEAN
+    );
+
+    public static final EntityDataAccessor<Float> CARRYING_DAMAGE = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.FLOAT
     );
 
     protected int delayBeforeEating = 0;
@@ -328,6 +335,14 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         entityData.set(GROWTH, growth);
     }
 
+    public float getCarryDamage() {
+        return entityData.get(CARRYING_DAMAGE);
+    }
+
+    public void setCarryDamage(float damage) {
+        entityData.set(CARRYING_DAMAGE, damage);
+    }
+
     public BlockPos getHomeBlock() {
         return this.entityData.get(HOME_BLOCKPOS);
     }
@@ -359,6 +374,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(STASIS_TICK, 0);
         builder.define(HOME_BLOCKPOS, BlockPos.ZERO);
         builder.define(IS_CLIMBING, false);
+        builder.define(CARRYING_DAMAGE, 0.0f);
     }
 
     @Override
@@ -375,6 +391,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
         compound.putBoolean("is_birthed", isBirthed());
+        compound.putFloat("carry_damage", this.getCarryDamage());
         BlockPos homeBlock = this.getHomeBlock();
         if (homeBlock != null) {
             NbtUtils.writeBlockPos(homeBlock);
@@ -404,6 +421,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
+        this.setCarryDamage(compound.getFloat("carry_damage"));
         if (compound.contains("is_birthed")) {
             this.setBirthStatus(compound.getBoolean("is_birthed"));
         }
@@ -463,6 +481,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                 this.setGrowth((this.getGrowth() + 1) * getGrowthMultiplier());
             } else if (this.getGrowth() >= this.getMaxGrowth()) {
                 this.growUp(this);
+            }
+            if (!this.isVehicle()) {
+                this.setCarryDamage(0.0f);
             }
             if (this.getHealth() != this.getMaxHealth() && this.getTarget() == null && this.tickCount % 20 == 0) {
                 healCounter++;
@@ -607,9 +628,18 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             multiplier = 2.0f;
         if (source == damageSources().inWall())
             return false;
-
-        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker)
+        if (this.isVehicle() && !this.level().isClientSide) {
+            this.setCarryDamage(this.getCarryDamage() + amount);
+            if (this.getCarryDamage() > 15.0f) {
+                this.ejectPassengers();
+                this.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 10, false, false));
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10, false, false));
+                GigCommonMethods.setAnimation(this.animationDispatcher::sendUnkidnap);
+            }
+        }
+        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker) {
             this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
+        }
         if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
             return super.hurt(source, amount);
 

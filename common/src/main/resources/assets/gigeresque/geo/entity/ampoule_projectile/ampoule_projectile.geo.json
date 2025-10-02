@@ -1,0 +1,27 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.ampoule_projectile",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "ampoule_projectile",
+					"pivot": [0, 0, -6],
+					"cubes": [
+						{"origin": [-1, 0, -7], "size": [2, 2, 6], "uv": [0, 8]},
+						{"origin": [-1.5, -0.5, -1], "size": [3, 3, 5], "uv": [0, 0]},
+						{"origin": [-1.5, 1, 4], "size": [3, 0, 4], "pivot": [0, 1, 4], "rotation": [0, 0, 45], "uv": [-4, 9]},
+						{"origin": [-1.5, 1, 4], "size": [3, 0, 4], "pivot": [0, 1, 4], "rotation": [0, 0, -45], "uv": [-4, 9]}
+					]
+				}
+			]
+		}
+	]
+}

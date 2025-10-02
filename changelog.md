@@ -1,32 +1,29 @@
-# v0.8.12
+# v0.8.13
 
 ## ☢️ Breaking Changes
 - N/A
 
 ## ✨ What's New
-- WIP Unnerving Statue block
+- N/A
 
 ## ♻️ Changes
-- Each growth stage is now 300 seconds instead of 1200
-- Huggers will bleed while attached to hosts
-- Reduced dungeon size
-- Update stats of neos (whole line) to be weaker
-- All neos create spore clouds
-- Removed runners from raids
-- Removed written books from dungeon loot pools
+- Stasis interlopers now do not aggro until woken up by multiple vibrations
+- Removed map trades from villagers now that tracker functions properly
+- Causing enough damage to an interloper while carrying a mob will cause it to drop the mob
+- Allow players to attack interlopers that are carrying them (albeit with weakness)
 
 ## 🐞 Fixes
-- Aliens no longer ignore mobs partially in resin
-- Multiblocks/storage blocks are now oriented properly in structures
-- Non-neohosts are unaffected by spore effect
-- Spore effect now kills properly (no weird magic damage)
-- Sarcophogai and jars now have proper open/close animations
-- Surgery kits work on rideable mobs
-- Dungeons no longer generate upwards potentially to sea level
-- Reduced inventory size of jars to match inventory menu
+- Fix stasis animation not correctly sending
+- Fix carrying animations not stopping when entity is dead
+- Grabbed mobs are immune to suffocation
+- Tracker hologram now rotates properly and should be completely functional
+- Archeology blocks now display gig items emerging properly
+- Lithe interlopers now have their stasis texture properly implemented
+- Block entity models/rendering is fixed in the latest (.31 as of writing) Azurelib version
 
 ## 🛠 Data Pack
 - N/A
 
 ## 🔬 Technical Changes
-- Updated to AzureLib 3.0.28
+- Updated to AzureLib 3.0.31
+- SpotlessApply now runs on javaCompile (so formatting should now be automatic)
