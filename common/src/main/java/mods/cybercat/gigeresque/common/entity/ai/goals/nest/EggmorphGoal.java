@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.nest;
 
-import mod.azure.azurelib.sblforked.util.RandomUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
@@ -42,10 +41,6 @@ public class EggmorphGoal extends Goal {
         if (this.mob.hasHomeBlock() && isPathfindable(this.mob.getHomeBlock())) {
             var blockPos = this.mob.getHomeBlock();
             var centerPos = Vec3.atCenterOf(blockPos);
-            var blockCenter = Vec3.atCenterOf(blockPos);
-            var entityPos = this.mob.position();
-            var passenger = this.mob.getFirstPassenger();
-            var test = RandomUtil.getRandomPositionWithinRange(this.mob.blockPosition(), 3, 1, 3, false, this.mob.level());
 
             this.mob.getNavigation().moveTo(centerPos.x, centerPos.y, centerPos.z, 0.8F);
         }

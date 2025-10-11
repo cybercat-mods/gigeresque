@@ -1,14 +1,11 @@
 package mods.cybercat.gigeresque.client.entity.render.neo;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.neo.NeobursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.neo.NeobursterAnimManager;
@@ -20,8 +17,12 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
         super(
             AzEntityRendererConfig.<NeobursterEntity>builder(EntityModels.NEOBURSTER, EntityTextures.NEOBURSTER)
                 .setAnimatorProvider(NeobursterAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    NeobursterAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
-                .addRenderLayer(new BloodLayer<>())
+                .addRenderLayer(new BloodAzLayer<>())
                 .setShadowRadius(0.25F)
                 .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 5.0f))
                 .setPrerenderEntry(rendererPipelineContext -> {
@@ -33,18 +34,5 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull NeobursterEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        NeobursterAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

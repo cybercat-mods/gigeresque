@@ -1,14 +1,9 @@
 package mods.cybercat.gigeresque.client.entity.render.neo;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.AzModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.model.NeomorphModelRenderer;
@@ -26,35 +21,24 @@ public class NeomorphRenderer extends AzEntityRenderer<NeomorphEntity> {
                 EntityTextures.NEOMORPH
             )
                 .setAnimatorProvider(NeomorphAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    NeomorphAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
+                .setModelRenderer(
+                    (
+                        pipelineContext,
+                        layerRenderer
+                    ) -> new NeomorphModelRenderer(
+                        (AzEntityRendererPipeline<NeomorphEntity>) pipelineContext,
+                        layerRenderer
+                    )
+                )
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
                 .setScale(0.76F)
                 .build(),
             context
         );
-    }
-
-    @Override
-    public AzEntityRendererPipeline<NeomorphEntity> createPipeline(AzEntityRendererConfig<NeomorphEntity> config) {
-        return new AzEntityRendererPipeline<>(config, this) {
-
-            @Override
-            protected AzModelRenderer<NeomorphEntity> createModelRenderer(AzLayerRenderer<NeomorphEntity> layerRenderer) {
-                return new NeomorphModelRenderer(this, layerRenderer);
-            }
-        };
-    }
-
-    @Override
-    public void render(
-        @NotNull NeomorphEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        NeomorphAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

@@ -1,10 +1,10 @@
 package mods.cybercat.gigeresque.common.util;
 
-import mod.azure.azurelib.sblforked.util.RandomUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
@@ -25,6 +25,8 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public record GigEntityUtils() {
+
+    public static final EasyRandom RANDOM = new EasyRandom(RandomSource.createThreadSafe());
 
     public static boolean isFacehuggerAttached(Entity entity) {
         return (entity != null && entity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance));
@@ -280,7 +282,7 @@ public record GigEntityUtils() {
     };
 
     public static void placeInNest(@NotNull ServerLevel level, AlienEntity entity, Entity passenger) {
-        var test = RandomUtil.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3, false, entity.level());
+        var test = GigEntityUtils.getRandomPositionWithinRange(entity.blockPosition(), 3, 1, 3);
         for (BlockPos testPos : BlockPos.betweenClosed(test, test.above(2))) {
             if (
                 level.getBlockState(test).isAir() && level.getBlockState(
@@ -305,6 +307,10 @@ public record GigEntityUtils() {
     public static boolean inResinEnoughToBeEggmorphed(@NotNull Entity entity) {
         var stateAtEntityPos = entity.level().getBlockState(entity.blockPosition());
         return stateAtEntityPos.is(GigBlocks.NEST_RESIN_WEB_CROSS.get());
+    }
+
+    public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius) {
+        return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius);
     }
 
 }

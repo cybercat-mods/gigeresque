@@ -1,8 +1,8 @@
 package mods.cybercat.gigeresque.client.entity.render.items;
 
-import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
-import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
-import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
+import mod.azure.azurelib.common.render.item.AzItemRenderer;
+import mod.azure.azurelib.common.render.item.AzItemRendererConfig;
+import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 import net.minecraft.resources.ResourceLocation;
 
 import mods.cybercat.gigeresque.Constants;

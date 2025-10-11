@@ -1,14 +1,11 @@
 package mods.cybercat.gigeresque.client.entity.render.aqua;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.aqua.AquaticChestbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.aqua.AquaticChestbursterAnimManager;
@@ -20,25 +17,16 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
         super(
             AzEntityRendererConfig.<AquaticChestbursterEntity>builder(EntityModels.AQUATICBURSTER, EntityTextures.AQUATICBURSTER)
                 .setAnimatorProvider(AquaticChestbursterAnimator::new)
+                .setRenderEntry(renderContext -> {
+                    AquaticChestbursterAnimManager.handleAnimations(renderContext.animatable());
+                    return renderContext;
+                })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.1F)
-                .addRenderLayer(new BloodLayer<>())
+                .addRenderLayer(new BloodAzLayer<>())
                 .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull AquaticChestbursterEntity entity,
-        float entityYaw,
-        float partialTicks,
-        @NotNull PoseStack stack,
-        @NotNull MultiBufferSource bufferIn,
-        int packedLightIn
-    ) {
-        AquaticChestbursterAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

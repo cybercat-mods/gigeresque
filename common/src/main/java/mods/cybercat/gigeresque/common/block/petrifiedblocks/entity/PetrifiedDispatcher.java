@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks.entity;
 
-import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
-import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mods.cybercat.gigeresque.Constants;

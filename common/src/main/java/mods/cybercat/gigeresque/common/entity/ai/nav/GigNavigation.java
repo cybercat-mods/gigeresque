@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.ai.nav;
 
-import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
-import mod.azure.azurelib.common.internal.common.ai.pathing.AzurePathFinder;
+import mod.azure.azurelib.common.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.common.ai.pathing.AzurePathFinder;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathFinder;

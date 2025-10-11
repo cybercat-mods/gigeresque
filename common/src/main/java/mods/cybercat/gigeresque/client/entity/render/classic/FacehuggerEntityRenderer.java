@@ -1,14 +1,9 @@
 package mods.cybercat.gigeresque.client.entity.render.classic;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.AzModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerModelRenderer;
@@ -23,34 +18,23 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
         super(
             AzEntityRendererConfig.<FacehuggerEntity>builder(EntityModels.FACEHUGGER, EntityTextures.FACEHUGGER)
                 .setAnimatorProvider(FacehuggerAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    FacehuggerAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.25F)
+                .setModelRenderer(
+                    (
+                        pipelineContext,
+                        layerRenderer
+                    ) -> new FacehuggerModelRenderer(
+                        (AzEntityRendererPipeline<FacehuggerEntity>) pipelineContext,
+                        layerRenderer
+                    )
+                )
                 .build(),
             context
         );
-    }
-
-    @Override
-    public AzEntityRendererPipeline<FacehuggerEntity> createPipeline(AzEntityRendererConfig<FacehuggerEntity> config) {
-        return new AzEntityRendererPipeline<>(config, this) {
-
-            @Override
-            protected AzModelRenderer<FacehuggerEntity> createModelRenderer(AzLayerRenderer<FacehuggerEntity> layerRenderer) {
-                return new FacehuggerModelRenderer(this, layerRenderer);
-            }
-        };
-    }
-
-    @Override
-    public void render(
-        @NotNull FacehuggerEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        FacehuggerAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

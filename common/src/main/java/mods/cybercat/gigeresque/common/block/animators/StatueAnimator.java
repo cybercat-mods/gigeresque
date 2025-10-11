@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.block.animators;
 
-import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
-import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
-import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
-import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
+import mod.azure.azurelib.common.animation.AzAnimatorConfig;
+import mod.azure.azurelib.common.animation.controller.AzAnimationController;
+import mod.azure.azurelib.common.animation.controller.AzAnimationControllerContainer;
+import mod.azure.azurelib.common.animation.impl.AzBlockAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 

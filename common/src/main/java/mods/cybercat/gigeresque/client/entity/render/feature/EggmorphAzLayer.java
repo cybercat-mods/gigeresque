@@ -1,27 +1,29 @@
 package mods.cybercat.gigeresque.client.entity.render.feature;
 
-import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
-import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
+import mod.azure.azurelib.common.model.AzBone;
+import mod.azure.azurelib.common.render.AzRendererPipeline;
+import mod.azure.azurelib.common.render.AzRendererPipelineContext;
+import mod.azure.azurelib.common.render.layer.AzRenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.UUID;
+
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
-public class EggmorphGeoFeatureRenderer<T extends Entity> implements AzRenderLayer<T> {
+public class EggmorphAzLayer<T extends Entity> implements AzRenderLayer<UUID, T> {
 
     private int fovEggticker = 0;
 
     @Override
-    public void preRender(AzRendererPipelineContext<T> context) {}
+    public void preRender(AzRendererPipelineContext<UUID, T> context) {}
 
     @Override
-    public void render(AzRendererPipelineContext<T> context) {
+    public void render(AzRendererPipelineContext<UUID, T> context) {
         T animatable = (T) context.animatable();
-        AzRendererPipeline<T> renderPipeline = context.rendererPipeline();
+        AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
         ResourceLocation textureLocation = renderPipeline.config().textureLocation(animatable);
         var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(textureLocation).renderLayer;
         if (animatable instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
@@ -36,5 +38,5 @@ public class EggmorphGeoFeatureRenderer<T extends Entity> implements AzRenderLay
     }
 
     @Override
-    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
+    public void renderForBone(AzRendererPipelineContext<UUID, T> context, AzBone bone) {}
 }

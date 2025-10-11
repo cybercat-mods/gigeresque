@@ -2,11 +2,13 @@ package mods.cybercat.gigeresque.client.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
+import mod.azure.azurelib.common.render.AzLayerRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityModelRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.UUID;
 
 import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadData;
 import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadOffsetData;
@@ -19,7 +21,7 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<FacehuggerEnt
 
     public FacehuggerModelRenderer(
         AzEntityRendererPipeline<FacehuggerEntity> entityRendererPipeline,
-        AzLayerRenderer<FacehuggerEntity> layerRenderer
+        AzLayerRenderer<UUID, FacehuggerEntity> layerRenderer
     ) {
         super(entityRendererPipeline, layerRenderer);
     }
