@@ -24,7 +24,7 @@ public class EggmorphAzLayer<T extends Entity> implements AzRenderLayer<UUID, T>
     public void render(AzRendererPipelineContext<UUID, T> context) {
         T animatable = (T) context.animatable();
         AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
-        ResourceLocation textureLocation = renderPipeline.config().textureLocation(animatable);
+        ResourceLocation textureLocation = renderPipeline.config().textureLocation(context.currentEntity(), animatable);
         var renderLayer = EggmorphFeatureRenderer.getEggmorphLayerTexture(textureLocation).renderLayer;
         if (animatable instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
             fovEggticker++;

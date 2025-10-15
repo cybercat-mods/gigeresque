@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphAzLayer;
 
@@ -19,8 +19,8 @@ import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphAzLayer;
 public abstract class AzureEntityRendererMixin<T extends Entity> extends AzRendererConfig.Builder<UUID, T> {
 
     protected AzureEntityRendererMixin(
-        Function<T, ResourceLocation> modelLocationProvider,
-        Function<T, ResourceLocation> textureLocationProvider
+        BiFunction<Entity, T, ResourceLocation> modelLocationProvider,
+        BiFunction<Entity, T, ResourceLocation> textureLocationProvider
     ) {
         super(modelLocationProvider, textureLocationProvider);
     }

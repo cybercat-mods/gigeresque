@@ -14,7 +14,7 @@ public class SporeItemBlockRender extends AzItemRenderer {
 
     public SporeItemBlockRender() {
         super(
-            AzItemRendererConfig.builder(itemStack -> MODEL, itemStack -> TEXTURE)
+            AzItemRendererConfig.builder(MODEL, TEXTURE)
                 .build()
         );
     }

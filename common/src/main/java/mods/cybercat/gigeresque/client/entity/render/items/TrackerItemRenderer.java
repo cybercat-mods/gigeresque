@@ -16,7 +16,7 @@ public class TrackerItemRenderer extends AzItemRenderer {
 
     public TrackerItemRenderer() {
         super(
-            AzItemRendererConfig.builder(itemStack -> MODEL, itemStack -> TEXTURE)
+            AzItemRendererConfig.builder(MODEL, TEXTURE)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setAnimatorProvider(TrackerAnimator::new)
                 .useNewOffset(true)
