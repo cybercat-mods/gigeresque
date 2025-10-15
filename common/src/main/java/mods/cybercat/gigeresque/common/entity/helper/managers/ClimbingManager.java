@@ -5,6 +5,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,10 @@ public class ClimbingManager {
 
     public final EntityDataAccessor<Boolean> isClimbingEDA;
 
+    public final EntityDataAccessor<Vector3f> forwardEDA;
+
+    public final EntityDataAccessor<Vector3f> upEDA;
+
     public boolean hasClosestCollision;
 
     public Vec3 closestCollision;
@@ -30,18 +35,45 @@ public class ClimbingManager {
     // set in move control
     public boolean climbingRequiredForMovement;
 
+    float rotationAdjustmentSpeed = 0.2f;
+
     public Vec3 up = new Vec3(0, 1, 0);
+
+    public Vec3 oldUp = new Vec3(0, 1, 0);
 
     public Vec3 forward = new Vec3(1, 0, 0);
 
-    public ClimbingManager(AlienEntity alien, EntityDataAccessor<Boolean> isClimbingEDA) {
+    public Vec3 oldForward = new Vec3(1, 0, 0);
+
+    public ClimbingManager(
+        AlienEntity alien,
+        EntityDataAccessor<Boolean> isClimbingEDA,
+        EntityDataAccessor<Vector3f> forwardEDA,
+        EntityDataAccessor<Vector3f> upEDA
+    ) {
         this.alien = alien;
         this.isClimbingEDA = isClimbingEDA;
+        this.forwardEDA = forwardEDA;
+        this.upEDA = upEDA;
     }
 
     public void tick() {
         if (alien.level().isClientSide()) {
             climbing = alien.getEntityData().get(isClimbingEDA);
+            {
+                oldForward = forward;
+                var forwardVector3f = alien.getEntityData().get(forwardEDA);
+                forward = new Vec3(forwardVector3f.x, forwardVector3f.y, forwardVector3f.z)
+                    .scale(rotationAdjustmentSpeed)
+                    .add(oldForward.scale(1.0f - rotationAdjustmentSpeed));
+            }
+            {
+                oldUp = up;
+                var upVector3f = alien.getEntityData().get(upEDA);
+                up = new Vec3(upVector3f.x, upVector3f.y, upVector3f.z)
+                    .scale(rotationAdjustmentSpeed)
+                    .add(oldUp.scale(1.0f - rotationAdjustmentSpeed));
+            }
         } else {
             var blockPos = BlockPos.containing(alien.center());
             climbing = GigNodeEvaluator.climbable(
@@ -95,6 +127,24 @@ public class ClimbingManager {
             }
 
             alien.getEntityData().set(isClimbingEDA, climbing);
+            alien.getEntityData()
+                .set(
+                    forwardEDA,
+                    new Vector3f(
+                        (float) forward.x,
+                        (float) forward.y,
+                        (float) forward.z
+                    )
+                );
+            alien.getEntityData()
+                .set(
+                    upEDA,
+                    new Vector3f(
+                        (float) up.x,
+                        (float) up.y,
+                        (float) up.z
+                    )
+                );
             climbingRequiredForMovement = false;
         }
     }

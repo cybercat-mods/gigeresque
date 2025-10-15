@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -52,6 +51,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.function.BiConsumer;
 
@@ -157,6 +157,16 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         EntityDataSerializers.BOOLEAN
     );
 
+    private static final EntityDataAccessor<Vector3f> FORWARD = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.VECTOR3
+    );
+
+    private static final EntityDataAccessor<Vector3f> UP = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.VECTOR3
+    );
+
     public static final EntityDataAccessor<Float> CARRYING_DAMAGE = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.FLOAT
@@ -207,7 +217,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.navigationManager = new AlienNavigationManager(this);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.climbingManager = new ClimbingManager(this, IS_CLIMBING);
+        this.climbingManager = new ClimbingManager(this, IS_CLIMBING, FORWARD, UP);
     }
 
     public static boolean checkMonsterSpawnRules(
@@ -374,6 +384,8 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(STASIS_TICK, 0);
         builder.define(HOME_BLOCKPOS, BlockPos.ZERO);
         builder.define(IS_CLIMBING, false);
+        builder.define(FORWARD, new Vector3f(0, 0, 0));
+        builder.define(UP, new Vector3f(0, 0, 0));
         builder.define(CARRYING_DAMAGE, 0.0f);
     }
 
