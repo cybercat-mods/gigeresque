@@ -84,9 +84,9 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
     ) {
         if (
             entity instanceof LivingEntity livingEntity
-	            && livingEntity.getInBlockState() != null
-	            && livingEntity.getInBlockState()
-                .is(GigTags.NEST_CROSS_BLOCKS)
+                && livingEntity.getInBlockState() != null
+                && livingEntity.getInBlockState()
+                    .is(GigTags.NEST_CROSS_BLOCKS)
         ) {
             if (livingEntity.tickCount % 20 == 0)
                 fovEggticker++;
