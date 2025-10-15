@@ -1,12 +1,9 @@
 package mods.cybercat.gigeresque.client.entity.render.misc;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -23,6 +20,10 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 EntityTextures.SPITTER
             )
                 .setAnimatorProvider(SpitterAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    SpitterAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
@@ -30,18 +31,5 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull SpitterEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        SpitterAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

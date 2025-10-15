@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.common.entity;
 
 import com.mojang.serialization.Dynamic;
-import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;

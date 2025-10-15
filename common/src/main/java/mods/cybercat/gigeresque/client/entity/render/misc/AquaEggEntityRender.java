@@ -1,12 +1,9 @@
 package mods.cybercat.gigeresque.client.entity.render.misc;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
@@ -24,23 +21,10 @@ public class AquaEggEntityRender extends AzEntityRenderer<AquaEggEntity> {
                 EntityTextures.AQUA_EGG
             )
                 .setDeathMaxRotation(0.0F)
+                .setScale(entity -> 0.2f + (entity.getGrowth() / entity.getMaxGrowth()) / 5f)
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        AquaEggEntity entity,
-        float entityYaw,
-        float partialTick,
-        PoseStack stack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLightIn
-    ) {
-        var scaleFactor = 0.2f + ((entity.getGrowth() / entity.getMaxGrowth()) / 5f);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
-        super.render(entity, entityYaw, partialTick, stack, bufferSource, packedLightIn);
     }
 
 }

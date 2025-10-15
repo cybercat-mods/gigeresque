@@ -1,14 +1,11 @@
 package mods.cybercat.gigeresque.client.entity.render.hellmorphs;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.hellmorphs.HellbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.hellmorphs.HellbursterAnimManager;
@@ -20,25 +17,16 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
         super(
             AzEntityRendererConfig.<HellbursterEntity>builder(EntityModels.HELLBURSTER, EntityTextures.HELLBURSTER)
                 .setAnimatorProvider(HellbursterAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    HellbursterAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.3F)
-                .addRenderLayer(new BloodLayer<>())
+                .addRenderLayer(new BloodAzLayer<>())
                 .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull HellbursterEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        HellbursterAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

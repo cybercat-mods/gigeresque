@@ -1,14 +1,14 @@
 package mods.cybercat.gigeresque.client.entity.render.runner;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
-import mods.cybercat.gigeresque.client.entity.render.feature.BloodLayer;
+import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.runner.RunnerbursterAnimator;
 import mods.cybercat.gigeresque.common.entity.helper.managers.animations.runner.RunnerbursterAnimManager;
@@ -20,8 +20,11 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
         super(
             AzEntityRendererConfig.<RunnerbursterEntity>builder(EntityModels.RUNNERBURSTER, EntityTextures.RUNNERBURSTER)
                 .setAnimatorProvider(RunnerbursterAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
-                .addRenderLayer(new BloodLayer<>())
+                .addRenderLayer(new BloodAzLayer<>())
                 .setShadowRadius(0.3F)
                 .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
                 .build(),

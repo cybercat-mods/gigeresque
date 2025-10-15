@@ -82,7 +82,12 @@ public class EggmorphFeatureRenderer<T extends Entity, M extends EntityModel<T>>
         float headYaw,
         float headPitch
     ) {
-        if (entity instanceof LivingEntity livingEntity && livingEntity.getInBlockState().is(GigTags.NEST_CROSS_BLOCKS)) {
+        if (
+            entity instanceof LivingEntity livingEntity
+                && livingEntity.getInBlockState() != null
+                && livingEntity.getInBlockState()
+                    .is(GigTags.NEST_CROSS_BLOCKS)
+        ) {
             if (livingEntity.tickCount % 20 == 0)
                 fovEggticker++;
             if (fovEggticker > CommonMod.config.getEggmorphTickTimer()) {

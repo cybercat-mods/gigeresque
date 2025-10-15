@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;

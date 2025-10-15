@@ -1,11 +1,8 @@
 package mods.cybercat.gigeresque.client.entity.render.mutant;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -22,23 +19,14 @@ public class PopperEntityRenderer extends AzEntityRenderer<PopperEntity> {
                 EntityTextures.POPPER
             )
                 .setAnimatorProvider(PopperAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    PopperAnimManager.handleAnimations(renderEntry.animatable());
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull PopperEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        PopperAnimManager.handleAnimations(entity);
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

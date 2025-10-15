@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;

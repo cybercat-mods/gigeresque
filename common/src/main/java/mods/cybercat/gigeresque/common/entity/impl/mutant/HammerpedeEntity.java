@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
-import mod.azure.azurelib.rewrite.util.MoveAnalysis;
+import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;

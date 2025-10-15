@@ -1,6 +1,6 @@
 package mods.cybercat.gigeresque.mixins.common.entity;
 
-import mod.azure.azurelib.common.api.client.helper.ClientUtils;
+import mod.azure.azurelib.common.util.client.ClientUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

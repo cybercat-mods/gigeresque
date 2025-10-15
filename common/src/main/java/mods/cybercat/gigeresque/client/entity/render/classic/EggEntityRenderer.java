@@ -1,15 +1,10 @@
 package mods.cybercat.gigeresque.client.entity.render.classic;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
-import mod.azure.azurelib.rewrite.render.AzModelRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import net.minecraft.client.renderer.MultiBufferSource;
+import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.client.entity.model.EggModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
@@ -33,6 +28,19 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
                     .getEggState() == EggStates.HATCHED.ordinal() ? EntityTextures.EGG_ACTIVE : EntityTextures.EGG
             )
                 .setAnimatorProvider(AlienEggAnimator::new)
+                .setRenderEntry(renderEntry -> {
+                    var entity = renderEntry.animatable();
+                    if (entity.isDeadOrDying()) {
+                        GigCommonMethods.setAnimation(entity.animationDispatcher::sendDeath);
+                    } else if (entity.getEggState() == EggStates.HATCHING.ordinal()) {
+                        GigCommonMethods.setAnimation(entity.animationDispatcher::sendHatching);
+                    } else if (entity.getEggState() == EggStates.HATCHED.ordinal()) {
+                        GigCommonMethods.setAnimation(entity.animationDispatcher::sendHatchEmpty);
+                    } else {
+                        GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);
+                    }
+                    return renderEntry;
+                })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
                 .setRenderType(
@@ -41,40 +49,17 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
                             ? EGG_ACTIVE_RENDER_TYPE
                             : EGG_RENDER_TYPE
                 )
+                .setModelRenderer(
+                    (
+                        pipelineContext,
+                        layerRenderer
+                    ) -> new EggModelRenderer(
+                        (AzEntityRendererPipeline<AlienEggEntity>) pipelineContext,
+                        layerRenderer
+                    )
+                )
                 .build(),
             context
         );
-    }
-
-    @Override
-    public void render(
-        @NotNull AlienEggEntity entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        if (entity.isDeadOrDying()) {
-            GigCommonMethods.setAnimation(entity.animationDispatcher::sendDeath);
-        } else if (entity.getEggState() == EggStates.HATCHING.ordinal()) {
-            GigCommonMethods.setAnimation(entity.animationDispatcher::sendHatching);
-        } else if (entity.getEggState() == EggStates.HATCHED.ordinal()) {
-            GigCommonMethods.setAnimation(entity.animationDispatcher::sendHatchEmpty);
-        } else {
-            GigCommonMethods.setAnimation(entity.animationDispatcher::sendIdle);
-        }
-    }
-
-    @Override
-    public AzEntityRendererPipeline<AlienEggEntity> createPipeline(AzEntityRendererConfig<AlienEggEntity> config) {
-        return new AzEntityRendererPipeline<>(config, this) {
-
-            @Override
-            protected AzModelRenderer<AlienEggEntity> createModelRenderer(AzLayerRenderer<AlienEggEntity> layerRenderer) {
-                return new EggModelRenderer(this, layerRenderer);
-            }
-        };
     }
 }

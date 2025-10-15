@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque.client.entity.render.blocks;
 
-import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
-import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import mod.azure.azurelib.common.render.block.AzBlockEntityRenderer;
+import mod.azure.azurelib.common.render.block.AzBlockEntityRendererConfig;
 import net.minecraft.resources.ResourceLocation;
 
 import mods.cybercat.gigeresque.Constants;

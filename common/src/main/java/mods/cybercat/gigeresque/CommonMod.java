@@ -1,7 +1,7 @@
 package mods.cybercat.gigeresque;
 
-import mod.azure.azurelib.common.internal.common.AzureLibMod;
-import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.common.config.format.ConfigFormats;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

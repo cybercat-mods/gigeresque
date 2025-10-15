@@ -1,9 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.animators.runner;
 
-import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
-import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
-import mod.azure.azurelib.rewrite.animation.controller.keyframe.AzKeyframeCallbacks;
-import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
+import mod.azure.azurelib.common.animation.controller.AzAnimationController;
+import mod.azure.azurelib.common.animation.controller.AzAnimationControllerContainer;
+import mod.azure.azurelib.common.animation.controller.keyframe.AzKeyframeCallbacks;
+import mod.azure.azurelib.common.animation.impl.AzEntityAnimator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
