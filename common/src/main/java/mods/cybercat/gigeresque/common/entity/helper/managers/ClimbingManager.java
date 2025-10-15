@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.helper.managers;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -29,6 +30,10 @@ public class ClimbingManager {
     // set in move control
     public boolean climbingRequiredForMovement;
 
+    public Vec3 up = new Vec3(0, 1, 0);
+
+    public Vec3 forward = new Vec3(1, 0, 0);
+
     public ClimbingManager(AlienEntity alien, EntityDataAccessor<Boolean> isClimbingEDA) {
         this.alien = alien;
         this.isClimbingEDA = isClimbingEDA;
@@ -38,14 +43,18 @@ public class ClimbingManager {
         if (alien.level().isClientSide()) {
             climbing = alien.getEntityData().get(isClimbingEDA);
         } else {
-            var alienBlockPos = alien.blockPosition();
+            var blockPos = BlockPos.containing(alien.center());
             climbing = GigNodeEvaluator.climbable(
                 alien.level(),
-                alienBlockPos.getX(),
-                alienBlockPos.getY(),
-                alienBlockPos.getZ()
+                blockPos.getX(),
+                blockPos.getY(),
+                blockPos.getZ(),
+                true
             )
                 && climbingRequiredForMovement;
+
+            // all this stuff is here instead of in GigMoveControl since it needs to update even when the mob isn't
+            // moving
             alien.setNoGravity(climbing);
 
             closestCollision = getClosestBlockCollision(
@@ -58,18 +67,31 @@ public class ClimbingManager {
 
             if (climbing) {
                 Vec3 pull;
+                double distSq = 0;
                 if (hasClosestCollision) {
-                    pull = closestCollision.subtract(alien.center()).normalize();
+                    var offset = closestCollision.subtract(alien.center());
+                    distSq = offset.lengthSqr();
+                    pull = offset.normalize();
                 } else {
                     pull = Vec3.ZERO;
                 }
-                float pullSpeed = 1;
-                float pullStrength = 0.3f;
-                alien.setDeltaMovement(
-                    alien.getDeltaMovement()
-                        .scale(1.0 - pullStrength)
-                        .add(pull.scale(pullStrength * pullSpeed))
-                );
+                if (distSq > 1) {
+                    float pullSpeed = 1;
+                    float pullStrength = 0.1f;
+                    alien.setDeltaMovement(
+                        alien.getDeltaMovement()
+                            .scale(1.0 - pullStrength)
+                            .add(pull.scale(pullStrength * pullSpeed))
+                    );
+                }
+            }
+
+            if (hasClosestCollision) {
+                up = alien.center().subtract(closestCollision).normalize();
+                var vel = alien.getDeltaMovement();
+                if (vel.lengthSqr() != 0) {
+                    forward = vel.normalize();
+                }
             }
 
             alien.getEntityData().set(isClimbingEDA, climbing);

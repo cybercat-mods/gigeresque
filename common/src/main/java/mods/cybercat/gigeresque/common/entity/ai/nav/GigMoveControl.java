@@ -33,8 +33,11 @@ public class GigMoveControl extends MoveControl {
         }
         var wanted = new Vec3(wantedX, wantedY + 0.5, wantedZ);
         operation = Operation.WAIT;
+
         var offset = wanted.subtract(alien.center());
-        var speed = alien.getAttributeValue(Attributes.MOVEMENT_SPEED) * speedModifier * alien.climbingManager.climbSpeedMultiplier;
+        var speed = alien.getAttributeValue(Attributes.MOVEMENT_SPEED)
+            * speedModifier
+            * alien.climbingManager.climbSpeedMultiplier;
         var dist = offset.length();
         if (speed > dist) {
             speed = dist;
@@ -43,19 +46,37 @@ public class GigMoveControl extends MoveControl {
             alien.setZza(0);
             return;
         }
-        var desiredVelocity = offset.normalize().scale(speed);
-        alien.setDeltaMovement(desiredVelocity);
+
+        {
+            var desiredVelocity = offset.normalize().scale(speed);
+            alien.setDeltaMovement(desiredVelocity);
+        }
+
+        // for debugging
+        // {
+        // ((ServerLevel) alien.level()).sendParticles(
+        // ParticleTypes.FLAME,
+        // wanted.x,
+        // wanted.y,
+        // wanted.z,
+        // 1,
+        // 0,
+        // 0,
+        // 0,
+        // 0
+        // );
+        // }
     }
 
     private boolean needsToClimb() {
         var blockPos = BlockPos.containing(alien.center());
-        return operation == Operation.MOVE_TO &&
-            GigNodeEvaluator.climbable(
-                mob.level(),
-                blockPos.getX(),
-                blockPos.getY(),
-                blockPos.getZ()
-            ) && (!walkable(blockPos) || !walkable(BlockPos.containing(wantedX, wantedY + 0.5, wantedZ)));
+        return GigNodeEvaluator.climbable(
+            mob.level(),
+            blockPos.getX(),
+            blockPos.getY(),
+            blockPos.getZ(),
+            true
+        ) && (!walkable(blockPos) || !walkable(BlockPos.containing(wantedX, wantedY + 0.5, wantedZ)));
     }
 
     private boolean walkable(BlockPos pos) {

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.nav;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
@@ -67,23 +68,23 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
             }
         }
         var node = getNode(x, y, z);
-        node.type = PathType.WALKABLE;
+        node.type = getPathTypeFromState(mob.level(), new BlockPos(x, y, z));
         if (node.closed) {
             return false;
         }
-        if (!climbable(mob.level(), x, y, z)) {
+        if (node.type == PathType.BLOCKED) {
+            return false;
+        }
+        if (!climbable(mob.level(), x, y, z, false)) {
             return false;
         }
         outputArray[nodeCount] = node;
         return true;
     }
 
-    public static boolean climbable(Level level, int x, int y, int z) {
-        var bb = new AABB(x, y, z, x + 1, y + 1, z + 1);
-        if (!level.noBlockCollision(null, bb)) {
-            return false;
-        }
-        return !level.noBlockCollision(null, bb.inflate(1));
+    public static boolean climbable(Level level, int x, int y, int z, boolean generous) {
+        var reachBox = new AABB(x, y, z, x + 1, y + 1, z + 1).inflate(generous ? 1.5 : 0.5);
+        return !level.noBlockCollision(null, reachBox);
     }
 
 }
