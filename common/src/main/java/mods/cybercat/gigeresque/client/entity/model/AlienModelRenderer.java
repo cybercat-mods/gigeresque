@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.client.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.common.render.AzLayerRenderer;
+import mod.azure.azurelib.common.render.AzRendererPipeline;
 import mod.azure.azurelib.common.render.entity.AzEntityModelRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.world.phys.Vec3;
@@ -11,20 +12,27 @@ import org.joml.Quaternionf;
 import java.util.UUID;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 
-public class ClassicModelRenderer extends AzEntityModelRenderer<ClassicAlienEntity> {
+public class AlienModelRenderer<T extends AlienEntity> extends AzEntityModelRenderer<T> {
 
-    public ClassicModelRenderer(
-        AzEntityRendererPipeline<ClassicAlienEntity> entityRendererPipeline,
-        AzLayerRenderer<UUID, ClassicAlienEntity> layerRenderer
+    // this exists to let us use AlienModelRenderer::new in AzEntityRendererConfig builders
+    public AlienModelRenderer(
+        AzRendererPipeline<UUID, T> entityRendererPipeline,
+        AzLayerRenderer<UUID, T> layerRenderer
+    ) {
+        super((AzEntityRendererPipeline<T>) entityRendererPipeline, layerRenderer);
+    }
+
+    public AlienModelRenderer(
+        AzEntityRendererPipeline<T> entityRendererPipeline,
+        AzLayerRenderer<UUID, T> layerRenderer
     ) {
         super(entityRendererPipeline, layerRenderer);
     }
 
     @Override
     protected void applyRotations(
-        ClassicAlienEntity animatable,
+        T animatable,
         PoseStack poseStack,
         float ageInTicks,
         float rotationYaw,
@@ -36,8 +44,7 @@ public class ClassicModelRenderer extends AzEntityModelRenderer<ClassicAlienEnti
             return;
         }
 
-        if (!animatable.stasisManager.isStasis() || !animatable.isDeadOrDying())
-            super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
+        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
     }
 
     private static void applyClimbingRotations(AlienEntity alien, PoseStack poseStack, float partialTick) {
@@ -46,10 +53,11 @@ public class ClassicModelRenderer extends AzEntityModelRenderer<ClassicAlienEnti
         poseStack.rotateAround(
             quaternionFromDirection(forward, up),
             0,
-            alien.getBbHeight() / 2,
+            alien.getBbHeight() / 2.0f,
             0
         );
-        poseStack.translate(0, -0.5, 0);
+        var distToBlock = 0.5f; // TODO make this accurate
+        poseStack.translate(0, -distToBlock, 0);
     }
 
     private static Matrix4f rotationMatrixFromDirection(Vec3 forward, Vec3 up) {

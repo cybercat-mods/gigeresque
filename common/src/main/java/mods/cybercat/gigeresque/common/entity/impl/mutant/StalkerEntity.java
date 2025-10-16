@@ -52,6 +52,7 @@ public class StalkerEntity extends AlienEntity {
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.STALKER_ANIM_SELECTOR;
+        this.climbingManager.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

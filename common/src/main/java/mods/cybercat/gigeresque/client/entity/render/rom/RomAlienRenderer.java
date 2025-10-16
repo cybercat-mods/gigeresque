@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 import mods.cybercat.gigeresque.Constants;
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAgingAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -30,6 +31,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
                 }
                 return EntityTextures.ROM_ALIEN;
             })
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(RomAlienAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     RomAlienAnimManager.handleAnimations(renderEntry.animatable());

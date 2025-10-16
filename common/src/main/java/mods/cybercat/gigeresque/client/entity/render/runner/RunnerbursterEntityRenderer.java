@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -19,6 +20,7 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
     public RunnerbursterEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<RunnerbursterEntity>builder(EntityModels.RUNNERBURSTER, EntityTextures.RUNNERBURSTER)
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(RunnerbursterAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     return renderEntry;

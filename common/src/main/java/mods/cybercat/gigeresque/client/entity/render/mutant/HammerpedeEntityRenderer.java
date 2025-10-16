@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.HammerpedeAnimator;
@@ -18,6 +19,7 @@ public class HammerpedeEntityRenderer extends AzEntityRenderer<HammerpedeEntity>
                 EntityModels.HAMMERPEDE,
                 EntityTextures.HAMMERPEDE
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(HammerpedeAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     HammerpedeAnimManager.handleAnimations(renderEntry.animatable());

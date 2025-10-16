@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.templebeast.RavenousTempleBeastAnimator;
@@ -23,6 +24,7 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
                     return EntityTextures.RAVENOUSTEMPLEBEAST;
                 }
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(RavenousTempleBeastAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     RavenousTempleBeastAnimManager.handleAnimations(renderEntry.animatable());

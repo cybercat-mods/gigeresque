@@ -18,7 +18,7 @@ public class ClimbingManager {
 
     public boolean canClimb;
 
-    public float climbSpeedMultiplier;
+    public float climbSpeedMultiplier = 1;
 
     public final EntityDataAccessor<Boolean> isClimbingEDA;
 

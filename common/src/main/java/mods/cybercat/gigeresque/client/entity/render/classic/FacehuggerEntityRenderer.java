@@ -5,6 +5,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.model.FacehuggerModelRenderer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -17,6 +18,7 @@ public class FacehuggerEntityRenderer extends AzEntityRenderer<FacehuggerEntity>
     public FacehuggerEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<FacehuggerEntity>builder(EntityModels.FACEHUGGER, EntityTextures.FACEHUGGER)
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(FacehuggerAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     FacehuggerAnimManager.handleAnimations(renderEntry.animatable());

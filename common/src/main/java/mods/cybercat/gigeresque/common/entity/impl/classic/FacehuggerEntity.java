@@ -68,6 +68,7 @@ public class FacehuggerEntity extends AlienEntity {
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.animationSelector = GigMeleeAttackSelector.HUGGER_SELECTOR;
+        this.climbingManager.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

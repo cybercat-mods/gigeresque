@@ -3,7 +3,6 @@ package mods.cybercat.gigeresque.client.entity.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.common.render.AzLayerRenderer;
-import mod.azure.azurelib.common.render.entity.AzEntityModelRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +16,7 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 /**
  * Credit to Boston for this code
  */
-public class FacehuggerModelRenderer extends AzEntityModelRenderer<FacehuggerEntity> {
+public class FacehuggerModelRenderer extends AlienModelRenderer<FacehuggerEntity> {
 
     public FacehuggerModelRenderer(
         AzEntityRendererPipeline<FacehuggerEntity> entityRendererPipeline,
