@@ -157,14 +157,19 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         EntityDataSerializers.BOOLEAN
     );
 
-    private static final EntityDataAccessor<Vector3f> FORWARD = SynchedEntityData.defineId(
+    private static final EntityDataAccessor<Vector3f> CLIMBING_FORWARD_DIR = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.VECTOR3
     );
 
-    private static final EntityDataAccessor<Vector3f> UP = SynchedEntityData.defineId(
+    private static final EntityDataAccessor<Vector3f> CLIMBING_UP_DIR = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.VECTOR3
+    );
+
+    private static final EntityDataAccessor<Float> CLIMBING_DIST_FROM_BLOCK = SynchedEntityData.defineId(
+        AlienEntity.class,
+        EntityDataSerializers.FLOAT
     );
 
     public static final EntityDataAccessor<Float> CARRYING_DAMAGE = SynchedEntityData.defineId(
@@ -217,7 +222,13 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.navigationManager = new AlienNavigationManager(this);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.climbingManager = new ClimbingManager(this, IS_CLIMBING, FORWARD, UP);
+        this.climbingManager = new ClimbingManager(
+            this,
+            IS_CLIMBING,
+            CLIMBING_FORWARD_DIR,
+            CLIMBING_UP_DIR,
+            CLIMBING_DIST_FROM_BLOCK
+        );
     }
 
     public static boolean checkMonsterSpawnRules(
@@ -384,8 +395,9 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         builder.define(STASIS_TICK, 0);
         builder.define(HOME_BLOCKPOS, BlockPos.ZERO);
         builder.define(IS_CLIMBING, false);
-        builder.define(FORWARD, new Vector3f(0, 0, 0));
-        builder.define(UP, new Vector3f(0, 0, 0));
+        builder.define(CLIMBING_FORWARD_DIR, new Vector3f(0, 0, 0));
+        builder.define(CLIMBING_UP_DIR, new Vector3f(0, 0, 0));
+        builder.define(CLIMBING_DIST_FROM_BLOCK, 0.0f);
         builder.define(CARRYING_DAMAGE, 0.0f);
     }
 

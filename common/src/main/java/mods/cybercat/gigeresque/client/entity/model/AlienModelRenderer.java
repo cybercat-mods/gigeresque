@@ -6,6 +6,7 @@ import mod.azure.azurelib.common.render.AzRendererPipeline;
 import mod.azure.azurelib.common.render.entity.AzEntityModelRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
@@ -56,7 +57,11 @@ public class AlienModelRenderer<T extends AlienEntity> extends AzEntityModelRend
             alien.getBbHeight() / 2.0f,
             0
         );
-        var distToBlock = 0.5f; // TODO make this accurate
+        var distToBlock = Math.lerp(
+            alien.climbingManager.oldDistFromBlock,
+            alien.climbingManager.distFromBlock,
+            partialTick
+        ) - alien.getBbHeight() / 2;
         poseStack.translate(0, -distToBlock, 0);
     }
 

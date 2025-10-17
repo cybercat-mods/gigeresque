@@ -82,6 +82,8 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
         return true;
     }
 
+    // 'generous' is used to be more lenient on where aliens can climb for movement code vs generating the path, so if
+    // they get pushed a little out of their path they'll stick to surfaces instead of falling
     public static boolean climbable(Level level, int x, int y, int z, boolean generous) {
         var reachBox = new AABB(x, y, z, x + 1, y + 1, z + 1).inflate(generous ? 1.5 : 0.5);
         return !level.noBlockCollision(null, reachBox);

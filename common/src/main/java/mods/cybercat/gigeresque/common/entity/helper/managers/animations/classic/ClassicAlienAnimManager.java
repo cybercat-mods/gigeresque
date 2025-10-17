@@ -24,6 +24,10 @@ public class ClassicAlienAnimManager {
         }
     }
 
+    private static boolean visuallyCrawling(ClassicAlienEntity alien) {
+        return alien.crawlingManager.isCrawling() || alien.climbingManager.climbing;
+    }
+
     public static void handleMovementAnimations(ClassicAlienEntity classicAlienEntity) {
         if (classicAlienEntity.isVehicle()) {
             if (classicAlienEntity.getFirstPassenger().isAlive()) {
@@ -34,7 +38,7 @@ public class ClassicAlienAnimManager {
         }
         if (classicAlienEntity.isAggressive()) {
             handleAggroMovementAnimations(classicAlienEntity);
-        } else if (classicAlienEntity.crawlingManager.isCrawling()) {
+        } else if (visuallyCrawling(classicAlienEntity)) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
@@ -53,7 +57,7 @@ public class ClassicAlienAnimManager {
                 GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendUnkidnap);
             }
         }
-        if (classicAlienEntity.crawlingManager.isCrawling()) {
+        if (visuallyCrawling(classicAlienEntity)) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
@@ -76,7 +80,7 @@ public class ClassicAlienAnimManager {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendStatisEnter);
         } else if (classicAlienEntity.searchingManager.isSearching()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendAmbient);
-        } else if (classicAlienEntity.crawlingManager.isCrawling()) {
+        } else if (visuallyCrawling(classicAlienEntity)) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
         } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);

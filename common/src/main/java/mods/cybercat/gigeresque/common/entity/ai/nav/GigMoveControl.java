@@ -69,20 +69,58 @@ public class GigMoveControl extends MoveControl {
     }
 
     private boolean needsToClimb() {
-        var blockPos = BlockPos.containing(alien.center());
-        return GigNodeEvaluator.climbable(
-            mob.level(),
-            blockPos.getX(),
-            blockPos.getY(),
-            blockPos.getZ(),
-            true
-        ) && (!walkable(blockPos) || !walkable(BlockPos.containing(wantedX, wantedY + 0.5, wantedZ)));
+        var center = BlockPos.containing(alien.center());
+        if (
+            !GigNodeEvaluator.climbable(
+                mob.level(),
+                center.getX(),
+                center.getY(),
+                center.getZ(),
+                true
+            )
+        ) {
+            return false;
+        }
+
+        var currentMovementType = MovementType.requiredAt(alien, alien.blockPosition());
+        if (currentMovementType == MovementType.CLIMB) {
+            return true;
+        }
+
+        var wantedBlockPos = BlockPos.containing(wantedX, wantedY + 0.5, wantedZ);
+        var wantedMovementType = MovementType.requiredAt(alien, wantedBlockPos);
+        if (wantedMovementType == MovementType.CLIMB) {
+            return true;
+        }
+
+        if (
+            wantedBlockPos.equals(alien.blockPosition().above()) &&
+                wantedMovementType == MovementType.JUMP
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
-    private boolean walkable(BlockPos pos) {
-        var below = pos.below();
-        var blockBelow = alien.level().getBlockState(below);
-        return blockBelow.entityCanStandOn(alien.level(), below, alien);
-    }
+    private enum MovementType {
 
+        WALK,
+        JUMP,
+        CLIMB;
+
+        private static MovementType requiredAt(AlienEntity alien, BlockPos pos) {
+            var below = pos.below();
+            var stateBelow = alien.level().getBlockState(below);
+            if (stateBelow.entityCanStandOn(alien.level(), below, alien)) {
+                return WALK;
+            }
+            var twoBelow = below.below();
+            var stateTwoBelow = alien.level().getBlockState(twoBelow);
+            if (stateTwoBelow.entityCanStandOn(alien.level(), twoBelow, alien)) {
+                return JUMP;
+            }
+            return CLIMB;
+        }
+    }
 }

@@ -26,6 +26,8 @@ public class ClimbingManager {
 
     public final EntityDataAccessor<Vector3f> upEDA;
 
+    public final EntityDataAccessor<Float> distFromBlockEDA;
+
     public boolean hasClosestCollision;
 
     public Vec3 closestCollision;
@@ -35,7 +37,7 @@ public class ClimbingManager {
     // set in move control
     public boolean climbingRequiredForMovement;
 
-    float rotationAdjustmentSpeed = 0.2f;
+    public float smoothing = 0.8f;
 
     public Vec3 up = new Vec3(0, 1, 0);
 
@@ -45,16 +47,22 @@ public class ClimbingManager {
 
     public Vec3 oldForward = new Vec3(1, 0, 0);
 
+    public float distFromBlock = 0;
+
+    public float oldDistFromBlock = 0;
+
     public ClimbingManager(
         AlienEntity alien,
         EntityDataAccessor<Boolean> isClimbingEDA,
         EntityDataAccessor<Vector3f> forwardEDA,
-        EntityDataAccessor<Vector3f> upEDA
+        EntityDataAccessor<Vector3f> upEDA,
+        EntityDataAccessor<Float> distFromBlockEDA
     ) {
         this.alien = alien;
         this.isClimbingEDA = isClimbingEDA;
         this.forwardEDA = forwardEDA;
         this.upEDA = upEDA;
+        this.distFromBlockEDA = distFromBlockEDA;
     }
 
     public void tick() {
@@ -64,15 +72,19 @@ public class ClimbingManager {
                 oldForward = forward;
                 var forwardVector3f = alien.getEntityData().get(forwardEDA);
                 forward = new Vec3(forwardVector3f.x, forwardVector3f.y, forwardVector3f.z)
-                    .scale(rotationAdjustmentSpeed)
-                    .add(oldForward.scale(1.0f - rotationAdjustmentSpeed));
+                    .scale(1.0f - smoothing)
+                    .add(oldForward.scale(smoothing));
             }
             {
                 oldUp = up;
                 var upVector3f = alien.getEntityData().get(upEDA);
                 up = new Vec3(upVector3f.x, upVector3f.y, upVector3f.z)
-                    .scale(rotationAdjustmentSpeed)
-                    .add(oldUp.scale(1.0f - rotationAdjustmentSpeed));
+                    .scale(1.0f - smoothing)
+                    .add(oldUp.scale(smoothing));
+            }
+            {
+                oldDistFromBlock = distFromBlock;
+                distFromBlock = alien.getEntityData().get(distFromBlockEDA);
             }
         } else {
             var blockPos = BlockPos.containing(alien.center());
@@ -99,15 +111,15 @@ public class ClimbingManager {
 
             if (climbing) {
                 Vec3 pull;
-                double distSq = 0;
+                float dist = 0;
                 if (hasClosestCollision) {
                     var offset = closestCollision.subtract(alien.center());
-                    distSq = offset.lengthSqr();
+                    dist = (float) offset.length();
                     pull = offset.normalize();
                 } else {
                     pull = Vec3.ZERO;
                 }
-                if (distSq > 1) {
+                if (dist > 1) {
                     float pullSpeed = 1;
                     float pullStrength = 0.1f;
                     alien.setDeltaMovement(
@@ -116,6 +128,7 @@ public class ClimbingManager {
                             .add(pull.scale(pullStrength * pullSpeed))
                     );
                 }
+                distFromBlock = distFromBlock * smoothing + dist * (1.0f - smoothing);
             }
 
             if (hasClosestCollision) {
@@ -124,6 +137,12 @@ public class ClimbingManager {
                 if (vel.lengthSqr() != 0) {
                     forward = vel.normalize();
                 }
+            }
+
+            // point forward at 90 degrees from up (prevents weird rotations sometimes)
+            {
+                var z = forward.cross(up);
+                forward = up.cross(z).normalize();
             }
 
             alien.getEntityData().set(isClimbingEDA, climbing);
@@ -145,6 +164,7 @@ public class ClimbingManager {
                         (float) up.z
                     )
                 );
+            alien.getEntityData().set(distFromBlockEDA, distFromBlock);
             climbingRequiredForMovement = false;
         }
     }
