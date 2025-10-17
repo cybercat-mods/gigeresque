@@ -134,9 +134,13 @@ public class ClimbingManager {
             if (hasClosestCollision) {
                 up = alien.center().subtract(closestCollision).normalize();
                 var vel = alien.getDeltaMovement();
-                if (vel.lengthSqr() != 0) {
+                if (vel.lengthSqr() > 0.0001) {
                     forward = vel.normalize();
                 }
+            }
+
+            if (forward.equals(Vec3.ZERO)) {
+                forward = new Vec3(1, 0, 0);
             }
 
             // point forward at 90 degrees from up (prevents weird rotations sometimes)
