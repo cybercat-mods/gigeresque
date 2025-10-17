@@ -39,3 +39,4 @@ build.bat
 *.bat
 /key.properties
 /common/src/main/generated/
+.profileconfig.json
