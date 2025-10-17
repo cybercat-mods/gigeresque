@@ -41,6 +41,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     implementation "mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}"
     implementation "curse.maven:spark-361579:5434153"
+    //implementation "curse.maven:avp-1005026:7089600" Will need updated once AVP updates for Azurelib fixes
+    implementation "com.github.just-collective:just-codec:b28ab7a7ac"
+    implementation "com.github.just-collective:just-core:c2cec71203"
 }
 
 def keyPropsFile = new File(rootProject.projectDir, "key.properties")

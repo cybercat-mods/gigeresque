@@ -52,6 +52,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "mod.azure.azurelib:azurelib-fabric-${minecraft_version}:${azurelib_version}"
     modImplementation "curse.maven:spark-361579:5759670"
+    //modImplementation "curse.maven:avp-1005026:7089601"  Will need updated once AVP updates for Azurelib fixes
+    implementation "com.github.just-collective:just-codec:b28ab7a7ac"
+    implementation "com.github.just-collective:just-core:c2cec71203"
     modImplementation "maven.modrinth:fabric-permissions-api:0.3.3"
     modApi "com.terraformersmc:modmenu:${modmenu_version}"
 }

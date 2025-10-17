@@ -16,13 +16,16 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
 
     public RunnerAlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<RunnerAlienEntity>builder($ -> EntityModels.RUNNER_ALIEN, xeno -> {
-                if (xeno.stasisManager.isStasis()) {
-                    return EntityTextures.RUNNER_ALIEN_STASIS;
-                }
+            AzEntityRendererConfig.<RunnerAlienEntity>builder(
+                (nullEntity, animatable) -> EntityModels.RUNNER_ALIEN,
+                (nullEntity, animatable) -> {
+                    if (animatable.stasisManager.isStasis()) {
+                        return EntityTextures.RUNNER_ALIEN_STASIS;
+                    }
 
-                return EntityTextures.RUNNER_ALIEN;
-            })
+                    return EntityTextures.RUNNER_ALIEN;
+                }
+            )
                 .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(RunnerAlienAnimator::new)
                 .setRenderEntry(renderEntry -> {

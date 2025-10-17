@@ -16,9 +16,9 @@ public class MoonlightHorrorTempleBeastEntityRenderer extends AzEntityRenderer<M
     public MoonlightHorrorTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<MoonlightHorrorTempleBeastEntity>builder(
-                $ -> EntityModels.MOONLIGHTHORRORTEMPLEBEAST,
-                stalker -> {
-                    if (stalker.stasisManager.isStasis()) {
+                (nullEntity, animatable) -> EntityModels.MOONLIGHTHORRORTEMPLEBEAST,
+                (nullEntity, animatable) -> {
+                    if (animatable.stasisManager.isStasis()) {
                         return EntityTextures.MOONLIGHTHORRORTEMPLEBEAST_STATIS;
                     }
                     return EntityTextures.MOONLIGHTHORRORTEMPLEBEAST;

@@ -23,8 +23,8 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
     public EggEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<AlienEggEntity>builder(
-                alienEggEntity -> EntityModels.EGG,
-                alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
+                (nullEntity, animatable) -> EntityModels.EGG,
+                (nullEntity, animatable) -> animatable.getEggState() == EggStates.HATCHING.ordinal() || animatable
                     .getEggState() == EggStates.HATCHED.ordinal() ? EntityTextures.EGG_ACTIVE : EntityTextures.EGG
             )
                 .setAnimatorProvider(AlienEggAnimator::new)
@@ -44,8 +44,8 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
                 .setRenderType(
-                    alienEggEntity -> alienEggEntity.getEggState() == EggStates.HATCHING.ordinal() || alienEggEntity
-                        .getEggState() == EggStates.HATCHED.ordinal() && alienEggEntity.isAlive()
+                    (nullEntity, animatable) -> animatable.getEggState() == EggStates.HATCHING.ordinal() || animatable
+                        .getEggState() == EggStates.HATCHED.ordinal() && animatable.isAlive()
                             ? EGG_ACTIVE_RENDER_TYPE
                             : EGG_RENDER_TYPE
                 )

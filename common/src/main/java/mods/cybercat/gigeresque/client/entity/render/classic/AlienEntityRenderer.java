@@ -16,8 +16,8 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
 
     public AlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<ClassicAlienEntity>builder($ -> EntityModels.ALIEN, xeno -> {
-                if (xeno.stasisManager.isStasis()) {
+            AzEntityRendererConfig.<ClassicAlienEntity>builder((nullEntity, animatable) -> EntityModels.ALIEN, (nullEntity, animatable) -> {
+                if (animatable.stasisManager.isStasis()) {
                     return EntityTextures.ALIEN_STASIS;
                 }
 
