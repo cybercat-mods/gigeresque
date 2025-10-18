@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import mods.cybercat.gigeresque.common.entity.impl.projectile.AcidAmpouleProjectile;
-
 import java.util.List;
+
+import mods.cybercat.gigeresque.common.entity.impl.projectile.AcidAmpouleProjectile;
 
 public class AcidAmpouleItem extends ArrowItem {
 
@@ -25,28 +25,38 @@ public class AcidAmpouleItem extends ArrowItem {
         super(properties);
     }
 
-	@Override
-	public void appendHoverText(
-		@NotNull ItemStack stack,
-		Item.@NotNull TooltipContext context,
-		@NotNull List<Component> tooltipComponents,
-		@NotNull TooltipFlag tooltipFlag
-	) {
-		tooltipComponents.add(
-			Component.translatable("block.gigeresque.unfinished.tooltip")
-				.withStyle(ChatFormatting.DARK_RED)
-				.withStyle(ChatFormatting.ITALIC)
-		);
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-	}
+    @Override
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        Item.@NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
+        tooltipComponents.add(
+            Component.translatable("block.gigeresque.unfinished.tooltip")
+                .withStyle(ChatFormatting.DARK_RED)
+                .withStyle(ChatFormatting.ITALIC)
+        );
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    }
 
     @Override
-    public @NotNull AbstractArrow createArrow(@NotNull Level level, ItemStack ammo, @NotNull LivingEntity shooter, @Nullable ItemStack weapon) {
+    public @NotNull AbstractArrow createArrow(
+        @NotNull Level level,
+        ItemStack ammo,
+        @NotNull LivingEntity shooter,
+        @Nullable ItemStack weapon
+    ) {
         return new AcidAmpouleProjectile(level, shooter, ammo.copyWithCount(1), weapon);
     }
 
     @Override
-    public @NotNull Projectile asProjectile(@NotNull Level level, @NotNull Position pos, @NotNull ItemStack stack, @NotNull Direction direction) {
+    public @NotNull Projectile asProjectile(
+        @NotNull Level level,
+        @NotNull Position pos,
+        @NotNull ItemStack stack,
+        @NotNull Direction direction
+    ) {
         return null;
     }
 }
