@@ -16,8 +16,8 @@ public class RunnerAlienEntityRenderer extends AzEntityRenderer<RunnerAlienEntit
     public RunnerAlienEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<RunnerAlienEntity>builder(
-                (nullEntity, animatable) -> EntityModels.RUNNER_ALIEN,
-                (nullEntity, animatable) -> {
+                animatable -> EntityModels.RUNNER_ALIEN,
+                animatable -> {
                     if (animatable.stasisManager.isStasis()) {
                         return EntityTextures.RUNNER_ALIEN_STASIS;
                     }

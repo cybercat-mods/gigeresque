@@ -15,8 +15,8 @@ public class RavenousTempleBeastEntityRenderer extends AzEntityRenderer<Ravenous
     public RavenousTempleBeastEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<RavenousTempleBeastEntity>builder(
-                (nullEntity, animatable) -> EntityModels.RAVENOUSTEMPLEBEAST,
-                (nullEntity, animatable) -> {
+                animatable -> EntityModels.RAVENOUSTEMPLEBEAST,
+                animatable -> {
                     if (animatable.stasisManager.isStasis()) {
                         return EntityTextures.RAVENOUSTEMPLEBEAST_STATIS;
                     }

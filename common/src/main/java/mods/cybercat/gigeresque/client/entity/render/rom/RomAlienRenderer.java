@@ -19,7 +19,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
 
     protected RomAlienRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<RomAlienEntity>builder((nullEntity, animatable) -> EntityModels.ROM_ALIEN, (nullEntity, animatable) -> {
+            AzEntityRendererConfig.<RomAlienEntity>builder(animatable -> EntityModels.ROM_ALIEN, animatable -> {
                 var progress = Math.max(0, Math.min(1 - (animatable.getGrowth() / animatable.getMaxGrowth()), 1));
 
                 if (animatable.stasisManager.isStasis()) {
