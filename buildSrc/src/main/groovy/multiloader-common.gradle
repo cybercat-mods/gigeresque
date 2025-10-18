@@ -42,7 +42,7 @@ repositories {
         name = 'Parchment'
         url = 'https://maven.parchmentmc.org'
     }
-    maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.bvanseghi.dev/just" }
 }
 
 dependencies {
