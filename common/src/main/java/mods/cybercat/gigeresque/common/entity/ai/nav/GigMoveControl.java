@@ -1,10 +1,13 @@
 package mods.cybercat.gigeresque.common.entity.ai.nav;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class GigMoveControl extends MoveControl {
@@ -52,20 +55,19 @@ public class GigMoveControl extends MoveControl {
             alien.setDeltaMovement(desiredVelocity);
         }
 
-        // for debugging
-        // {
-        // ((ServerLevel) alien.level()).sendParticles(
-        // ParticleTypes.FLAME,
-        // wanted.x,
-        // wanted.y,
-        // wanted.z,
-        // 1,
-        // 0,
-        // 0,
-        // 0,
-        // 0
-        // );
-        // }
+        if (CommonMod.config.enableDevparticles) {
+            ((ServerLevel) alien.level()).sendParticles(
+                ParticleTypes.FLAME,
+                wanted.x,
+                wanted.y,
+                wanted.z,
+                1,
+                0,
+                0,
+                0,
+                0
+            );
+        }
     }
 
     private boolean needsToClimb() {

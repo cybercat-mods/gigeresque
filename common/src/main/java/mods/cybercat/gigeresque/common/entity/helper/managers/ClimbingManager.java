@@ -66,6 +66,10 @@ public class ClimbingManager {
     }
 
     public void tick() {
+        if (!canClimb) {
+            return;
+        }
+
         if (alien.level().isClientSide()) {
             climbing = alien.getEntityData().get(isClimbingEDA);
             {
