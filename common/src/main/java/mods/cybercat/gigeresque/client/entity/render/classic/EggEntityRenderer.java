@@ -23,8 +23,8 @@ public class EggEntityRenderer extends AzEntityRenderer<AlienEggEntity> {
     public EggEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<AlienEggEntity>builder(
-                (nullEntity, animatable) -> EntityModels.EGG,
-                (nullEntity, animatable) -> animatable.getEggState() == EggStates.HATCHING.ordinal() || animatable
+                animatable -> EntityModels.EGG,
+                animatable -> animatable.getEggState() == EggStates.HATCHING.ordinal() || animatable
                     .getEggState() == EggStates.HATCHED.ordinal() ? EntityTextures.EGG_ACTIVE : EntityTextures.EGG
             )
                 .setAnimatorProvider(AlienEggAnimator::new)

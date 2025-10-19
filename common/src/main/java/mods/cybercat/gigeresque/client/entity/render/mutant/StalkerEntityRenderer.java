@@ -21,8 +21,8 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
     public StalkerEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<StalkerEntity>builder(
-                (nullEntity, animatable) -> EntityModels.STALKER,
-                (nullEntity, animatable) -> {
+                animatable -> EntityModels.STALKER,
+                animatable -> {
                     if (animatable.isAggressive()) {
                         return EntityTextures.STALKER_TRANSPARENT;
                     }
@@ -37,7 +37,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
                 })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(stalkerEntity -> stalkerEntity.walkAnimation.speedOld < 0.35F && !stalkerEntity.swinging ? 0.0f : 1.0f)
-                .setRenderType((nullEntity, animatable) -> animatable.isAggressive() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
+                .setRenderType(animatable -> animatable.isAggressive() ? TRANSPARENT_RENDER_TYPE : NORMAL_RENDER_TYPE)
                 .setAlpha(stalker -> stalker.isAggressive() ? 0.2F : 1.0F)
                 .build(),
             context
