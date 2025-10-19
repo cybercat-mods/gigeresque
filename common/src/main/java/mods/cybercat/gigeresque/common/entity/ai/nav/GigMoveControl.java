@@ -31,7 +31,7 @@ public class GigMoveControl extends MoveControl {
     }
 
     private void tickClimbing() {
-        if (operation != Operation.MOVE_TO) {
+        if (operation != Operation.MOVE_TO && operation != Operation.JUMPING) {
             return;
         }
         var wanted = new Vec3(wantedX, wantedY + 0.5, wantedZ);
