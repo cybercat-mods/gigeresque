@@ -2,6 +2,7 @@ package mods.cybercat.gigeresque.common.entity.helper.managers;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.nav.GigNavigation;
@@ -51,10 +52,22 @@ public class StasisManager {
             setStasis(true);
             stasisTicks = 0;
         }
+        if (isStasis()) {
+            entity.goalSelector.disableControlFlag(Goal.Flag.JUMP);
+            entity.goalSelector.disableControlFlag(Goal.Flag.LOOK);
+            entity.goalSelector.disableControlFlag(Goal.Flag.MOVE);
+            entity.goalSelector.disableControlFlag(Goal.Flag.TARGET);
+        }
     }
 
-    public void setStasis(boolean searching) {
-        entity.getEntityData().set(isStasisEDA, searching);
+    public void setStasis(boolean stasis) {
+        entity.getEntityData().set(isStasisEDA, stasis);
+        if (!stasis) {
+            entity.goalSelector.enableControlFlag(Goal.Flag.JUMP);
+            entity.goalSelector.enableControlFlag(Goal.Flag.LOOK);
+            entity.goalSelector.enableControlFlag(Goal.Flag.MOVE);
+            entity.goalSelector.enableControlFlag(Goal.Flag.TARGET);
+        }
     }
 
     public boolean isStasis() {
