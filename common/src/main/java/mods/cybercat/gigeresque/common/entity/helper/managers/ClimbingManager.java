@@ -66,7 +66,8 @@ public class ClimbingManager {
     }
 
     public void tick() {
-        if (!canClimb) {
+        if (!canClimb || alien.stasisManager.isStasis()) {
+            climbing = false;
             return;
         }
 
