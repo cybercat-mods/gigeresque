@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.item.AzItemRenderer;
 import mod.azure.azurelib.common.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.item.animator.TrackerAnimator;
@@ -20,6 +21,12 @@ public class TrackerItemRenderer extends AzItemRenderer {
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setAnimatorProvider(TrackerAnimator::new)
                 .useNewOffset(true)
+                .enableAnimationOnlyInContexts(
+                    ItemDisplayContext.FIRST_PERSON_LEFT_HAND,
+                    ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
+                    ItemDisplayContext.THIRD_PERSON_LEFT_HAND,
+                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
+                )
                 .build()
         );
     }
