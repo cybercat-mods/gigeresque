@@ -1,22 +1,25 @@
-# v0.8.14
+# v0.8.15
 
 ## ☢️ Breaking Changes
-- Now requires Azurelib 3.1.0 or higher
+- Now requires Azurelib 3.1.1 or higher
 
 ## ✨ What's New
-- Basic work on Ampoule projectiles, not finished.
+- N/A
 
 ## ♻️ Changes
-- Adds unfinished tooltips for Unnerving Statue.
-- Tweaks to attack speed.
+- Only water-based aliens now target water-based mobs like fish and squid.
+- Tweaked the hit box of the aqua alien to try and help with spinning.
+- Tweaked stasis to properly disable ai goals until the stasis is removed.
 
 ## 🐞 Fixes
-- Fixes mixin issue with mods like AVP that use the same mixin target
-- Fixes Memo Stone not working on NeoForge
-- Fixes crash with Minecolonies and JEI
+- Fixed derendering of the inside of sarcophagus containers. (Azurelib fix)
+- Fixed Aqua Eggs not properly growing.
+- Fixed aliens not despawning in Peaceful mode.
+- Fixed a bug with an old dev debug patch for unsetting targets.
+- Fixed Aqua Eggs not scaling their properly to their growth.
 
 ## 🛠 Data Pack
 - N/A
 
 ## 🔬 Technical Changes
-- Updated to AzureLib 3.1.0
+- Updated to AzureLib 3.1.1
