@@ -93,44 +93,27 @@ public record GigEntityUtils() {
         return GigEntityUtils.isTargetHostable(target);
     }
 
-    public static boolean isValidTarget(LivingEntity target) {
-        if (
-            target.getType().is(GigTags.GIG_ALIENS)
-                || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
-                || target instanceof WaterAnimal
-                || target instanceof Guardian
-                || GigEntityUtils.passengerCheck(target)
-                || target.hasEffect(GigStatusEffects.IMPREGNATION)
-                || target.hasEffect(GigStatusEffects.EGGMORPHING)
-                || GigEntityUtils.isFacehuggerAttached(target)
-                || !target.isAlive()
-                || target.isInvulnerable()
-                || !target.attackable()
-                || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
-        ) {
-            return false;
-        }
-
-        return true;
+    public static boolean isCommonValidTarget(LivingEntity target) {
+        return !(target.getType().is(GigTags.GIG_ALIENS)
+            || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
+            || GigEntityUtils.passengerCheck(target)
+            || target.hasEffect(GigStatusEffects.IMPREGNATION)
+            || target.hasEffect(GigStatusEffects.EGGMORPHING)
+            || GigEntityUtils.isFacehuggerAttached(target)
+            || !target.isAlive()
+            || target.isInvulnerable()
+            || !target.attackable()
+            || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target));
     }
 
     public static boolean isValidAquaTarget(LivingEntity target) {
-        if (
-            target.getType().is(GigTags.GIG_ALIENS)
-                || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
-                || GigEntityUtils.passengerCheck(target)
-                || target.hasEffect(GigStatusEffects.IMPREGNATION)
-                || target.hasEffect(GigStatusEffects.EGGMORPHING)
-                || GigEntityUtils.isFacehuggerAttached(target)
-                || !target.isAlive()
-                || target.isInvulnerable()
-                || !target.attackable()
-                || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
-        ) {
-            return false;
-        }
+        return isCommonValidTarget(target);
+    }
 
-        return true;
+    public static boolean isValidTarget(LivingEntity target) {
+        return isCommonValidTarget(target)
+            && !(target instanceof WaterAnimal)
+            && !(target instanceof Guardian);
     }
 
     public static boolean removeFaceHuggerTarget(LivingEntity target) {
