@@ -17,23 +17,41 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
+import mods.cybercat.gigeresque.client.entity.render.aqua.AquaticAlienEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.aqua.AquaticChestbursterEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.blocks.*;
+import mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.classic.ChestbursterEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.classic.EggEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.feature.HeldItemLayer;
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellbursterEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellmorphRunnerEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.items.TrackerItemRenderer;
 import mods.cybercat.gigeresque.client.entity.render.misc.AcidEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.AmpouleRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.AquaEggEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.HologramEntityRender;
 import mods.cybercat.gigeresque.client.entity.render.misc.SpitterRenderer;
+import mods.cybercat.gigeresque.client.entity.render.mutant.HammerpedeEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.mutant.PopperEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.mutant.StalkerEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.neo.NeobursterRenderer;
+import mods.cybercat.gigeresque.client.entity.render.neo.NeomorphAdolescentRenderer;
 import mods.cybercat.gigeresque.client.entity.render.neo.NeomorphRenderer;
+import mods.cybercat.gigeresque.client.entity.render.runner.RunnerAlienEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.runner.RunnerbursterEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.templebeast.DraconicTempleBeastEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.templebeast.MoonlightHorrorTempleBeastEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.templebeast.RavenousTempleBeastEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.texture.BlockModels;
+import mods.cybercat.gigeresque.client.entity.texture.BlockTextures;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.client.particle.*;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
+import mods.cybercat.gigeresque.common.block.animators.*;
+import mods.cybercat.gigeresque.common.block.entity.*;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.predicates.*;
@@ -65,61 +83,61 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.AMPOULE_PROJECTILE.get(), AmpouleRender::new);
         event.registerEntityRenderer(
             GigEntities.ALIEN.get(),
-            mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer::new
+            AlienEntityRenderer::new
         );
         // event.registerEntityRenderer(GigEntities.ROM_ALIEN.get(), AlienRomEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.AQUATIC_ALIEN.get(),
-            mods.cybercat.gigeresque.client.entity.render.aqua.AquaticAlienEntityRenderer::new
+            AquaticAlienEntityRenderer::new
         );
         event.registerEntityRenderer(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         event.registerEntityRenderer(GigEntities.CHESTBURSTER.get(), ChestbursterEntityRenderer::new);
-        event.registerEntityRenderer(GigEntities.EGG.get(), mods.cybercat.gigeresque.client.entity.render.classic.EggEntityRenderer::new);
+        event.registerEntityRenderer(GigEntities.EGG.get(), EggEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.FACEHUGGER.get(),
-            mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRenderer::new
+            FacehuggerEntityRenderer::new
         );
         event.registerEntityRenderer(
             GigEntities.RUNNER_ALIEN.get(),
-            mods.cybercat.gigeresque.client.entity.render.runner.RunnerAlienEntityRenderer::new
+            RunnerAlienEntityRenderer::new
         );
         event.registerEntityRenderer(GigEntities.RUNNERBURSTER.get(), RunnerbursterEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.MUTANT_POPPER.get(),
-            mods.cybercat.gigeresque.client.entity.render.mutant.PopperEntityRenderer::new
+            PopperEntityRenderer::new
         );
         event.registerEntityRenderer(
             GigEntities.MUTANT_HAMMERPEDE.get(),
-            mods.cybercat.gigeresque.client.entity.render.mutant.HammerpedeEntityRenderer::new
+            HammerpedeEntityRenderer::new
         );
         event.registerEntityRenderer(GigEntities.MUTANT_STALKER.get(), StalkerEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.NEOBURSTER.get(),
-            mods.cybercat.gigeresque.client.entity.render.neo.NeobursterRenderer::new
+            NeobursterRenderer::new
         );
         event.registerEntityRenderer(
             GigEntities.NEOMORPH_ADOLESCENT.get(),
-            mods.cybercat.gigeresque.client.entity.render.neo.NeomorphAdolescentRenderer::new
+            NeomorphAdolescentRenderer::new
         );
         event.registerEntityRenderer(GigEntities.NEOMORPH.get(), NeomorphRenderer::new);
         event.registerEntityRenderer(GigEntities.SPITTER.get(), SpitterRenderer::new);
         event.registerEntityRenderer(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.DRACONICTEMPLEBEAST.get(),
-            mods.cybercat.gigeresque.client.entity.render.templebeast.DraconicTempleBeastEntityRenderer::new
+            DraconicTempleBeastEntityRenderer::new
         );
         event.registerEntityRenderer(
             GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(),
-            mods.cybercat.gigeresque.client.entity.render.templebeast.MoonlightHorrorTempleBeastEntityRenderer::new
+            MoonlightHorrorTempleBeastEntityRenderer::new
         );
         event.registerEntityRenderer(
             GigEntities.HELLMORPH_RUNNER.get(),
-            mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellmorphRunnerEntityRenderer::new
+            HellmorphRunnerEntityRenderer::new
         );
         event.registerEntityRenderer(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
         event.registerEntityRenderer(
             GigEntities.HELL_BURSTER.get(),
-            mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellbursterEntityRenderer::new
+            HellbursterEntityRenderer::new
         );
         event.registerEntityRenderer(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
         event.registerBlockEntityRenderer(
