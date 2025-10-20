@@ -7,12 +7,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -34,11 +33,21 @@ public class AquaEggEntity extends Entity implements Growable {
         super.tick();
         if (level() instanceof ServerLevel && this.isAlive()) {
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                this.setGrowth((this.getGrowth() + this.growthCounter++) * getGrowthMultiplier());
+                if (CommonMod.config.enableLogging && this.getGrowth() > 0) {
+                    CommonMod.LOGGER.warn(
+                        "Current Growth: {} of {} located at {}",
+                        this.getGrowth(),
+                        this.getDisplayName().getString(),
+                        this.blockPosition()
+                    );
+                }
+                this.growthCounter++;
+                this.setGrowth((this.getGrowth() + 1) * getGrowthMultiplier());
             } else if (this.getGrowth() >= this.getMaxGrowth()) {
                 this.growUp(this);
             }
         }
+
         GigCommonMethods.handleFloatingPhysics(this);
         GigCommonMethods.handleCollisionPhysics(this);
         GigCommonMethods.handleMovement(this);
