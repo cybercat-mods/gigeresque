@@ -120,7 +120,7 @@ public class AquaticAlienEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidAquaTarget(target)
             )
         );
     }

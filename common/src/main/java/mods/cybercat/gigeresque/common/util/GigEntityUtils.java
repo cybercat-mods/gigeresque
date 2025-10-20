@@ -9,6 +9,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -92,6 +94,27 @@ public record GigEntityUtils() {
     }
 
     public static boolean isValidTarget(LivingEntity target) {
+        if (
+            target.getType().is(GigTags.GIG_ALIENS)
+                || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
+                || target instanceof WaterAnimal
+                || target instanceof Guardian
+                || GigEntityUtils.passengerCheck(target)
+                || target.hasEffect(GigStatusEffects.IMPREGNATION)
+                || target.hasEffect(GigStatusEffects.EGGMORPHING)
+                || GigEntityUtils.isFacehuggerAttached(target)
+                || !target.isAlive()
+                || target.isInvulnerable()
+                || !target.attackable()
+                || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isValidAquaTarget(LivingEntity target) {
         if (
             target.getType().is(GigTags.GIG_ALIENS)
                 || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
