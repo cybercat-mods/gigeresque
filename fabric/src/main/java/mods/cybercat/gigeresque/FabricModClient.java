@@ -25,6 +25,7 @@ import mods.cybercat.gigeresque.client.entity.render.classic.AlienEntityRenderer
 import mods.cybercat.gigeresque.client.entity.render.classic.ChestbursterEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.classic.EggEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.classic.FacehuggerEntityRenderer;
+import mods.cybercat.gigeresque.client.entity.render.feature.HeldItemLayer;
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.BaphomorphEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellbursterEntityRenderer;
 import mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellmorphRunnerEntityRenderer;
@@ -83,105 +84,156 @@ public class FabricModClient implements ClientModInitializer {
         EntityRenderers.register(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntityRenderer::new);
         EntityRenderers.register(
             GigEntities.CHESTBURSTER.get(),
-            mods.cybercat.gigeresque.client.entity.render.classic.ChestbursterEntityRenderer::new
+            ChestbursterEntityRenderer::new
         );
-        EntityRenderers.register(GigEntities.EGG.get(), mods.cybercat.gigeresque.client.entity.render.classic.EggEntityRenderer::new);
+        EntityRenderers.register(GigEntities.EGG.get(), EggEntityRenderer::new);
         EntityRenderers.register(GigEntities.FACEHUGGER.get(), FacehuggerEntityRenderer::new);
         EntityRenderers.register(
             GigEntities.RUNNER_ALIEN.get(),
-            mods.cybercat.gigeresque.client.entity.render.runner.RunnerAlienEntityRenderer::new
+            RunnerAlienEntityRenderer::new
         );
         EntityRenderers.register(GigEntities.RUNNERBURSTER.get(), RunnerbursterEntityRenderer::new);
         EntityRenderers.register(
             GigEntities.MUTANT_POPPER.get(),
-            mods.cybercat.gigeresque.client.entity.render.mutant.PopperEntityRenderer::new
+            PopperEntityRenderer::new
         );
         EntityRenderers.register(
             GigEntities.MUTANT_HAMMERPEDE.get(),
-            mods.cybercat.gigeresque.client.entity.render.mutant.HammerpedeEntityRenderer::new
+            HammerpedeEntityRenderer::new
         );
         EntityRenderers.register(GigEntities.MUTANT_STALKER.get(), StalkerEntityRenderer::new);
-        EntityRenderers.register(GigEntities.NEOBURSTER.get(), mods.cybercat.gigeresque.client.entity.render.neo.NeobursterRenderer::new);
+        EntityRenderers.register(GigEntities.NEOBURSTER.get(), NeobursterRenderer::new);
         EntityRenderers.register(
             GigEntities.NEOMORPH_ADOLESCENT.get(),
-            mods.cybercat.gigeresque.client.entity.render.neo.NeomorphAdolescentRenderer::new
+            NeomorphAdolescentRenderer::new
         );
         EntityRenderers.register(GigEntities.NEOMORPH.get(), NeomorphRenderer::new);
         EntityRenderers.register(GigEntities.SPITTER.get(), SpitterRenderer::new);
         EntityRenderers.register(GigEntities.RAVENOUSTEMPLEBEAST.get(), RavenousTempleBeastEntityRenderer::new);
         EntityRenderers.register(
             GigEntities.DRACONICTEMPLEBEAST.get(),
-            mods.cybercat.gigeresque.client.entity.render.templebeast.DraconicTempleBeastEntityRenderer::new
+            DraconicTempleBeastEntityRenderer::new
         );
         EntityRenderers.register(
             GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(),
-            mods.cybercat.gigeresque.client.entity.render.templebeast.MoonlightHorrorTempleBeastEntityRenderer::new
+            MoonlightHorrorTempleBeastEntityRenderer::new
         );
         EntityRenderers.register(
             GigEntities.HELLMORPH_RUNNER.get(),
-            mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellmorphRunnerEntityRenderer::new
+            HellmorphRunnerEntityRenderer::new
         );
         EntityRenderers.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntityRenderer::new);
         EntityRenderers.register(
             GigEntities.HELL_BURSTER.get(),
-            mods.cybercat.gigeresque.client.entity.render.hellmorphs.HellbursterEntityRenderer::new
+            HellbursterEntityRenderer::new
         );
         EntityRenderers.register(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                BlockModels.EGG_PETRIFIED_MODEL,
+                EntityTextures.EGG_PETRIFIED,
+                PetrifiedAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_1.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_1,
+                EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_2.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_2,
+                EntityTextures.CHESTBURSTER_PETRIFIED
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_3.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_3,
+                EntityTextures.NEOBURSTER_PETRIFIED
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_4.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_4,
+                EntityTextures.RUNNERBURSTER_PETRIFIED
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_OBJECT_5.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_5,
+                EntityTextures.SPORE_PETRIFIED
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_STATUE.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_STATUE,
+                EntityTextures.ALIEN_STASIS
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.SPORE_ENTITY.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                BlockModels.SPORE_MODEL,
+                BlockTextures.SPORE_TEXTURE,
+                SporeAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageGooEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageHuggerEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageSporeEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<JarStorageEntity>(
+                BlockModels.JAR_MODEL,
+                BlockTextures.JAR_TEXTURE,
+                JarAnimator::new
+            ) {}
         );
         BlockEntityRenderers.register(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<IdolStorageEntity>(
+                BlockModels.SITTING_IDOL_MODEL,
+                BlockTextures.SITTING_IDOL_TEXTURE,
+                SittingIdolAnimator::new,
+                new HeldItemLayer<>()
+            ) {}
         );
         AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
         AzItemRendererRegistry.register(SporeItemBlockRender::new, GigBlocks.SPORE_BLOCK.get().asItem());

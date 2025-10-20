@@ -142,59 +142,110 @@ public class NeoForgeClientMod {
         event.registerEntityRenderer(GigEntities.AQUA_EGG.get(), AquaEggEntityRender::new);
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new PetrifiedObjectRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                BlockModels.EGG_PETRIFIED_MODEL,
+                EntityTextures.EGG_PETRIFIED,
+                PetrifiedAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT_1.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_1, EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_1,
+                EntityTextures.AQUATIC_CHESTBURSTER_PETRIFIED
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT_2.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_2, EntityTextures.CHESTBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_2,
+                EntityTextures.CHESTBURSTER_PETRIFIED
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT_3.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_3, EntityTextures.NEOBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_3,
+                EntityTextures.NEOBURSTER_PETRIFIED
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT_4.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_4, EntityTextures.RUNNERBURSTER_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_4,
+                EntityTextures.RUNNERBURSTER_PETRIFIED
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_OBJECT_5.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_5, EntityTextures.SPORE_PETRIFIED) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_5,
+                EntityTextures.SPORE_PETRIFIED
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.PETRIFIED_STATUE.get(),
-            (ctx) -> new PetrifiedStatueRender(EntityModels.PETRIFIED_STATUE, EntityTextures.ALIEN_STASIS) {}
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                EntityModels.PETRIFIED_STATUE,
+                EntityTextures.ALIEN_STASIS
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.SPORE_ENTITY.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SporeBlockRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
+                BlockModels.SPORE_MODEL,
+                BlockTextures.SPORE_TEXTURE,
+                SporeAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_GOO.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusGooRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageGooEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_HUGGER.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusHuggerRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageHuggerEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_1_SPORE.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SarcophagusSporeRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<AlienStorageSporeEntity>(
+                BlockModels.SARCOPHAGUS_MODEL,
+                BlockTextures.SARCOPHAGUS_TEXTURE,
+                StatueAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_2.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new JarRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<JarStorageEntity>(
+                BlockModels.JAR_MODEL,
+                BlockTextures.JAR_TEXTURE,
+                JarAnimator::new
+            ) {}
         );
         event.registerBlockEntityRenderer(
             GigEntities.ALIEN_STORAGE_BLOCK_ENTITY_3.get(),
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SittingIdolRender()
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<IdolStorageEntity>(
+                BlockModels.SITTING_IDOL_MODEL,
+                BlockTextures.SITTING_IDOL_TEXTURE,
+                SittingIdolAnimator::new,
+                new HeldItemLayer<>()
+            ) {}
         );
 
         ItemProperties.register(
