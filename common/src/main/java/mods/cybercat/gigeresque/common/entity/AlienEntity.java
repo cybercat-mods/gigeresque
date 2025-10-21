@@ -442,7 +442,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
-            if (level().getDifficulty() == Difficulty.PEACEFUL) {
+            if (CommonMod.config.enablePeacefulModeRemoval && level().getDifficulty() == Difficulty.PEACEFUL) {
                 this.remove(RemovalReason.DISCARDED);
             }
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {

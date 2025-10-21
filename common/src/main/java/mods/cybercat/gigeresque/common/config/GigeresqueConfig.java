@@ -22,6 +22,10 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enablePeacefulModeRemoval = false;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enablePandoraEffects = true;
 
     @Configurable
