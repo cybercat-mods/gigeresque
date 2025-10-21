@@ -22,6 +22,14 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enablePeacefulModeTargetDisable = true;
+
+    @Configurable
+    @Configurable.Synchronized
+    public boolean peacefulModeIgnorePlayersOnly = false;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enablePeacefulModeRemoval = false;
 
     @Configurable

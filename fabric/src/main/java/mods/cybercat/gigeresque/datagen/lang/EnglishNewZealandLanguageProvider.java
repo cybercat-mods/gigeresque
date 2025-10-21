@@ -361,6 +361,9 @@ public class EnglishNewZealandLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.hellbusterGrowthMultiplier", "Infernal Burster Growth Multiplier");
         builder.add("config.gigeresque.option.hellbusterHealth", "Infernal Burster Health");
         builder.add("config.gigeresque.option.hellbusterAttackDamage", "Infernal Burster Attack Damage");
+        builder.add("config.gigeresque.option.enablePeacefulModeTargetDisable", "Peaceful Mode Target Disable All");
+        builder.add("config.gigeresque.option.peacefulModeIgnorePlayersOnly", "Peaceful Mode Ignore Players Only");
+        builder.add("config.gigeresque.option.enablePeacefulModeRemoval", "Enable Peaceful Mode Removal");
         builder.add("config.screen.gigeresque", "Gigeresque Options");
 
         // Advancements

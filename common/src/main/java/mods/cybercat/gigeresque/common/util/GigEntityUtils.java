@@ -5,12 +5,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.monster.Guardian;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -29,6 +33,34 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 public record GigEntityUtils() {
 
     public static final EasyRandom RANDOM = new EasyRandom(RandomSource.createThreadSafe());
+
+    public static final Predicate<Entity> PEACEFUL_CHECK = entity -> {
+        // Only applies in Peaceful
+        if (entity.level().getDifficulty() != Difficulty.PEACEFUL)
+            return false;
+
+        // Peaceful mode enabled
+        if (CommonMod.config.peacefulModeIgnorePlayersOnly) {
+            // ignore only players in peaceful
+            return entity instanceof Player;
+        } else {
+            // ignore everything in peaceful
+            return CommonMod.config.enablePeacefulModeTargetDisable;
+        }
+    };
+
+    public static final Predicate<Entity> PEACEFUL_CHECK_ONLY_PLAYERS = entity -> {
+        // Feature toggle must be enabled
+        if (!CommonMod.config.peacefulModeIgnorePlayersOnly)
+            return false;
+
+        // Not Peaceful, allow normal targeting
+        if (entity.level().getDifficulty() != Difficulty.PEACEFUL)
+            return false;
+
+        // Ignore only players in peaceful
+        return entity instanceof Player;
+    };
 
     public static boolean isFacehuggerAttached(Entity entity) {
         return (entity != null && entity.getPassengers().stream().anyMatch(FacehuggerEntity.class::isInstance));
@@ -66,6 +98,10 @@ public record GigEntityUtils() {
             return false;
         }
 
+        if (PEACEFUL_CHECK_ONLY_PLAYERS.test(target)) {
+            return false;
+        }
+
         if (target instanceof AmbientCreature) {
             return false;
         }
@@ -95,6 +131,7 @@ public record GigEntityUtils() {
 
     public static boolean isCommonValidTarget(LivingEntity target) {
         return !(target.getType().is(GigTags.GIG_ALIENS)
+            || PEACEFUL_CHECK.test(target)
             || target.getType().is(GigTags.XENO_ATTACK_BLACKLIST)
             || GigEntityUtils.passengerCheck(target)
             || target.hasEffect(GigStatusEffects.IMPREGNATION)
