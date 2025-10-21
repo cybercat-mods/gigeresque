@@ -100,6 +100,15 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.Range(min = 1200)
         public int gooEffectTickTimer = 1200;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enableResinAlienCheck = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1)
+        public int resinEntityCheckRange = 15;
     }
 
     @Configurable
