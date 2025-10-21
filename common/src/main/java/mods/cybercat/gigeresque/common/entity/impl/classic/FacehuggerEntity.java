@@ -224,9 +224,6 @@ public class FacehuggerEntity extends AlienEntity {
         moveAnalysis.update();
         this.setGrowth(0);
 
-        if (this.getTarget() != null && !GigEntityUtils.faceHuggerTest(this.getTarget())) {
-            this.setTarget(null);
-        }
         if (
             this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox()
                 .intersects(this.getTarget().getBoundingBox()) && GigEntityUtils.faceHuggerTest(this.getTarget())
