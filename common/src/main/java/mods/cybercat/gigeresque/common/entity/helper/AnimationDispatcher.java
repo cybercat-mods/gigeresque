@@ -132,6 +132,17 @@ public class AnimationDispatcher {
         .setSpeed(Constants.BASE_CONTROLLER, 2.25F)
         .build();
 
+    private final AzCommand CRAWL_STATIONARY_COMMAND = AzCommand.controllerBuilder()
+        .playSequence(
+            Constants.BASE_CONTROLLER,
+            sequenceBuilder -> sequenceBuilder.queue(
+                "crawl",
+                props -> props.withPlayBehavior(AzPlayBehaviors.LOOP)
+            )
+        )
+        .setSpeed(Constants.BASE_CONTROLLER, 0.0F)
+        .build();
+
     private final AzCommand CRAWL_RUSH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_crawl", AzPlayBehaviors.LOOP);
 
     private final AzCommand SLITHER_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "slither", AzPlayBehaviors.LOOP);
@@ -318,6 +329,10 @@ public class AnimationDispatcher {
 
     public void sendCrawl() {
         CRAWL_COMMAND.sendForEntity(animatedEntity);
+    }
+
+    public void sendCrawlIdle() {
+        CRAWL_STATIONARY_COMMAND.sendForEntity(animatedEntity);
     }
 
     public void sendCrawlRush() {

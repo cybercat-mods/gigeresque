@@ -81,7 +81,7 @@ public class ClassicAlienAnimManager {
         } else if (classicAlienEntity.searchingManager.isSearching()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendAmbient);
         } else if (visuallyCrawling(classicAlienEntity)) {
-            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawl);
+            GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendCrawlIdle);
         } else if (classicAlienEntity.isUnderWater()) {
             GigCommonMethods.setAnimation(classicAlienEntity.animationDispatcher::sendSwim);
         } else {
