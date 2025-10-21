@@ -5,7 +5,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -26,7 +34,13 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.RotateTowardsEntityGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DigToTargetGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.DodgeProjectilesGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FindDarknessGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -78,11 +92,8 @@ public class AquaticAlienEntity extends AlienEntity {
     }
 
     @Override
-    @NotNull
-    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        if (this.wasEyeInWater)
-            return EntityDimensions.scalable(2.0f, 1.0f);
-        return EntityDimensions.scalable(0.9f, crawlingManager.isCrawling() ? 0.4f : 1.75f);
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return EntityDimensions.scalable(2.0f, 1.0f);
     }
 
     @Nullable

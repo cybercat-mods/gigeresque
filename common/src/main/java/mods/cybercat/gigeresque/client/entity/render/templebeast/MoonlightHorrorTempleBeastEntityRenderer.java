@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.templebeast.MoonlightTempleBeastAnimator;
@@ -23,6 +24,7 @@ public class MoonlightHorrorTempleBeastEntityRenderer extends AzEntityRenderer<M
                     return EntityTextures.MOONLIGHTHORRORTEMPLEBEAST;
                 }
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(MoonlightTempleBeastAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     MoonlightTempleBeastAnimManager.handleAnimations(renderEntry.animatable());

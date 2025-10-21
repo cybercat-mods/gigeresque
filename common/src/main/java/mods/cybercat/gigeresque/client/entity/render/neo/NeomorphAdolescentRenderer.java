@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.neo.NeomorphAdolescentAnimator;
@@ -18,6 +19,7 @@ public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolesc
                 EntityModels.NEOMORPH_ADOLESCENT,
                 EntityTextures.NEOMORPH_ADOLESCENT
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(NeomorphAdolescentAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     NeomorphAdolescentAnimManager.handleAnimations(renderEntry.animatable());

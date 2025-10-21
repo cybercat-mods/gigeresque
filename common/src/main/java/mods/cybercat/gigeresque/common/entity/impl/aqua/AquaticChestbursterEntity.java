@@ -5,7 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -30,7 +30,8 @@ public class AquaticChestbursterEntity extends ChestbursterEntity implements Gro
     }
 
     @Override
-    public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        return this.wasEyeInWater ? super.getDefaultDimensions(pose).scale(1.0f, 0.5f) : super.getDefaultDimensions(pose);
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return standingDimensions(pose).scale(1, 0.5f);
     }
+
 }

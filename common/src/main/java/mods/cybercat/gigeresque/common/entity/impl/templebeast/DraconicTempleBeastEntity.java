@@ -108,4 +108,9 @@ public class DraconicTempleBeastEntity extends AlienEntity {
             return false;
         return super.hurt(source, amount);
     }
+
+    @Override
+    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
+        return null;
+    }
 }

@@ -5,6 +5,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.mutant.StalkerAnimator;
@@ -28,6 +29,7 @@ public class StalkerEntityRenderer extends AzEntityRenderer<StalkerEntity> {
                     return EntityTextures.STALKER;
                 }
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(StalkerAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     StalkerAnimManager.handleAnimations(renderEntry.animatable());

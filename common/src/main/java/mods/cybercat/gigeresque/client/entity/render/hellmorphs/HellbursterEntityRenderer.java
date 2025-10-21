@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.feature.BloodAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -16,6 +17,7 @@ public class HellbursterEntityRenderer extends AzEntityRenderer<HellbursterEntit
     public HellbursterEntityRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<HellbursterEntity>builder(EntityModels.HELLBURSTER, EntityTextures.HELLBURSTER)
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(HellbursterAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     HellbursterAnimManager.handleAnimations(renderEntry.animatable());

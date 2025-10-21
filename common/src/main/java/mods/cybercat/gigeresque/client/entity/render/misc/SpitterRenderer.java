@@ -5,6 +5,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.common.render.layer.AzAutoGlowingLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.entity.animators.misc.SpitterAnimator;
@@ -19,6 +20,7 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 EntityModels.SPITTER,
                 EntityTextures.SPITTER
             )
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(SpitterAnimator::new)
                 .setRenderEntry(renderEntry -> {
                     SpitterAnimManager.handleAnimations(renderEntry.animatable());

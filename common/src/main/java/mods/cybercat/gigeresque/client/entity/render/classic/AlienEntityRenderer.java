@@ -2,10 +2,9 @@ package mods.cybercat.gigeresque.client.entity.render.classic;
 
 import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-import mods.cybercat.gigeresque.client.entity.model.ClassicModelRenderer;
+import mods.cybercat.gigeresque.client.entity.model.AlienModelRenderer;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.render.feature.ClassicAgingAzLayer;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
@@ -24,6 +23,7 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
 
                 return EntityTextures.ALIEN;
             })
+                .setModelRenderer(AlienModelRenderer::new)
                 .setAnimatorProvider(ClassicAlienAnimator::new)
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
@@ -40,15 +40,6 @@ public class AlienEntityRenderer extends AzEntityRenderer<ClassicAlienEntity> {
 
                     return Math.min(scaleFactor, 1.0F);
                 })
-                .setModelRenderer(
-                    (
-                        pipelineContext,
-                        layerRenderer
-                    ) -> new ClassicModelRenderer(
-                        (AzEntityRendererPipeline<ClassicAlienEntity>) pipelineContext,
-                        layerRenderer
-                    )
-                )
                 .setRenderEntry(renderEntry -> {
                     ClassicAlienAnimManager.handleAnimations(renderEntry.animatable());
                     return renderEntry;
