@@ -121,7 +121,16 @@ public class AnimationDispatcher {
 
     private final AzCommand WALK_CARRYING_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "walk_carrying", AzPlayBehaviors.LOOP);
 
-    private final AzCommand CRAWL_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "crawl", AzPlayBehaviors.LOOP);
+    private final AzCommand CRAWL_COMMAND = AzCommand.controllerBuilder()
+        .playSequence(
+            Constants.BASE_CONTROLLER,
+            sequenceBuilder -> sequenceBuilder.queue(
+                "crawl",
+                props -> props.withPlayBehavior(AzPlayBehaviors.LOOP)
+            )
+        )
+        .setSpeed(Constants.BASE_CONTROLLER, 2.25F)
+        .build();
 
     private final AzCommand CRAWL_RUSH_COMMAND = AzCommand.create(Constants.BASE_CONTROLLER, "rush_crawl", AzPlayBehaviors.LOOP);
 
