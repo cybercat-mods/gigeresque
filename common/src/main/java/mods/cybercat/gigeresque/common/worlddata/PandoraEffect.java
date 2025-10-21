@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameRules;
@@ -47,6 +48,10 @@ public class PandoraEffect implements CustomSpawner {
         ) {
             return 0;
         }
+		
+		if (level.getDifficulty() == Difficulty.PEACEFUL) {
+			return 0;
+		}
 
         if (!PandoraData.isTriggered()) {
             return 0;
