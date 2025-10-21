@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameRules;
@@ -43,8 +44,12 @@ public class PandoraEffect implements CustomSpawner {
     public int tick(@NotNull ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
         if (
             !PandoraData.isTriggered() || !spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING)
-                || !CommonMod.config.enablePandoraEffects
+                || !CommonMod.config.generalConfigs.enablePandoraEffects
         ) {
+            return 0;
+        }
+
+        if (level.getDifficulty() == Difficulty.PEACEFUL) {
             return 0;
         }
 
@@ -71,7 +76,7 @@ public class PandoraEffect implements CustomSpawner {
         }
 
         if (level.getMaxLocalRawBrightness(player.blockPosition()) >= 8) {
-            if (CommonMod.config.enableLogging) {
+            if (CommonMod.config.generalConfigs.enableLogging) {
                 CommonMod.LOGGER.warn(
                     "Failed to spawn entity: Light level at {} is too high ({}).",
                     player.blockPosition(),
@@ -213,7 +218,7 @@ public class PandoraEffect implements CustomSpawner {
 
         eggEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
 
-        if (CommonMod.config.enableLogging) {
+        if (CommonMod.config.generalConfigs.enableLogging) {
             eggEntity.setGlowingTag(true);
             CommonMod.LOGGER.info(
                 "Spawned Pandora {} at {}, {}, {}",

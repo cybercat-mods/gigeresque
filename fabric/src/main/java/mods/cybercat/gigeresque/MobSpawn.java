@@ -20,9 +20,9 @@ public record MobSpawn() {
             ),
             MobCategory.MONSTER,
             GigEntities.EGG.get(),
-            CommonMod.config.eggConfigs.alienegg_spawn_weight,
-            CommonMod.config.eggConfigs.alienegg_min_group,
-            CommonMod.config.eggConfigs.alienegg_max_group
+            CommonMod.config.entityConfigs.eggConfigs.alienegg_spawn_weight,
+            CommonMod.config.entityConfigs.eggConfigs.alienegg_min_group,
+            CommonMod.config.entityConfigs.eggConfigs.alienegg_max_group
         );
         SpawnPlacements.register(
             GigEntities.EGG.get(),

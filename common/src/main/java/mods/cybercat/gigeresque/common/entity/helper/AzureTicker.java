@@ -34,7 +34,7 @@ public interface AzureTicker {
             data.setCurrentVibration(vibrationInfo);
             var vec3 = vibrationInfo.pos();
             data.setTravelTimeInTicks(user.calculateTravelTimeInTicks(vibrationInfo.distance()));
-            if (CommonMod.config.enableDevparticles)
+            if (CommonMod.config.generalConfigs.enableDevparticles)
                 serverLevel.sendParticles(
                     new VibrationParticleOption(user.getPositionSource(), data.getTravelTimeInTicks()),
                     vec3.x,

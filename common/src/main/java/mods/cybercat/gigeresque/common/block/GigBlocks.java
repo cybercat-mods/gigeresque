@@ -1063,7 +1063,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
     /*
      * FLUID BLOCKS
      */
-    private static final Properties replaceCheck = CommonMod.config.blackfuildNonrepacle
+    private static final Properties replaceCheck = CommonMod.config.alienblockConfigs.blackfuildNonrepacle
         ? Properties.of()
             .mapColor(
                 MapColor.WATER

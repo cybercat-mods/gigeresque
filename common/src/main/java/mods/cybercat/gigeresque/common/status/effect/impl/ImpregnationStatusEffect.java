@@ -36,7 +36,7 @@ public class ImpregnationStatusEffect extends MobEffect {
         if (GigEntityUtils.isTargetHostable(livingEntity) && this == GigStatusEffects.IMPREGNATION) {
             this.handleStatusEffects(
                 livingEntity,
-                (int) CommonMod.config.impregnationTickTimer,
+                (int) CommonMod.config.entityConfigs.facehuggerConfigs.impregnationTickTimer,
                 MobEffects.HUNGER,
                 MobEffects.WEAKNESS,
                 MobEffects.DIG_SLOWDOWN

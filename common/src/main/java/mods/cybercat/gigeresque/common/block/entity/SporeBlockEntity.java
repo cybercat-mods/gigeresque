@@ -77,7 +77,7 @@ public class SporeBlockEntity extends BlockEntity {
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
         if (!entity.hasEffect(GigStatusEffects.SPORE)) {
             areaEffectCloudEntity.addEffect(
-                new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.sporeTickTimer, 0)
+                new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.alienblockConfigs.sporeTickTimer, 0)
             );
         }
         this.level.addFreshEntity(areaEffectCloudEntity);

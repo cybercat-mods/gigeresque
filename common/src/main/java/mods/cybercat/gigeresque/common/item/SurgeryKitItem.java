@@ -30,7 +30,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class SurgeryKitItem extends Item {
 
     public SurgeryKitItem() {
-        super(new Properties().durability(CommonMod.config.maxSurgeryKitUses));
+        super(new Properties().durability(CommonMod.config.generalConfigs.maxSurgeryKitUses));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SurgeryKitItem extends Item {
             var maxDurability = itemStack.getMaxDamage();
             var killChance = calculateKillChance(currentDurability, maxDurability);
             tryRemoveParasite(itemStack, livingEntity);
-            player.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
+            player.getCooldowns().addCooldown(this, CommonMod.config.generalConfigs.surgeryKitCooldownTicks);
             itemStack.hurtAndBreak(1, player, livingEntity.getEquipmentSlotForItem(itemStack));
             if (player.hasEffect(GigStatusEffects.IMPREGNATION))
                 player.removeEffect(GigStatusEffects.IMPREGNATION);
@@ -106,7 +106,7 @@ public class SurgeryKitItem extends Item {
                 entity.level().playSound(entity, entity.blockPosition(), GigSounds.CHESTBURSTING.get(), SoundSource.NEUTRAL, 2.0f, 1.0f);
             }
             if (entity instanceof Player playerentity) {
-                playerentity.getCooldowns().addCooldown(this, CommonMod.config.surgeryKitCooldownTicks);
+                playerentity.getCooldowns().addCooldown(this, CommonMod.config.generalConfigs.surgeryKitCooldownTicks);
                 stack.hurtAndBreak(1, playerentity, playerentity.getEquipmentSlotForItem(stack));
             }
             entity.removeEffect(GigStatusEffects.IMPREGNATION);

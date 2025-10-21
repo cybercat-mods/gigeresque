@@ -63,7 +63,7 @@ public class TrackerItem extends Item {
                     distanceCategory = 1; // Far (greater than 75 blocks)
                 var hologramEntity = GigEntities.ENGINEER_HOLOGRAM.get().create(level);
                 if (hologramEntity != null) {
-                    if (CommonMod.config.enableLogging)
+                    if (CommonMod.config.generalConfigs.enableLogging)
                         CommonMod.LOGGER.info("Distance Category: {}", distanceCategory);
                     hologramEntity.setPos(spawnX, player.getY(), spawnZ);
                     hologramEntity.setDistanceState(distanceCategory);

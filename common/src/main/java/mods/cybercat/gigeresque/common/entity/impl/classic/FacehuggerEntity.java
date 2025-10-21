@@ -73,7 +73,7 @@ public class FacehuggerEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(Attributes.MAX_HEALTH, CommonMod.config.facehuggerHealth)
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerHealth)
             .add(
                 Attributes.ARMOR,
                 1.0
@@ -146,7 +146,7 @@ public class FacehuggerEntity extends AlienEntity {
         this.startRiding(entity, true);
         this.setAggressive(false);
         entity.setSpeed(0.0f);
-        if (CommonMod.config.facehuggerConfigs.facehuggerGivesBlindness)
+        if (CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerGivesBlindness)
             entity.addEffect(
                 new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.getFacehuggerAttachTickTimer(), 0)
             );
@@ -228,9 +228,6 @@ public class FacehuggerEntity extends AlienEntity {
         moveAnalysis.update();
         this.setGrowth(0);
 
-        if (this.getTarget() != null && !GigEntityUtils.faceHuggerTest(this.getTarget())) {
-            this.setTarget(null);
-        }
         if (
             this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox()
                 .intersects(this.getTarget().getBoundingBox()) && GigEntityUtils.faceHuggerTest(this.getTarget())

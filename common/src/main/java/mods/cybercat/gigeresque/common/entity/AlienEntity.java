@@ -73,7 +73,6 @@ import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
-import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
@@ -486,14 +485,13 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         stasisManager.tick();
         climbingManager.tick();
 
-        if (getTarget() != null && !GigEntityUtils.isValidTarget(getTarget())) {
-            setTarget(null);
-        }
-
         this.setAirSupply(this.getMaxAirSupply());
         if (level() instanceof ServerLevel serverLevel && this.isAlive()) {
+            if (CommonMod.config.generalConfigs.enablePeacefulModeRemoval && level().getDifficulty() == Difficulty.PEACEFUL) {
+                this.remove(RemovalReason.DISCARDED);
+            }
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                if (CommonMod.config.enableLogging && this.getGrowth() > 0) {
+                if (CommonMod.config.generalConfigs.enableLogging && this.getGrowth() > 0) {
                     CommonMod.LOGGER.warn(
                         "Current Growth: {} of {} located at {}",
                         this.getGrowth(),
@@ -511,7 +509,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             }
             if (this.getHealth() != this.getMaxHealth() && this.getTarget() == null && this.tickCount % 20 == 0) {
                 healCounter++;
-                if (CommonMod.config.enableLogging) {
+                if (CommonMod.config.generalConfigs.enableLogging) {
                     CommonMod.LOGGER.warn(
                         "Current Health: {} and Max Health: {} of {}",
                         this.getHealth(),
@@ -528,7 +526,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                     ) {
                         healAmount *= 1.5F;
                     }
-                    if (CommonMod.config.enableLogging) {
+                    if (CommonMod.config.generalConfigs.enableLogging) {
                         CommonMod.LOGGER.warn("Now healing for {}", healAmount);
                     }
                     this.heal(healAmount);
@@ -787,7 +785,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         }
         if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
             player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-            player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+            player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.alienblockConfigs.acidDamage);
 
             if (player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontacidbottle"));

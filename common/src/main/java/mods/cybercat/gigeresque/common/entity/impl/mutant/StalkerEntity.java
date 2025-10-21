@@ -59,9 +59,9 @@ public class StalkerEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.stalkerConfigs.stalkerXenoHealth
+                CommonMod.config.entityConfigs.stalkerConfigs.stalkerXenoHealth
             )
-            .add(Attributes.ARMOR, CommonMod.config.stalkerConfigs.stalkerXenoArmor)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.stalkerConfigs.stalkerXenoArmor)
             .add(
                 Attributes.ARMOR_TOUGHNESS,
                 0.0
@@ -74,7 +74,7 @@ public class StalkerEntity extends AlienEntity {
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.stalkerConfigs.stalkerAttackDamage
+                CommonMod.config.entityConfigs.stalkerConfigs.stalkerAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
@@ -176,7 +176,7 @@ public class StalkerEntity extends AlienEntity {
         ) {
             livingEntity.hurt(
                 damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.stalkerConfigs.stalkerTailAttackDamage : 0.0f
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.entityConfigs.stalkerConfigs.stalkerTailAttackDamage : 0.0f
             );
             this.heal(1.0833f);
         }

@@ -44,11 +44,11 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastXenoHealth
+                CommonMod.config.entityConfigs.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastXenoHealth
             )
             .add(
                 Attributes.ARMOR,
-                CommonMod.config.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastXenoArmor
+                CommonMod.config.entityConfigs.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastXenoArmor
             )
             .add(Attributes.ARMOR_TOUGHNESS, 0.0)
             .add(
@@ -62,7 +62,7 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity {
             )
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastAttackDamage
+                CommonMod.config.entityConfigs.moonlightHorrorTempleBeastConfigs.moonlightHorrorTempleBeastAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }

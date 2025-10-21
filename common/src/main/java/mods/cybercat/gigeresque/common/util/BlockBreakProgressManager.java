@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.common.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,38 +27,67 @@ public class BlockBreakProgressManager {
         });
     }
 
-    public static void damage(Level level, BlockPos blockPos, float damage) {
+    public static void resetProgress(Level level, BlockPos pos) {
+        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.remove(pos);
+        level.destroyBlockProgress(computeBlockPosHash(pos), pos, -1);
+    }
+
+    public static void setProgress(Level level, BlockPos pos, float progress) {
+        var newEntry = Map.entry(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), progress);
+        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.put(pos, newEntry);
+
+        var clampedProgress = getClampedProgress(progress);
+        level.destroyBlockProgress(computeBlockPosHash(pos), pos, clampedProgress);
+    }
+
+    // Damage progress is a value ranging from 0 to 9 (both ends inclusively).
+    // All blocks also have a destruction time (in seconds).
+    public static Result damage(Level level, BlockPos blockPos, float damage) {
         var immutableBlockPos = blockPos.immutable();
 
-        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(immutableBlockPos, (key, entry) -> {
-            var blockState = level.getBlockState(immutableBlockPos);
-            var block = blockState.getBlock();
-            var currentDestroyProgress = entry == null ? 0 : entry.getValue();
-            var defaultDestroyTimeInSeconds = block.defaultDestroyTime();
+        var entry = BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.get(immutableBlockPos);
 
-            if (defaultDestroyTimeInSeconds < 0) {
-                return null;
-            }
+        var blockState = level.getBlockState(immutableBlockPos);
+        var block = blockState.getBlock();
+        var currentDestroyProgress = entry == null ? 0 : entry.getValue();
+        var defaultDestroyTimeInSeconds = block.defaultDestroyTime();
 
-            var destroyTimeInTicks = block.defaultDestroyTime() * 20;
-            var weight = Math.max(destroyTimeInTicks, 1);
+        if (defaultDestroyTimeInSeconds < 0 || blockState.is(Blocks.FIRE)) {
+            // This block cannot be destroyed, so abort.
+            return Result.NOT_DAMAGED;
+        }
 
-            var newDestroyProgress = currentDestroyProgress + (damage / weight);
-            var progress = (int) Mth.clamp(newDestroyProgress, 0F, 9F);
-            var hash = Objects.hash(immutableBlockPos);
+        var destroyTimeInTicks = block.defaultDestroyTime() * 20;
+        var weight = Math.max(destroyTimeInTicks, 1);
 
-            if (progress >= 9) {
-                level.destroyBlockProgress(hash, immutableBlockPos, -1);
-                level.destroyBlock(immutableBlockPos, false);
-                return null;
-            } else {
-                level.destroyBlockProgress(hash, immutableBlockPos, progress);
-            }
-            return Map.entry(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newDestroyProgress);
-        });
+        var newDestroyProgress = currentDestroyProgress + (damage / weight);
+
+        if (newDestroyProgress >= 9) {
+            resetProgress(level, immutableBlockPos);
+            level.destroyBlock(immutableBlockPos, false);
+            return Result.DESTROYED;
+        }
+
+        setProgress(level, immutableBlockPos, newDestroyProgress);
+
+        return Result.DAMAGED;
+    }
+
+    private static int getClampedProgress(float progress) {
+        return (int) Mth.clamp(progress, -1F, 9F);
+    }
+
+    private static int computeBlockPosHash(BlockPos pos) {
+        return Objects.hash(pos);
     }
 
     private BlockBreakProgressManager() {
         throw new UnsupportedOperationException();
+    }
+
+    public enum Result {
+        DAMAGED,
+        DESTROYED,
+        NOT_DAMAGED
     }
 }

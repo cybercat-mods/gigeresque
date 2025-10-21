@@ -55,7 +55,7 @@ public class GigMoveControl extends MoveControl {
             alien.setDeltaMovement(desiredVelocity);
         }
 
-        if (CommonMod.config.enableDevparticles) {
+        if (CommonMod.config.generalConfigs.enableDevparticles) {
             ((ServerLevel) alien.level()).sendParticles(
                 ParticleTypes.FLAME,
                 wanted.x,

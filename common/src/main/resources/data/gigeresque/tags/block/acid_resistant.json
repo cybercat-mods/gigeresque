@@ -94,7 +94,23 @@
     "minecraft:structure_void",
     "minecraft:pink_petals",
     {
-      "id": "#avp:acid_immune",
+      "id": "#avp:chitin",
+      "required": false
+    },
+    {
+      "id": "#avp:industrial_glass",
+      "required": false
+    },
+    {
+      "id": "#avp:plastic",
+      "required": false
+    },
+    {
+      "id": "#avp:resin",
+      "required": false
+    },
+    {
+      "id": "#avp:should_not_be_destroyed",
       "required": false
     }
   ]

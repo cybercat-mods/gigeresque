@@ -88,7 +88,7 @@ public record GigCommonMethods() {
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
         if (!entity.hasEffect(GigStatusEffects.SPORE)) {
             areaEffectCloudEntity.addEffect(
-                new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.sporeTickTimer, 0)
+                new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.alienblockConfigs.sporeTickTimer, 0)
             );
         }
         entity.level().addFreshEntity(areaEffectCloudEntity);
@@ -171,7 +171,7 @@ public record GigCommonMethods() {
             alienEggEntity.level()
                 .getEntitiesOfClass(
                     LivingEntity.class,
-                    alienEggEntity.getBoundingBox().inflate(CommonMod.config.eggConfigs.alieneggHatchRange)
+                    alienEggEntity.getBoundingBox().inflate(CommonMod.config.entityConfigs.eggConfigs.alieneggHatchRange)
                 )
                 .forEach(target -> {
                     if (target.isAlive() && GigEntityUtils.faceHuggerTest(target)) {

@@ -52,7 +52,7 @@ public class PopperEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(Attributes.MAX_HEALTH, CommonMod.config.popperConfigs.popperHealth)
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.popperConfigs.popperHealth)
             .add(
                 Attributes.ARMOR,
                 1.0
@@ -65,7 +65,7 @@ public class PopperEntity extends AlienEntity {
             .add(Attributes.ATTACK_KNOCKBACK, 0.0)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.popperConfigs.popperAttackDamage
+                CommonMod.config.entityConfigs.popperConfigs.popperAttackDamage
             )
             .add(Attributes.FOLLOW_RANGE, 16.0)
             .add(

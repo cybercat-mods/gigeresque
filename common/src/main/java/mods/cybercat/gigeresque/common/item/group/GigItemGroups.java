@@ -26,7 +26,7 @@ public record GigItemGroups() implements CommonCreativeTabRegistryInterface {
                 entries.accept(GigItems.SEALED_AMPOULE_GOO.get());
                 entries.accept(GigItems.SURGERY_KIT.get());
                 entries.accept(GigItems.TRACKER.get());
-                if (CommonMod.config.enableDevEntites)
+                if (CommonMod.config.generalConfigs.enableDevEntites)
                     entries.accept(GigItems.DEV_DEBUG_STICK.get());
                 entries.accept(GigItems.EGG_SPAWN_EGG.get());
                 entries.accept(GigItems.FACEHUGGER_SPAWN_EGG.get());

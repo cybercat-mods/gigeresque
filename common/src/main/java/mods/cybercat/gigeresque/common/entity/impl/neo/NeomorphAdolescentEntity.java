@@ -46,7 +46,7 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentXenoHealth
+                CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentXenoHealth
             )
             .add(Attributes.ARMOR, 0.0f)
             .add(
@@ -61,7 +61,7 @@ public class NeomorphAdolescentEntity extends AlienEntity {
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage + 5
+                CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage + 5
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
@@ -77,7 +77,9 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         ) {
             livingEntity.hurt(
                 damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.neomorphAdolescentConfigs.neomorph_adolescentXenoTailAttackDamage : 0.0f
+                this.getRandom().nextInt(4) > 2
+                    ? CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentXenoTailAttackDamage
+                    : 0.0f
             );
             this.heal(1.0833f);
             return super.doHurtTarget(target);
@@ -91,7 +93,7 @@ public class NeomorphAdolescentEntity extends AlienEntity {
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
+        return CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier;
     }
 
     @Override

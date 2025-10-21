@@ -87,7 +87,7 @@ public abstract class LivingEntityMixin extends Entity {
             facehugger.addEffect(
                 new MobEffectInstance(
                     MobEffects.CONFUSION,
-                    CommonMod.config.facehuggerConfigs.facehuggerStunTickTimer,
+                    CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerStunTickTimer,
                     60,
                     false,
                     false

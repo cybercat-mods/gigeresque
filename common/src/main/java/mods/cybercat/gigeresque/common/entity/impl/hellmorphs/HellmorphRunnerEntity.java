@@ -50,11 +50,11 @@ public class HellmorphRunnerEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerXenoHealth
+                CommonMod.config.entityConfigs.hellmorphrunnerConfigs.hellmorph_runnerXenoHealth
             )
             .add(
                 Attributes.ARMOR,
-                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerXenoArmor
+                CommonMod.config.entityConfigs.hellmorphrunnerConfigs.hellmorph_runnerXenoArmor
             )
             .add(Attributes.ARMOR_TOUGHNESS, 0.0)
             .add(
@@ -68,7 +68,7 @@ public class HellmorphRunnerEntity extends AlienEntity {
             )
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.hellmorphrunnerConfigs.hellmorph_runnerAttackDamage
+                CommonMod.config.entityConfigs.hellmorphrunnerConfigs.hellmorph_runnerAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }

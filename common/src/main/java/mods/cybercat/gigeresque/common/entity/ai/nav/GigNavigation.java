@@ -47,7 +47,7 @@ public class GigNavigation extends AzureNavigation {
 
     @Override
     protected void followThePath() {
-        if (path != null && CommonMod.config.enableDevparticles) {
+        if (path != null && CommonMod.config.generalConfigs.enableDevparticles) {
             for (var node : path.nodes) {
                 ((ServerLevel) level).sendParticles(
                     ParticleTypes.BUBBLE,

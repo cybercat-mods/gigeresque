@@ -45,7 +45,7 @@ public class HammerpedeEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(Attributes.MAX_HEALTH, CommonMod.config.hammerpedeConfigs.hammerpedeHealth)
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.hammerpedeConfigs.hammerpedeHealth)
             .add(
                 Attributes.ARMOR,
                 1.0
@@ -58,7 +58,7 @@ public class HammerpedeEntity extends AlienEntity {
             .add(Attributes.ATTACK_KNOCKBACK, 0.0)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.hammerpedeConfigs.hammerpedeAttackDamage
+                CommonMod.config.entityConfigs.hammerpedeConfigs.hammerpedeAttackDamage
             )
             .add(Attributes.FOLLOW_RANGE, 16.0)
             .add(

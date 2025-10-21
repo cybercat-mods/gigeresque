@@ -56,9 +56,9 @@ public class RomAlienEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.classicXenoConfigs.classicXenoHealth
+                CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoHealth
             )
-            .add(Attributes.ARMOR, CommonMod.config.classicXenoConfigs.classicXenoArmor)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoArmor)
             .add(
                 Attributes.ARMOR_TOUGHNESS,
                 7.0
@@ -71,7 +71,7 @@ public class RomAlienEntity extends AlienEntity {
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.classicXenoConfigs.classicXenoAttackDamage
+                CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
@@ -99,7 +99,7 @@ public class RomAlienEntity extends AlienEntity {
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.classicXenoConfigs.alienGrowthMultiplier;
+        return CommonMod.config.entityConfigs.classicXenoConfigs.alienGrowthMultiplier;
     }
 
     @Nullable
@@ -137,8 +137,8 @@ public class RomAlienEntity extends AlienEntity {
             livingEntity.hurt(
                 GigDamageSources.of(this.level(), GigDamageSources.XENO),
                 this.getRandom().nextInt(4) > 2
-                    ? CommonMod.config.classicXenoConfigs.classicXenoTailAttackDamage
-                    : (float) CommonMod.config.classicXenoConfigs.classicXenoAttackDamage
+                    ? CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoTailAttackDamage
+                    : (float) CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoAttackDamage
             );
             this.heal(1.0833f);
             return super.doHurtTarget(target);

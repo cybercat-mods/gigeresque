@@ -66,9 +66,9 @@ public class AquaticAlienEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.aquaticXenoConfigs.aquaticXenoHealth
+                CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoHealth
             )
-            .add(Attributes.ARMOR, CommonMod.config.aquaticXenoConfigs.aquaticXenoArmor)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoArmor)
             .add(
                 Attributes.ARMOR_TOUGHNESS,
                 9.0
@@ -81,19 +81,19 @@ public class AquaticAlienEntity extends AlienEntity {
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.aquaticXenoConfigs.aquaticXenoAttackDamage
+                CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
+        return CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
     }
 
     @Override
     protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return null;
+        return EntityDimensions.scalable(2.0f, 1.0f);
     }
 
     @Nullable
@@ -131,7 +131,7 @@ public class AquaticAlienEntity extends AlienEntity {
                 this,
                 LivingEntity.class,
                 false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidTarget(target)
+                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidAquaTarget(target)
             )
         );
     }
@@ -157,7 +157,7 @@ public class AquaticAlienEntity extends AlienEntity {
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(
                 damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoTailAttackDamage : 0.0f
             );
             this.heal(1.0833f);
         }

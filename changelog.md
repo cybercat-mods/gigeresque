@@ -1,22 +1,26 @@
-# v0.8.14
+# v0.8.16
 
 ## ☢️ Breaking Changes
-- Now requires Azurelib 3.1.0 or higher
+- Configuration file will be reset, this is due to a much-needed cleanup of the config.
 
 ## ✨ What's New
-- Basic work on Ampoule projectiles, not finished.
+- Added a new config option for disabling attack targeting in peaceful mode for just players.
+- Added a new config option for disabling attack targeting in peaceful mode for all entities
+  - Facehuggers and eggs will still target mobs (not players) normally in peaceful mode.
+- Added a new config option to enable an entity check for resin to start egg morphing entities.
+- Added a new config option to configure the entity range for resin to start egg morphing entities.
 
 ## ♻️ Changes
-- Adds unfinished tooltips for Unnerving Statue.
-- Tweaks to attack speed.
+- Reworked Config grouping.
+- Moved peaceful removal to a new config option.
+- Disables Pandora spawning in peaceful mode.
+- Tweaked Facehugger to remove old dev target removal code.
 
 ## 🐞 Fixes
-- Fixes mixin issue with mods like AVP that use the same mixin target
-- Fixes Memo Stone not working on NeoForge
-- Fixes crash with Minecolonies and JEI
+- Fixed acid not respecting AVP acid immune blocks.
 
 ## 🛠 Data Pack
-- N/A
+- Moved from `#avp:acid_immune` to per block tags from AVP
 
 ## 🔬 Technical Changes
-- Updated to AzureLib 3.1.0
+- N/A

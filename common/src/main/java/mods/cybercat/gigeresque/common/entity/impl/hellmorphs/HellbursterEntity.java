@@ -29,7 +29,7 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.hellbusterConfigs.hellbusterHealth
+                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterHealth
             )
             .add(Attributes.ARMOR, 0.0f)
             .add(
@@ -41,7 +41,7 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.hellbusterConfigs.hellbusterAttackDamage
+                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
@@ -51,7 +51,7 @@ public class HellbursterEntity extends RunnerbursterEntity implements Growable {
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.hellbusterConfigs.hellbusterGrowthMultiplier;
+        return CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier;
     }
 
     @Override
