@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.pathfinder.Node;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +71,7 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
         if (node.closed) {
             return false;
         }
-        if (node.type == PathType.BLOCKED) {
+        if (node.type.getMalus() < 0.0f) {
             return false;
         }
         if (!climbable(mob.level(), x, y, z, false)) {
