@@ -1,25 +1,26 @@
-# v0.8.15
+# v0.8.16
 
 ## ☢️ Breaking Changes
-- Now requires Azurelib 3.1.1 or higher
+- Configuration file will be reset, this is due to a much-needed cleanup of the config.
 
 ## ✨ What's New
-- N/A
+- Added a new config option for disabling attack targeting in peaceful mode for just players.
+- Added a new config option for disabling attack targeting in peaceful mode for all entities
+  - Facehuggers and eggs will still target mobs (not players) normally in peaceful mode.
+- Added a new config option to enable an entity check for resin to start egg morphing entities.
+- Added a new config option to configure the entity range for resin to start egg morphing entities.
 
 ## ♻️ Changes
-- Only water-based aliens now target water-based mobs like fish and squid.
-- Tweaked the hit box of the aqua alien to try and help with spinning.
-- Tweaked stasis to properly disable ai goals until the stasis is removed.
+- Reworked Config grouping.
+- Moved peaceful removal to a new config option.
+- Disables Pandora spawning in peaceful mode.
+- Tweaked Facehugger to remove old dev target removal code.
 
 ## 🐞 Fixes
-- Fixed derendering of the inside of sarcophagus containers. (Azurelib fix)
-- Fixed Aqua Eggs not properly growing.
-- Fixed aliens not despawning in Peaceful mode.
-- Fixed a bug with an old dev debug patch for unsetting targets.
-- Fixed Aqua Eggs not scaling their properly to their growth.
+- Fixed acid not respecting AVP acid immune blocks.
 
 ## 🛠 Data Pack
-- N/A
+- Moved from `#avp:acid_immune` to per block tags from AVP
 
 ## 🔬 Technical Changes
-- Updated to AzureLib 3.1.1
+- N/A
