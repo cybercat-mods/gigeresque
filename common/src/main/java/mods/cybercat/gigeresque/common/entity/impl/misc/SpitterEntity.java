@@ -41,9 +41,9 @@ public class SpitterEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.spitterConfigs.spitterXenoHealth
+                CommonMod.config.entityConfigs.spitterConfigs.spitterXenoHealth
             )
-            .add(Attributes.ARMOR, CommonMod.config.spitterConfigs.spitterXenoArmor)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.spitterConfigs.spitterXenoArmor)
             .add(
                 Attributes.ARMOR_TOUGHNESS,
                 0.0
@@ -56,7 +56,7 @@ public class SpitterEntity extends AlienEntity {
             .add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.spitterConfigs.spitterAttackDamage
+                CommonMod.config.entityConfigs.spitterConfigs.spitterAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
@@ -137,7 +137,7 @@ public class SpitterEntity extends AlienEntity {
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(
                 damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.spitterConfigs.spitterXenoTailAttackDamage : 0.0f
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.entityConfigs.spitterConfigs.spitterXenoTailAttackDamage : 0.0f
             );
             this.heal(1.0833f);
             return super.doHurtTarget(target);

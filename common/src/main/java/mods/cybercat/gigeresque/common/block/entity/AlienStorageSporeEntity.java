@@ -253,7 +253,7 @@ public class AlienStorageSporeEntity extends RandomizableContainerBlockEntity {
             -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
         );
         areaEffectCloudEntity.addEffect(
-            new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.sporeTickTimer, 0)
+            new MobEffectInstance(GigStatusEffects.SPORE, CommonMod.config.alienblockConfigs.sporeTickTimer, 0)
         );
         this.level.addFreshEntity(areaEffectCloudEntity);
     }

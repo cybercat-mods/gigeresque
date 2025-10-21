@@ -62,12 +62,14 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         var tickTimer = CommonMod.config.getFacehuggerAttachTickTimer();
 
         // Calculate seconds if needed
-        var secondsAttached = CommonMod.config.facehuggerConfigs.enableFacehuggerTimerTicks
+        var secondsAttached = CommonMod.config.entityConfigs.facehuggerConfigs.enableFacehuggerTimerTicks
             ? ticksAttached
             : Math.round(
                 ticksAttached / 20
             );
-        var secondsTimer = CommonMod.config.facehuggerConfigs.enableFacehuggerTimerTicks ? tickTimer : Math.round(tickTimer / 20);
+        var secondsTimer = CommonMod.config.entityConfigs.facehuggerConfigs.enableFacehuggerTimerTicks
+            ? tickTimer
+            : Math.round(tickTimer / 20);
 
         return "Attachment Timer: " + secondsAttached + " seconds / " + secondsTimer + " seconds";
     }
@@ -79,7 +81,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 .stream()
                 .anyMatch(
                     FacehuggerEntity.class::isInstance
-                ) && CommonMod.config.facehuggerConfigs.enableFacehuggerAttachmentTimer
+                ) && CommonMod.config.entityConfigs.facehuggerConfigs.enableFacehuggerAttachmentTimer
         ) {
             var player = ClientUtils.getClientPlayer();
             if (player != null) {

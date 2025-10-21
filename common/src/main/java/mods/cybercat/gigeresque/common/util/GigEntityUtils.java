@@ -40,18 +40,18 @@ public record GigEntityUtils() {
             return false;
 
         // Peaceful mode enabled
-        if (CommonMod.config.peacefulModeIgnorePlayersOnly) {
+        if (CommonMod.config.generalConfigs.peacefulModeIgnorePlayersOnly) {
             // ignore only players in peaceful
             return entity instanceof Player;
         } else {
             // ignore everything in peaceful
-            return CommonMod.config.enablePeacefulModeTargetDisable;
+            return CommonMod.config.generalConfigs.enablePeacefulModeTargetDisable;
         }
     };
 
     public static final Predicate<Entity> PEACEFUL_CHECK_ONLY_PLAYERS = entity -> {
         // Feature toggle must be enabled
-        if (!CommonMod.config.peacefulModeIgnorePlayersOnly)
+        if (!CommonMod.config.generalConfigs.peacefulModeIgnorePlayersOnly)
             return false;
 
         // Not Peaceful, allow normal targeting

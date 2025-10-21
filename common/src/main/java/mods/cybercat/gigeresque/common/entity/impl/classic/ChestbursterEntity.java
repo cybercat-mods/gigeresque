@@ -47,7 +47,7 @@ public class ChestbursterEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.chestbursterHealth
+                CommonMod.config.entityConfigs.bursterConfigs.chestbursterHealth
             )
             .add(Attributes.ARMOR, 0.0f)
             .add(
@@ -148,7 +148,7 @@ public class ChestbursterEntity extends AlienEntity {
      */
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.bursterConfigs.chestbursterGrowthMultiplier;
+        return CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier;
     }
 
     /**

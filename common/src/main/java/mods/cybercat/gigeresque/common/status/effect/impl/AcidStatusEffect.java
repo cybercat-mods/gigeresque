@@ -27,7 +27,7 @@ public class AcidStatusEffect extends MobEffect {
         if (!entity.getType().is(GigTags.ACID_RESISTANT_ENTITY) && entity.tickCount % 40 == 0)
             entity.hurt(
                 GigDamageSources.of(entity.level(), GigDamageSources.ACID),
-                CommonMod.config.acidDamage * amplifier
+                CommonMod.config.alienblockConfigs.acidDamage * amplifier
             );
         return super.applyEffectTick(entity, amplifier);
     }

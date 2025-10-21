@@ -61,7 +61,7 @@ public class AlienEggEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(Attributes.MAX_HEALTH, CommonMod.config.eggConfigs.alieneggHealth)
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.eggConfigs.alieneggHealth)
             .add(
                 Attributes.ARMOR,
                 1.0

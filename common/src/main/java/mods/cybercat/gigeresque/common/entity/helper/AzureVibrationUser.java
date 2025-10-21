@@ -43,7 +43,7 @@ public class AzureVibrationUser implements VibrationSystem.User {
         var mobY = this.mob.getY();
         final var maxY = 320;
         final var minY = -64;
-        var maxRadius = CommonMod.config.xenoMaxSoundRange;
+        var maxRadius = CommonMod.config.entityConfigs.xenoMaxSoundRange;
         var factor = Math.clamp((mobY - minY) / (maxY - minY), 0.25, 1.0);
 
         return (int) (maxRadius * factor);

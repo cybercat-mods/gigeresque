@@ -43,19 +43,19 @@ public class RunnerAlienEntity extends AlienEntity {
         return LivingEntity.createLivingAttributes()
             .add(
                 Attributes.MAX_HEALTH,
-                CommonMod.config.classicXenoConfigs.classicXenoHealth
+                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoHealth
             )
-            .add(Attributes.ARMOR, CommonMod.config.runnerConfigs.runnerXenoHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.runnerConfigs.runnerXenoArmor)
             .add(
                 Attributes.ARMOR_TOUGHNESS,
-                CommonMod.config.runnerConfigs.runnerXenoArmor
+                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoArmor
             )
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
             .add(
                 Attributes.ATTACK_DAMAGE,
-                CommonMod.config.runnerConfigs.runnerXenoAttackDamage
+                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
@@ -94,7 +94,7 @@ public class RunnerAlienEntity extends AlienEntity {
             livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
             livingEntity.hurt(
                 damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.runnerConfigs.runnerXenoTailAttackDamage : 0.0f
+                this.getRandom().nextInt(4) > 2 ? CommonMod.config.entityConfigs.runnerConfigs.runnerXenoTailAttackDamage : 0.0f
             );
             this.heal(1.0833f);
             return super.doHurtTarget(target);
@@ -105,7 +105,7 @@ public class RunnerAlienEntity extends AlienEntity {
 
     @Override
     public float getGrowthMultiplier() {
-        return CommonMod.config.runnerbusterConfigs.runnerAlienGrowthMultiplier;
+        return CommonMod.config.entityConfigs.runnerbusterConfigs.runnerAlienGrowthMultiplier;
     }
 
     @Override

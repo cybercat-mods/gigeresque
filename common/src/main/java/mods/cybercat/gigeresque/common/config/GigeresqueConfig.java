@@ -10,47 +10,193 @@ public class GigeresqueConfig {
 
     @Configurable
     @Configurable.Synchronized
-    public boolean enableLogging = false;
+    public GeneralConfigs generalConfigs = new GeneralConfigs();
+
+    public static class GeneralConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enableLogging = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enableDevparticles = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enableDevEntites = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enablePeacefulModeTargetDisable = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean peacefulModeIgnorePlayersOnly = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enablePeacefulModeRemoval = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enablePandoraEffects = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enabledCreativeBootAcidProtection = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1)
+        public int maxSurgeryKitUses = 4;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1)
+        public int surgeryKitCooldownTicks = 15;
+    }
 
     @Configurable
     @Configurable.Synchronized
-    public boolean enableDevparticles = false;
+    public BlockConfigs alienblockConfigs = new BlockConfigs();
+
+    public static class BlockConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean enableAcidLavaRemoval = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        public boolean blackfuildNonrepacle = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1)
+        public float alienblockHardness = 3.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1)
+        public float alienblockResistance = 6.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float eggmorphTickTimer = 1200.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float acidDamage = 2;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1200)
+        public int sporeTickTimer = 1200;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 1200)
+        public int gooEffectTickTimer = 1200;
+    }
 
     @Configurable
     @Configurable.Synchronized
-    public boolean enableDevEntites = false;
+    public EntityConfigs entityConfigs = new EntityConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean enablePeacefulModeTargetDisable = true;
+    public static class EntityConfigs {
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean peacefulModeIgnorePlayersOnly = false;
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public int xenoMaxSoundRange = 48;
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean enablePeacefulModeRemoval = false;
+        @Configurable
+        @Configurable.Synchronized
+        public EggConfigs eggConfigs = new EggConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean enablePandoraEffects = true;
+        @Configurable
+        @Configurable.Synchronized
+        public FacehuggerConfigs facehuggerConfigs = new FacehuggerConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean enabledCreativeBootAcidProtection = false;
+        @Configurable
+        @Configurable.Synchronized
+        public BursterConfigs bursterConfigs = new BursterConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean enableAcidLavaRemoval = false;
+        @Configurable
+        @Configurable.Synchronized
+        public ClassicConfigs classicXenoConfigs = new ClassicConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public boolean blackfuildNonrepacle = false;
+        // @Configurable
+        // @Configurable.Synchronized
+        // public romConfigs romXenoConfigs = new romConfigs();
 
-    @Configurable
-    @Configurable.Synchronized
-    public FacehuggerConfigs facehuggerConfigs = new FacehuggerConfigs();
+        @Configurable
+        @Configurable.Synchronized
+        public AquaticAlienConfigs aquaticXenoConfigs = new AquaticAlienConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public HammerpedeConfigs hammerpedeConfigs = new HammerpedeConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public PopperConfigs popperConfigs = new PopperConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public StalkerConfigs stalkerConfigs = new StalkerConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public RBusterConfigs runnerbusterConfigs = new RBusterConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public RunnerConfigs runnerConfigs = new RunnerConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public SpitterConfigs spitterConfigs = new SpitterConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public NeobursterConfigs neobursterConfigs = new NeobursterConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public NeoAdolescentConfigs neomorphAdolescentConfigs = new NeoAdolescentConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public NeomorphConfigs neomorphConfigs = new NeomorphConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public HBursterConfigs hellbusterConfigs = new HBursterConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public HellmorphRunnerConfigs hellmorphrunnerConfigs = new HellmorphRunnerConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public BaphomorphConfigs baphomorphConfigs = new BaphomorphConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public DTBConfigs draconicTempleBeastConfigs = new DTBConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public MHTBConfigs moonlightHorrorTempleBeastConfigs = new MHTBConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public RTBConfigs ravenousTempleBeastConfigs = new RTBConfigs();
+    }
 
     public static class FacehuggerConfigs {
 
@@ -68,6 +214,11 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1200, max = 8000)
+        public float impregnationTickTimer = 1200.0f;
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public float facehuggerAttachTickTimer = 1200.0f;
 
@@ -82,28 +233,12 @@ public class GigeresqueConfig {
         public double facehuggerHealth = 40;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public BlockConfigs alienblockConfigs = new BlockConfigs();
-
-    public static class BlockConfigs {
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Range(min = 1)
-        public float alienblockHardness = 3.0f;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Range(min = 1)
-        public float alienblockResistance = 6.0f;
-    }
-
-    @Configurable
-    @Configurable.Synchronized
-    public BursterConfigs bursterConfigs = new BursterConfigs();
-
     public static class BursterConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public double chestbursterHealth = 30;
 
         @Configurable
         @Configurable.Synchronized
@@ -121,51 +256,7 @@ public class GigeresqueConfig {
         public float runnerbursterGrowthMultiplier = 1.0f;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1)
-    public float eggmorphTickTimer = 1200.0f;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1200, max = 8000)
-    public float impregnationTickTimer = 1200.0f;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.Range(min = 1200)
-    public int sporeTickTimer = 1200;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.Range(min = 1200)
-    public int gooEffectTickTimer = 1200;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1)
-    public float acidDamage = 2;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.Range(min = 1)
-    public int maxSurgeryKitUses = 4;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.Range(min = 1)
-    public int surgeryKitCooldownTicks = 15;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1)
-    public int xenoMaxSoundRange = 48;
-
-    @Configurable
-    @Configurable.Synchronized
-    public classicConfigs classicXenoConfigs = new classicConfigs();
-
-    public static class classicConfigs {
+    public static class ClassicConfigs {
 
         @Configurable
         @Configurable.Synchronized
@@ -198,10 +289,6 @@ public class GigeresqueConfig {
         public float classicXenoAttackSpeed = 3.9F;
     }
 
-    // @Configurable
-    // @Configurable.Synchronized
-    // public romConfigs romXenoConfigs = new romConfigs();
-    //
     // public static class romConfigs {
     //
     // @Configurable
@@ -235,10 +322,6 @@ public class GigeresqueConfig {
     // public float romXenoAttackSpeed = 3.9F;
     // }
 
-    @Configurable
-    @Configurable.Synchronized
-    public AquaticAlienConfigs aquaticXenoConfigs = new AquaticAlienConfigs();
-
     public static class AquaticAlienConfigs {
 
         @Configurable
@@ -267,10 +350,6 @@ public class GigeresqueConfig {
         public float aquaticXenoTailAttackDamage = 3;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public HammerpedeConfigs hammerpedeConfigs = new HammerpedeConfigs();
-
     public static class HammerpedeConfigs {
 
         @Configurable
@@ -284,10 +363,6 @@ public class GigeresqueConfig {
         public double hammerpedeAttackDamage = 1.5;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public PopperConfigs popperConfigs = new PopperConfigs();
-
     public static class PopperConfigs {
 
         @Configurable
@@ -300,10 +375,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double popperAttackDamage = 3;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public RBusterConfigs runnerbusterConfigs = new RBusterConfigs();
 
     public static class RBusterConfigs {
 
@@ -322,10 +393,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double runnerbusterAttackDamage = 5;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public StalkerConfigs stalkerConfigs = new StalkerConfigs();
 
     public static class StalkerConfigs {
 
@@ -355,10 +422,6 @@ public class GigeresqueConfig {
         public float stalkerAttackSpeed = 1.7F;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public RunnerConfigs runnerConfigs = new RunnerConfigs();
-
     public static class RunnerConfigs {
 
         @Configurable
@@ -386,10 +449,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public float runnerXenoAttackSpeed = 3.0F;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public EggConfigs eggConfigs = new EggConfigs();
 
     public static class EggConfigs {
 
@@ -419,20 +478,6 @@ public class GigeresqueConfig {
         public int alienegg_max_group = 1;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1)
-    public double chestbursterHealth = 30;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.DecimalRange(min = 1)
-    public double facehuggerHealth = 40;
-
-    @Configurable
-    @Configurable.Synchronized
-    public SpitterConfigs spitterConfigs = new SpitterConfigs();
-
     public static class SpitterConfigs {
 
         @Configurable
@@ -461,10 +506,6 @@ public class GigeresqueConfig {
         public float spitterXenoTailAttackDamage = 3;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public NeobursterConfigs neobursterConfigs = new NeobursterConfigs();
-
     public static class NeobursterConfigs {
 
         @Configurable
@@ -477,10 +518,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double neobursterAttackDamage = 5;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public NeoAdolescentConfigs neomorphAdolescentConfigs = new NeoAdolescentConfigs();
 
     public static class NeoAdolescentConfigs {
 
@@ -499,10 +536,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public float neomorph_adolescentXenoTailAttackDamage = 3;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public NeomorphConfigs neomorphConfigs = new NeomorphConfigs();
 
     public static class NeomorphConfigs {
 
@@ -527,10 +560,6 @@ public class GigeresqueConfig {
         public float neomorphXenoTailAttackDamage = 3;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public DTBConfigs draconicTempleBeastConfigs = new DTBConfigs();
-
     public static class DTBConfigs {
 
         @Configurable
@@ -548,10 +577,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double draconicTempleBeastAttackDamage = 9;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public MHTBConfigs moonlightHorrorTempleBeastConfigs = new MHTBConfigs();
 
     public static class MHTBConfigs {
 
@@ -571,10 +596,6 @@ public class GigeresqueConfig {
         public double moonlightHorrorTempleBeastAttackDamage = 9;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public RTBConfigs ravenousTempleBeastConfigs = new RTBConfigs();
-
     public static class RTBConfigs {
 
         @Configurable
@@ -592,10 +613,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double ravenousTempleBeastAttackDamage = 9;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public BaphomorphConfigs baphomorphConfigs = new BaphomorphConfigs();
 
     public static class BaphomorphConfigs {
 
@@ -615,10 +632,6 @@ public class GigeresqueConfig {
         public double baphomorphAttackDamage = 9;
     }
 
-    @Configurable
-    @Configurable.Synchronized
-    public HellmorphRunnerConfigs hellmorphrunnerConfigs = new HellmorphRunnerConfigs();
-
     public static class HellmorphRunnerConfigs {
 
         @Configurable
@@ -636,10 +649,6 @@ public class GigeresqueConfig {
         @Configurable.DecimalRange(min = 1)
         public double hellmorph_runnerAttackDamage = 9;
     }
-
-    @Configurable
-    @Configurable.Synchronized
-    public HBursterConfigs hellbusterConfigs = new HBursterConfigs();
 
     public static class HBursterConfigs {
 
@@ -659,47 +668,19 @@ public class GigeresqueConfig {
         public double hellbusterAttackDamage = 5;
     }
 
-    public float getAlienGrowthMultiplier() {
-        return classicXenoConfigs.alienGrowthMultiplier;
-    }
-
-    public float getAquaticAlienGrowthMultiplier() {
-        return aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
-    }
-
-    public float getAquaticChestbursterGrowthMultiplier() {
-        return bursterConfigs.aquaticChestbursterGrowthMultiplier;
-    }
-
-    public float getChestbursterGrowthMultiplier() {
-        return bursterConfigs.chestbursterGrowthMultiplier;
-    }
-
     public float getEggmorphTickTimer() {
-        return eggmorphTickTimer;
+        return alienblockConfigs.eggmorphTickTimer;
     }
 
     public float getFacehuggerAttachTickTimer() {
-        return facehuggerConfigs.facehuggerAttachTickTimer;
+        return entityConfigs.facehuggerConfigs.facehuggerAttachTickTimer;
     }
 
     public float getImpregnationTickTimer() {
-        return impregnationTickTimer;
-    }
-
-    public int getSporeTickTimer() {
-        return sporeTickTimer;
-    }
-
-    public float getRunnerAlienGrowthMultiplier() {
-        return runnerbusterConfigs.runnerAlienGrowthMultiplier;
-    }
-
-    public float getRunnerbursterGrowthMultiplier() {
-        return bursterConfigs.runnerbursterGrowthMultiplier;
+        return entityConfigs.facehuggerConfigs.impregnationTickTimer;
     }
 
     public int getgooEffectTickTimer() {
-        return gooEffectTickTimer;
+        return alienblockConfigs.gooEffectTickTimer;
     }
 }

@@ -33,7 +33,7 @@ public class AquaEggEntity extends Entity implements Growable {
         super.tick();
         if (level() instanceof ServerLevel && this.isAlive()) {
             if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                if (CommonMod.config.enableLogging && this.getGrowth() > 0) {
+                if (CommonMod.config.generalConfigs.enableLogging && this.getGrowth() > 0) {
                     CommonMod.LOGGER.warn(
                         "Current Growth: {} of {} located at {}",
                         this.getGrowth(),

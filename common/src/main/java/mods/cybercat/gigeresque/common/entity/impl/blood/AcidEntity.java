@@ -74,7 +74,11 @@ public class AcidEntity extends Entity {
                 this.level().getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1)).forEach(entity -> {
                     if (entity instanceof LivingEntity livingEntity) {
                         this.damageLivingEntities(livingEntity, this.random);
-                        if (!CommonMod.config.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
+                        if (
+                            !CommonMod.config.generalConfigs.enabledCreativeBootAcidProtection || Constants.isNotCreativeSpecPlayer.test(
+                                livingEntity
+                            )
+                        ) {
                             DamageSourceUtils.damageArmor(livingEntity.getItemBySlot(EquipmentSlot.FEET), this.random, 1, 4);
                         }
                     }
@@ -83,7 +87,7 @@ public class AcidEntity extends Entity {
                     }
                 });
             }
-            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
+            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.alienblockConfigs.enableAcidLavaRemoval)
                 this.remove(RemovalReason.KILLED);
             level().getEntities(this, this.getBoundingBox()).forEach(e -> {
                 if (e instanceof AcidEntity && e.tickCount < this.tickCount)
@@ -187,10 +191,13 @@ public class AcidEntity extends Entity {
     public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         if (player.getItemInHand(hand).is(Items.GLASS_BOTTLE) && !player.level().isClientSide()) {
             player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-            player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+            player.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.alienblockConfigs.acidDamage);
 
             if (player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+                serverPlayer.hurt(
+                    GigDamageSources.of(player.level(), GigDamageSources.ACID),
+                    CommonMod.config.alienblockConfigs.acidDamage
+                );
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontacidbottle"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
                     for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {

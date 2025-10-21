@@ -66,7 +66,7 @@ public class GooEntity extends Entity {
             this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1)).forEach(livingEntity -> {
                 this.damageLivingEntities(livingEntity, this.random);
             });
-            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.enableAcidLavaRemoval)
+            if (level().getBlockState(this.blockPosition()).is(Blocks.LAVA) && CommonMod.config.alienblockConfigs.enableAcidLavaRemoval)
                 this.remove(RemovalReason.KILLED);
             level().getEntities(this, this.getBoundingBox().inflate(1)).forEach(e -> {
                 if (e instanceof GooEntity && e.tickCount < this.tickCount)
@@ -115,7 +115,7 @@ public class GooEntity extends Entity {
             return;
         if (Constants.notPlayer.test(livingEntity) || Constants.isNotCreativeSpecPlayer.test(livingEntity)) {
             livingEntity.addEffect(
-                new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.gooEffectTickTimer / 2, 0)
+                new MobEffectInstance(GigStatusEffects.DNA, CommonMod.config.alienblockConfigs.gooEffectTickTimer / 2, 0)
             );
         }
     }
@@ -146,7 +146,10 @@ public class GooEntity extends Entity {
             player.addEffect(new MobEffectInstance(GigStatusEffects.DNA, 1000, 0));
 
             if (player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.hurt(GigDamageSources.of(player.level(), GigDamageSources.ACID), CommonMod.config.acidDamage);
+                serverPlayer.hurt(
+                    GigDamageSources.of(player.level(), GigDamageSources.ACID),
+                    CommonMod.config.alienblockConfigs.acidDamage
+                );
                 var advancement = serverPlayer.server.getAdvancements().get(Constants.modResource("dontgoobottle"));
                 if (advancement != null && !serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
                     for (var s : serverPlayer.getAdvancements().getOrStartProgress(advancement).getRemainingCriteria()) {
