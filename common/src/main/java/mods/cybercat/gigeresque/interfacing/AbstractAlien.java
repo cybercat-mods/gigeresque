@@ -2,7 +2,7 @@ package mods.cybercat.gigeresque.interfacing;
 
 public interface AbstractAlien {
 
-    int getAcidDiameter();
+    int getBloodDiameter();
 
     boolean isFleeing();
 

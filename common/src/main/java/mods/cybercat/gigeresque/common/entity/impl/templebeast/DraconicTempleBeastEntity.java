@@ -31,14 +31,14 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class DraconicTempleBeastEntity extends AlienEntity {
 
     public DraconicTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, Options.standardAlien());
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
     }
 
     @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 3;
     }
 

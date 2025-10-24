@@ -37,7 +37,7 @@ public class GooAmpouleProjectile extends AmpouleProjectile {
     }
 
     private void generateVisuals(BlockPos pos) {
-        GigCommonMethods.generateGooBloodAtPos(this.level(), pos, 0, 0);
+        GigCommonMethods.placePool(GigEntities.GOO.get(), level(), pos);
 
         var areaEffectCloudEntity = new AreaEffectCloud(this.level(), pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f);
         areaEffectCloudEntity.setRadius(2.0F);

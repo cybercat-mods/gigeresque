@@ -39,7 +39,7 @@ public class ChestbursterEntity extends AlienEntity {
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
-        super(type, world);
+        super(type, world, Options.standardAlien());
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
@@ -68,7 +68,7 @@ public class ChestbursterEntity extends AlienEntity {
     }
 
     @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 1;
     }
 

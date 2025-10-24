@@ -25,7 +25,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -63,7 +62,7 @@ public class FacehuggerEntity extends AlienEntity {
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world);
+        super(type, world, Options.standardAlien());
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
@@ -103,7 +102,7 @@ public class FacehuggerEntity extends AlienEntity {
     }
 
     @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 1;
     }
 
@@ -285,9 +284,6 @@ public class FacehuggerEntity extends AlienEntity {
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
             return false;
-
-        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity livingEntity)
-            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, livingEntity);
 
         return super.hurt(source, amount);
     }

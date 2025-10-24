@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.config.Config;
 import mod.azure.azurelib.common.config.Configurable;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.entity.AlienEntity.BloodType;
 
 @Config(id = CommonMod.MOD_ID)
 public class GigeresqueConfig {
@@ -121,6 +122,14 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public int xenoMaxSoundRange = 48;
+
+        @Configurable
+        @Configurable.Synchronized
+        public BloodType gooMutantBloodType = BloodType.GOO;
+
+        @Configurable
+        @Configurable.Synchronized
+        public BloodType neomorphBloodType = BloodType.NONE;
 
         @Configurable
         @Configurable.Synchronized

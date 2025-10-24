@@ -47,7 +47,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphEntity extends AlienEntity {
 
     public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world);
+        super(entityType, world, Options.neomorph());
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5F);
@@ -79,8 +79,8 @@ public class NeomorphEntity extends AlienEntity {
     }
 
     @Override
-    public int getAcidDiameter() {
-        return 0;
+    public int getBloodDiameter() {
+        return 3;
     }
 
     @Override

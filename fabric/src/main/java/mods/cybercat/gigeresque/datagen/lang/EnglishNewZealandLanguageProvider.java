@@ -313,6 +313,8 @@ public class EnglishNewZealandLanguageProvider extends FabricLanguageProvider {
         builder.add("config.gigeresque.option.alieneggHatchRange", "Egg Hatch Range");
         builder.add("config.gigeresque.option.acidDamage", "Acid Damage Per Tick");
         builder.add("config.gigeresque.option.xenoMaxSoundRange", "Interloper Audio Range");
+        builder.add("config.gigeresque.option.gooMutantBloodType", "Goo Mutant Blood Type");
+        builder.add("config.gigeresque.option.neomorphBloodType", "Neomorph Blood Type");
         builder.add("config.gigeresque.option.surgeryKitCooldownTicks", "Surgery Kit Cooldown Ticks");
         builder.add("config.gigeresque.option.facehuggerGivesBlindness", "Facehuggers Give Blindness");
         builder.add("config.gigeresque.option.spitterXenoHealth", "Melting Interloper Health");

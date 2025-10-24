@@ -60,7 +60,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class ClassicAlienEntity extends AlienEntity {
 
     public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(type, world);
+        super(type, world, Options.standardAlien());
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
@@ -96,7 +96,7 @@ public class ClassicAlienEntity extends AlienEntity {
     }
 
     @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 3;
     }
 

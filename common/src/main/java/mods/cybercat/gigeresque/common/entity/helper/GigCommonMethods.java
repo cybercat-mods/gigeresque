@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
@@ -33,44 +34,14 @@ public record GigCommonMethods() {
         animationAction.run();
     }
 
-    public static Entity generateBloodPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var bloodEntity = GigEntities.BLOOD.get().create(entity.level());
-        assert bloodEntity != null;
-        bloodEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(bloodEntity);
-        return bloodEntity;
-    }
-
-    public static Entity generateAcidPool(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = GigEntities.ACID.get().create(entity.level());
+    // TODO unify pools (AcidEntity, GooEntity, MobBloodEntity) since they share a lot of code and move this method to
+    // that class
+    public static Entity placePool(EntityType<?> type, Level level, BlockPos pos) {
+        var acidEntity = type.create(level);
         assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(acidEntity);
-        return acidEntity;
-    }
-
-    public static Entity generateAcidPoolAtPos(Level level, BlockPos pos, int xOffset, int zOffset) {
-        var acidEntity = GigEntities.ACID.get().create(level);
-        assert acidEntity != null;
-        acidEntity.moveTo(pos.offset(0, 1, 0), xOffset, zOffset);
+        acidEntity.moveTo(pos, 0, 0);
         level.addFreshEntity(acidEntity);
         return acidEntity;
-    }
-
-    public static Entity generateGooBlood(LivingEntity entity, BlockPos pos, int xOffset, int zOffset) {
-        var gooEntity = GigEntities.GOO.get().create(entity.level());
-        assert gooEntity != null;
-        gooEntity.moveTo(pos.offset(xOffset, 0, zOffset), entity.getYRot(), entity.getXRot());
-        entity.level().addFreshEntity(gooEntity);
-        return gooEntity;
-    }
-
-    public static Entity generateGooBloodAtPos(Level level, BlockPos pos, int xOffset, int zOffset) {
-        var gooEntity = GigEntities.GOO.get().create(level);
-        assert gooEntity != null;
-        gooEntity.moveTo(pos.offset(0, 1, 0), xOffset, zOffset);
-        level.addFreshEntity(gooEntity);
-        return gooEntity;
     }
 
     public static Entity generateSporeCloud(LivingEntity entity, BlockPos pos, int xOffset, int zOffset, float radius) {

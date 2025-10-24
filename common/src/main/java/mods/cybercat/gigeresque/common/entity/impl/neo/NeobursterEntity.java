@@ -35,6 +35,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
+        options = Options.neomorph();
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
@@ -86,8 +87,8 @@ public class NeobursterEntity extends RunnerbursterEntity {
     }
 
     @Override
-    public int getAcidDiameter() {
-        return 0;
+    public int getBloodDiameter() {
+        return 1;
     }
 
     @Override

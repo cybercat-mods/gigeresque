@@ -139,8 +139,6 @@ public record GigTags() {
 
     public static final TagKey<EntityType<?>> GIG_MISC = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigeresquemisc"));
 
-    public static final TagKey<EntityType<?>> NO_ACID_BLOOD = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("noacidblood"));
-
     public static final TagKey<EntityType<?>> GIG_CRAWLER = TagKey.create(Registries.ENTITY_TYPE, Constants.modResource("gigcrawler"));
 
     public static final TagKey<EntityType<?>> GIG_VILLAGERS_FEAR = TagKey.create(

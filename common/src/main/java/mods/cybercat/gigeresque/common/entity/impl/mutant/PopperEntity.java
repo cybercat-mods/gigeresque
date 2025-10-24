@@ -15,7 +15,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -33,17 +32,15 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
-import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class PopperEntity extends AlienEntity {
 
     public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world);
+        super(entityType, world, Options.gooMutant());
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
@@ -150,35 +147,7 @@ public class PopperEntity extends AlienEntity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (!this.level().isClientSide) {
-            var attacker = source.getEntity();
-            if (source.getEntity() != null && attacker instanceof LivingEntity living)
-                this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, living);
-        }
-
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-            return super.hurt(source, amount);
-
-        if (!this.level().isClientSide && source != this.damageSources().genericKill()) {
-            if (getAcidDiameter() == 1)
-                GigCommonMethods.generateGooBlood(this, this.blockPosition(), 0, 0);
-            else {
-                var radius = (getAcidDiameter() - 1) / 2;
-                for (int i = 0; i < getAcidDiameter(); i++) {
-                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        GigCommonMethods.generateGooBlood(this, this.blockPosition(), x, z);
-                    }
-                }
-            }
-        }
-        return super.hurt(source, amount);
-    }
-
-    @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 1;
     }
 

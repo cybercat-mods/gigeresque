@@ -34,6 +34,6 @@ public class AcidAmpouleProjectile extends AmpouleProjectile {
     }
 
     private void generateVisuals(BlockPos pos) {
-        GigCommonMethods.generateAcidPoolAtPos(this.level(), pos, 0, 0);
+        GigCommonMethods.placePool(GigEntities.ACID.get(), level(), pos);
     }
 }

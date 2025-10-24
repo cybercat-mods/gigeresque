@@ -32,10 +32,8 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +77,7 @@ import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 /**
  * TODO: Create new version of this class that will will use crawling library when ready.
  */
-public abstract class AlienEntity extends Monster implements Enemy, VibrationSystem, Growable, AbstractAlien {
+public abstract class AlienEntity extends Monster implements VibrationSystem, Growable, AbstractAlien {
 
     public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -210,7 +208,36 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     public final ClimbingManager climbingManager;
 
-    protected AlienEntity(EntityType<? extends Monster> entityType, Level level) {
+    public enum BloodType {
+        NONE,
+        ACID,
+        GOO
+    }
+
+    public static class Options {
+
+        public BloodType bloodType;
+
+        public Options(BloodType bloodType) {
+            this.bloodType = bloodType;
+        }
+
+        public static Options standardAlien() {
+            return new Options(BloodType.ACID);
+        }
+
+        public static Options gooMutant() {
+            return new Options(CommonMod.config.entityConfigs.gooMutantBloodType);
+        }
+
+        public static Options neomorph() {
+            return new Options(CommonMod.config.entityConfigs.neomorphBloodType);
+        }
+    }
+
+    public Options options;
+
+    protected AlienEntity(EntityType<? extends Monster> entityType, Level level, Options options) {
         super(entityType, level);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
@@ -228,6 +255,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
             CLIMBING_UP_DIR,
             CLIMBING_DIST_FROM_BLOCK
         );
+        this.options = options;
     }
 
     public static boolean checkMonsterSpawnRules(
@@ -283,7 +311,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
     }
 
     @Override
-    public int getAcidDiameter() {
+    public int getBloodDiameter() {
         return 0;
     }
 
@@ -557,31 +585,7 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
 
     @Override
     public void die(@NotNull DamageSource source) {
-        if (
-            DamageSourceUtils.isDamageSourceNotPuncturing(
-                source,
-                this.damageSources()
-            ) || source == damageSources().genericKill()
-        ) {
-            super.die(source);
-            return;
-        }
-
-        var damageCheck = !this.level().isClientSide && source != damageSources().genericKill() || source != damageSources().generic();
-        if (damageCheck && !this.getType().is(GigTags.NO_ACID_BLOOD)) {
-            if (getAcidDiameter() == 1)
-                GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
-            else {
-                var radius = (getAcidDiameter() - 1) / 2;
-                for (int i = 0; i < getAcidDiameter(); i++) {
-                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        GigCommonMethods.generateAcidPool(this, this.blockPosition(), x, z);
-                    }
-                }
-            }
-        }
+        bleed(source);
         super.die(source);
     }
 
@@ -659,31 +663,11 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
                 GigCommonMethods.setAnimation(this.animationDispatcher::sendUnkidnap);
             }
         }
-        if (!this.level().isClientSide && source.getEntity() != null && source.getEntity() instanceof LivingEntity attacker) {
-            this.brain.setMemory(MemoryModuleType.ATTACK_TARGET, attacker);
+        if (isAlive() && amount > 8F) {
+            bleed(source);
         }
-        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, this.damageSources()))
-            return super.hurt(source, amount);
-
-        if (
-            !this.level().isClientSide && source != this.damageSources().genericKill() && !this.getType()
-                .is(
-                    GigTags.NO_ACID_BLOOD
-                ) && this.isAlive() && amount > 8F
-        ) {
-            if (getAcidDiameter() == 1)
-                GigCommonMethods.generateAcidPool(this, this.blockPosition(), 0, 0);
-            else {
-                var radius = (getAcidDiameter() - 1) / 2;
-                for (int i = 0; i < getAcidDiameter(); i++) {
-                    int x = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    int z = this.level().getRandom().nextInt(getAcidDiameter()) - radius;
-                    if (source != damageSources().genericKill() || source != damageSources().generic()) {
-                        GigCommonMethods.generateAcidPool(this, this.blockPosition(), x, z);
-                    }
-                }
-            }
-        }
+        // adaptive armour
+        // maybe revisit to account for lots of small hits?
         if (source != this.damageSources().genericKill()) {
             var safeAmount = Math.max(amount, 1);
             var adjustedAmount = safeAmount > 50 ? safeAmount / (float) Math.log10(safeAmount) : safeAmount;
@@ -947,6 +931,45 @@ public abstract class AlienEntity extends Monster implements Enemy, VibrationSys
         // this should be reasonable for most aliens
         // it needs to be smaller than 1x1 for climbing to work correctly
         return EntityDimensions.scalable(0.75f, 0.75f);
+    }
+
+    public void bleed(DamageSource source) {
+        if (options.bloodType == BloodType.NONE) {
+            return;
+        }
+
+        if (level().isClientSide()) {
+            return;
+        }
+
+        // not sure why we're checking for this, keeping it from the old bleed code, maybe they should be moved to
+        // isDamageSourceNotPuncturing?
+        if (source == damageSources().genericKill() || source == damageSources().generic()) {
+            return;
+        }
+
+        if (DamageSourceUtils.isDamageSourceNotPuncturing(source, damageSources())) {
+            return;
+        }
+
+        var bloodEntityType = switch (options.bloodType) {
+            case NONE -> null; // bloodType should not be NONE at this point
+            case ACID -> GigEntities.ACID.get();
+            case GOO -> GigEntities.GOO.get();
+        };
+        assert bloodEntityType != null;
+
+        if (getBloodDiameter() == 1) {
+            GigCommonMethods.placePool(bloodEntityType, level(), blockPosition());
+            return;
+        }
+
+        var radius = (getBloodDiameter() - 1) / 2;
+        for (int i = 0; i < getBloodDiameter(); i++) {
+            int x = level().getRandom().nextInt(getBloodDiameter()) - radius;
+            int z = level().getRandom().nextInt(getBloodDiameter()) - radius;
+            GigCommonMethods.placePool(bloodEntityType, level(), blockPosition().offset(x, 0, z));
+        }
     }
 
 }
