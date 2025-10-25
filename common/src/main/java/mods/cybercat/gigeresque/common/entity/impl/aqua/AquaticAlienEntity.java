@@ -51,15 +51,10 @@ public class AquaticAlienEntity extends AlienEntity {
     public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien());
+        super(type, world, Options.standardAlien(3));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 3;
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {

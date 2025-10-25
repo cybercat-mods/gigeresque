@@ -54,7 +54,7 @@ public class AlienEggEntity extends AlienEntity {
     public int hatchedOpenTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
-        super(type, world, new Options(BloodType.NONE));
+        super(type, world, new Options(BloodType.NONE, 0));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
     }
@@ -73,11 +73,6 @@ public class AlienEggEntity extends AlienEntity {
             )
             .add(Attributes.FOLLOW_RANGE, 0.0)
             .add(Attributes.MOVEMENT_SPEED, 0.0);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     public void setEggState(int value) {

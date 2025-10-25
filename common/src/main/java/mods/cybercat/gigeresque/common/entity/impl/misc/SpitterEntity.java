@@ -48,7 +48,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class SpitterEntity extends AlienEntity {
 
     public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.standardAlien());
+        super(entityType, world, Options.standardAlien(3));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.3F);

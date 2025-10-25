@@ -218,20 +218,23 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
         public BloodType bloodType;
 
-        public Options(BloodType bloodType) {
+        public int bloodDiameter;
+
+        public Options(BloodType bloodType, int bloodDiameter) {
             this.bloodType = bloodType;
+            this.bloodDiameter = bloodDiameter;
         }
 
-        public static Options standardAlien() {
-            return new Options(BloodType.ACID);
+        public static Options standardAlien(int bloodDiameter) {
+            return new Options(BloodType.ACID, bloodDiameter);
         }
 
-        public static Options gooMutant() {
-            return new Options(CommonMod.config.entityConfigs.gooMutantBloodType);
+        public static Options gooMutant(int bloodDiameter) {
+            return new Options(CommonMod.config.entityConfigs.gooMutantBloodType, bloodDiameter);
         }
 
-        public static Options neomorph() {
-            return new Options(CommonMod.config.entityConfigs.neomorphBloodType);
+        public static Options neomorph(int bloodDiameter) {
+            return new Options(CommonMod.config.entityConfigs.neomorphBloodType, bloodDiameter);
         }
     }
 
@@ -308,11 +311,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     @Override
     public int getMaxAirSupply() {
         return 4800;
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 0;
     }
 
     @Override
@@ -959,15 +957,15 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         };
         assert bloodEntityType != null;
 
-        if (getBloodDiameter() == 1) {
+        if (options.bloodDiameter == 1) {
             GigCommonMethods.placePool(bloodEntityType, level(), blockPosition());
             return;
         }
 
-        var radius = (getBloodDiameter() - 1) / 2;
-        for (int i = 0; i < getBloodDiameter(); i++) {
-            int x = level().getRandom().nextInt(getBloodDiameter()) - radius;
-            int z = level().getRandom().nextInt(getBloodDiameter()) - radius;
+        var radius = (options.bloodDiameter - 1) / 2;
+        for (int i = 0; i < options.bloodDiameter; i++) {
+            int x = level().getRandom().nextInt(options.bloodDiameter) - radius;
+            int z = level().getRandom().nextInt(options.bloodDiameter) - radius;
             GigCommonMethods.placePool(bloodEntityType, level(), blockPosition().offset(x, 0, z));
         }
     }

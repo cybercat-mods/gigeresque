@@ -35,7 +35,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-        options = Options.neomorph();
+        options = Options.neomorph(1);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
@@ -84,11 +84,6 @@ public class NeobursterEntity extends RunnerbursterEntity {
         if (this.deathTime == 1)
             GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 1.0f);
         super.tickDeath();
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     @Override

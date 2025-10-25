@@ -35,7 +35,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphAdolescentEntity extends AlienEntity {
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.neomorph());
+        super(entityType, world, Options.neomorph(1));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 2.65F);
@@ -147,11 +147,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         if (this.deathTime == 1)
             GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 2.0f);
         super.tickDeath();
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     @Override

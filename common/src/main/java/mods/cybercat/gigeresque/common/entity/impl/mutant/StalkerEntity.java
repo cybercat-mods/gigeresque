@@ -44,7 +44,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class StalkerEntity extends AlienEntity {
 
     public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant());
+        super(entityType, world, Options.gooMutant(3));
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
@@ -74,11 +74,6 @@ public class StalkerEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.stalkerConfigs.stalkerAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 3;
     }
 
     @Override

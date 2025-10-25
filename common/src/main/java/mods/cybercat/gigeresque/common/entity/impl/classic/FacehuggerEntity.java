@@ -62,7 +62,7 @@ public class FacehuggerEntity extends AlienEntity {
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien());
+        super(type, world, Options.standardAlien(1));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
@@ -99,11 +99,6 @@ public class FacehuggerEntity extends AlienEntity {
             super.tickDeath();
             this.dropExperience(this);
         }
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     public boolean isInfertile() {

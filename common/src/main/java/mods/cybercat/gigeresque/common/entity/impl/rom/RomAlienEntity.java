@@ -42,7 +42,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RomAlienEntity extends AlienEntity {
 
     public RomAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(type, world, Options.standardAlien());
+        super(type, world, Options.standardAlien(3));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
@@ -74,11 +74,6 @@ public class RomAlienEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 3;
     }
 
     @Override

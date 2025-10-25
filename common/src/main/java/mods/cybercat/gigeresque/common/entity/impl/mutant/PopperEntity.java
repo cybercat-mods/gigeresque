@@ -40,7 +40,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class PopperEntity extends AlienEntity {
 
     public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant());
+        super(entityType, world, Options.gooMutant(1));
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
@@ -144,11 +144,6 @@ public class PopperEntity extends AlienEntity {
             });
         }
         super.die(source);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     @Override

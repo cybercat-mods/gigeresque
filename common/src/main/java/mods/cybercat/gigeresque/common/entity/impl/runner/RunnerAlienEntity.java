@@ -32,7 +32,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RunnerAlienEntity extends AlienEntity {
 
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien());
+        super(type, world, Options.standardAlien(3));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
@@ -59,11 +59,6 @@ public class RunnerAlienEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.runnerConfigs.runnerXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 3;
     }
 
     @Override

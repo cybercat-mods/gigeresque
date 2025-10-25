@@ -39,7 +39,7 @@ public class ChestbursterEntity extends AlienEntity {
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
-        super(type, world, Options.standardAlien());
+        super(type, world, Options.standardAlien(1));
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
@@ -65,11 +65,6 @@ public class ChestbursterEntity extends AlienEntity {
                 0.0f
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     public String getHostId() {

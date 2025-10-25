@@ -33,7 +33,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class HammerpedeEntity extends AlienEntity {
 
     public HammerpedeEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant());
+        super(entityType, world, Options.gooMutant(1));
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
@@ -115,11 +115,6 @@ public class HammerpedeEntity extends AlienEntity {
             });
         }
         super.die(source);
-    }
-
-    @Override
-    public int getBloodDiameter() {
-        return 1;
     }
 
     @Override
