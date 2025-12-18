@@ -75,3 +75,7 @@ if (keyPropsFile.exists()) {
         }
     }
 }
+
+tasks.withType(JavaExec) {
+     enableAssertions = true
+}
