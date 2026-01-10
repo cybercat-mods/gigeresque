@@ -13,9 +13,8 @@ import mods.cybercat.gigeresque.common.block.entity.*;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.*;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.blood.AcidEntity;
-import mods.cybercat.gigeresque.common.entity.impl.blood.GooEntity;
-import mods.cybercat.gigeresque.common.entity.impl.blood.MobBloodEntity;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity.Type;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -240,7 +239,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
     public static final Supplier<EntityType<Entity>> ACID = CommonEntityRegistryInterface.registerEntity(
         CommonMod.MOD_ID,
         EntityIdentifiers.ACID.getPath(),
-        AcidEntity::new,
+        (entityType, level) -> new BloodEntity(entityType, level, Type.ACID),
         MobCategory.MISC,
         0.8f,
         0.05f
@@ -249,7 +248,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
     public static final Supplier<EntityType<Entity>> BLOOD = CommonEntityRegistryInterface.registerEntity(
         CommonMod.MOD_ID,
         EntityIdentifiers.BLOOD.getPath(),
-        MobBloodEntity::new,
+        (entityType, level) -> new BloodEntity(entityType, level, Type.BLOOD),
         MobCategory.MISC,
         0.8f,
         0.05f
@@ -276,7 +275,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
     public static final Supplier<EntityType<Entity>> GOO = CommonEntityRegistryInterface.registerEntity(
         CommonMod.MOD_ID,
         EntityIdentifiers.GOO.getPath(),
-        GooEntity::new,
+        (entityType, level) -> new BloodEntity(entityType, level, Type.GOO),
         MobCategory.MISC,
         0.8f,
         0.05f
