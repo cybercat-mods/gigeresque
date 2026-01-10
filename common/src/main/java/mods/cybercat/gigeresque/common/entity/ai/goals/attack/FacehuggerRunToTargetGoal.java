@@ -17,7 +17,7 @@ public class FacehuggerRunToTargetGoal extends DelayedAttackGoal {
         if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
-        if (alienEntity.isVehicle() || alienEntity.getTarget() == null) {
+        if (alienEntity.isPassenger() || alienEntity.getTarget() == null) {
             return false;
         }
         if (
