@@ -9,7 +9,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
 
 public class AcidAmpouleProjectile extends AmpouleProjectile {
 
@@ -34,6 +34,6 @@ public class AcidAmpouleProjectile extends AmpouleProjectile {
     }
 
     private void generateVisuals(BlockPos pos) {
-        GigCommonMethods.placePool(GigEntities.ACID.get(), level(), pos);
+        BloodEntity.place(GigEntities.ACID.get(), level(), pos);
     }
 }

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.impl.blood;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -45,11 +46,16 @@ public class BloodEntity extends Entity {
 
     final Type type;
 
-    public BloodEntity(
-        EntityType<? extends Entity> entityType,
-        Level level,
-        Type type
-    ) {
+    public static BloodEntity place(EntityType<?> type, Level level, BlockPos pos) {
+        var entity = type.create(level);
+        assert entity != null;
+        assert entity instanceof BloodEntity;
+        entity.moveTo(pos, 0, 0);
+        level.addFreshEntity(entity);
+        return (BloodEntity) entity;
+    }
+
+    public BloodEntity(EntityType<? extends Entity> entityType, Level level, Type type) {
         super(entityType, level);
         this.setDeltaMovement(Vec3.ZERO);
         this.type = type;

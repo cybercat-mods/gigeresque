@@ -23,7 +23,7 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
 import mods.cybercat.gigeresque.common.fluid.GigFluids;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -137,7 +137,7 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
             if (Constants.shouldApplyImpEffects.test(this)) {
-                GigCommonMethods.placePool(GigEntities.BLOOD.get(), level(), blockPosition().above());
+                BloodEntity.place(GigEntities.BLOOD.get(), level(), blockPosition().above());
                 this.hurt(GigDamageSources.of(this.level(), GigDamageSources.CHESTBURSTING), 0.2f);
             }
             var getType = this.level().getFluidState(this.blockPosition()).getType();

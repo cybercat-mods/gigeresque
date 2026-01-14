@@ -11,7 +11,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class GooAmpouleProjectile extends AmpouleProjectile {
@@ -37,7 +37,7 @@ public class GooAmpouleProjectile extends AmpouleProjectile {
     }
 
     private void generateVisuals(BlockPos pos) {
-        GigCommonMethods.placePool(GigEntities.GOO.get(), level(), pos);
+        BloodEntity.place(GigEntities.GOO.get(), level(), pos);
 
         var areaEffectCloudEntity = new AreaEffectCloud(this.level(), pos.getX() + 0.5f, pos.getY(), pos.getZ() + 0.5f);
         areaEffectCloudEntity.setRadius(2.0F);

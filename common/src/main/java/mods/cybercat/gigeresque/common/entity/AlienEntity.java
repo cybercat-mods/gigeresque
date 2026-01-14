@@ -66,6 +66,7 @@ import mods.cybercat.gigeresque.common.entity.helper.managers.ClimbingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
+import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -958,7 +959,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         assert bloodEntityType != null;
 
         if (options.bloodDiameter == 1) {
-            GigCommonMethods.placePool(bloodEntityType, level(), blockPosition());
+            BloodEntity.place(bloodEntityType, level(), blockPosition());
             return;
         }
 
@@ -966,7 +967,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         for (int i = 0; i < options.bloodDiameter; i++) {
             int x = level().getRandom().nextInt(options.bloodDiameter) - radius;
             int z = level().getRandom().nextInt(options.bloodDiameter) - radius;
-            GigCommonMethods.placePool(bloodEntityType, level(), blockPosition().offset(x, 0, z));
+            BloodEntity.place(bloodEntityType, level(), blockPosition().offset(x, 0, z));
         }
     }
 
