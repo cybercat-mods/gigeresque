@@ -44,7 +44,9 @@ public class BloodEntity extends Entity {
         GOO,
     }
 
-    final Type type;
+    public final Type type;
+
+    public int age = 0;
 
     public static BloodEntity place(EntityType<?> type, Level level, BlockPos pos) {
         var entity = type.create(level);
@@ -69,6 +71,7 @@ public class BloodEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        age++;
 
         // particles
         if (level().isClientSide()) {
@@ -92,14 +95,14 @@ public class BloodEntity extends Entity {
         }
 
         // movement stuff
-        if (tickCount == 1) {
+        if (age == 1) {
             moveTo(blockPosition().offset(0, 0, 0), getYRot(), getXRot());
         }
         applyCustomGravity();
 
         // griefing
         if (
-            type == Type.ACID && tickCount % 5 == 0 &&
+            type == Type.ACID && age % 5 == 0 &&
                 level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)
         ) {
             var blockStateBelow = level().getBlockState(blockPosition().below());
@@ -131,8 +134,8 @@ public class BloodEntity extends Entity {
 
         // removal
         if (
-            (type == Type.BLOOD && tickCount >= 10) ||
-                tickCount >= random.nextIntBetweenInclusive(400, 800) ||
+            (type == Type.BLOOD && age >= 10) ||
+                age >= random.nextIntBetweenInclusive(400, 800) ||
                 (CommonMod.config.alienblockConfigs.enableAcidLavaRemoval &&
                     level().getBlockState(blockPosition()).is(Blocks.LAVA))
         ) {
@@ -140,18 +143,14 @@ public class BloodEntity extends Entity {
         }
 
         for (var e : level().getEntities(this, getBoundingBox())) {
-            if (
-                e instanceof BloodEntity blood
-                    && blood.type == type
-                    && e.tickCount < tickCount
-            ) {
+            if (e instanceof BloodEntity blood && blood.type == type && blood.age < age) {
                 e.kill();
             }
         }
 
         // sounds
         var soundInterval = 40;
-        if (tickCount == 1 || tickCount % soundInterval == 0) {
+        if (age == 1 || age % soundInterval == 0) {
             SoundEvent sound = switch (type) {
                 case BLOOD -> null;
                 case ACID -> SoundEvents.SCULK_BLOCK_SPREAD;
@@ -213,7 +212,7 @@ public class BloodEntity extends Entity {
                     DamageSourceUtils.damageArmor(living.getItemBySlot(EquipmentSlot.FEET), this.random, 1, 4);
                 }
             } else if (
-                tickCount % 40 == 0 &&
+                age % 40 == 0 &&
                     type == Type.ACID &&
                     e instanceof ItemEntity item &&
                     !item.getItem().is(GigTags.ACID_IMMUNE_ITEMS)
@@ -238,10 +237,16 @@ public class BloodEntity extends Entity {
     public void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
+        compound.putInt("BloodAge", age);
+    }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
+        if (compound.contains("BloodAge")) {
+            age = compound.getInt("BloodAge");
+        }
+    }
 
     @Override
     public boolean dampensVibrations() {
