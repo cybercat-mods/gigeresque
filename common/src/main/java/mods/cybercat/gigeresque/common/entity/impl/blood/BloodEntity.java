@@ -153,8 +153,8 @@ public class BloodEntity extends Entity {
         if (age == 1 || age % soundInterval == 0) {
             SoundEvent sound = switch (type) {
                 case BLOOD -> null;
-                case ACID -> SoundEvents.SCULK_BLOCK_SPREAD;
-                case GOO -> SoundEvents.LAVA_EXTINGUISH;
+                case ACID -> SoundEvents.LAVA_EXTINGUISH;
+                case GOO -> SoundEvents.SCULK_BLOCK_SPREAD;
             };
             if (sound != null) {
                 level().playSound(
