@@ -203,6 +203,9 @@ public class BloodEntity extends Entity {
                 if (living.hasEffect(effect) || e.getType().is(resistanceTag)) {
                     continue;
                 }
+                if (type == Type.GOO && living.getType().is(GigTags.DNAIMMUNE)) {
+                    continue;
+                }
                 if (Constants.notPlayer.test(e) || Constants.isNotCreativeSpecPlayer.test(e)) {
                     living.addEffect(
                         new MobEffectInstance(effect, durationTicks, random.nextIntBetweenInclusive(0, 4))
