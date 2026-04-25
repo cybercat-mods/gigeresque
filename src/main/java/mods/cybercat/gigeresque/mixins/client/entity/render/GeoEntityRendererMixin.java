@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,22 +17,16 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import mods.cybercat.gigeresque.client.entity.render.feature.EggmorphGeckoFeatureRenderer;
 
-/**
- * @author Aelpecyem
- */
 @Environment(EnvType.CLIENT)
-@Mixin(value = GeoEntityRenderer.class, remap = false)
+@Mixin(value = GeoEntityRenderer.class, remap = true)
 public abstract class GeoEntityRendererMixin<T extends Entity & GeoEntity> {
 
-    @Shadow
-    public abstract T getAnimatable();
-
-    @Shadow
+    @Shadow(remap = false)
     public abstract GeoEntityRenderer<T> addRenderLayer(GeoRenderLayer<T> layer);
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(EntityRendererProvider.Context ctx, GeoModel<T> modelProvider, CallbackInfo ci) {
-        if (this.getAnimatable() instanceof Mob)
-            this.addRenderLayer(new EggmorphGeckoFeatureRenderer<>((GeoRenderer<T>) this));
+        Object dispatch = this;
+        this.addRenderLayer(new EggmorphGeckoFeatureRenderer<>((GeoRenderer<T>) dispatch));
     }
 }
