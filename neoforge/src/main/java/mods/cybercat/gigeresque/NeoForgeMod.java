@@ -42,6 +42,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -52,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadOffsetData;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -182,6 +184,7 @@ public final class NeoForgeMod {
         NeoForgeMod.creativeModeTabDeferredRegister.register(modEventBus);
         NeoForgeMod.statusEffectDeferredRegister.register(modEventBus);
         NeoForgeMod.fluidDeferredRegister.register(modEventBus);
+        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(new EntityHeadOffsetData.ReloadListener()));
         modEventBus.addListener(this::createEntityAttributes);
         modEventBus.addListener(this::onRegisterEvent);
         ModEntitySpawn.SERIALIZER.register(modEventBus);

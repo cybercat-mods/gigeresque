@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:llama",
+  "vertical_offset": "size_y / 2.5",
+  "face_offset": "size_z + (size_z / 1.5) + parasite_height"
+}

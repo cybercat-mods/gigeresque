@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:hoglin",
+  "vertical_offset": "-size_y - size_y * 2.3",
+  "face_offset": "size_z + (size_z / 10) + parasite_height"
+}

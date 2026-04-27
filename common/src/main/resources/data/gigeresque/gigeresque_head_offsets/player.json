@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:player",
+  "vertical_offset": "-size_y - (size_y / 4)",
+  "face_offset": "size_z - (size_z / 2)"
+}

@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:wolf",
+  "vertical_offset": "-size_y - (size_y / 1.9)",
+  "face_offset": "size_z * 1.9 + parasite_height"
+}

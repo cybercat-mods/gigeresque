@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:mooshroom",
+  "vertical_offset": "-size_y",
+  "face_offset": "size_z + (size_z / 2) + parasite_height"
+}

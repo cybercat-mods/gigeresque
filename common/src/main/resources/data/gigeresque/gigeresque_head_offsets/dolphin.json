@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:dolphin",
+  "vertical_offset": "size_z - size_z - 0.7",
+  "face_offset": "size_z * 2 + size_z + 0.1"
+}

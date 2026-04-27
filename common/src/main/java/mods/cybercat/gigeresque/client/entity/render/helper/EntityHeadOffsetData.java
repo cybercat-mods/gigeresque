@@ -1,279 +1,113 @@
 package mods.cybercat.gigeresque.client.entity.render.helper;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
+
+import mods.cybercat.gigeresque.CommonMod;
 
 /**
- * Credit to Boston for this code
+ * Datapack-driven version of the original head-offset table.
+ * <p>
+ * Datapack location: {@code data/<namespace>/gigeresque_head_offsets/<entity>.json}
+ * <p>
+ * Each JSON file looks like:
+ *
+ * <pre>{@code
+ * {
+ *   "entity": "minecraft:cow",
+ *   "vertical_offset": "-size_y",
+ *   "face_offset": "size_z + (size_z / 2) + parasite_height"
+ * }
+ * }</pre>
+ * <p>
+ * See {@link OffsetExpression} for the supported expression grammar.
+ * <p>
+ * Credit to Boston for the original head-offset table code.
  */
 public record EntityHeadOffsetData(
-    BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
-    BiFunction<EntityHeadData, Entity, Double> faceOffsetSupplier
-
+    OffsetExpression verticalOffset,
+    OffsetExpression faceOffset
 ) {
 
-    private static final EntityHeadOffsetData COW = new EntityHeadOffsetData(
-        EntityHeadOffsetData::cowVerticalOffset,
-        EntityHeadOffsetData::cowFaceOffset
+    public static final Codec<EntityHeadOffsetData> CODEC = RecordCodecBuilder.create(
+        instance -> instance.group(
+            OffsetExpression.CODEC.fieldOf("vertical_offset").forGetter(EntityHeadOffsetData::verticalOffset),
+            OffsetExpression.CODEC.fieldOf("face_offset").forGetter(EntityHeadOffsetData::faceOffset)
+        ).apply(instance, EntityHeadOffsetData::new)
     );
 
-    private static final EntityHeadOffsetData LLAMA = new EntityHeadOffsetData(
-        EntityHeadOffsetData::llamaVerticalOffset,
-        EntityHeadOffsetData::llamaFaceOffset
-    );
+    public static volatile Map<EntityType<?>, EntityHeadOffsetData> ENTITY_HEAD_OFFSET_DATA_BY_TYPE = Map.of();
 
-    private static final EntityHeadOffsetData VILLAGER = new EntityHeadOffsetData(
-        EntityHeadOffsetData::villagerVerticalOffset,
-        EntityHeadOffsetData::villagerFaceOffset
-    );
-
-    public static final Map<EntityType<?>, EntityHeadOffsetData> ENTITY_HEAD_OFFSET_DATA_BY_TYPE = new HashMap<>(
-        Map.ofEntries(
-            Map.entry(
-                EntityType.CAMEL,
-                new EntityHeadOffsetData(EntityHeadOffsetData::camelVerticalOffset, EntityHeadOffsetData::camelFaceOffset)
-            ),
-            Map.entry(EntityType.COW, COW),
-            Map.entry(
-                EntityType.DONKEY,
-                new EntityHeadOffsetData(EntityHeadOffsetData::donkeyVerticalOffset, EntityHeadOffsetData::donkeyFaceOffset)
-            ),
-            Map.entry(
-                EntityType.DOLPHIN,
-                new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
-            ),
-            Map.entry(EntityType.EVOKER, VILLAGER),
-            Map.entry(
-                EntityType.FOX,
-                new EntityHeadOffsetData(EntityHeadOffsetData::foxVerticalOffset, EntityHeadOffsetData::foxFaceOffset)
-            ),
-            Map.entry(
-                EntityType.GOAT,
-                new EntityHeadOffsetData(EntityHeadOffsetData::goatVerticalOffset, EntityHeadOffsetData::goatFaceOffset)
-            ),
-            Map.entry(
-                EntityType.HOGLIN,
-                new EntityHeadOffsetData(EntityHeadOffsetData::hoglinVerticalOffset, EntityHeadOffsetData::hoglinFaceOffset)
-            ),
-            Map.entry(
-                EntityType.HORSE,
-                new EntityHeadOffsetData(EntityHeadOffsetData::horseVerticalOffset, EntityHeadOffsetData::horseFaceOffset)
-            ),
-            Map.entry(EntityType.ILLUSIONER, VILLAGER),
-            Map.entry(EntityType.LLAMA, LLAMA),
-            Map.entry(EntityType.MOOSHROOM, COW),
-            Map.entry(
-                EntityType.MULE,
-                new EntityHeadOffsetData(EntityHeadOffsetData::muleVerticalOffset, EntityHeadOffsetData::muleFaceOffset)
-            ),
-            Map.entry(
-                EntityType.PANDA,
-                new EntityHeadOffsetData(EntityHeadOffsetData::pandaVerticalOffset, EntityHeadOffsetData::pandaFaceOffset)
-            ),
-            Map.entry(
-                EntityType.PIG,
-                new EntityHeadOffsetData(EntityHeadOffsetData::pigVerticalOffset, EntityHeadOffsetData::pigFaceOffset)
-            ),
-            Map.entry(EntityType.PIGLIN, VILLAGER),
-            Map.entry(EntityType.PIGLIN_BRUTE, VILLAGER),
-            Map.entry(EntityType.PILLAGER, VILLAGER),
-            Map.entry(
-                EntityType.PLAYER,
-                new EntityHeadOffsetData(EntityHeadOffsetData::playerVerticalOffset, EntityHeadOffsetData::playerFaceOffset)
-            ),
-            Map.entry(
-                EntityType.POLAR_BEAR,
-                new EntityHeadOffsetData(EntityHeadOffsetData::polarBearVerticalOffset, EntityHeadOffsetData::polarBearFaceOffset)
-            ),
-            Map.entry(
-                EntityType.RAVAGER,
-                new EntityHeadOffsetData(EntityHeadOffsetData::ravagerVerticalOffset, EntityHeadOffsetData::ravagerFaceOffset)
-            ),
-            Map.entry(
-                EntityType.SHEEP,
-                new EntityHeadOffsetData(EntityHeadOffsetData::sheepVerticalOffset, EntityHeadOffsetData::sheepFaceOffset)
-            ),
-            Map.entry(
-                EntityType.SNIFFER,
-                new EntityHeadOffsetData(EntityHeadOffsetData::snifferVerticalOffset, EntityHeadOffsetData::snifferFaceOffset)
-            ),
-            Map.entry(EntityType.TRADER_LLAMA, LLAMA),
-            Map.entry(EntityType.VILLAGER, VILLAGER),
-            Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
-            Map.entry(EntityType.VINDICATOR, VILLAGER),
-            Map.entry(
-                EntityType.WITCH,
-                new EntityHeadOffsetData(EntityHeadOffsetData::witchVerticalOffset, EntityHeadOffsetData::villagerFaceOffset)
-            ),
-            Map.entry(
-                EntityType.WOLF,
-                new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
-            ),
-            Map.entry(
-                EntityType.ZOGLIN,
-                new EntityHeadOffsetData(EntityHeadOffsetData::hoglinVerticalOffset, EntityHeadOffsetData::hoglinFaceOffset)
-            ),
-            Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER)
-        )
-    );
-
-    private static double camelVerticalOffset(EntityHeadData data, Entity parasite) {
-        return data.size().y / 1.5;
+    public static OffsetResult resolve(EntityType<?> hostType, EntityHeadData head, Entity parasite) {
+        EntityHeadOffsetData data = ENTITY_HEAD_OFFSET_DATA_BY_TYPE.get(hostType);
+        if (data == null) {
+            return null;
+        }
+        OffsetExpression.OffsetContext ctx = new OffsetExpression.OffsetContext(
+            head.size().x,
+            head.size().y,
+            head.size().z,
+            head.pivot().x,
+            head.pivot().y,
+            head.pivot().z,
+            parasite.getBbHeight(),
+            parasite.getBbWidth()
+        );
+        return new OffsetResult(data.verticalOffset.evaluate(ctx), data.faceOffset.evaluate(ctx));
     }
 
-    private static double camelFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + parasite.getBbHeight();
-    }
+    public record OffsetResult(
+        double vertical,
+        double face
+    ) {}
 
-    private static double cowVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y;
-    }
+    public static class ReloadListener extends SimpleJsonResourceReloadListener {
 
-    private static double cowFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 2) + parasite.getBbHeight();
-    }
+        public ReloadListener() {
+            super(new com.google.gson.GsonBuilder().create(), "gigeresque_head_offsets");
+        }
 
-    private static double donkeyVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y / 4;
-    }
+        @Override
+        protected void apply(Map<ResourceLocation, JsonElement> jsons, @NotNull ResourceManager rm, @NotNull ProfilerFiller profiler) {
+            Map<EntityType<?>, EntityHeadOffsetData> map = new HashMap<>();
+            for (var entry : jsons.entrySet()) {
+                var file = entry.getKey();
+                try {
+                    var obj = GsonHelper.convertToJsonObject(entry.getValue(), "head_offset");
+                    ResourceLocation entityId;
+                    if (obj.has("entity")) {
+                        entityId = ResourceLocation.parse(GsonHelper.getAsString(obj, "entity"));
+                    } else {
+                        entityId = ResourceLocation.fromNamespaceAndPath("minecraft", file.getPath());
+                    }
 
-    private static double donkeyFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 2 + data.size().z / 1.4;
-    }
+                    var type = BuiltInRegistries.ENTITY_TYPE.getOptional(entityId)
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown entity type: " + entityId));
 
-    private static double foxVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 1.3);
-    }
+                    var data = CODEC.parse(JsonOps.INSTANCE, entry.getValue())
+                        .getOrThrow(IllegalArgumentException::new);
 
-    private static double foxFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 1.7 + parasite.getBbHeight();
-    }
-
-    private static double goatVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 4);
-    }
-
-    private static double goatFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 3) + parasite.getBbHeight() / 4;
-    }
-
-    private static double hoglinVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - data.size().y * 2.3;
-    }
-
-    private static double hoglinFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 10) + parasite.getBbHeight();
-    }
-
-    private static double horseVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y / 4;
-    }
-
-    private static double horseFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 3 + data.size().z / 2;
-    }
-
-    private static double llamaVerticalOffset(EntityHeadData data, Entity parasite) {
-        return data.size().y / 2.5;
-    }
-
-    private static double llamaFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 1.5) + parasite.getBbHeight();
-    }
-
-    private static double muleVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y / 4;
-    }
-
-    private static double muleFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 2 + data.size().z / 1.2;
-    }
-
-    private static double pigVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y;
-    }
-
-    private static double pigFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 2) + parasite.getBbHeight() / 2;
-    }
-
-    private static double pandaVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 2);
-    }
-
-    private static double pandaFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 2 + parasite.getBbHeight();
-    }
-
-    private static double playerVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 4);
-    }
-
-    private static double playerFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z - (data.size().z / 2);
-    }
-
-    private static double polarBearVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 1.15);
-    }
-
-    private static double polarBearFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 3 + parasite.getBbHeight();
-    }
-
-    private static double ravagerVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - data.size().y / 4;
-    }
-
-    private static double ravagerFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 1.75) + parasite.getBbHeight();
-    }
-
-    private static double sheepVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 4);
-    }
-
-    private static double sheepFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z + (data.size().z / 3) + parasite.getBbHeight() / 2;
-    }
-
-    private static double snifferVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 2);
-    }
-
-    private static double snifferFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 3 + (data.size().z / 2);
-    }
-
-    private static double villagerVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 4);
-    }
-
-    private static double villagerFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z - (data.size().z / 1) + 0.3;
-    }
-
-    private static double witchVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 1.5);
-    }
-
-    private static double wolfVerticalOffset(EntityHeadData data, Entity parasite) {
-        return -data.size().y - (data.size().y / 1.9);
-    }
-
-    private static double wolfFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 1.9 + parasite.getBbHeight();
-    }
-
-    private static double dolphinVerticalOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z - data.size().z - 0.7;
-    }
-
-    private static double dolphinFaceOffset(EntityHeadData data, Entity parasite) {
-        return data.size().z * 2 + data.size().z + 0.1;
+                    map.put(type, data);
+                } catch (Exception e) {
+                    CommonMod.LOGGER.error("Failed to load head offset {}: {}", file, e.getMessage());
+                }
+            }
+            ENTITY_HEAD_OFFSET_DATA_BY_TYPE = Map.copyOf(map);
+            CommonMod.LOGGER.info("Loaded {} entity head offset entries", map.size());
+        }
     }
 }

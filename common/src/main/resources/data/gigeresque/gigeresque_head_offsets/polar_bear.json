@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:polar_bear",
+  "vertical_offset": "-size_y - (size_y / 1.15)",
+  "face_offset": "size_z * 3 + parasite_height"
+}
