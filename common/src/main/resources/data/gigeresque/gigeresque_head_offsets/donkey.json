@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:donkey",
+  "vertical_offset": "-size_y / 4",
+  "face_offset": "size_z * 2 + size_z / 1.4"
+}

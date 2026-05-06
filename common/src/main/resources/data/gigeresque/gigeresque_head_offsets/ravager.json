@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:ravager",
+  "vertical_offset": "-size_y - size_y / 4",
+  "face_offset": "size_z + (size_z / 1.75) + parasite_height"
+}

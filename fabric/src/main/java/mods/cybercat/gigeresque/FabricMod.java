@@ -5,10 +5,13 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.GameRules;
 
+import mods.cybercat.gigeresque.client.FabricHeadOffsetReloadListener;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
@@ -43,6 +46,8 @@ public final class FabricMod implements ModInitializer {
     @Override
     public void onInitialize() {
         CommonMod.initRegistries();
+        ResourceManagerHelper.get(PackType.SERVER_DATA)
+            .registerReloadListener(new FabricHeadOffsetReloadListener());
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         MobSpawn.initialize();
         FabricDefaultAttributeRegistry.register(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes());

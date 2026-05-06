@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:sniffer",
+  "vertical_offset": "-size_y - (size_y / 2)",
+  "face_offset": "size_z * 3 + (size_z / 2)"
+}

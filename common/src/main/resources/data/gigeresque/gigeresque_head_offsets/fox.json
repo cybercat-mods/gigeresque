@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:fox",
+  "vertical_offset": "-size_y - (size_y / 1.3)",
+  "face_offset": "size_z * 1.7 + parasite_height"
+}

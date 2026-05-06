@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:witch",
+  "vertical_offset": "-size_y - (size_y / 1.5)",
+  "face_offset": "size_z - (size_z / 1) + 0.3"
+}

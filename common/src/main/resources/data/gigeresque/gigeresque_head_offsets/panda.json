@@ -1,0 +1,5 @@
+{
+  "entity": "minecraft:panda",
+  "vertical_offset": "-size_y - (size_y / 2)",
+  "face_offset": "size_z * 2 + parasite_height"
+}

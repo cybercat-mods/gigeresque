@@ -57,7 +57,7 @@ import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.predicates.*;
 import mods.cybercat.gigeresque.hacky.BlackFluidClientExtensions;
 
-@EventBusSubscriber(modid = CommonMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = CommonMod.MOD_ID, value = Dist.CLIENT)
 public class NeoForgeClientMod {
 
     @SubscribeEvent

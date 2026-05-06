@@ -78,12 +78,10 @@ public class FacehuggerModelRenderer extends AlienModelRenderer<FacehuggerEntity
         poseStack.mulPose(Axis.XP.rotationDegrees(headPitch));
         poseStack.translate(-xPivot, -yPivot + host.getBbHeight(), zPivot);
 
-        var offsetSuppilers = EntityHeadOffsetData.ENTITY_HEAD_OFFSET_DATA_BY_TYPE.get(host.getType());
+        var result = EntityHeadOffsetData.resolve(host.getType(), data, facehuggerEntity);
 
-        if (offsetSuppilers != null) {
-            var yOffset = offsetSuppilers.verticalOffsetSupplier().apply(data, facehuggerEntity);
-            var zOffset = offsetSuppilers.faceOffsetSupplier().apply(data, facehuggerEntity);
-            poseStack.translate(0, yOffset, zOffset);
+        if (result != null) {
+            poseStack.translate(0, result.vertical(), result.face());
         } else {
             poseStack.translate(0, -ySize, zSize);
         }
