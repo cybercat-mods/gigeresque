@@ -29,9 +29,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.SplittableRandom;
-
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.RotateTowardsEntityGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
@@ -44,6 +43,7 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FindDarknessGoal
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.PatrolForTargetsGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.EggmorphGoal;
@@ -110,11 +110,52 @@ public class ClassicAlienEntity extends AlienEntity {
             this.setIsExecuting(false);
         }
 
+        if (this.getTarget() != null) {
+            LivingEntity target = this.getTarget();
+            if (
+                target.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
+                    || target.level()
+                        .getBlockState(target.blockPosition())
+                        .is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
+            ) {
+                this.setTarget(null);
+                this.setAggressive(false);
+            }
+        }
+
+        if (this.isVehicle() && this.getFirstPassenger() instanceof Mob passenger) {
+            passenger.getNavigation().stop();
+            passenger.setTarget(null);
+            passenger.setNoAi(true);
+        }
+        if (this.isVehicle() && this.getFirstPassenger() instanceof Mob passenger) {
+            passenger.getNavigation().stop();
+            passenger.setTarget(null);
+            passenger.setNoAi(true);
+        }
+        if (this.isVehicle()) {
+            this.goalSelector.getAvailableGoals()
+                .stream()
+                .filter(g -> !(g.getGoal() instanceof EggmorphGoal))
+                .forEach(g -> g.stop());
+        }
+
+        if (!this.isVehicle()) {
+            this.getPassengers().forEach(p -> {
+                if (p instanceof Mob mob) {
+                    mob.setNoAi(false);
+                }
+            });
+        }
+
         if (this.isVehicle() && !GigEntityUtils.isTargetHostable(this.getFirstPassenger())) {
             this.ejectPassengers();
         }
 
-        if (this.level() instanceof ServerLevel serverLevel && this.isVehicle() && this.getInBlockState().is(GigTags.NEST_BLOCKS)) {
+        if (
+            this.level() instanceof ServerLevel serverLevel && this.isVehicle()
+                && this.getInBlockState().is(GigTags.NEST_BLOCKS)
+        ) {
             GigEntityUtils.placeInNest(serverLevel, this, this.getFirstPassenger());
         }
     }
@@ -169,6 +210,7 @@ public class ClassicAlienEntity extends AlienEntity {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new EggmorphGoal(this));
         this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(0, new DodgeProjectilesGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
@@ -177,15 +219,33 @@ public class ClassicAlienEntity extends AlienEntity {
         this.goalSelector.addGoal(2, new HeadBiteGoal(this));
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 10, 16).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(4, new BreakBlocksGoal(this, GigTags.DESTRUCTIBLE_LIGHT, 1.5F));
-        this.goalSelector.addGoal(3, new EggmorphGoal(this));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));
         this.goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         this.goalSelector.addGoal(5, new FleeFireGoal(this));
         this.goalSelector.addGoal(7, new BuildNestGoal(this));
         this.goalSelector.addGoal(7, new FindDarknessGoal(this)); // TODO: Find Darkness Goal
         this.goalSelector.addGoal(9, new RotateTowardsEntityGoal(this, Player.class, 15.0F, 1.0F));
+        this.goalSelector.addGoal(8, new PatrolForTargetsGoal(this, 0.7));
         this.goalSelector.addGoal(10, new RotateTowardsEntityGoal(this, LivingEntity.class, 15.0F));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class) {
+
+            @Override
+            public boolean canContinueToUse() {
+                LivingEntity target = ClassicAlienEntity.this.getTarget();
+                if (target != null) {
+                    if (
+                        target.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
+                            || target.level()
+                                .getBlockState(target.blockPosition())
+                                .is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
+                    ) {
+                        ClassicAlienEntity.this.setTarget(null);
+                        return false;
+                    }
+                }
+                return super.canContinueToUse();
+            }
+        }.setAlertOthers());
         this.targetSelector.addGoal(
             2,
             new NearestAttackableTargetGoal<>(
@@ -202,22 +262,25 @@ public class ClassicAlienEntity extends AlienEntity {
     @Override
     public void positionRider(@NotNull Entity entity, @NotNull MoveFunction moveFunction) {
         if (entity instanceof LivingEntity mob) {
-            var random = new SplittableRandom();
             mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, true, true));
             mob.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 1, true, true));
             var f = Mth.sin(this.yBodyRot * ((float) Math.PI / 180));
             var g = Mth.cos(this.yBodyRot * ((float) Math.PI / 180));
-            var y1 = random.nextFloat(0.14F, 0.15F);
-            var y3 = random.nextFloat(0.44F, 0.45F);
-            var y = random.nextFloat(0.74F, 0.75f);
-            var y2 = random.nextFloat(1.14F, 1.15f);
+            var y1 = 0.14F;
+            var y3 = 0.44F;
+            var y = 0.74F;
+            var y2 = 1.14F;
             mob.setPos(
                 this.getX() + ((this.isExecuting() ? -2.4f : -1.85f) * f),
                 this.getY() + (this.isExecuting() ? (mob.getBbHeight() < 1.4 ? y2 : y) : (mob.getBbHeight() < 1.4 ? y3 : y1)),
                 this.getZ() - ((this.isExecuting() ? -2.4f : -1.85f) * g)
             );
             mob.yBodyRot = this.yBodyRot;
-            mob.setSpeed(0);
+
+            if (mob instanceof Mob mobEntity) {
+                mobEntity.getNavigation().stop();
+                mobEntity.setTarget(null);
+            }
         }
     }
 

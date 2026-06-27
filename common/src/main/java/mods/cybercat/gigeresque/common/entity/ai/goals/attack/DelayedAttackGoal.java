@@ -13,6 +13,8 @@ import java.util.function.Predicate;
 import mods.cybercat.gigeresque.bvanseg.Cooldown;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
 
@@ -53,26 +55,37 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
 
     @Override
     public void tick() {
+        if (alienEntity.getTarget() != null) {
+            if (
+                alienEntity.getTarget()
+                    .getPassengers()
+                    .stream()
+                    .anyMatch(e -> e instanceof FacehuggerEntity)
+            ) {
+                alienEntity.setTarget(null);
+                alienEntity.setAggressive(false);
+                return;
+            }
+            if (alienEntity.getTarget().hasEffect(GigStatusEffects.IMPREGNATION)) {
+                alienEntity.setTarget(null);
+                alienEntity.setAggressive(false);
+                return;
+            }
+        }
+
         super.tick();
         attackAnimationCooldown.tick();
 
         if (
-            // If target is not null
             alienEntity.getTarget() != null
-                // AND we ran the attack animation.
                 && ranAttackAnimation
-                // AND the animation cooldown has finished
                 && !attackAnimationCooldown.isActive()
-                // AND the target is still within melee range
                 && alienEntity.isWithinMeleeAttackRange(alienEntity.getTarget())
-                // AND we still have a line of sight of the target
                 && alienEntity.getSensing().hasLineOfSight(alienEntity.getTarget())
         ) {
             resetAttackCooldown();
-
             mob.swing(InteractionHand.MAIN_HAND);
             mob.doHurtTarget(alienEntity.getTarget());
-
             this.ranAttackAnimation = false;
         }
     }
@@ -105,8 +118,23 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
         if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
-
-        return !NEST.test(alienEntity.getTarget().getInBlockState());
+        if (NEST.test(alienEntity.getTarget().getInBlockState())) {
+            return false;
+        }
+        if (
+            alienEntity.getTarget()
+                .getPassengers()
+                .stream()
+                .anyMatch(e -> e instanceof FacehuggerEntity)
+        ) {
+            alienEntity.setTarget(null);
+            return false;
+        }
+        if (alienEntity.getTarget().hasEffect(GigStatusEffects.IMPREGNATION)) {
+            alienEntity.setTarget(null);
+            return false;
+        }
+        return true;
     }
 
     @Override

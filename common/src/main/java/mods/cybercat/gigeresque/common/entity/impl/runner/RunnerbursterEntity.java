@@ -30,8 +30,8 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtFoodTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFromPlayerGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
@@ -106,7 +106,7 @@ public class RunnerbursterEntity extends ChestbursterEntity implements Growable 
         this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
-        this.goalSelector.addGoal(1, new FleeFightGoal(this));
+        this.goalSelector.addGoal(0, new FleeFromPlayerGoal(this, 12.0, 1.4));
         this.goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.1F, 5));
         this.goalSelector.addGoal(2, new LungeAtFoodTargetGoal(this, 1.0F, 80, 5).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(3, new EatFoodItemGoal(this, 0.9F, 5));

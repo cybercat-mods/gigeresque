@@ -40,8 +40,6 @@ public class BlockBreakProgressManager {
         level.destroyBlockProgress(computeBlockPosHash(pos), pos, clampedProgress);
     }
 
-    // Damage progress is a value ranging from 0 to 9 (both ends inclusively).
-    // All blocks also have a destruction time (in seconds).
     public static Result damage(Level level, BlockPos blockPos, float damage) {
         var immutableBlockPos = blockPos.immutable();
 
@@ -53,7 +51,6 @@ public class BlockBreakProgressManager {
         var defaultDestroyTimeInSeconds = block.defaultDestroyTime();
 
         if (defaultDestroyTimeInSeconds < 0 || blockState.is(Blocks.FIRE)) {
-            // This block cannot be destroyed, so abort.
             return Result.NOT_DAMAGED;
         }
 

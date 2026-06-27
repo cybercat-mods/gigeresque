@@ -140,7 +140,9 @@ public record GigEntityUtils() {
             || !target.isAlive()
             || target.isInvulnerable()
             || !target.attackable()
-            || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target));
+            || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
+            || target.getInBlockState().is(GigBlocks.NEST_RESIN_WEB_CROSS.get())
+            || target.level().getBlockState(target.blockPosition()).is(GigBlocks.NEST_RESIN_WEB_CROSS.get()));
     }
 
     public static boolean isValidAquaTarget(LivingEntity target) {
@@ -343,6 +345,16 @@ public record GigEntityUtils() {
                 level.setBlockAndUpdate(testPos.above(), GigBlocks.NEST_RESIN_WEB_CROSS.get().defaultBlockState());
                 entity.ejectPassengers();
                 entity.removeVehicle();
+                entity.setTarget(null);
+                entity.setAggressive(false);
+                entity.setIsExecuting(false);
+                entity.savedNestWebCross = null;
+                entity.setTarget(null);
+                entity.setLastHurtByMob(null);
+                entity.setLastHurtByPlayer(null);
+                if (passenger instanceof Mob mob) {
+                    mob.setNoAi(false);
+                }
             }
         }
     }

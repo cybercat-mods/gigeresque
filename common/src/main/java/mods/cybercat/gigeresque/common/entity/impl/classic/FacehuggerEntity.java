@@ -37,10 +37,7 @@ import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.FacehuggerRunToTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCreeperGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
-import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -280,6 +277,24 @@ public class FacehuggerEntity extends AlienEntity {
         if ((isAttachedToHost() || isInfertile()) && (source == damageSources().drown()))
             return false;
 
+        if (isAttachedToHost() && amount >= this.getHealth()) {
+            var host = this.getVehicle();
+            if (
+                host instanceof LivingEntity livingEntity
+                    && !livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)
+            ) {
+                livingEntity.addEffect(
+                    new MobEffectInstance(
+                        GigStatusEffects.IMPREGNATION,
+                        (int) CommonMod.config.getImpregnationTickTimer(),
+                        0,
+                        false,
+                        true
+                    )
+                );
+            }
+        }
+
         return super.hurt(source, amount);
     }
 
@@ -326,15 +341,17 @@ public class FacehuggerEntity extends AlienEntity {
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, AlienEntity.class).setAlertOthers());
+        this.goalSelector.addGoal(8, new PatrolForTargetsGoal(this, 0.7));
         this.targetSelector.addGoal(
             2,
             new NearestAttackableTargetGoal<>(
                 this,
                 LivingEntity.class,
-                false,
-                target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.removeFaceHuggerTarget(target) && !this.hasEffect(
-                    MobEffects.CONFUSION
-                )
+                true,
+                target -> this.getHealth() > (this.getMaxHealth() / 2)
+                    && GigEntityUtils.removeFaceHuggerTarget(target)
+                    && !this.hasEffect(MobEffects.CONFUSION)
+                    && !(target.getVehicle() instanceof AlienEntity)
             )
         );
     }

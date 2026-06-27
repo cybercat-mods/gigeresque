@@ -50,11 +50,13 @@ public class CrawlingManager {
         }
 
         if (entity.isVehicle()) {
+            if (isCrawling()) {
+                entity.getEntityData().set(isCrawlingEDA, false);
+            }
             return;
         }
 
         var path = navigation.getPath();
-
         var shouldCrawl = isTightSpace(blockPosition);
 
         if (path != null && path.getNextNodeIndex() < path.getNodeCount()) {
@@ -74,6 +76,10 @@ public class CrawlingManager {
         return (!aboveState.isAir() && aboveState.entityCanStandOn(entity.level(), blockPos, entity)) || level.getBlockState(
             blockPos.below()
         ).is(BlockTags.STAIRS);
+    }
+
+    public void setCrawling(boolean value) {
+        entity.getEntityData().set(isCrawlingEDA, value);
     }
 
     public void load(CompoundTag compoundTag) {

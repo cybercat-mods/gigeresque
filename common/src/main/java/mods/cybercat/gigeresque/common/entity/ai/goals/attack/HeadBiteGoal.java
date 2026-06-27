@@ -2,6 +2,8 @@ package mods.cybercat.gigeresque.common.entity.ai.goals.attack;
 
 import net.minecraft.world.entity.ai.goal.Goal;
 
+import java.util.EnumSet;
+
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 
@@ -13,16 +15,17 @@ public class HeadBiteGoal extends Goal {
 
     public HeadBiteGoal(AlienEntity mob) {
         this.mob = mob;
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     @Override
     public boolean canUse() {
-        return this.mob.isVehicle();
+        return this.mob.isVehicle() && this.mob.allowExecution;
     }
 
     @Override
     public boolean canContinueToUse() {
-        return this.mob.isVehicle();
+        return this.mob.isVehicle() && this.mob.allowExecution;
     }
 
     @Override
@@ -64,6 +67,7 @@ public class HeadBiteGoal extends Goal {
             }
             this.mob.setIsBiting(false);
             this.mob.setIsExecuting(false);
+            this.mob.allowExecution = false;
             this.executionTimer = 0;
         }
     }

@@ -34,7 +34,6 @@ public class ClimbingManager {
 
     public boolean climbing;
 
-    // set in move control
     public boolean climbingRequiredForMovement;
 
     public float smoothing = 0.8f;
@@ -71,6 +70,12 @@ public class ClimbingManager {
             return;
         }
 
+        if (alien.isVehicle()) {
+            climbing = false;
+            alien.setNoGravity(false);
+            alien.getEntityData().set(isClimbingEDA, false);
+            return;
+        }
         if (alien.level().isClientSide()) {
             climbing = alien.getEntityData().get(isClimbingEDA);
             {
@@ -102,8 +107,6 @@ public class ClimbingManager {
             )
                 && climbingRequiredForMovement;
 
-            // all this stuff is here instead of in GigMoveControl since it needs to update even when the mob isn't
-            // moving
             alien.setNoGravity(climbing);
 
             closestCollision = getClosestBlockCollision(
@@ -148,7 +151,6 @@ public class ClimbingManager {
                 forward = new Vec3(1, 0, 0);
             }
 
-            // point forward at 90 degrees from up (prevents weird rotations sometimes)
             {
                 var z = forward.cross(up);
                 forward = up.cross(z).normalize();
@@ -178,8 +180,6 @@ public class ClimbingManager {
         }
     }
 
-    // borrowed from from another world 2
-    // library mods are cool but ctrl+c and ctrl+v are cooler
     private static Vec3 getClosestBlockCollision(Level level, Vec3 pos, double range, double precision) {
         double currentPrecision = range * 2;
 

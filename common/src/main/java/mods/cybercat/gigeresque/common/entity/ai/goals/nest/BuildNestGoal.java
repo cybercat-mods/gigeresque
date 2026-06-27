@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity.ai.goals.nest;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.LightLayer;
 
@@ -8,6 +9,8 @@ import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.nest.NestBuildingHelper;
 
 public class BuildNestGoal extends Goal {
+
+    private long lastBuildTime = 0;
 
     int delayBeforeAttack;
 
@@ -28,128 +31,109 @@ public class BuildNestGoal extends Goal {
     @Override
     public boolean canUse() {
         long i = this.mob.level().getGameTime();
-        if (i - this.lastCanUseCheck < 20L) {
-            return false;
-        }
 
-        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_STAIRS)) {
-            return false;
+        if (countNearbyAliens() >= 2) {
+            if (i - this.lastCanUseCheck < 20L)
+                return false;
+            if (this.mob.getTarget() != null)
+                return false;
+            if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_STAIRS))
+                return false;
+            if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS))
+                return false;
+            if (this.mob.getBlockStateOn().is(GigTags.NEST_BLOCKS))
+                return false;
+            if (this.mob.isAggressive())
+                return false;
+            if (this.mob.crawlingManager.isCrawling())
+                return false;
+            if (this.mob.isVehicle())
+                return false;
+            if (this.mob.getGrowth() < this.mob.getMaxGrowth())
+                return false;
+            if (this.mob.level().canSeeSky(this.mob.blockPosition()))
+                return false;
+            if (this.mob.level().getBrightness(LightLayer.SKY, this.mob.blockPosition()) > 5)
+                return false;
+            if (this.mob.stasisManager.isStasis())
+                return false;
+            if (this.mob.isFleeing())
+                return false;
+            if (this.mob.level().dimensionType().piglinSafe())
+                return false;
+            this.lastCanUseCheck = i;
+            return this.mob.isAlive();
         }
-
-        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS)) {
+        if (i - lastBuildTime < 1200L)
             return false;
-        }
-
-        if (this.mob.getBlockStateOn().is(GigTags.NEST_BLOCKS)) {
+        if (this.mob.getTarget() != null)
             return false;
-        }
-
-        if (this.mob.isAggressive()) {
+        if (i - this.lastCanUseCheck < 20L)
             return false;
-        }
-
-        if (this.mob.crawlingManager.isCrawling()) {
+        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_STAIRS))
             return false;
-        }
-
-        if (this.mob.isVehicle()) {
+        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS))
             return false;
-        }
-
-        if (this.mob.getGrowth() < this.mob.getMaxGrowth()) {
+        if (this.mob.getBlockStateOn().is(GigTags.NEST_BLOCKS))
             return false;
-        }
-
-        if (this.mob.level().canSeeSky(this.mob.blockPosition())) {
+        if (this.mob.isAggressive())
             return false;
-        }
-
-        if (this.mob.level().getBrightness(LightLayer.SKY, this.mob.blockPosition()) > 5) {
+        if (this.mob.crawlingManager.isCrawling())
             return false;
-        }
-
-        if (this.mob.stasisManager.isStasis()) {
+        if (this.mob.isVehicle())
             return false;
-        }
-
-        if (this.mob.isFleeing()) {
+        if (this.mob.getGrowth() < this.mob.getMaxGrowth())
             return false;
-        }
-
-        if (this.mob.level().dimensionType().piglinSafe()) {
+        if (this.mob.level().canSeeSky(this.mob.blockPosition()))
             return false;
-        }
-
+        if (this.mob.level().getBrightness(LightLayer.SKY, this.mob.blockPosition()) > 5)
+            return false;
+        if (this.mob.stasisManager.isStasis())
+            return false;
+        if (this.mob.isFleeing())
+            return false;
+        if (this.mob.level().dimensionType().piglinSafe())
+            return false;
         this.lastCanUseCheck = i;
         return this.mob.isAlive();
     }
 
     @Override
     public boolean canContinueToUse() {
-        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_STAIRS)) {
+        if (this.mob.getTarget() != null)
             return false;
-        }
-
-        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS)) {
+        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_STAIRS))
             return false;
-        }
-
-        if (this.mob.level().getBlockState(this.mob.blockPosition()).is(GigTags.DUNGEON_STAIRS)) {
+        if (this.mob.getBlockStateOn().is(GigTags.DUNGEON_BLOCKS))
             return false;
-        }
-
-        if (this.mob.level().getBlockState(this.mob.blockPosition()).is(GigTags.DUNGEON_BLOCKS)) {
+        if (this.mob.level().getBlockState(this.mob.blockPosition()).is(GigTags.DUNGEON_STAIRS))
             return false;
-        }
-
-        if (this.mob.level().getBlockState(this.mob.blockPosition().below()).is(GigTags.DUNGEON_STAIRS)) {
+        if (this.mob.level().getBlockState(this.mob.blockPosition()).is(GigTags.DUNGEON_BLOCKS))
             return false;
-        }
-
-        if (this.mob.level().getBlockState(this.mob.blockPosition().below()).is(GigTags.DUNGEON_BLOCKS)) {
+        if (this.mob.level().getBlockState(this.mob.blockPosition().below()).is(GigTags.DUNGEON_STAIRS))
             return false;
-        }
-
-        if (this.mob.getBlockStateOn().is(GigTags.NEST_BLOCKS)) {
+        if (this.mob.level().getBlockState(this.mob.blockPosition().below()).is(GigTags.DUNGEON_BLOCKS))
             return false;
-        }
-
-        if (this.mob.isAggressive()) {
+        if (this.mob.getBlockStateOn().is(GigTags.NEST_BLOCKS))
             return false;
-        }
-
-        if (this.mob.crawlingManager.isCrawling()) {
+        if (this.mob.isAggressive())
             return false;
-        }
-
-        if (this.mob.isVehicle()) {
+        if (this.mob.crawlingManager.isCrawling())
             return false;
-        }
-
-        if (this.mob.getGrowth() < this.mob.getMaxGrowth()) {
+        if (this.mob.isVehicle())
             return false;
-        }
-
-        if (this.mob.level().canSeeSky(this.mob.blockPosition())) {
+        if (this.mob.getGrowth() < this.mob.getMaxGrowth())
             return false;
-        }
-
-        if (this.mob.level().getBrightness(LightLayer.SKY, this.mob.blockPosition()) > 5) {
+        if (this.mob.level().canSeeSky(this.mob.blockPosition()))
             return false;
-        }
-
-        if (this.mob.stasisManager.isStasis()) {
+        if (this.mob.level().getBrightness(LightLayer.SKY, this.mob.blockPosition()) > 5)
             return false;
-        }
-
-        if (this.mob.isFleeing()) {
+        if (this.mob.stasisManager.isStasis())
             return false;
-        }
-
-        if (this.mob.level().dimensionType().piglinSafe()) {
+        if (this.mob.isFleeing())
             return false;
-        }
-
+        if (this.mob.level().dimensionType().piglinSafe())
+            return false;
         return this.mob.isAlive();
     }
 
@@ -172,7 +156,18 @@ public class BuildNestGoal extends Goal {
     }
 
     protected void resetAttackCooldown() {
-        this.ticksUntilNextAttack = this.adjustedTickDelay(300);
+        lastBuildTime = this.mob.level().getGameTime();
+
+        long nestBlocksNearby = BlockPos.betweenClosedStream(
+            this.mob.blockPosition().offset(-5, -3, -5),
+            this.mob.blockPosition().offset(5, 3, 5)
+        )
+            .filter(pos -> this.mob.level().getBlockState(pos).is(GigTags.NEST_BLOCKS))
+            .count();
+
+        int alienBonus = countNearbyAliens() * 50;
+        int cooldown = (int) Math.max(100, Math.min(300 + nestBlocksNearby * 20 - alienBonus, 1200));
+        this.ticksUntilNextAttack = this.adjustedTickDelay(cooldown);
     }
 
     protected boolean isTimeToAttack() {
@@ -183,7 +178,6 @@ public class BuildNestGoal extends Goal {
         if (this.isTimeToAttack() && !this.mob.getInBlockState().is(GigTags.NEST_BLOCKS)) {
             if (this.delayBeforeAttack > 0) {
                 this.delayBeforeAttack--;
-
                 if (this.delayBeforeAttack == delayTicksBeforeAttack && !this.triggeredAttackAnimation) {
                     this.mob.animationDispatcher.sendLeftClaw();
                     this.triggeredAttackAnimation = true;
@@ -197,5 +191,15 @@ public class BuildNestGoal extends Goal {
             this.delayBeforeAttack = this.adjustedTickDelay(10);
             this.triggeredAttackAnimation = false;
         }
+    }
+
+    private int countNearbyAliens() {
+        return this.mob.level()
+            .getEntitiesOfClass(
+                AlienEntity.class,
+                this.mob.getBoundingBox().inflate(16),
+                alien -> alien != this.mob && alien.isAlive()
+            )
+            .size();
     }
 }

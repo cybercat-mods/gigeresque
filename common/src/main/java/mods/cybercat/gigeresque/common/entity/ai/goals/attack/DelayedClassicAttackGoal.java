@@ -13,6 +13,8 @@ import java.util.function.Predicate;
 import mods.cybercat.gigeresque.bvanseg.Cooldown;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class DelayedClassicAttackGoal extends MeleeAttackGoal {
 
@@ -34,6 +36,13 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
     public void tick() {
         super.tick();
         attackAnimationCooldown.tick();
+        if (alienEntity.isVehicle()) {
+            alienEntity.setTarget(null);
+            alienEntity.setAggressive(false);
+            return;
+        }
+
+        super.tick();
 
         if (
             // If target is not null
@@ -88,8 +97,27 @@ public class DelayedClassicAttackGoal extends MeleeAttackGoal {
         if (alienEntity.hasEffect(MobEffects.CONFUSION)) {
             return false;
         }
-
-        return !NEST.test(alienEntity.getTarget().getInBlockState());
+        if (NEST.test(alienEntity.getTarget().getInBlockState())) {
+            return false;
+        }
+        if (alienEntity.getTarget().getVehicle() instanceof AlienEntity) {
+            alienEntity.setTarget(null);
+            return false;
+        }
+        if (
+            alienEntity.getTarget()
+                .getPassengers()
+                .stream()
+                .anyMatch(e -> e instanceof FacehuggerEntity)
+        ) {
+            alienEntity.setTarget(null);
+            return false;
+        }
+        if (alienEntity.getTarget().hasEffect(GigStatusEffects.IMPREGNATION)) {
+            alienEntity.setTarget(null);
+            return false;
+        }
+        return true;
     }
 
     @Override

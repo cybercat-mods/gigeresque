@@ -104,7 +104,7 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public boolean enableResinAlienCheck = true;
+        public boolean enableResinAlienCheck = false;
 
         @Configurable
         @Configurable.Synchronized

@@ -27,6 +27,7 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
+import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFromPlayerGoal;
 import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -129,6 +130,7 @@ public class ChestbursterEntity extends AlienEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
+        this.goalSelector.addGoal(0, new FleeFromPlayerGoal(this, 18.0, 1.4));
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.6));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(1, new FleeFightGoal(this));

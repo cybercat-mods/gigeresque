@@ -191,6 +191,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public BlockPos savedNestWebCross;
 
+    public boolean allowExecution = false;
+
     public SearchingManager searchingManager;
 
     public AnimationDispatcher animationDispatcher;
@@ -927,8 +929,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     }
 
     protected @Nullable EntityDimensions climbingDimensions(Pose pose) {
-        // this should be reasonable for most aliens
-        // it needs to be smaller than 1x1 for climbing to work correctly
         return EntityDimensions.scalable(0.75f, 0.75f);
     }
 
@@ -940,9 +940,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         if (level().isClientSide()) {
             return;
         }
-
-        // not sure why we're checking for this, keeping it from the old bleed code, maybe they should be moved to
-        // isDamageSourceNotPuncturing?
         if (source == damageSources().genericKill() || source == damageSources().generic()) {
             return;
         }
@@ -952,7 +949,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         }
 
         var bloodEntityType = switch (options.bloodType) {
-            case NONE -> null; // bloodType should not be NONE at this point
+            case NONE -> null;
             case ACID -> GigEntities.ACID.get();
             case GOO -> GigEntities.GOO.get();
         };

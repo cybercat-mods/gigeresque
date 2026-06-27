@@ -51,12 +51,21 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                 && GigEntityUtils.isTargetHostable(livingEntity)
                 && !livingEntity.hasEffect(GigStatusEffects.IMPREGNATION)
         ) {
-            if (livingEntity.tickCount % 20 == 0) {
-                return;
-            }
 
             if (CommonMod.config.alienblockConfigs.enableResinAlienCheck && !isTaggedEntityNearby(world, pos)) {
                 return;
+            }
+
+            if (livingEntity instanceof Mob mobEntity && !(livingEntity instanceof Player)) {
+                AABB blockBox = new AABB(pos);
+                AABB mobBox = mobEntity.getBoundingBox();
+                if (blockBox.contains(mobBox.getCenter())) {
+                    mobEntity.setNoAi(true);
+                    mobEntity.getNavigation().stop();
+                    mobEntity.setTarget(null);
+                } else {
+                    mobEntity.setNoAi(false);
+                }
             }
 
             if (livingEntity instanceof Player player) {
@@ -64,6 +73,12 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
             } else if (livingEntity instanceof Mob mob) {
                 handleEggMorphingForMob(mob, state, entity);
             }
+        }
+    }
+
+    public void entityExited(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity) {
+        if (entity instanceof Mob mob && !(entity instanceof AlienEntity)) {
+            mob.setNoAi(false);
         }
     }
 
@@ -91,7 +106,35 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
         if (sourceEntity instanceof AlienEntity) {
             return;
         }
+
+        double centerX = pos.getX() + 0.5;
+        double centerZ = pos.getZ() + 0.5;
+        double dx = centerX - player.getX();
+        double dz = centerZ - player.getZ();
+        double distanceFromCenter = Math.sqrt(dx * dx + dz * dz);
+
+        if (distanceFromCenter > 0.3) {
+            player.setDeltaMovement(
+                dx * 0.2,
+                player.getDeltaMovement().y,
+                dz * 0.2
+            );
+        } else {
+            player.setPos(centerX, player.getY(), centerZ);
+            player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
+        }
+
+        if (player.getDeltaMovement().y > 0) {
+            player.setDeltaMovement(
+                player.getDeltaMovement().x,
+                0,
+                player.getDeltaMovement().z
+            );
+        }
+
         player.makeStuckInBlock(state, new Vec3(0.25, 0.05F, 0.25));
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 60, 0, true, false));
+
         if (!player.hasEffect(GigStatusEffects.EGGMORPHING)) {
             player.addEffect(
                 new MobEffectInstance(
@@ -123,6 +166,32 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
         if (mob instanceof AlienEntity || sourceEntity instanceof AlienEntity) {
             return;
         }
+
+        double centerX = mob.blockPosition().getX() + 0.5;
+        double centerZ = mob.blockPosition().getZ() + 0.5;
+        double dx = centerX - mob.getX();
+        double dz = centerZ - mob.getZ();
+        double distanceFromCenter = Math.sqrt(dx * dx + dz * dz);
+
+        if (distanceFromCenter > 0.3) {
+            mob.setDeltaMovement(
+                dx * 0.2,
+                mob.getDeltaMovement().y,
+                dz * 0.2
+            );
+        } else {
+            mob.setPos(centerX, mob.getY(), centerZ);
+            mob.setDeltaMovement(0, mob.getDeltaMovement().y, 0);
+        }
+
+        if (mob.getDeltaMovement().y > 0) {
+            mob.setDeltaMovement(
+                mob.getDeltaMovement().x,
+                0,
+                mob.getDeltaMovement().z
+            );
+        }
+
         if (
             !mob.hasEffect(GigStatusEffects.EGGMORPHING) &&
                 GigEntityUtils.inResinEnoughToBeEggmorphed(mob)
@@ -136,9 +205,26 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                 sourceEntity
             );
         }
+
         mob.makeStuckInBlock(state, new Vec3(0.25, 0.0F, 0.25));
         mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 100, true, false), sourceEntity);
-        standingTick = 0;
+    }
+
+    @Override
+    public void onRemove(
+        @NotNull BlockState state,
+        @NotNull Level world,
+        @NotNull BlockPos pos,
+        @NotNull BlockState newState,
+        boolean movedByPiston
+    ) {
+        world.getEntitiesOfClass(Mob.class, new AABB(pos))
+            .stream()
+            .filter(mob -> !(mob instanceof AlienEntity))
+            .forEach(mob -> {
+                mob.setNoAi(false);
+            });
+        super.onRemove(state, world, pos, newState, movedByPiston);
     }
 
 }
